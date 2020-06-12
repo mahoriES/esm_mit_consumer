@@ -1,6 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/address/actions/address_actions.dart';
+import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/modules/register/action/register_Action.dart';
 import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
@@ -11,7 +13,6 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:esamudaayapp/utilities/global.dart' as globals;
 
 class Registration extends StatefulWidget {
   @override
@@ -242,10 +243,12 @@ class _RegistrationState extends State<Registration> {
                                           validator: (value) {
                                             if (value.length == 0) return null;
 
-                                            if (value.length < 6 ||
-                                                !pinCodeController.text
-                                                    .contains(new RegExp(
-                                                        r'^[1-9][0-9]{5}$'))) {
+                                            if (value.isEmpty
+//                                                ||
+//                                                !pinCodeController.text
+//                                                    .contains(new RegExp(
+//                                                        r'^[1-9][0-9]{5}$'))
+                                                ) {
                                               return tr(
                                                   'screen_register.pin_code.title');
                                               return null;
@@ -298,23 +301,27 @@ class _RegistrationState extends State<Registration> {
                                     Fluttertoast.showToast(
                                         msg: tr(
                                             'screen_register.name.empty_error'));
-                                  } else if (pinCodeController.text.length <
-                                          6 ||
-                                      !pinCodeController.text
-                                          .contains(new RegExp(r'^\d{6}$'))) {
+                                  } else if (pinCodeController.text.isEmpty
+//                                      ||
+//                                      !pinCodeController.text
+//                                          .contains(new RegExp(r'^\d{6}$'))
+
+                                      ) {
                                     Fluttertoast.showToast(
                                         msg: tr(
                                             'screen_register.pin_code.title'));
                                   } else {
                                     snapshot.updateCustomerDetails(
                                         CustomerDetailsRequest(
-                                            latitude: latitude,
-                                            longitude: longitude,
-                                            phoneNumber: snapshot.phoneNumber,
-                                            customerName: nameController.text,
-                                            pincode: pinCodeController.text,
-                                            address: addressController.text,
-                                            fcmToken: globals.deviceToken));
+                                            profileName: nameController.text,
+                                            clusterCode: pinCodeController.text,
+                                            role: "CUSTOMER"));
+                                    snapshot.addAddress(Address(
+                                      addressName: nameController.text,
+                                      lat: double.parse(latitude),
+                                      lon: double.parse(longitude),
+                                      prettyAddress: addressController.text,
+                                    ));
                                   }
                                 } else {
                                   Fluttertoast.showToast(
@@ -413,11 +420,13 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   LoadingStatus loadingStatus;
   Function(CustomerDetailsRequest request) updateCustomerDetails;
+  Function(Address) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
   _ViewModel.build(
       {this.navigateToHomePage,
       this.updateCustomerDetails,
+      this.addAddress,
       this.loadingStatus,
       this.phoneNumber})
       : super(equals: [loadingStatus, phoneNumber]);
@@ -427,12 +436,15 @@ class _ViewModel extends BaseModel<AppState> {
     // TODO: implement fromStore
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
-        phoneNumber: state.authState.getOtpRequest.phoneNumber,
+        phoneNumber: state.authState.getOtpRequest.phone,
         navigateToHomePage: () {
           dispatch(NavigateAction.pushNamed('/myHomeView'));
         },
+        addAddress: (address) {
+          dispatch(AddAddressAction(request: address));
+        },
         updateCustomerDetails: (request) {
-          dispatch(UpdateUserDetailAction(request: request));
+          dispatch(AddUserDetailAction(request: request));
         });
   }
 }

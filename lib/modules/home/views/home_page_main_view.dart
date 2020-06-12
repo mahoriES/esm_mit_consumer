@@ -32,7 +32,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
           automaticallyImplyLeading: false,
           titleSpacing: 0.0,
           centerTitle: false,
-          title: Text(address,
+          title: Text(address ?? "",
               style: TextStyle(
                 fontFamily: 'JTLeonor',
                 color: Colors.black,
@@ -95,47 +95,52 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 child: ListView(
                   padding: EdgeInsets.all(15.0),
                   children: <Widget>[
-                    CarouselSlider(
-                      enlargeCenterPage: true,
-                      items: snapshot.banners.isEmpty
-                          ? [Container()]
-                          : snapshot.banners
-                              .map((banner) => Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 2.0, right: 2.0),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15.0)),
-                                        child: CachedNetworkImage(
-                                            height: 500.0,
-                                            fit: BoxFit.cover,
-                                            imageUrl: banner,
-                                            placeholder: (context, url) =>
-                                                CupertinoActivityIndicator(),
-                                            errorWidget:
-                                                (context, url, error) => Center(
-                                                      child: Icon(Icons.error),
-                                                    )),
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                      height: 200,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 1.0,
-                      initialPage: 0,
-                      enableInfiniteScroll: true,
-                      reverse: false,
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 3),
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      pauseAutoPlayOnTouch: Duration(seconds: 10),
+                    snapshot.banners.isEmpty
+                        ? Container()
+                        : CarouselSlider(
+                            enlargeCenterPage: true,
+                            items: snapshot.banners.isEmpty
+                                ? [Container()]
+                                : snapshot.banners
+                                    .map((banner) => Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 2.0, right: 2.0),
+                                          child: InkWell(
+                                            onTap: () {},
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0)),
+                                              child: CachedNetworkImage(
+                                                  height: 500.0,
+                                                  fit: BoxFit.cover,
+                                                  imageUrl: banner,
+                                                  placeholder: (context, url) =>
+                                                      CupertinoActivityIndicator(),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Center(
+                                                        child:
+                                                            Icon(Icons.error),
+                                                      )),
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                            height: 200,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 1.0,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayAnimationDuration:
+                                Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            pauseAutoPlayOnTouch: Duration(seconds: 10),
 //                  enlargeCenterPage: true,
-                      scrollDirection: Axis.horizontal,
-                    ),
+                            scrollDirection: Axis.horizontal,
+                          ),
                     // Stores near you
                     Padding(
                       padding: const EdgeInsets.only(top: 20, bottom: 10),
@@ -160,14 +165,16 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                 snapshot.navigateToStoreDetailsPage();
                               },
                               child: StoresListView(
-                                items: snapshot.merchants[index].cardViewLine2,
-                                shopImage:
-                                    snapshot.merchants[index].displayPicture,
-                                name: snapshot.merchants[index].shopName,
-                                deliveryStatus: snapshot.merchants[index].flags
-                                    .contains('DELIVERY'),
-                                shopClosed: snapshot.merchants[index].flags
-                                    .contains('IS_SHOP_CLOSED'),
+                                items:
+                                    "", //snapshot.merchants[index].cardViewLine2,
+                                shopImage: snapshot
+                                        .merchants[index].images.isEmpty
+                                    ? null
+                                    : snapshot.merchants[index].images.first,
+                                name: snapshot.merchants[index].businessName,
+                                deliveryStatus:
+                                    snapshot.merchants[index].hasDelivery,
+                                shopClosed: snapshot.merchants[index].isOpen,
                               ));
                         },
                         itemCount: snapshot.merchants.length,
@@ -331,9 +338,9 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToStoreDetailsPage;
   Function updateCurrentIndex;
   VoidCallback navigateToCart;
-  Function(Merchants) updateSelectedMerchant;
+  Function(Business) updateSelectedMerchant;
   int currentIndex;
-  List<Merchants> merchants;
+  List<Business> merchants;
   List<String> banners;
   LoadingStatus loadingStatus;
   _ViewModel.build(

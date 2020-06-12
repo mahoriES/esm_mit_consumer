@@ -1,16 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/store.dart';
 import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path_provider/path_provider.dart';
 
 class APIManager {
   static var shared = APIManager();
@@ -75,12 +71,16 @@ class APIManager {
       responseType: ResponseType.json,
 //      contentType: ContentType.json,
     ));
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
-    var cookieJar = PersistCookieJar(dir: appDocPath + "/.cookies/");
-    cookieJar.loadForRequest(Uri.parse(ApiURL.baseURL + url));
-    dio.interceptors.add(CookieManager(cookieJar));
-
+//    Directory appDocDir = await getApplicationDocumentsDirectory();
+//    String appDocPath = appDocDir.path;
+//    var cookieJar = PersistCookieJar(dir: appDocPath + "/.cookies/");
+//    cookieJar.loadForRequest(Uri.parse(ApiURL.baseURL + url));
+//    dio.interceptors.add(CookieManager(cookieJar));
+    if (token != null && token != "") {
+      dio.options.headers = {
+        "Authorization": "JWT $token",
+      };
+    }
     dio.interceptors.add(LogInterceptor(
         responseBody: true,
         request: true,

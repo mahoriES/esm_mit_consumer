@@ -29,6 +29,126 @@ class MerchantSearchResponse {
   }
 }
 
+class GetBusinessesResponse {
+  int count;
+  List<Business> results;
+
+  GetBusinessesResponse({this.count, this.results});
+
+  GetBusinessesResponse.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    if (json['results'] != null) {
+      results = new List<Business>();
+      json['results'].forEach((v) {
+        results.add(new Business.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
+    if (this.results != null) {
+      data['results'] = this.results.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Business {
+  String businessId;
+  String businessName;
+  bool isOpen;
+  AddressNew address;
+//  Timing timing;
+  List<String> images;
+  List<String> phones;
+  bool hasDelivery;
+
+  Business(
+      {this.businessId,
+      this.businessName,
+      this.isOpen,
+      this.address,
+//      this.timing,
+      this.images,
+      this.phones,
+      this.hasDelivery});
+
+  Business.fromJson(Map<String, dynamic> json) {
+    businessId = json['business_id'];
+    businessName = json['business_name'];
+    isOpen = json['is_open'];
+    address = json['address'] != null
+        ? new AddressNew.fromJson(json['address'])
+        : null;
+//    timing =
+//        json['timing'] != null ? new Timing.fromJson(json['timing']) : null;
+    images = json['images'] != null ? json['images'].cast<String>() : [];
+    phones = json['phones'] != null ? json['phones'].cast<String>() : [];
+    hasDelivery = json['has_delivery'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['business_id'] = this.businessId;
+    data['business_name'] = this.businessName;
+    data['is_open'] = this.isOpen;
+    if (this.address != null) {
+      data['address'] = this.address.toJson();
+    }
+//    if (this.timing != null) {
+//      data['timing'] = this.timing.toJson();
+//    }
+    data['images'] = this.images;
+    data['phones'] = this.phones;
+    data['has_delivery'] = this.hasDelivery;
+    return data;
+  }
+}
+
+class AddressNew {
+  String prettyAddress;
+  LocationPoint locationPoint;
+
+  AddressNew({this.prettyAddress, this.locationPoint});
+
+  AddressNew.fromJson(Map<String, dynamic> json) {
+    prettyAddress = json['pretty_address'];
+    locationPoint = json['location_point'] != null
+        ? new LocationPoint.fromJson(json['location_point'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['pretty_address'] = this.prettyAddress;
+    if (this.locationPoint != null) {
+      data['location_point'] = this.locationPoint.toJson();
+    }
+    return data;
+  }
+}
+
+class LocationPoint {
+  double lon;
+  double lat;
+
+  LocationPoint({this.lon, this.lat});
+
+  LocationPoint.fromJson(Map<String, dynamic> json) {
+    lon = json['lon'];
+    lat = json['lat'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['lon'] = this.lon;
+    data['lat'] = this.lat;
+    return data;
+  }
+}
+
 class MerchantLocal {
   String shopName;
   String displayPicture;

@@ -1,18 +1,17 @@
 import 'package:async_redux/async_redux.dart';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:flutter/material.dart';
 import 'package:esamudaayapp/utilities/global.dart' as globals;
-
+import 'package:esamudaayapp/utilities/stringConstants.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 
 import '../../../redux/states/app_state.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -68,10 +67,6 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-          onInit: (store) {
-//                store.dispatch(GetLocationAction());
-//                store.dispatch(GetCartFromLocal());
-          },
           model: _ViewModel(),
           builder: (context, snapshot) {
             return // OTP
@@ -153,16 +148,6 @@ class _LoginViewState extends State<LoginView> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      /* Flexible(
-                                        child: Text("Type your mobile number",
-                                            style: const TextStyle(
-                                                color: const Color(0xff1a1a1a),
-                                                fontWeight: FontWeight.w400,
-                                                fontFamily: "Avenir",
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 14.0),
-                                            textAlign: TextAlign.left),
-                                      ),*/
                                       Flexible(
                                         child: Form(
                                           child: TextFormField(
@@ -220,7 +205,8 @@ class _LoginViewState extends State<LoginView> {
                                 if (validator.phone(phoneController.text) &&
                                     phoneController.text.length == 10) {
                                   snapshot.getOtpAction(GenerateOTPRequest(
-                                      phoneNumber: phoneController.text,
+                                      phone: "+91" + phoneController.text,
+                                      third_party_id: thirdPartyId,
                                       isSignUp: snapshot.isSignUp));
                                 } else {}
                               },

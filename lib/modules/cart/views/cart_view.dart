@@ -71,30 +71,30 @@ class _CartViewState extends State<CartView> {
                   }) ??
                   0.0;
 
-              var request = PlaceOrderRequest(
-                  phoneNumber: store.state.authState.user.phone,
-                  comments: "",
-                  order: Orders(
-                      merchantID:
-                          store.state.productState.selectedMerchand.merchantID,
-                      codPaymentCompleted: false,
-                      paymentType: "CASH_ON_DELIVERY",
-                      cart: Cart(
-                          service: store.state.productState.selectedMerchand
-                                          .servicesOffered !=
-                                      null &&
-                                  store.state.productState.selectedMerchand
-                                      .servicesOffered.isNotEmpty
-                              ? store.state.productState.selectedMerchand
-                                  .servicesOffered.first
-                              : "FOOD_DELIVERY",
-                          total: total.toDouble(),
-                          itemsEnhanced: store.state.productState.localCartItems
-                              .map((cart) {
-                            return ItemsEnhanced(
-                                item: cart, number: cart.count);
-                          }).toList())));
-              store.dispatch(GetOrderTaxAction(request: request));
+//              var request = PlaceOrderRequest(
+//                  phoneNumber: store.state.authState.user.phone,
+//                  comments: "",
+//                  order: Orders(
+//                      merchantID:
+//                          store.state.productState.selectedMerchand.merchantID,
+//                      codPaymentCompleted: false,
+//                      paymentType: "CASH_ON_DELIVERY",
+//                      cart: Cart(
+//                          service: store.state.productState.selectedMerchand
+//                                          .servicesOffered !=
+//                                      null &&
+//                                  store.state.productState.selectedMerchand
+//                                      .servicesOffered.isNotEmpty
+//                              ? store.state.productState.selectedMerchand
+//                                  .servicesOffered.first
+//                              : "FOOD_DELIVERY",
+//                          total: total.toDouble(),
+//                          itemsEnhanced: store.state.productState.localCartItems
+//                              .map((cart) {
+//                            return ItemsEnhanced(
+//                                item: cart, number: cart.count);
+//                          }).toList())));
+//              store.dispatch(GetOrderTaxAction(request: request));
             }
           },
           builder: (context, snapshot) {
@@ -1028,7 +1028,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(PlaceOrderRequest) getTaxOfOrder;
   Function getOrderTax;
   LoadingStatus loadingStatus;
-  Function(Merchants) updateSelectedMerchant;
+  Function(Business) updateSelectedMerchant;
 
   User user;
   _ViewModel();
@@ -1057,7 +1057,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        selectedMerchant: state.productState.selectedMerchand,
+//        selectedMerchant: state.productState.selectedMerchand,
         localCart: state.productState.localCartItems,
         user: state.authState.user,
         placeOrderResponse: state.productState.placeOrderResponse,
@@ -1107,28 +1107,28 @@ class _ViewModel extends BaseModel<AppState> {
                 }) ??
                 0.0;
 
-            var request = PlaceOrderRequest(
-                phoneNumber: state.authState.user.phone,
-                comments: "",
-                order: Orders(
-                    merchantID: state.productState.selectedMerchand.merchantID,
-                    codPaymentCompleted: false,
-                    paymentType: "CASH_ON_DELIVERY",
-                    cart: Cart(
-                        service: state.productState.selectedMerchand
-                                        .servicesOffered !=
-                                    null &&
-                                state.productState.selectedMerchand
-                                    .servicesOffered.isNotEmpty
-                            ? state.productState.selectedMerchand
-                                .servicesOffered.first
-                            : "FOOD_DELIVERY",
-                        total: total.toDouble(),
-                        itemsEnhanced:
-                            state.productState.localCartItems.map((cart) {
-                          return ItemsEnhanced(item: cart, number: cart.count);
-                        }).toList())));
-            dispatch(GetOrderTaxAction(request: request));
+//            var request = PlaceOrderRequest(
+//                phoneNumber: state.authState.user.phone,
+//                comments: "",
+//                order: Orders(
+//                    merchantID: state.productState.selectedMerchand.merchantID,
+//                    codPaymentCompleted: false,
+//                    paymentType: "CASH_ON_DELIVERY",
+//                    cart: Cart(
+//                        service: state.productState.selectedMerchand
+//                                        .servicesOffered !=
+//                                    null &&
+//                                state.productState.selectedMerchand
+//                                    .servicesOffered.isNotEmpty
+//                            ? state.productState.selectedMerchand
+//                                .servicesOffered.first
+//                            : "FOOD_DELIVERY",
+//                        total: total.toDouble(),
+//                        itemsEnhanced:
+//                            state.productState.localCartItems.map((cart) {
+//                          return ItemsEnhanced(item: cart, number: cart.count);
+//                        }).toList())));
+//            dispatch(GetOrderTaxAction(request: request));
           }
         });
   }

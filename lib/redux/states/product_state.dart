@@ -1,4 +1,5 @@
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
+import 'package:esamudaayapp/modules/home/models/category_response.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/orders/models/order_models.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
@@ -13,9 +14,10 @@ class ProductState {
   final List<Product> localCartItems;
   final Categories selectedCategory;
   final PlaceOrderResponse placeOrderResponse;
-  final Merchants selectedMerchand;
+  final Business selectedMerchand;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
+  final List<CategoriesNew> categories;
 
   ProductState(
       {@required this.localCartItems,
@@ -26,10 +28,13 @@ class ProductState {
       @required this.selectedMerchand,
       @required this.searchResults,
       @required this.productListingDataSource,
-      @required this.supportOrder});
+      @required this.supportOrder,
+      @required this.categories,
+      });
 
   factory ProductState.initial() {
     return new ProductState(
+        categories: [],
         supportOrder: "",
         getOrderListResponse: GetOrderListResponse(orders: []),
         localCartItems: [],
@@ -45,8 +50,9 @@ class ProductState {
       {List<Product> productListingDataSource,
       List<Product> productListingTempDataSource,
       List<Product> localCartItems,
+      List<CategoriesNew> categories,
       List<Merchants> searchResults,
-      Merchants selectedMerchant,
+      Business selectedMerchant,
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
       Categories selectedCategory,
@@ -62,6 +68,7 @@ class ProductState {
         productListingDataSource:
             productListingDataSource ?? this.productListingDataSource,
         selectedCategory: selectedCategory ?? this.selectedCategory,
-        supportOrder: supportOrder ?? this.supportOrder);
+        supportOrder: supportOrder ?? this.supportOrder,
+        categories: categories ?? this.categories);
   }
 }

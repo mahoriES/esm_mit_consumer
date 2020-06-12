@@ -41,9 +41,9 @@
       "empty_error": "Please enter your address."
     },
     "pin_code": {
-      "title": "Pin Code",
-      "validation_error": "Please enter valid pin code",
-      "empty_error": "Please enter your pin code."
+      "title": "Circle",
+      "validation_error": "Please enter valid circle",
+      "empty_error": "Please enter your circle."
     },
     "register": "Register",
     "update": "Update",

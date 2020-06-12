@@ -62,9 +62,11 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
     return Scaffold(
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
-          onInit: (store) {
-            store.dispatch(GetMerchantDetails());
-            store.dispatch(GetBannerDetailsAction());
+          onInit: (store) async {
+            store.dispatchFuture(GetClusterDetailsAction()).then((value) {
+              store.dispatch(GetMerchantDetails());
+//              store.dispatch(GetBannerDetailsAction());
+            });
             store.dispatch(GetUserFromLocalStorageAction());
           },
           builder: (context, snapshot) {
@@ -153,7 +155,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToProductSearch;
   Function updateCurrentIndex;
   VoidCallback getMerchants;
-  Function(Merchants) updateSelectedMerchant;
+  Function(Business) updateSelectedMerchant;
   int currentIndex;
   _ViewModel.build(
       {this.navigateToAddAddressPage,

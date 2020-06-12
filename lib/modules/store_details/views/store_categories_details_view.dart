@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
+import 'package:esamudaayapp/modules/home/models/category_response.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/store_details/actions/categories_actions.dart';
 import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
@@ -27,19 +27,19 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
             await CartDataSource.getListOfMerchants();
         if (merchants.isNotEmpty &&
             merchants.first.merchantID !=
-                store.state.productState.selectedMerchand.merchantID) {
+                store.state.productState.selectedMerchand.businessId) {
           var localMerchant = merchants.first;
-          store.dispatch(UpdateSelectedMerchantAction(
-              selectedMerchant: Merchants(
-                  merchantID: localMerchant.merchantID,
-                  shopName: localMerchant.shopName,
-                  flags: [localMerchant.flag],
-                  cardViewLine2: localMerchant.cardViewLine2,
-                  displayPicture: localMerchant.displayPicture,
-                  address: Address(
-                    addressLine1: localMerchant.address1,
-                    addressLine2: localMerchant.address2,
-                  ))));
+//          store.dispatch(UpdateSelectedMerchantAction(
+//              selectedMerchant: Merchants(
+//                  merchantID: localMerchant.merchantID,
+//                  shopName: localMerchant.shopName,
+//                  flags: [localMerchant.flag],
+//                  cardViewLine2: localMerchant.cardViewLine2,
+//                  displayPicture: localMerchant.displayPicture,
+//                  address: Address(
+//                    addressLine1: localMerchant.address1,
+//                    addressLine2: localMerchant.address2,
+//                  ))));
         }
         return Future.value(true);
       },
@@ -58,19 +58,19 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                   if (merchants.isNotEmpty &&
                       merchants.first.merchantID !=
                           store
-                              .state.productState.selectedMerchand.merchantID) {
+                              .state.productState.selectedMerchand.businessId) {
                     var localMerchant = merchants.first;
-                    store.dispatch(UpdateSelectedMerchantAction(
-                        selectedMerchant: Merchants(
-                            merchantID: localMerchant.merchantID,
-                            shopName: localMerchant.shopName,
-                            flags: [localMerchant.flag],
-                            cardViewLine2: localMerchant.cardViewLine2,
-                            displayPicture: localMerchant.displayPicture,
-                            address: Address(
-                              addressLine1: localMerchant.address1,
-                              addressLine2: localMerchant.address2,
-                            ))));
+//                    store.dispatch(UpdateSelectedMerchantAction(
+//                        selectedMerchant: Merchants(
+//                            merchantID: localMerchant.merchantID,
+//                            shopName: localMerchant.shopName,
+//                            flags: [localMerchant.flag],
+//                            cardViewLine2: localMerchant.cardViewLine2,
+//                            displayPicture: localMerchant.displayPicture,
+//                            address: Address(
+//                              addressLine1: localMerchant.address1,
+//                              addressLine2: localMerchant.address2,
+//                            ))));
                   }
                   Navigator.pop(context);
                 }),
@@ -78,9 +78,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
           body: StoreConnector<AppState, _ViewModel>(
               model: _ViewModel(),
               onInit: (store) {
-                store.dispatch(GetCategoriesAction(
-                    merchantId:
-                        store.state.productState.selectedMerchand.merchantID));
+                store.dispatch(GetCategoriesDetailsAction());
+//                store.dispatch(GetCategoriesAction(
+//                    merchantId:
+//                        store.state.productState.selectedMerchand.businessId));
               },
               builder: (context, snapshot) {
                 return snapshot.loadingStatus == LoadingStatus.loading
@@ -117,7 +118,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       // Organic Store
-                                      Text(snapshot.selectedMerchant.shopName,
+                                      Text(
+                                          snapshot.selectedMerchant
+                                                  ?.businessName ??
+                                              "",
                                           style: const TextStyle(
                                               color: const Color(0xff000000),
                                               fontWeight: FontWeight.w500,
@@ -136,8 +140,9 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               padding:
                                                   const EdgeInsets.only(top: 5),
                                               child: Text(
-                                                  snapshot.selectedMerchant
-                                                      .cardViewLine2,
+//                                                  snapshot.selectedMerchant
+//                                                          ?.cardViewLine2 ??
+                                                  "",
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xff797979),
@@ -156,8 +161,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 padding: const EdgeInsets.only(
                                                     right: 8),
                                                 child: snapshot
-                                                        .selectedMerchant.flags
-                                                        .contains('DELIVERY')
+                                                        .selectedMerchant.isOpen
                                                     ? Image.asset(
                                                         'assets/images/delivery.png')
                                                     : Image.asset(
@@ -165,8 +169,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               ),
                                               Text(
                                                   snapshot.selectedMerchant
-                                                          .flags
-                                                          .contains('DELIVERY')
+                                                          .hasDelivery
                                                       ? tr("shop.delivery_ok")
                                                       : tr("shop.delivery_no"),
                                                   style: const TextStyle(
@@ -209,11 +212,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                           padding: const EdgeInsets.only(
                                               left: 8, right: 8),
                                           child: Text(
-                                              snapshot.selectedMerchant.address
-                                                      .addressLine1 +
-                                                  ", " +
-                                                  snapshot.selectedMerchant
-                                                      .address.addressLine2,
+                                              snapshot.selectedMerchant?.address
+                                                      ?.prettyAddress ??
+                                                  "",
+//                                              snapshot.selectedMerchant.address
+//                                                      .addressLine1 +
+//                                                  ", " +
+//                                                  snapshot.selectedMerchant
+//                                                      .address.addressLine2,
                                               style: const TextStyle(
                                                   color:
                                                       const Color(0xff6f6f6f),
@@ -274,14 +280,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
 //                                  color: Colors.red,
                                           child: InkWell(
                                             onTap: () {
-                                              snapshot.updateSelectedCategory(
-                                                  snapshot.selectedMerchant
-                                                      .categories[index]);
-                                              snapshot.navigateToProductDetails(
-                                                  snapshot.selectedMerchant
-                                                      .categories[index].id,
-                                                  snapshot.selectedMerchant
-                                                      .merchantID);
+//                                              snapshot.updateSelectedCategory(
+//                                                  snapshot.selectedMerchant
+//                                                      .categories[index]);
+//                                              snapshot.navigateToProductDetails(
+//                                                  snapshot.selectedMerchant
+//                                                      .categories[index].id,
+//                                                  snapshot.selectedMerchant
+//                                                      .merchantID);
                                             },
                                             child: Column(
                                               children: <Widget>[
@@ -317,10 +323,16 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                                     .cover,
 //                                                  height: 80,
                                                                 imageUrl: snapshot
-                                                                    .selectedMerchant
-                                                                    .categories[
-                                                                        index]
-                                                                    .imageLink,
+                                                                        .categories[
+                                                                            index]
+                                                                        .images
+                                                                        .isEmpty
+                                                                    ? null
+                                                                    : snapshot
+                                                                        .categories[
+                                                                            index]
+                                                                        .images
+                                                                        .first,
                                                                 placeholder: (context,
                                                                         url) =>
                                                                     Container(
@@ -346,9 +358,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                   child: Center(
                                                     child: Text(
                                                         snapshot
-                                                            .selectedMerchant
                                                             .categories[index]
-                                                            .name,
+                                                            .categoryName,
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: const TextStyle(
@@ -369,9 +380,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                           ),
                                         );
                                       },
-                                      itemCount: snapshot?.selectedMerchant
-                                              ?.categories?.length ??
-                                          0,
+                                      itemCount: snapshot.categories.length,
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
                                     ),
@@ -422,19 +431,22 @@ class MySeparator extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   Function(String, String) navigateToProductDetails;
   Function(Categories) updateSelectedCategory;
-  Merchants selectedMerchant;
+  Business selectedMerchant;
+  List<CategoriesNew> categories;
   LoadingStatus loadingStatus;
   _ViewModel();
   _ViewModel.build(
       {this.navigateToProductDetails,
       this.loadingStatus,
+      this.categories,
       this.selectedMerchant,
       this.updateSelectedCategory})
-      : super(equals: [selectedMerchant, loadingStatus]);
+      : super(equals: [selectedMerchant, loadingStatus, categories]);
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        categories: state.productState.categories,
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
         },

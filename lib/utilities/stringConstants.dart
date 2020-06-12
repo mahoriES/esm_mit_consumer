@@ -24,3 +24,5 @@ const generateOtp = "";
 
 const countryCode = "+91";
 const appName = "Fish";
+
+const thirdPartyId = "5d730376-72ed-478c-8d5e-1a3a6aee9815";

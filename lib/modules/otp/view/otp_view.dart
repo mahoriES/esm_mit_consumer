@@ -4,17 +4,13 @@ import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-
 import 'package:esamudaayapp/modules/otp/action/otp_action.dart';
 import 'package:esamudaayapp/modules/otp/model/validate_otp_request.dart';
-
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:esamudaayapp/utilities/global.dart' as globals;
 
 class OtpScreen extends StatefulWidget {
   @override
@@ -129,9 +125,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
                                   snapshot.updateValidationRequest(
                                       ValidateOTPRequest(
-                                          otp: pin,
-                                          phoneNumber: snapshot.phoneNumber,
-                                          fcmToken: globals.deviceToken));
+                                          token: pin,
+                                          phone: snapshot.phoneNumber));
                                 },
                               ),
                             ),
@@ -178,8 +173,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 onTap: () async {
                                   if (snapshot.otpEntered) {
                                     snapshot.verifyOTP(ValidateOTPRequest(
-                                      fcmToken: globals.deviceToken,
-                                      phoneNumber: snapshot.phoneNumber,
+                                      phone: snapshot.phoneNumber,
                                     ));
                                   } else {
                                     Fluttertoast.showToast(
@@ -306,6 +300,6 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(GetOtpAction(
               request: state.authState.getOtpRequest, fromResend: true));
         },
-        phoneNumber: state.authState.getOtpRequest.phoneNumber);
+        phoneNumber: state.authState.getOtpRequest.phone);
   }
 }

@@ -1,25 +1,67 @@
+//class AuthResponse {
+//  int statusCode;
+//  String status;
+//  Customer customer;
+//
+//  AuthResponse({this.statusCode, this.status, this.customer});
+//
+//  AuthResponse.fromJson(Map<String, dynamic> json) {
+//    statusCode = json['statusCode'];
+//    status = json['status'];
+//    customer = json['customer'] != null
+//        ? new Customer.fromJson(json['customer'])
+//        : null;
+//  }
+//
+//  Map<String, dynamic> toJson() {
+//    final Map<String, dynamic> data = new Map<String, dynamic>();
+//    data['statusCode'] = this.statusCode;
+//    data['status'] = this.status;
+//    if (this.customer != null) {
+//      data['customer'] = this.customer.toJson();
+//    }
+//    return data;
+//  }
+//}
 class AuthResponse {
-  int statusCode;
-  String status;
-  Customer customer;
+  String token;
+  User user;
 
-  AuthResponse({this.statusCode, this.status, this.customer});
+  AuthResponse({this.token, this.user});
 
   AuthResponse.fromJson(Map<String, dynamic> json) {
-    statusCode = json['statusCode'];
-    status = json['status'];
-    customer = json['customer'] != null
-        ? new Customer.fromJson(json['customer'])
-        : null;
+    token = json['token'];
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['statusCode'] = this.statusCode;
-    data['status'] = this.status;
-    if (this.customer != null) {
-      data['customer'] = this.customer.toJson();
+    data['token'] = this.token;
+    if (this.user != null) {
+      data['user'] = this.user.toJson();
     }
+    return data;
+  }
+}
+
+class User {
+  String phone;
+  bool isActive;
+  String userId;
+
+  User({this.phone, this.isActive, this.userId});
+
+  User.fromJson(Map<String, dynamic> json) {
+    phone = json['phone'];
+    isActive = json['is_active'];
+    userId = json['user_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['phone'] = this.phone;
+    data['is_active'] = this.isActive;
+    data['user_id'] = this.userId;
     return data;
   }
 }
@@ -289,6 +331,49 @@ class Addresses {
     data['addressLine1'] = this.addressLine1;
     data['formattedAddress'] = this.formattedAddress;
 //  data['default'] = this.default;
+    return data;
+  }
+}
+
+class SignupResponse {
+  String token;
+  SignedUser user;
+
+  SignupResponse({this.token, this.user});
+
+  SignupResponse.fromJson(Map<String, dynamic> json) {
+    token = json['token'];
+    user = json['user'] != null ? new SignedUser.fromJson(json['user']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['token'] = this.token;
+    if (this.user != null) {
+      data['user'] = this.user.toJson();
+    }
+    return data;
+  }
+}
+
+class SignedUser {
+  String phone;
+  bool isActive;
+  String userId;
+
+  SignedUser({this.phone, this.isActive, this.userId});
+
+  SignedUser.fromJson(Map<String, dynamic> json) {
+    phone = json['phone'];
+    isActive = json['is_active'];
+    userId = json['user_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['phone'] = this.phone;
+    data['is_active'] = this.isActive;
+    data['user_id'] = this.userId;
     return data;
   }
 }

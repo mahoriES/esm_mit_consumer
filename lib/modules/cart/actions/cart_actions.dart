@@ -4,7 +4,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
 import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
@@ -22,22 +21,22 @@ class GetCartFromLocal extends ReduxAction<AppState> {
     List<Product> localCartList = await CartDataSource.getListOfCartWith();
     var merchant = await CartDataSource.getListOfMerchants();
 
-    return state.copyWith(
-        productState: state.productState.copyWith(
-            localCartItems: localCartList,
-            selectedMerchant: state.productState.selectedMerchand != null
-                ? state.productState.selectedMerchand
-                : merchant.isEmpty
-                    ? null
-                    : Merchants(
-                        shopName: merchant.first.shopName,
-                        displayPicture: merchant.first.displayPicture,
-                        cardViewLine2: merchant.first.cardViewLine2,
-                        merchantID: merchant.first.merchantID,
-                        address: Address(
-                            addressLine1: merchant.first.address1,
-                            addressLine2: merchant.first.address2),
-                        flags: [merchant.first.flag])));
+//    return state.copyWith(
+//        productState: state.productState.copyWith(
+//            localCartItems: localCartList,
+//            selectedMerchant: state.productState.selectedMerchand != null
+//                ? state.productState.selectedMerchand
+//                : merchant.isEmpty
+//                    ? null
+//                    : Merchants(
+//                        shopName: merchant.first.shopName,
+//                        displayPicture: merchant.first.displayPicture,
+//                        cardViewLine2: merchant.first.cardViewLine2,
+//                        merchantID: merchant.first.merchantID,
+//                        address: Address(
+//                            addressLine1: merchant.first.address1,
+//                            addressLine2: merchant.first.address2),
+//                        flags: [merchant.first.flag])));
   }
 }
 
@@ -62,7 +61,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
     var merchant = await CartDataSource.getListOfMerchants();
     if (merchant.isNotEmpty) {
       if (merchant.first.merchantID !=
-          state.productState.selectedMerchand.merchantID) {
+          state.productState.selectedMerchand.businessId) {
         showDialog(
             context: context,
             child: AlertDialog(
@@ -81,23 +80,23 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                   onPressed: () async {
                     await CartDataSource.deleteAllMerchants();
                     await CartDataSource.deleteAll();
-                    var merchant = MerchantLocal(
-                        merchantID:
-                            state.productState.selectedMerchand.merchantID,
-                        cardViewLine2:
-                            state.productState.selectedMerchand.cardViewLine2,
-                        displayPicture:
-                            state.productState.selectedMerchand.displayPicture,
-                        address1: state
-                            .productState.selectedMerchand.address.addressLine1,
-                        address2: state
-                            .productState.selectedMerchand.address.addressLine2,
-                        shopName: state.productState.selectedMerchand.shopName);
-                    merchant.flag = state.productState.selectedMerchand.flags
-                            .contains('DELIVERY')
-                        ? 'DELIVERY'
-                        : "";
-                    await CartDataSource.insertToMerchants(merchants: merchant);
+//                    var merchant = MerchantLocal(
+//                        merchantID:
+//                            state.productState.selectedMerchand.merchantID,
+//                        cardViewLine2:
+//                            state.productState.selectedMerchand.cardViewLine2,
+//                        displayPicture:
+//                            state.productState.selectedMerchand.displayPicture,
+//                        address1: state
+//                            .productState.selectedMerchand.address.addressLine1,
+//                        address2: state
+//                            .productState.selectedMerchand.address.addressLine2,
+//                        shopName: state.productState.selectedMerchand.shopName);
+//                    merchant.flag = state.productState.selectedMerchand.flags
+//                            .contains('DELIVERY')
+//                        ? 'DELIVERY'
+//                        : "";
+//                    await CartDataSource.insertToMerchants(merchants: merchant);
                     bool isInCart =
                         await CartDataSource.isAvailableInCart(id: product.id);
                     if (isInCart) {
@@ -126,18 +125,18 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
             ));
       } else {
         await CartDataSource.deleteAllMerchants();
-        var merchant = MerchantLocal(
-            merchantID: state.productState.selectedMerchand.merchantID,
-            cardViewLine2: state.productState.selectedMerchand.cardViewLine2,
-            displayPicture: state.productState.selectedMerchand.displayPicture,
-            address1: state.productState.selectedMerchand.address.addressLine1,
-            address2: state.productState.selectedMerchand.address.addressLine2,
-            shopName: state.productState.selectedMerchand.shopName);
-        merchant.flag =
-            state.productState.selectedMerchand.flags.contains('DELIVERY')
-                ? 'DELIVERY'
-                : "";
-        await CartDataSource.insertToMerchants(merchants: merchant);
+//        var merchant = MerchantLocal(
+//            merchantID: state.productState.selectedMerchand.merchantID,
+//            cardViewLine2: state.productState.selectedMerchand.cardViewLine2,
+//            displayPicture: state.productState.selectedMerchand.displayPicture,
+//            address1: state.productState.selectedMerchand.address.addressLine1,
+//            address2: state.productState.selectedMerchand.address.addressLine2,
+//            shopName: state.productState.selectedMerchand.shopName);
+//        merchant.flag =
+//            state.productState.selectedMerchand.flags.contains('DELIVERY')
+//                ? 'DELIVERY'
+//                : "";
+//        await CartDataSource.insertToMerchants(merchants: merchant);
         bool isInCart = await CartDataSource.isAvailableInCart(id: product.id);
         if (isInCart) {
           await CartDataSource.update(product);
@@ -163,18 +162,18 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       }
     } else {
       await CartDataSource.deleteAllMerchants();
-      var merchant = MerchantLocal(
-          merchantID: state.productState.selectedMerchand.merchantID,
-          cardViewLine2: state.productState.selectedMerchand.cardViewLine2,
-          displayPicture: state.productState.selectedMerchand.displayPicture,
-          shopName: state.productState.selectedMerchand.shopName,
-          address1: state.productState.selectedMerchand.address.addressLine1,
-          address2: state.productState.selectedMerchand.address.addressLine2);
-      merchant.flag =
-          state.productState.selectedMerchand.flags.contains('DELIVERY')
-              ? 'DELIVERY'
-              : "";
-      await CartDataSource.insertToMerchants(merchants: merchant);
+//      var merchant = MerchantLocal(
+//          merchantID: state.productState.selectedMerchand.merchantID,
+//          cardViewLine2: state.productState.selectedMerchand.cardViewLine2,
+//          displayPicture: state.productState.selectedMerchand.displayPicture,
+//          shopName: state.productState.selectedMerchand.shopName,
+//          address1: state.productState.selectedMerchand.address.addressLine1,
+//          address2: state.productState.selectedMerchand.address.addressLine2);
+//      merchant.flag =
+//          state.productState.selectedMerchand.flags.contains('DELIVERY')
+//              ? 'DELIVERY'
+//              : "";
+//      await CartDataSource.insertToMerchants(merchants: merchant);
       bool isInCart = await CartDataSource.isAvailableInCart(id: product.id);
       if (isInCart) {
         await CartDataSource.update(product);

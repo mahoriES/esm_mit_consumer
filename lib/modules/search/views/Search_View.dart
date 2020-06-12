@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/material_search/material_search.dart';
 import 'package:esamudaayapp/modules/search/actions/search_actions.dart';
@@ -68,7 +67,7 @@ class _ViewModel extends BaseModel<AppState> {
                 SearchRequest(phoneNumber: user.phone, searchQuery: query)));
       },
       navigateToDetailsPage: (merchant) {
-        dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
+//        dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
         dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
       },
     );

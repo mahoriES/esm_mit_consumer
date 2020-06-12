@@ -55,12 +55,12 @@ class GetOtpAction extends ReduxAction<AppState> {
             ? ApiURL.generateOtpRegisterUrl
             : ApiURL.generateOTPUrl,
         params: request.toJson(),
-        requestType: RequestType.post);
+        requestType: request.isSignUp ? RequestType.post : RequestType.get);
 
-    if (response.data['statusCode'] == 200) {
+    if (response.status == ResponseStatus.success200) {
       fromResend ? dispatch : dispatch(NavigateAction.pushNamed("/otpScreen"));
     } else {
-      Fluttertoast.showToast(msg: response.data['status']);
+      Fluttertoast.showToast(msg: response.data['message']);
       //throw UserException(response.data['status']);
     }
 

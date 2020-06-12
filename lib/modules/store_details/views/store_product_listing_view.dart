@@ -58,37 +58,37 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
   @override
   void initState() {
-    store.state.productState.selectedMerchand.categories
-        .asMap()
-        .forEach((index, a) {
-      if (a.id == store.state.productState.selectedCategory.id) {
-        _currentPosition = index + 1;
-      }
-    });
-    controller = TabController(
-      length: store.state.productState.selectedMerchand.categories.length + 1,
-      vsync: this,
-      initialIndex: _currentPosition,
-    );
+//    store.state.productState.selectedMerchand.categories
+//        .asMap()
+//        .forEach((index, a) {
+//      if (a.id == store.state.productState.selectedCategory.id) {
+//        _currentPosition = index + 1;
+//      }
+//    });
+//    controller = TabController(
+//      length: store.state.productState.selectedMerchand.categories.length + 1,
+//      vsync: this,
+//      initialIndex: _currentPosition,
+//    );
     controller.addListener(() {
-      if (!controller.indexIsChanging) {
-        if (controller.index != 0) {
-          store.dispatch(UpdateSelectedCategoryAction(
-              selectedCategory: store.state.productState.selectedMerchand
-                  .categories[controller.index - 1]));
-          store.dispatch(UpdateProductListingDataAction(listingData: []));
-          store.dispatch(GetCatalogDetailsAction(
-              request: CatalogSearchRequest(
-                  categoryIDs: [store.state.productState.selectedCategory.id],
-                  merchantID:
-                      store.state.productState.selectedMerchand.merchantID)));
-        } else {
-          store.dispatch(GetCatalogDetailsAction(
-              request: CatalogSearchRequest(
-                  merchantID:
-                      store.state.productState.selectedMerchand.merchantID)));
-        }
-      }
+//      if (!controller.indexIsChanging) {
+//        if (controller.index != 0) {
+//          store.dispatch(UpdateSelectedCategoryAction(
+//              selectedCategory: store.state.productState.selectedMerchand
+//                  .categories[controller.index - 1]));
+//          store.dispatch(UpdateProductListingDataAction(listingData: []));
+//          store.dispatch(GetCatalogDetailsAction(
+//              request: CatalogSearchRequest(
+//                  categoryIDs: [store.state.productState.selectedCategory.id],
+//                  merchantID:
+//                      store.state.productState.selectedMerchand.merchantID)));
+//        } else {
+//          store.dispatch(GetCatalogDetailsAction(
+//              request: CatalogSearchRequest(
+//                  merchantID:
+//                      store.state.productState.selectedMerchand.merchantID)));
+//        }
+//      }
     });
     super.initState();
   }
@@ -332,7 +332,7 @@ class _ViewModel extends BaseModel<AppState> {
         productTempListing: state.productState.productListingTempDataSource,
         loadingStatus: state.authState.loadingStatus,
         selectedCategory: state.productState.selectedCategory,
-        selectedMerchant: state.productState.selectedMerchand,
+//        selectedMerchant: state.productState.selectedMerchand,
         products: state.productState.productListingDataSource,
         localCartListing: state.productState.localCartItems);
   }
