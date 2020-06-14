@@ -18,17 +18,19 @@ class LogoutAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.logoutURL, requestType: RequestType.post, params: {});
-
-    if (response.data['statusCode'] == 200) {
-      await CartDataSource.deleteAllMerchants();
-      await CartDataSource.deleteAll();
-      dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
-    } else {
-      Fluttertoast.showToast(msg: response.data['status']);
-      //throw UserException(response.data['status']);
-    }
+//    var response = await APIManager.shared.request(
+//        url: ApiURL.logoutURL, requestType: RequestType.post, params: {});
+//
+//    if (response.data['statusCode'] == 200) {
+//      await CartDataSource.deleteAllMerchants();
+//      await CartDataSource.deleteAll();
+//      dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
+//    } else {
+//      Fluttertoast.showToast(msg: response.data['status']);
+//      //throw UserException(response.data['status']);
+//    }
+    await CartDataSource.deleteAllMerchants();
+    await CartDataSource.deleteAll();
 
     return state.copyWith(
         authState: AuthState.initial(),

@@ -160,8 +160,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 8),
-                                                child: snapshot
-                                                        .selectedMerchant.isOpen
+                                                child: snapshot.selectedMerchant
+                                                        .hasDelivery
                                                     ? Image.asset(
                                                         'assets/images/delivery.png')
                                                     : Image.asset(
