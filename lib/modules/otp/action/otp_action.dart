@@ -1,15 +1,17 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/login/model/authentication_response.dart';
+import 'package:esamudaayapp/modules/otp/model/add_fcm_token.dart';
 import 'package:esamudaayapp/modules/otp/model/validate_otp_request.dart';
 import 'package:esamudaayapp/modules/register/action/register_Action.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/api_manager.dart';
+import 'package:esamudaayapp/utilities/global.dart' as globals;
 import 'package:esamudaayapp/utilities/stringConstants.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,11 +60,8 @@ class ValidateOtpAction extends ReduxAction<AppState> {
 //        )).then((onValue) {
 //          store.dispatch(GetUserFromLocalStorageAction());
 //        });
-        dispatchFuture(GetUserDetailAction()).whenComplete(() {
-          dispatch(CheckTokenAction());
-          store.dispatch(GetUserFromLocalStorageAction());
-          dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
-        });
+        dispatch(AddFCMTokenAction());
+        dispatch(GetUserDetailAction());
       }
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
@@ -74,6 +73,30 @@ class ValidateOtpAction extends ReduxAction<AppState> {
   void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+}
+
+class AddFCMTokenAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+        url: ApiURL.addFCMTokenUrl,
+        params: AddFCMTokenRequest(
+                fcmToken: globals.deviceToken,
+                tokenType: Platform.isAndroid ? "ANDROID" : "IOS")
+            .toJson(),
+        requestType: RequestType.post);
+    if (response.status == ResponseStatus.success200) {
+      dispatch(GetUserDetailAction());
+    } else {
+      Fluttertoast.showToast(msg: response.data['message']);
+    }
+
+    return state.copyWith(authState: state.authState.copyWith());
+  }
+
+//  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+//
+//  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
 }
 
 class UpdateValidationRequest extends ReduxAction<AppState> {

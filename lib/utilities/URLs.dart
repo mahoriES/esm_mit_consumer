@@ -24,4 +24,5 @@ class ApiURL {
   static const recommendStoreURL = "Customer/v4/recommendAStore";
   static const profileUpdateURL = "Customer/v4/updateDetails";
   static const getClustersUrl = "api/v1/clusters/";
+  static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
 }

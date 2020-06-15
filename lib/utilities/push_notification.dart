@@ -1,3 +1,4 @@
+import 'package:esamudaayapp/utilities/global.dart' as globals;
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class PushNotificationsManager {
@@ -32,6 +33,7 @@ class PushNotificationsManager {
       });
       _firebaseMessaging.getToken().then((String token) {
         assert(token != null);
+        globals.deviceToken = token;
         print(token);
       });
 

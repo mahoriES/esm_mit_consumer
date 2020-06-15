@@ -140,9 +140,9 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               padding:
                                                   const EdgeInsets.only(top: 5),
                                               child: Text(
-//                                                  snapshot.selectedMerchant
-//                                                          ?.cardViewLine2 ??
-                                                  "",
+                                                  snapshot.selectedMerchant
+                                                          ?.description ??
+                                                      "",
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xff797979),

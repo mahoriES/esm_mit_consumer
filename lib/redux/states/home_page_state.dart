@@ -1,5 +1,6 @@
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
+import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:meta/meta.dart';
 
 class HomePageState {
@@ -7,7 +8,7 @@ class HomePageState {
   final List<Business> merchants;
   final String homePageLoadedDate;
   final int currentIndex;
-  final List<String> banners;
+  final List<Photo> banners;
 
   HomePageState(
       {@required this.currentIndex,
@@ -31,14 +32,14 @@ class HomePageState {
       merchants: [],
       homePageLoadedDate: "0",
       currentIndex: 0,
-      banners: <String>[],
+      banners: <Photo>[],
     );
   }
 
   HomePageState copyWith(
       {LoadingStatus loadingStatus,
       List<Business> merchants,
-      List<String> banners,
+      List<Photo> banners,
       int currentIndex,
       String homePageLoadedDate}) {
     return new HomePageState(

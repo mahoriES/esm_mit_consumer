@@ -1,5 +1,6 @@
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
 import 'package:esamudaayapp/modules/home/models/category_response.dart';
+import 'package:esamudaayapp/modules/home/models/cluster.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/orders/models/order_models.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
@@ -18,22 +19,25 @@ class ProductState {
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
   final List<CategoriesNew> categories;
+  final Cluster selectedCluster;
 
-  ProductState(
-      {@required this.localCartItems,
-      @required this.placeOrderResponse,
-      @required this.getOrderListResponse,
-      @required this.selectedCategory,
-      @required this.productListingTempDataSource,
-      @required this.selectedMerchand,
-      @required this.searchResults,
-      @required this.productListingDataSource,
-      @required this.supportOrder,
-      @required this.categories,
-      });
+  ProductState({
+    @required this.localCartItems,
+    @required this.selectedCluster,
+    @required this.placeOrderResponse,
+    @required this.getOrderListResponse,
+    @required this.selectedCategory,
+    @required this.productListingTempDataSource,
+    @required this.selectedMerchand,
+    @required this.searchResults,
+    @required this.productListingDataSource,
+    @required this.supportOrder,
+    @required this.categories,
+  });
 
   factory ProductState.initial() {
     return new ProductState(
+        selectedCluster: null,
         categories: [],
         supportOrder: "",
         getOrderListResponse: GetOrderListResponse(orders: []),
@@ -56,8 +60,10 @@ class ProductState {
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
       Categories selectedCategory,
-      String supportOrder}) {
+      String supportOrder,
+      Cluster selectedCluster}) {
     return ProductState(
+        selectedCluster: selectedCluster ?? this.selectedCluster,
         searchResults: searchResults ?? this.searchResults,
         getOrderListResponse: getOrderListResponse ?? this.getOrderListResponse,
         placeOrderResponse: placeOrderResponse ?? this.placeOrderResponse,

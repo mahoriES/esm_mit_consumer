@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/models/banner_response.dart';
 import 'package:esamudaayapp/modules/home/models/cluster.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
+import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/URLs.dart';
@@ -47,16 +47,19 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.bannerUrl, params: {"": ""}, requestType: RequestType.post);
+        url: "api/v1/clusters/${state.authState.cluster.clusterId}/banners",
+        params: {"": ""},
+        requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      var responseModel = BannersResponse.fromJson(response.data);
+      List<Photo> responseModel = [];
+      response.data.forEach((v) => responseModel.add(Photo.fromJson(v)));
+
       return state.copyWith(
-          homePageState:
-              state.homePageState.copyWith(banners: responseModel.banners));
+          homePageState: state.homePageState.copyWith(banners: responseModel));
     }
   }
 

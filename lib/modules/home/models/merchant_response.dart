@@ -1,3 +1,5 @@
+import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
+
 class MerchantSearchResponse {
   List<Merchants> merchants;
   int statusCode;
@@ -60,8 +62,9 @@ class Business {
   String businessName;
   bool isOpen;
   AddressNew address;
+  String description;
 //  Timing timing;
-  List<String> images;
+  List<Photo> images;
   List<String> phones;
   bool hasDelivery;
 
@@ -70,6 +73,7 @@ class Business {
       this.businessName,
       this.isOpen,
       this.address,
+      this.description,
 //      this.timing,
       this.images,
       this.phones,
@@ -78,13 +82,19 @@ class Business {
   Business.fromJson(Map<String, dynamic> json) {
     businessId = json['business_id'];
     businessName = json['business_name'];
+    description = json['description'];
     isOpen = json['is_open'];
     address = json['address'] != null
         ? new AddressNew.fromJson(json['address'])
         : null;
 //    timing =
 //        json['timing'] != null ? new Timing.fromJson(json['timing']) : null;
-    images = json['images'] != null ? json['images'].cast<String>() : [];
+    if (json['images'] != null) {
+      images = new List<Photo>();
+      json['images'].forEach((v) {
+        images.add(new Photo.fromJson(v));
+      });
+    }
     phones = json['phones'] != null ? json['phones'].cast<String>() : [];
     hasDelivery = json['has_delivery'];
   }
@@ -93,6 +103,7 @@ class Business {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['business_id'] = this.businessId;
     data['business_name'] = this.businessName;
+    data['description'] = this.description;
     data['is_open'] = this.isOpen;
     if (this.address != null) {
       data['address'] = this.address.toJson();
@@ -100,7 +111,9 @@ class Business {
 //    if (this.timing != null) {
 //      data['timing'] = this.timing.toJson();
 //    }
-    data['images'] = this.images;
+    if (this.images != null) {
+      data['images'] = this.images.map((v) => v.toJson()).toList();
+    }
     data['phones'] = this.phones;
     data['has_delivery'] = this.hasDelivery;
     return data;

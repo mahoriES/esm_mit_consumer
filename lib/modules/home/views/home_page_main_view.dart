@@ -5,9 +5,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
 import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
+import 'package:esamudaayapp/modules/home/models/cluster.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
+import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,14 +34,18 @@ class _HomePageMainViewState extends State<HomePageMainView> {
           automaticallyImplyLeading: false,
           titleSpacing: 0.0,
           centerTitle: false,
-          title: Text(address ?? "",
-              style: TextStyle(
-                fontFamily: 'JTLeonor',
-                color: Colors.black,
-                fontSize: 13.5,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-              )),
+          title: StoreConnector<AppState, _ViewModel>(
+              model: _ViewModel(),
+              builder: (context, snapshot) {
+                return Text(snapshot?.cluster?.clusterName ?? "",
+                    style: TextStyle(
+                      fontFamily: 'JTLeonor',
+                      color: Colors.black,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                    ));
+              }),
           leading: ImageIcon(
             AssetImage('assets/images/location2.png'),
             color: AppColors.mainColor,
@@ -113,7 +119,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                               child: CachedNetworkImage(
                                                   height: 500.0,
                                                   fit: BoxFit.cover,
-                                                  imageUrl: banner,
+                                                  imageUrl: banner.photoUrl,
                                                   placeholder: (context, url) =>
                                                       CupertinoActivityIndicator(),
                                                   errorWidget: (context, url,
@@ -165,12 +171,14 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                 snapshot.navigateToStoreDetailsPage();
                               },
                               child: StoresListView(
-                                items:
-                                    "", //snapshot.merchants[index].cardViewLine2,
-                                shopImage: snapshot
-                                        .merchants[index].images.isEmpty
+                                items: snapshot.merchants[index]?.description ??
+                                    "",
+                                shopImage: snapshot.merchants[index].images ==
+                                            null ||
+                                        snapshot.merchants[index].images.isEmpty
                                     ? null
-                                    : snapshot.merchants[index].images.first,
+                                    : snapshot
+                                        .merchants[index].images.first.photoUrl,
                                 name: snapshot.merchants[index].businessName,
                                 deliveryStatus:
                                     snapshot.merchants[index].hasDelivery,
@@ -341,11 +349,13 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Business) updateSelectedMerchant;
   int currentIndex;
   List<Business> merchants;
-  List<String> banners;
+  List<Photo> banners;
   LoadingStatus loadingStatus;
+  Cluster cluster;
   _ViewModel.build(
       {this.navigateToAddAddressPage,
       this.navigateToCart,
+      this.cluster,
       this.banners,
       this.navigateToProductSearch,
       this.navigateToStoreDetailsPage,
@@ -360,13 +370,15 @@ class _ViewModel extends BaseModel<AppState> {
           merchants,
           banners,
           loadingStatus,
-          userAddress
+          userAddress,
+          cluster
         ]);
 
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        cluster: state.authState.cluster,
         userAddress:
             state.authState.user != null ? state.authState.user.address : "",
         loadingStatus: state.authState.loadingStatus,

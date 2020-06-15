@@ -65,7 +65,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           onInit: (store) async {
             store.dispatchFuture(GetClusterDetailsAction()).then((value) {
               store.dispatch(GetMerchantDetails());
-//              store.dispatch(GetBannerDetailsAction());
+              store.dispatch(GetBannerDetailsAction());
             });
             store.dispatch(GetUserFromLocalStorageAction());
           },
