@@ -97,8 +97,10 @@ class APIManager {
               return ResponseModel(response.data, ResponseStatus.error500);
             } else if (response.statusCode == 401) {
               return ResponseModel(response.data, ResponseStatus.error401);
-            } else {
+            } else if (response.statusCode == 200) {
               return ResponseModel(response.data, ResponseStatus.success200);
+            } else {
+              return ResponseModel(response.data, ResponseStatus.error404);
             }
           });
         } catch (e) {
@@ -130,9 +132,11 @@ class APIManager {
             return ResponseModel(res.data, ResponseStatus.error500);
           } else if (res.statusCode == 401) {
             return ResponseModel(res.data, ResponseStatus.error401);
-          } else {
-            return ResponseModel(res.data, ResponseStatus.success200);
-          }
+          } else if (res.statusCode == 200) {
+              return ResponseModel(res.data, ResponseStatus.success200);
+            } else {
+              return ResponseModel(res.data, ResponseStatus.error404);
+            }
         }).catchError((error) {
           print(error);
           return ResponseModel(null, ResponseStatus.error500);

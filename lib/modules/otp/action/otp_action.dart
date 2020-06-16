@@ -64,7 +64,13 @@ class ValidateOtpAction extends ReduxAction<AppState> {
         dispatch(GetUserDetailAction());
       }
     } else {
+      if (response.data['message'] != null) {
       Fluttertoast.showToast(msg: response.data['message']);
+
+      } else if(response.data['detail']!= null) {
+              Fluttertoast.showToast(msg: response.data['detail']);
+
+      }
     }
 
     return state.copyWith(authState: state.authState.copyWith());
@@ -88,7 +94,7 @@ class AddFCMTokenAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       dispatch(GetUserDetailAction());
     } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+      // Fluttertoast.showToast(msg: response.data['message']);
     }
 
     return state.copyWith(authState: state.authState.copyWith());
