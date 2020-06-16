@@ -97,10 +97,10 @@ class APIManager {
               return ResponseModel(response.data, ResponseStatus.error500);
             } else if (response.statusCode == 401) {
               return ResponseModel(response.data, ResponseStatus.error401);
-            } else if (response.statusCode == 200) {
-              return ResponseModel(response.data, ResponseStatus.success200);
-            } else {
+            } else if (response.statusCode == 429) {
               return ResponseModel(response.data, ResponseStatus.error404);
+            } else {
+              return ResponseModel(response.data, ResponseStatus.success200);
             }
           });
         } catch (e) {
@@ -132,10 +132,10 @@ class APIManager {
             return ResponseModel(res.data, ResponseStatus.error500);
           } else if (res.statusCode == 401) {
             return ResponseModel(res.data, ResponseStatus.error401);
-          } else if (res.statusCode == 200) {
-              return ResponseModel(res.data, ResponseStatus.success200);
-            } else {
+          } else if (res.statusCode == 429) {
               return ResponseModel(res.data, ResponseStatus.error404);
+            } else {
+              return ResponseModel(res.data, ResponseStatus.success200);
             }
         }).catchError((error) {
           print(error);

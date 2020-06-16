@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,6 +56,14 @@
       <option name="presentableId" value="Default" />
       <updated>1592023705620</updated>
     </task>
+    <task id="LOCAL-00001" summary="removed temp files">
+      <created>1592280921115</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1592280921115</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -76,8 +81,14 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="removed temp files" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed temp files" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="447" y="94" key="CommitChangelistDialog2" timestamp="1592280919989">
+      <screen x="0" y="23" width="1680" height="938" />
+    </state>
+    <state x="447" y="94" key="CommitChangelistDialog2/0.23.1680.938@0.23.1680.938" timestamp="1592280919989" />
     <state x="341" y="131" key="SettingsEditor" timestamp="1592280404858">
       <screen x="0" y="23" width="1680" height="938" />
     </state>
