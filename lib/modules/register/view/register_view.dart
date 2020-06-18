@@ -257,7 +257,7 @@ class _RegistrationState extends State<Registration> {
                                           },
                                           autovalidate: true,
                                           controller: pinCodeController,
-                                          keyboardType: TextInputType.number,
+                                          keyboardType: TextInputType.text,
                                           decoration: InputDecoration(
                                             hintText: tr(
                                                 'screen_register.pin_code.title'),
