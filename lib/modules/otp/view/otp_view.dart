@@ -48,6 +48,8 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
           onInit: (store) {
+            FocusScope.of(context).requestFocus(FocusNode());
+
             startTimer();
 //                store.dispatch(GetLocationAction());
 //                store.dispatch(GetCartFromLocal());

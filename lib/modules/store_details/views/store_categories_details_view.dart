@@ -2,11 +2,11 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
 import 'package:esamudaayapp/modules/home/models/category_response.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/store_details/actions/categories_actions.dart';
 import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/repository/cart_datasourse.dart';
 import 'package:esamudaayapp/store.dart';
@@ -23,23 +23,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        List<MerchantLocal> merchants =
-            await CartDataSource.getListOfMerchants();
+        List<Business> merchants = await CartDataSource.getListOfMerchants();
         if (merchants.isNotEmpty &&
-            merchants.first.merchantID !=
+            merchants.first.businessId !=
                 store.state.productState.selectedMerchand.businessId) {
           var localMerchant = merchants.first;
-//          store.dispatch(UpdateSelectedMerchantAction(
-//              selectedMerchant: Merchants(
-//                  merchantID: localMerchant.merchantID,
-//                  shopName: localMerchant.shopName,
-//                  flags: [localMerchant.flag],
-//                  cardViewLine2: localMerchant.cardViewLine2,
-//                  displayPicture: localMerchant.displayPicture,
-//                  address: Address(
-//                    addressLine1: localMerchant.address1,
-//                    addressLine2: localMerchant.address2,
-//                  ))));
+          store.dispatch(
+              UpdateSelectedMerchantAction(selectedMerchant: localMerchant));
         }
         return Future.value(true);
       },
@@ -53,24 +43,15 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                   color: Colors.black,
                 ),
                 onPressed: () async {
-                  List<MerchantLocal> merchants =
+                  List<Business> merchants =
                       await CartDataSource.getListOfMerchants();
                   if (merchants.isNotEmpty &&
-                      merchants.first.merchantID !=
+                      merchants.first.businessId !=
                           store
                               .state.productState.selectedMerchand.businessId) {
                     var localMerchant = merchants.first;
-//                    store.dispatch(UpdateSelectedMerchantAction(
-//                        selectedMerchant: Merchants(
-//                            merchantID: localMerchant.merchantID,
-//                            shopName: localMerchant.shopName,
-//                            flags: [localMerchant.flag],
-//                            cardViewLine2: localMerchant.cardViewLine2,
-//                            displayPicture: localMerchant.displayPicture,
-//                            address: Address(
-//                              addressLine1: localMerchant.address1,
-//                              addressLine2: localMerchant.address2,
-//                            ))));
+                    store.dispatch(UpdateSelectedMerchantAction(
+                        selectedMerchant: localMerchant));
                   }
                   Navigator.pop(context);
                 }),
@@ -79,9 +60,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
               model: _ViewModel(),
               onInit: (store) {
                 store.dispatch(GetCategoriesDetailsAction());
-//                store.dispatch(GetCategoriesAction(
-//                    merchantId:
-//                        store.state.productState.selectedMerchand.businessId));
               },
               builder: (context, snapshot) {
                 return snapshot.loadingStatus == LoadingStatus.loading
@@ -280,14 +258,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
 //                                  color: Colors.red,
                                           child: InkWell(
                                             onTap: () {
-//                                              snapshot.updateSelectedCategory(
-//                                                  snapshot.selectedMerchant
-//                                                      .categories[index]);
-//                                              snapshot.navigateToProductDetails(
-//                                                  snapshot.selectedMerchant
-//                                                      .categories[index].id,
-//                                                  snapshot.selectedMerchant
-//                                                      .merchantID);
+                                              snapshot.updateSelectedCategory(
+                                                  snapshot.categories[index]);
+                                              snapshot
+                                                  .navigateToProductDetails();
                                             },
                                             child: Column(
                                               children: <Widget>[
@@ -429,8 +403,8 @@ class MySeparator extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  Function(String, String) navigateToProductDetails;
-  Function(Categories) updateSelectedCategory;
+  Function() navigateToProductDetails;
+  Function(CategoriesNew) updateSelectedCategory;
   Business selectedMerchant;
   List<CategoriesNew> categories;
   LoadingStatus loadingStatus;
@@ -450,10 +424,8 @@ class _ViewModel extends BaseModel<AppState> {
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
         },
-        navigateToProductDetails: (categoryId, merchantId) {
-          dispatch(GetCatalogDetailsAction(
-              request: CatalogSearchRequest(
-                  categoryIDs: [categoryId], merchantID: merchantId)));
+        navigateToProductDetails: () {
+          dispatch(GetCatalogDetailsAction());
           dispatch(
             NavigateAction.pushNamed('/StoreProductListingView'),
           );

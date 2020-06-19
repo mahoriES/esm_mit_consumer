@@ -2,12 +2,54 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/languages/en-US.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/en-US.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/languages/ka-IN.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/ka-IN.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/languages/ml-IN.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/ml-IN.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/address/models/addess_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/address/models/addess_models.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/cart/actions/cart_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/actions/cart_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_bottom_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_bottom_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/home/models/merchant_response.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/models/merchant_response.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/my_home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/my_home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/login/actions/login_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/actions/login_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/models/order_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/models/order_models.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/otp/view/otp_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/otp/view/otp_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/search/actions/search_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/search/actions/search_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/redux/states/auth_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/auth_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/redux/states/product_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/product_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/repository/cart_datasourse.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repository/cart_datasourse.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/repository/database_manage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repository/database_manage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utilities/URLs.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/URLs.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utilities/stringConstants.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/stringConstants.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utilities/user_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/user_manager.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -85,13 +127,114 @@
     <option name="LAST_COMMIT_MESSAGE" value="removed temp files" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="681" y="417" key="#xdebugger.evaluate" timestamp="1592479333148">
+      <screen x="0" y="23" width="1625" height="1027" />
+    </state>
+    <state x="681" y="417" key="#xdebugger.evaluate/0.23.1625.1027@0.23.1625.1027" timestamp="1592479333148" />
+    <state x="703" y="384" key="#xdebugger.evaluate/0.23.1680.941@0.23.1680.941" timestamp="1592400250706" />
     <state x="447" y="94" key="CommitChangelistDialog2" timestamp="1592280919989">
       <screen x="0" y="23" width="1680" height="938" />
     </state>
     <state x="447" y="94" key="CommitChangelistDialog2/0.23.1680.938@0.23.1680.938" timestamp="1592280919989" />
+    <state width="552" height="509" key="DebuggerActiveHint" timestamp="1592573944504">
+      <screen x="0" y="23" width="1625" height="1027" />
+    </state>
+    <state width="552" height="509" key="DebuggerActiveHint/0.23.1625.1027@0.23.1625.1027" timestamp="1592573944504" />
+    <state width="570" height="466" key="DebuggerActiveHint/0.23.1680.941@0.23.1680.941" timestamp="1592411897240" />
+    <state x="100" y="123" width="867" height="827" key="DiffContextDialog" timestamp="1592580221281">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state x="100" y="123" width="867" height="827" key="DiffContextDialog/0.23.1627.1027@0.23.1627.1027" timestamp="1592580221281" />
+    <state width="1025" height="354" key="GridCell.Tab.0.bottom" timestamp="1592585448930">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.0.bottom/0.23.1625.1027@0.23.1625.1027" timestamp="1592574522505" />
+    <state width="1025" height="354" key="GridCell.Tab.0.bottom/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448930" />
+    <state width="1638" height="300" key="GridCell.Tab.0.bottom/0.23.1680.938@0.23.1680.938" timestamp="1592304428443" />
+    <state width="1220" height="194" key="GridCell.Tab.0.bottom/0.23.1680.941@0.23.1680.941" timestamp="1592412979161" />
+    <state width="1025" height="354" key="GridCell.Tab.0.center" timestamp="1592585448929">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.0.center/0.23.1625.1027@0.23.1625.1027" timestamp="1592574522503" />
+    <state width="1025" height="354" key="GridCell.Tab.0.center/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448929" />
+    <state width="1638" height="300" key="GridCell.Tab.0.center/0.23.1680.938@0.23.1680.938" timestamp="1592304428443" />
+    <state width="1220" height="194" key="GridCell.Tab.0.center/0.23.1680.941@0.23.1680.941" timestamp="1592412979161" />
+    <state width="1025" height="354" key="GridCell.Tab.0.left" timestamp="1592585448928">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.0.left/0.23.1625.1027@0.23.1625.1027" timestamp="1592574522503" />
+    <state width="1025" height="354" key="GridCell.Tab.0.left/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448928" />
+    <state width="1638" height="300" key="GridCell.Tab.0.left/0.23.1680.938@0.23.1680.938" timestamp="1592304428442" />
+    <state width="1220" height="194" key="GridCell.Tab.0.left/0.23.1680.941@0.23.1680.941" timestamp="1592412979160" />
+    <state width="1025" height="354" key="GridCell.Tab.0.right" timestamp="1592585448930">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.0.right/0.23.1625.1027@0.23.1625.1027" timestamp="1592574522504" />
+    <state width="1025" height="354" key="GridCell.Tab.0.right/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448930" />
+    <state width="1638" height="300" key="GridCell.Tab.0.right/0.23.1680.938@0.23.1680.938" timestamp="1592304428443" />
+    <state width="1220" height="194" key="GridCell.Tab.0.right/0.23.1680.941@0.23.1680.941" timestamp="1592412979161" />
+    <state width="1025" height="354" key="GridCell.Tab.1.bottom" timestamp="1592585448931">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.1.bottom/0.23.1625.1027@0.23.1625.1027" timestamp="1592574343742" />
+    <state width="1025" height="354" key="GridCell.Tab.1.bottom/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448931" />
+    <state width="1638" height="300" key="GridCell.Tab.1.bottom/0.23.1680.938@0.23.1680.938" timestamp="1592304428444" />
+    <state width="1220" height="194" key="GridCell.Tab.1.bottom/0.23.1680.941@0.23.1680.941" timestamp="1592412979162" />
+    <state width="1025" height="354" key="GridCell.Tab.1.center" timestamp="1592585448931">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.1.center/0.23.1625.1027@0.23.1625.1027" timestamp="1592574343740" />
+    <state width="1025" height="354" key="GridCell.Tab.1.center/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448931" />
+    <state width="1638" height="300" key="GridCell.Tab.1.center/0.23.1680.938@0.23.1680.938" timestamp="1592304428444" />
+    <state width="1220" height="194" key="GridCell.Tab.1.center/0.23.1680.941@0.23.1680.941" timestamp="1592412979162" />
+    <state width="1025" height="354" key="GridCell.Tab.1.left" timestamp="1592585448930">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.1.left/0.23.1625.1027@0.23.1625.1027" timestamp="1592574343740" />
+    <state width="1025" height="354" key="GridCell.Tab.1.left/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448930" />
+    <state width="1638" height="300" key="GridCell.Tab.1.left/0.23.1680.938@0.23.1680.938" timestamp="1592304428444" />
+    <state width="1220" height="194" key="GridCell.Tab.1.left/0.23.1680.941@0.23.1680.941" timestamp="1592412979161" />
+    <state width="1025" height="354" key="GridCell.Tab.1.right" timestamp="1592585448931">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state width="1025" height="354" key="GridCell.Tab.1.right/0.23.1625.1027@0.23.1625.1027" timestamp="1592574343741" />
+    <state width="1025" height="354" key="GridCell.Tab.1.right/0.23.1627.1027@0.23.1627.1027" timestamp="1592585448931" />
+    <state width="1638" height="300" key="GridCell.Tab.1.right/0.23.1680.938@0.23.1680.938" timestamp="1592304428444" />
+    <state width="1220" height="194" key="GridCell.Tab.1.right/0.23.1680.941@0.23.1680.941" timestamp="1592412979162" />
     <state x="341" y="131" key="SettingsEditor" timestamp="1592280404858">
       <screen x="0" y="23" width="1680" height="938" />
     </state>
     <state x="341" y="131" key="SettingsEditor/0.23.1680.938@0.23.1680.938" timestamp="1592280404858" />
+    <state width="611" height="512" key="XDebugger.FullValuePopup" timestamp="1592475564521">
+      <screen x="0" y="23" width="1625" height="1027" />
+    </state>
+    <state width="611" height="512" key="XDebugger.FullValuePopup/0.23.1625.1027@0.23.1625.1027" timestamp="1592475564521" />
+    <state width="631" height="469" key="XDebugger.FullValuePopup/0.23.1680.941@0.23.1680.941" timestamp="1592400227015" />
+    <state x="100" y="123" width="1062" height="738" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1592408050095">
+      <screen x="0" y="23" width="1680" height="941" />
+    </state>
+    <state x="100" y="123" width="1062" height="738" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1680.941@0.23.1680.941" timestamp="1592408050095" />
+    <state x="477" y="271" width="696" height="533" key="find.popup" timestamp="1592581713162">
+      <screen x="0" y="23" width="1627" height="1027" />
+    </state>
+    <state x="476" y="271" width="695" height="533" key="find.popup/0.23.1625.1027@0.23.1625.1027" timestamp="1592567439606" />
+    <state x="477" y="271" width="696" height="533" key="find.popup/0.23.1627.1027@0.23.1627.1027" timestamp="1592581713162" />
+    <state x="492" y="249" width="695" height="486" key="find.popup/0.23.1680.938@0.23.1680.938" timestamp="1592303762391" />
+    <state x="492" y="250" width="695" height="488" key="find.popup/0.23.1680.941@0.23.1680.941" timestamp="1592410158070" />
+    <state x="296" y="228" width="670" height="676" key="search.everywhere.popup" timestamp="1592377947741">
+      <screen x="0" y="23" width="1680" height="941" />
+    </state>
+    <state x="296" y="228" width="670" height="676" key="search.everywhere.popup/0.23.1680.941@0.23.1680.941" timestamp="1592377947741" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart</url>
+          <line>342</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

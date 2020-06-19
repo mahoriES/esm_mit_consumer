@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:esamudaayapp/models/User.dart';
+import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/repository/cart_datasourse.dart';
 import 'package:esamudaayapp/repository/database_manage.dart';
 import 'package:esamudaayapp/utilities/stringConstants.dart';
@@ -76,10 +78,23 @@ class UserManager {
     return value;
   }
 
+  static Future<Address> getAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String value = prefs.getString(userAddressKey);
+    if (value == null) return null;
+    Address address = Address.fromJson(jsonDecode(value));
+    return address;
+  }
+
   static Future<void> saveToken({token: String}) async {
     print("saved token : $token");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(tokenKey, token);
+  }
+
+  static Future<void> saveAddress({address: String}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(userAddressKey, address);
   }
 
   static Future<String> getFcmToken() async {

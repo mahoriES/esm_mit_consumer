@@ -1,6 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/modules/accounts/views/accounts_view.dart';
+import 'package:esamudaayapp/modules/address/actions/address_actions.dart';
+import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
 import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/home/views/home_page_main_view.dart';
@@ -9,6 +11,7 @@ import 'package:esamudaayapp/modules/orders/views/orders_View.dart';
 import 'package:esamudaayapp/modules/search/views/Search_View.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
+import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -63,9 +66,16 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) async {
-            store.dispatchFuture(GetClusterDetailsAction()).then((value) {
+            store.dispatchFuture(GetClusterDetailsAction()).then((value) async {
+              var address = await UserManager.getAddress();
+              if (address == null) {
+                store.dispatch(GetAddressAction());
+              } else {
+                store.dispatch(GetAddressFromLocal());
+              }
               store.dispatch(GetMerchantDetails());
               store.dispatch(GetBannerDetailsAction());
+              store.dispatch(GetCartFromLocal());
             });
             store.dispatch(GetUserFromLocalStorageAction());
           },

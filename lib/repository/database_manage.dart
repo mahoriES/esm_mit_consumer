@@ -35,15 +35,8 @@ class DatabaseManager {
       await db.execute('''
 create table if not exists Cart (
   _id integer primary key autoincrement,
-  category text,
-  count integer,
-  description text,
   id text,
-  imageLink text,
-  name text,
-  service text,
-  restockingAt text,
-  price double
+  product text
   )
 ''');
     } catch (e) {
@@ -54,13 +47,7 @@ create table if not exists Cart (
       await db.execute('''
 create table if not exists $merchantTable (
   _id integer primary key autoincrement,
-  shopName text,
-  displayPicture text,
-  cardViewLine2 text,
-  flag text,
-  merchantID text,
-  address1 text,
-  address2 text
+  business text
   )
 ''');
     } catch (e) {

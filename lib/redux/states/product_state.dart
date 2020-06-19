@@ -13,7 +13,7 @@ class ProductState {
   final List<Product> productListingTempDataSource;
   final List<Merchants> searchResults;
   final List<Product> localCartItems;
-  final Categories selectedCategory;
+  final CategoriesNew selectedCategory;
   final PlaceOrderResponse placeOrderResponse;
   final Business selectedMerchand;
   final GetOrderListResponse getOrderListResponse;
@@ -40,7 +40,7 @@ class ProductState {
         selectedCluster: null,
         categories: [],
         supportOrder: "",
-        getOrderListResponse: GetOrderListResponse(orders: []),
+        getOrderListResponse: GetOrderListResponse(results: []),
         localCartItems: [],
         searchResults: [],
         selectedMerchand: null,
@@ -59,7 +59,7 @@ class ProductState {
       Business selectedMerchant,
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
-      Categories selectedCategory,
+      CategoriesNew selectedCategory,
       String supportOrder,
       Cluster selectedCluster}) {
     return ProductState(

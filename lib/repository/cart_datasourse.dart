@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
 import 'package:esamudaayapp/repository/database_manage.dart';
@@ -8,35 +10,44 @@ final String merchantTable = "Merchants";
 class CartDataSource {
   static Future<void> insert({Product product}) async {
     var dbClient = await DatabaseManager().db;
+    Map<String, String> cart = Map<String, String>();
+    cart["product"] = jsonEncode(product.toJson());
+    cart['id'] = product.productId.toString();
     try {
-      var id = await dbClient.insert(cartTable, product.toJson());
+      var id = await dbClient.insert(cartTable, cart);
       print(id);
     } catch (error) {
       print(error);
     }
   }
 
-  static Future<void> insertToMerchants({MerchantLocal merchants}) async {
+  static Future<void> insertToMerchants({Business business}) async {
     var dbClient = await DatabaseManager().db;
+    Map<String, String> data = Map<String, String>();
+    data['business'] = jsonEncode(business.toJson());
     try {
-      var id = await dbClient.insert(merchantTable, merchants.toJson());
+      var id = await dbClient.insert(merchantTable, data);
       print(id);
     } catch (error) {
       print(error);
     }
   }
 
-  static Future<List<MerchantLocal>> getListOfMerchants() async {
+  static Future<List<Business>> getListOfMerchants() async {
     var dbClient = await DatabaseManager().db;
     List<Map> list = await dbClient.query(merchantTable);
-    var products = list.map((item) => MerchantLocal.fromJson(item)).toList();
+    var products = list.map((item) => Business.fromJson(item)).toList();
     return products;
   }
 
-  static Future<List<Product>> getListOfCartWith({String id}) async {
+  static Future<List<Product>> getListOfCartWith() async {
     var dbClient = await DatabaseManager().db;
     List<Map> list = await dbClient.query(cartTable);
-    var products = list.map((item) => Product.fromJson(item)).toList();
+    var products = list.map((item) {
+      Map<String, dynamic> user = jsonDecode(item["product"].toString());
+
+      return Product.fromJson(user);
+    }).toList();
     return products;
   }
 
@@ -69,8 +80,10 @@ class CartDataSource {
 
   static Future<int> update(Product product) async {
     var dbClient = await DatabaseManager().db;
-
-    return await dbClient.update(cartTable, product.toJson(),
-        where: 'id = ?', whereArgs: [product.id]);
+    Map<String, String> cart = Map<String, String>();
+    cart["product"] = jsonEncode(product.toJson());
+    cart['id'] = product.productId.toString();
+    return await dbClient.update(cartTable, cart,
+        where: 'id = ?', whereArgs: [product.productId]);
   }
 }

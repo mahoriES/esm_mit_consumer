@@ -1,6 +1,7 @@
 import 'package:esamudaayapp/models/User.dart';
 import 'package:esamudaayapp/models/api_response_handler.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/modules/home/models/cluster.dart';
 import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
 import 'package:esamudaayapp/modules/otp/model/validate_otp_request.dart';
@@ -17,6 +18,7 @@ class AuthState {
   final String token;
   final bool isLoggedIn;
   final bool isLoginSkipped;
+  final Address address;
   final User user;
   final bool isPhoneNumberValid;
   final bool isOtpEntered;
@@ -35,10 +37,12 @@ class AuthState {
       @required this.validateOTPRequest,
       @required this.isSignUp,
       @required this.updateCustomerDetailsRequest,
-      @required this.deviceToken});
+      @required this.deviceToken,
+      @required this.address});
 
   factory AuthState.initial() {
     return new AuthState(
+      address: null,
       cluster: null,
       token: "",
       isLoggedIn: false,
@@ -57,6 +61,7 @@ class AuthState {
 
   AuthState copyWith(
       {User user,
+      Address address,
       LoadingStatus loadingStatus,
       String mobileNumber,
       bool emailError,
@@ -80,6 +85,7 @@ class AuthState {
       bool isSignUp,
       String deviceToken}) {
     return new AuthState(
+        address: address ?? this.address,
         deviceToken: token,
         cluster: cluster ?? this.cluster,
         user: user ?? this.user,

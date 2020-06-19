@@ -204,6 +204,8 @@ class _LoginViewState extends State<LoginView> {
                               onTap: () {
                                 if (validator.phone(phoneController.text) &&
                                     phoneController.text.length == 10) {
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
                                   snapshot.getOtpAction(GenerateOTPRequest(
                                       phone: "+91" + phoneController.text,
                                       third_party_id: thirdPartyId,

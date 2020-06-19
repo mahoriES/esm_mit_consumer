@@ -316,12 +316,13 @@ class _RegistrationState extends State<Registration> {
                                             profileName: nameController.text,
                                             clusterCode: pinCodeController.text,
                                             role: "CUSTOMER"));
-                                    snapshot.addAddress(Address(
-                                      addressName: nameController.text,
-                                      lat: double.parse(latitude),
-                                      lon: double.parse(longitude),
-                                      prettyAddress: addressController.text,
-                                    ));
+                                    snapshot.addAddress(AddressRequest(
+                                        addressName: nameController.text,
+                                        lat: double.parse(latitude),
+                                        lon: double.parse(longitude),
+                                        prettyAddress: addressController.text,
+                                        geoAddr: GeoAddr(
+                                            pincode: pinCodeController.text)));
                                   }
                                 } else {
                                   Fluttertoast.showToast(
@@ -420,7 +421,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   LoadingStatus loadingStatus;
   Function(CustomerDetailsRequest request) updateCustomerDetails;
-  Function(Address) addAddress;
+  Function(AddressRequest) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
   _ViewModel.build(

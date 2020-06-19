@@ -3,7 +3,7 @@ const userKey = 'user';
 const addressKey = 'address';
 const skipKey = "skip";
 const fcmToken = "fcm";
-
+const userAddressKey = "address_esamuday";
 //Errors
 const emailError = "Email is not valid.";
 const mobileNumberError = 'Mobile number is not valid.';

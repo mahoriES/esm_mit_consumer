@@ -4,6 +4,7 @@ import 'package:esamudaayapp/main.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
 import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
+import 'package:esamudaayapp/modules/home/models/category_response.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
@@ -65,30 +66,23 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 //        _currentPosition = index + 1;
 //      }
 //    });
-//    controller = TabController(
-//      length: store.state.productState.selectedMerchand.categories.length + 1,
-//      vsync: this,
-//      initialIndex: _currentPosition,
-//    );
+    controller = TabController(
+      length: store.state.productState.categories.length,
+      vsync: this,
+      initialIndex: _currentPosition,
+    );
     controller.addListener(() {
-//      if (!controller.indexIsChanging) {
-//        if (controller.index != 0) {
-//          store.dispatch(UpdateSelectedCategoryAction(
-//              selectedCategory: store.state.productState.selectedMerchand
-//                  .categories[controller.index - 1]));
-//          store.dispatch(UpdateProductListingDataAction(listingData: []));
-//          store.dispatch(GetCatalogDetailsAction(
-//              request: CatalogSearchRequest(
-//                  categoryIDs: [store.state.productState.selectedCategory.id],
-//                  merchantID:
-//                      store.state.productState.selectedMerchand.merchantID)));
-//        } else {
-//          store.dispatch(GetCatalogDetailsAction(
-//              request: CatalogSearchRequest(
-//                  merchantID:
-//                      store.state.productState.selectedMerchand.merchantID)));
-//        }
-//      }
+      if (!controller.indexIsChanging) {
+        if (controller.index != 0) {
+          store.dispatch(UpdateSelectedCategoryAction(
+              selectedCategory:
+                  store.state.productState.categories[controller.index - 1]));
+          store.dispatch(UpdateProductListingDataAction(listingData: []));
+          store.dispatch(GetCatalogDetailsAction());
+        } else {
+          store.dispatch(GetCatalogDetailsAction());
+        }
+      }
     });
     super.initState();
   }
@@ -112,7 +106,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
             model: _ViewModel(),
             builder: (context, snapshot) {
               return Text(
-                snapshot.selectedCategory.name,
+                snapshot.selectedCategory.categoryName,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -153,7 +147,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         }
                         var filteredResult =
                             snapshot.productTempListing.where((product) {
-                          return product.name
+                          return product.productName
                               .toLowerCase()
                               .contains(text.toLowerCase());
                         }).toList();
@@ -194,16 +188,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         }
                       },
                       tabs: List.generate(
-                        snapshot.selectedMerchant.categories.length + 1,
+                        snapshot.categories.length,
                         (index) => // All
                             Container(
                           height: 50,
                           child: Center(
-                            child: Text(
-                                index == 0
-                                    ? "All"
-                                    : snapshot.selectedMerchant
-                                        .categories[index - 1].name,
+                            child: Text(snapshot.categories[index].categoryName,
                                 textAlign: TextAlign.left),
                           ),
                         ),
@@ -219,7 +209,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         controller: controller,
 //                        physics: NeverScrollableScrollPhysics(),
                         children: List.generate(
-                          snapshot.selectedMerchant.categories.length + 1,
+                          snapshot.categories.length,
                           (index) => // All
                               ListView.separated(
                             padding: EdgeInsets.all(15),
@@ -233,7 +223,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                             itemBuilder: (BuildContext context, int index) {
                               return ProductListingItemView(
                                 index: index,
-                                imageLink: snapshot.selectedCategory.imageLink,
+                                imageLink:
+                                    snapshot.selectedCategory.images.first,
                                 item: snapshot.products[index],
                               );
                             },
@@ -246,7 +237,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     height: snapshot.localCartListing.isEmpty ? 0 : 86,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
-                      storeName: snapshot.selectedMerchant.shopName,
+                      storeName: snapshot.selectedMerchant?.shopName ?? "",
                       height: snapshot.localCartListing.isEmpty ? 0 : 86,
                       buttonTitle: "VIEW ITEMS",
                       didPressButton: () {
@@ -269,11 +260,12 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> localCartListing;
   List<Product> productTempListing;
   Merchants selectedMerchant;
-  Categories selectedCategory;
+  List<CategoriesNew> categories;
+  CategoriesNew selectedCategory;
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
   Function(String, String) getProducts;
-  Function(Categories) updateSelectedCategory;
+  Function(CategoriesNew) updateSelectedCategory;
   Function(List<Product>) updateTempProductList;
   Function(List<Product>) updateProductList;
 
@@ -287,6 +279,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.products,
       this.addToCart,
       this.removeFromCart,
+      this.categories,
       this.localCartListing,
       this.getProducts,
       this.productTempListing,
@@ -299,7 +292,8 @@ class _ViewModel extends BaseModel<AppState> {
           selectedMerchant,
           loadingStatus,
           productTempListing,
-          selectedCategory
+          selectedCategory,
+          categories
         ]);
   @override
   BaseModel fromStore() {
@@ -316,9 +310,7 @@ class _ViewModel extends BaseModel<AppState> {
         },
         getProducts: (categoryId, merchantId) {
           dispatch(UpdateProductListingDataAction(listingData: []));
-          dispatch(GetCatalogDetailsAction(
-              request: CatalogSearchRequest(
-                  categoryIDs: [categoryId], merchantID: merchantId)));
+          dispatch(GetCatalogDetailsAction());
         },
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
@@ -329,9 +321,11 @@ class _ViewModel extends BaseModel<AppState> {
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
         },
+        categories: state.productState.categories,
         productTempListing: state.productState.productListingTempDataSource,
         loadingStatus: state.authState.loadingStatus,
         selectedCategory: state.productState.selectedCategory,
+
 //        selectedMerchant: state.productState.selectedMerchand,
         products: state.productState.productListingDataSource,
         localCartListing: state.productState.localCartItems);
@@ -350,14 +344,7 @@ class ProductListingItemView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          print(item.restockingAt);
-          bool isOutOfStock = item.restockingAt == null ||
-              item.restockingAt == "" ||
-              (DateTime.fromMillisecondsSinceEpoch(
-                          int.parse(item.restockingAt) * 1000))
-                      .difference(DateTime.now())
-                      .inSeconds <=
-                  0;
+          bool isOutOfStock = item.inStock;
           return IgnorePointer(
             ignoring: !isOutOfStock,
             child: Row(
@@ -384,7 +371,7 @@ class ProductListingItemView extends StatelessWidget {
                     alignment: Alignment.center,
                     children: <Widget>[
                       ColorFiltered(
-                        child: item.imageLink == null
+                        child: item.images == null
                             ? Padding(
                                 padding: const EdgeInsets.all(25.0),
                                 child: CachedNetworkImage(
@@ -403,7 +390,7 @@ class ProductListingItemView extends StatelessWidget {
                                 child: CachedNetworkImage(
                                     height: 500.0,
                                     fit: BoxFit.cover,
-                                    imageUrl: item.imageLink,
+                                    imageUrl: item.images.first,
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -441,7 +428,7 @@ class ProductListingItemView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Text(item.name,
+                        Text(item.productName,
                             style: const TextStyle(
                                 color: const Color(0xff515c6f),
                                 fontWeight: FontWeight.w500,
@@ -457,7 +444,8 @@ class ProductListingItemView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                Text("₹ ${item.price.toString()}",
+                                Text(
+                                    "₹ ${item.skus.isEmpty ? 0 : item.skus.first.basePrice.toString()}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
@@ -470,7 +458,10 @@ class ProductListingItemView extends StatelessWidget {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text(item.skuSize,
+                                Text(
+                                    item.skus.isEmpty
+                                        ? "NA"
+                                        : item.skus.first.variationOptions.size,
                                     style: TextStyle(
                                         color: Color(0xffa7a7a7),
                                         fontWeight: FontWeight.w500,

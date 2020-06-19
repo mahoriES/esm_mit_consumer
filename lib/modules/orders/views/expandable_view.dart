@@ -6,8 +6,8 @@ import 'package:esamudaayapp/modules/orders/models/order_models.dart';
 import 'package:esamudaayapp/modules/orders/views/orders_View.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/store.dart';
 import 'package:esamudaayapp/utilities/customAlert.dart';
-import 'package:esamudaayapp/utilities/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -30,8 +30,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          var orderStatus =
-              snapshot.getOrderListResponse.orders[widget.merchantIndex].status;
+          var orderStatus = snapshot
+              .getOrderListResponse.results[widget.merchantIndex].orderStatus;
           return new Column(
             children: <Widget>[
               InkWell(
@@ -43,24 +43,36 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       child: OrdersListView(
                         isExpanded: expandFlag,
                         orderId: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].transactionID,
-                        shopImage: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].displayPicture,
-                        name: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].shopName,
-                        deliveryStatus: snapshot.getOrderListResponse
-                                .orders[widget.merchantIndex].address !=
-                            null,
-                        items: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].cardViewLine2,
-                        date: DateFormat('dd MMMM, hh:mm a').format(
-                            DateTime.fromMillisecondsSinceEpoch(int.parse(
+                            .results[widget.merchantIndex].orderId,
+                        shopImage: snapshot
+                                        .getOrderListResponse
+                                        .results[widget.merchantIndex]
+                                        .businessImages ==
+                                    null ||
                                 snapshot
                                     .getOrderListResponse
-                                    .orders[widget.merchantIndex]
-                                    .placedAt))), //"20 -April, 07.45 PM ",
+                                    .results[widget.merchantIndex]
+                                    .businessImages
+                                    .isEmpty
+                            ? ""
+                            : snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .businessImages
+                                .first
+                                .photoUrl,
+                        name: snapshot.getOrderListResponse
+                            .results[widget.merchantIndex].businessName,
+                        deliveryStatus: snapshot.getOrderListResponse
+                                .results[widget.merchantIndex].deliveryType !=
+                            "SELF_PICK_UP",
+                        items: "",
+                        date: DateFormat('dd MMMM, hh:mm a').format(
+                            DateTime.parse(snapshot.getOrderListResponse
+                                    .results[widget.merchantIndex].created)
+                                .toLocal()), //"20 -April, 07.45 PM ",
                         price:
-                            "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].totalOrderCost}",
+                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal}",
                       ),
                     ),
                     AnimatedContainer(
@@ -72,10 +84,25 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   ],
                 ),
                 onTap: () {
-                  widget.didExpand(expandFlag);
-                  setState(() {
-                    expandFlag = !expandFlag;
-                  });
+                  if (!expandFlag) {
+                    store
+                        .dispatchFuture(GetOrderDetailsAPIAction(
+                            orderId: snapshot.getOrderListResponse
+                                .results[widget.merchantIndex].orderId))
+                        .whenComplete(() {
+                      // call the details api
+                      widget.didExpand(expandFlag);
+                      setState(() {
+                        expandFlag = !expandFlag;
+                      });
+                    });
+                  } else {
+                    // call the details api
+                    widget.didExpand(expandFlag);
+                    setState(() {
+                      expandFlag = !expandFlag;
+                    });
+                  }
                 },
               ),
               ExpandableContainer(
@@ -89,17 +116,33 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               EdgeInsets.only(top: 16, left: 15, right: 15),
                           shrinkWrap: true,
                           itemCount: snapshot
-                              .getOrderListResponse
-                              .orders[widget.merchantIndex]
-                              .cart
-                              .itemsEnhanced
-                              .length,
+                                      .getOrderListResponse
+                                      .results[widget.merchantIndex]
+                                      .orderItems ==
+                                  null
+                              ? 0
+                              : snapshot
+                                  .getOrderListResponse
+                                  .results[widget.merchantIndex]
+                                  .orderItems
+                                  .length,
                           separatorBuilder: (BuildContext context, int index) {
                             return Container(
                               height: 7,
                             );
                           },
                           itemBuilder: (BuildContext context, int index) {
+                            var price = snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .orderItems[index]
+                                    .unitPrice *
+                                snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .orderItems[index]
+                                    .quantity
+                                    .toDouble();
                             return Container(
                               child: Row(
                                 mainAxisAlignment:
@@ -109,11 +152,9 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   Text(
                                       snapshot
                                           .getOrderListResponse
-                                          .orders[widget.merchantIndex]
-                                          .cart
-                                          .itemsEnhanced[index]
-                                          .item
-                                          .name,
+                                          .results[widget.merchantIndex]
+                                          .orderItems[index]
+                                          .productName,
                                       style: const TextStyle(
                                           color: const Color(0xff7c7c7c),
                                           fontWeight: FontWeight.w400,
@@ -122,8 +163,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left),
                                   // ₹ 55.00
-                                  Text(
-                                      "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].cart.itemsEnhanced[index].item.price}",
+                                  Text("₹ $price",
                                       style: const TextStyle(
                                           color: const Color(0xff6f6f6f),
                                           fontWeight: FontWeight.w500,
@@ -165,12 +205,14 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         EdgeInsets.only(left: 15, right: 15),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    itemCount: snapshot
-                                            .getOrderListResponse
-                                            .orders[widget.merchantIndex]
-                                            .serviceSpecificData
-                                            .length +
-                                        1,
+                                    itemCount: 0
+//                                    snapshot
+//                                            .getOrderListResponse
+//                                            .results[widget.merchantIndex]
+//                                            .serviceSpecificData
+//                                            .length +
+//                                        1
+                                    ,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return index == 0
@@ -195,17 +237,21 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].cart.itemsEnhanced.fold(0, (previous, current) {
-                                                          return double.parse(
-                                                                  previous
-                                                                      .toString()) +
-                                                              double.parse(current
-                                                                      .item
-                                                                      .price
-                                                                      .toString()) *
-                                                                  current
-                                                                      .number;
-                                                        }) ?? 0.0}",
+                                                    "₹ ${
+//                                                        snapshot.getOrderListResponse.results[widget.merchantIndex].cart.itemsEnhanced.fold(0, (previous, current) {
+//                                                          return double.parse(
+//                                                                  previous
+//                                                                      .toString()) +
+//                                                              double.parse(current
+//                                                                      .item
+//                                                                      .skus
+//                                                                      .first
+//                                                                      .basePrice
+//                                                                      .toString()) *
+//                                                                  current
+//                                                                      .number;
+//                                                        }) ??
+                                                    0.0}",
                                                     style: const TextStyle(
                                                         color: const Color(
                                                             0xff696666),
@@ -225,17 +271,19 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               children: <Widget>[
                                                 // Item Total
                                                 Text(
-                                                    snapshot
-                                                        .getOrderListResponse
-                                                        .orders[widget
-                                                            .merchantIndex]
-                                                        .serviceSpecificData
-                                                        .keys
-                                                        .toList()[index - 1]
-                                                        .toString()
-                                                        .toLowerCase()
-                                                        .replaceAll("_", " ")
-                                                        .capitalize(),
+//                                                    snapshot
+//                                                        .getOrderListResponse
+//                                                        .results[widget
+//                                                            .merchantIndex]
+//                                                        .serviceSpecificData
+//                                                        .keys
+//                                                        .toList()[index - 1]
+//                                                        .toString()
+//                                                        .toLowerCase()
+//                                                        .replaceAll("_", " ")
+//                                                        .capitalize()
+
+                                                    "",
                                                     style: const TextStyle(
                                                         color: const Color(
                                                             0xff696666),
@@ -248,7 +296,9 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                     textAlign: TextAlign
                                                         .left), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].serviceSpecificData.values.toList()[index - 1].toString()}",
+                                                    "₹ ${
+//                                                        snapshot.getOrderListResponse.results[widget.merchantIndex].serviceSpecificData.values.toList()[index - 1].toString()
+                                                    0}",
                                                     style: const TextStyle(
                                                         color: const Color(
                                                             0xff696666),
@@ -304,7 +354,9 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               // ₹ 195.00
                                               // ₹ 195.00
                                               Text(
-                                                  "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].totalOrderCost}",
+                                                  "₹ ${0
+//                                                      snapshot.getOrderListResponse.results[widget.merchantIndex].totalOrderCost
+                                                  }",
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xff5091cd),
@@ -578,15 +630,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                         FocusScope.of(context)
                                                                             .requestFocus(FocusNode());
 
-                                                                        snapshot.rateOrder(AddReviewRequest(
-                                                                            reviewCandidate:
-                                                                                "ORDER",
-                                                                            reviewCandidateID:
-                                                                                snapshot.getOrderListResponse.orders[widget.merchantIndex].transactionID,
-                                                                            reviewerTye: "CUSTOMER",
-                                                                            reviewerID: snapshot.getOrderListResponse.orders[widget.merchantIndex].customerID,
-                                                                            comments: reviewController.text,
-                                                                            rating: rating));
+//                                                                        snapshot.rateOrder(AddReviewRequest(
+//                                                                            reviewCandidate:
+//                                                                                "ORDER",
+//                                                                            reviewCandidateID:
+//                                                                                snapshot.getOrderListResponse.orders[widget.merchantIndex].transactionID,
+//                                                                            reviewerTye: "CUSTOMER",
+//                                                                            reviewerID: snapshot.getOrderListResponse.orders[widget.merchantIndex].customerID,
+//                                                                            comments: reviewController.text,
+//                                                                            rating: rating));
                                                                         reviewController.text =
                                                                             "";
                                                                       }
@@ -662,12 +714,12 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                     Spacer(),
                                     InkWell(
                                       onTap: () {
-                                        snapshot.updateOrderId(
-                                          snapshot
-                                              .getOrderListResponse
-                                              .orders[widget.merchantIndex]
-                                              .transactionID,
-                                        );
+//                                        snapshot.updateOrderId(
+//                                          snapshot
+//                                              .getOrderListResponse
+//                                              .orders[widget.merchantIndex]
+//                                              .transactionID,
+//                                        );
                                         Navigator.of(context)
                                             .pushNamed('/Support');
                                       },

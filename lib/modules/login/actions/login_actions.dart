@@ -58,16 +58,14 @@ class GetOtpAction extends ReduxAction<AppState> {
         requestType: request.isSignUp ? RequestType.post : RequestType.get);
 
     if (response.status == ResponseStatus.success200) {
-      Fluttertoast.showToast(msg: response.data['token']);
+      Fluttertoast.showToast(
+          msg: response.data['token'], toastLength: Toast.LENGTH_LONG);
       fromResend ? dispatch : dispatch(NavigateAction.pushNamed("/otpScreen"));
     } else {
-      
-       if (response.data['message'] != null) {
-      Fluttertoast.showToast(msg: response.data['message']);
-
-      } else if(response.data['detail']!= null) {
-              Fluttertoast.showToast(msg: response.data['detail']);
-
+      if (response.data['message'] != null) {
+        Fluttertoast.showToast(msg: response.data['message']);
+      } else if (response.data['detail'] != null) {
+        Fluttertoast.showToast(msg: response.data['detail']);
       }
       //throw UserException(response.data['status']);
     }

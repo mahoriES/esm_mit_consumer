@@ -122,17 +122,16 @@
     "payment_details": "Payment Details",
     "item_total": "Item Total",
     "total": "Total amount",
-    "pending": "Pending",
     "not_found": "No Order Found",
     "empty_content": "Look like you haven’t order anything yet Lets start !",
-    "cancelled": "Cancelled",
+
     "completed": "Completed",
     "confirmed": "Confirmed",
-    "not_available": "Items Not Available",
     "cancel_order": "Cancel order",
     "re_order": "Re-Order",
     "payment": "Payment",
     "update_order": "Update Order",
+
     "missing": "Missing Items",
     "please_pay": "Please pay your bill amount to the merchant directly using Cash, Card or UPI",
     "rate": "Rate us",
@@ -141,7 +140,14 @@
     "feedback": "Please enter a feedback",
     "write_feedback": "Write your feedback",
     "ok": "Ok",
-    "submit": "Submit"
+    "submit": "Submit",
+    "cancelled_customer": "Cancelled by you",
+    "cancelled_merchant": "Cancelled by",
+    "not_available": "Merchant updated",
+    "pending": "Pending confirmation",
+    "accept_order": "Accept order",
+    "on_the_way" : "On the way",
+    "processing": "Processing"
   },
 
   "screen_support": {

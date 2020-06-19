@@ -12,7 +12,7 @@ class ApiURL {
   static const getBusinessesUrl = "api/v1/businesses/";
   static const bannerUrl = "Customer/v4/getLandingPageOffers";
   static const getCatalogUrl = "Customer/v4/getCatalog";
-  static const placeOrderUrl = "Customer/v4/placeOrderAtMerchant";
+  static const placeOrderUrl = "api/v1/orders/";
   static const updateOrderUrl = "Customer/v4/updateOrders";
   static const getOrderTaxUrl = "Customer/v4/populateOrderCharges";
   static const getOrderListUrl = "Customer/v4/getOrders";

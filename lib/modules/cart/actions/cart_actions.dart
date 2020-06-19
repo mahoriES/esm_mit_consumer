@@ -21,22 +21,12 @@ class GetCartFromLocal extends ReduxAction<AppState> {
     List<Product> localCartList = await CartDataSource.getListOfCartWith();
     var merchant = await CartDataSource.getListOfMerchants();
 
-//    return state.copyWith(
-//        productState: state.productState.copyWith(
-//            localCartItems: localCartList,
-//            selectedMerchant: state.productState.selectedMerchand != null
-//                ? state.productState.selectedMerchand
-//                : merchant.isEmpty
-//                    ? null
-//                    : Merchants(
-//                        shopName: merchant.first.shopName,
-//                        displayPicture: merchant.first.displayPicture,
-//                        cardViewLine2: merchant.first.cardViewLine2,
-//                        merchantID: merchant.first.merchantID,
-//                        address: Address(
-//                            addressLine1: merchant.first.address1,
-//                            addressLine2: merchant.first.address2),
-//                        flags: [merchant.first.flag])));
+    return state.copyWith(
+        productState: state.productState.copyWith(
+            localCartItems: localCartList,
+            selectedMerchant: state.productState.selectedMerchand != null
+                ? state.productState.selectedMerchand
+                : merchant.isEmpty ? null : merchant.first));
   }
 }
 
@@ -60,7 +50,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var merchant = await CartDataSource.getListOfMerchants();
     if (merchant.isNotEmpty) {
-      if (merchant.first.merchantID !=
+      if (merchant.first.businessId !=
           state.productState.selectedMerchand.businessId) {
         showDialog(
             context: context,
@@ -97,8 +87,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
 //                        ? 'DELIVERY'
 //                        : "";
 //                    await CartDataSource.insertToMerchants(merchants: merchant);
-                    bool isInCart =
-                        await CartDataSource.isAvailableInCart(id: product.id);
+                    bool isInCart = await CartDataSource.isAvailableInCart(
+                        id: product.productId.toString());
                     if (isInCart) {
                       await CartDataSource.update(product);
                     } else {
@@ -108,7 +98,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     List<Product> allCartItems =
                         state.productState.productListingDataSource;
                     allCartItems.forEach((value) {
-                      if (value.id == product.id) {
+                      if (value.productId == product.productId) {
                         value.count = product.count;
                       }
                       allCartNewList.add(value);
@@ -137,7 +127,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
 //                ? 'DELIVERY'
 //                : "";
 //        await CartDataSource.insertToMerchants(merchants: merchant);
-        bool isInCart = await CartDataSource.isAvailableInCart(id: product.id);
+        bool isInCart = await CartDataSource.isAvailableInCart(
+            id: product.productId.toString());
         if (isInCart) {
           await CartDataSource.update(product);
         } else {
@@ -147,7 +138,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
         List<Product> allCartItems =
             state.productState.productListingDataSource;
         allCartItems.forEach((value) {
-          if (value.id == product.id) {
+          if (value.productId == product.productId) {
             value.count = product.count;
           }
           allCartNewList.add(value);
@@ -174,7 +165,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
 //              ? 'DELIVERY'
 //              : "";
 //      await CartDataSource.insertToMerchants(merchants: merchant);
-      bool isInCart = await CartDataSource.isAvailableInCart(id: product.id);
+      bool isInCart = await CartDataSource.isAvailableInCart(
+          id: product.productId.toString());
       if (isInCart) {
         await CartDataSource.update(product);
       } else {
@@ -183,7 +175,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       List<Product> allCartNewList = [];
       List<Product> allCartItems = state.productState.productListingDataSource;
       allCartItems.forEach((value) {
-        if (value.id == product.id) {
+        if (value.productId == product.productId) {
           value.count = product.count;
         }
         allCartNewList.add(value);
@@ -206,10 +198,11 @@ class RemoveFromCartLocalAction extends ReduxAction<AppState> {
   RemoveFromCartLocalAction({this.product});
   @override
   FutureOr<AppState> reduce() async {
-    bool isInCart = await CartDataSource.isAvailableInCart(id: product.id);
+    bool isInCart = await CartDataSource.isAvailableInCart(
+        id: product.productId.toString());
     if (isInCart) {
       if (product.count == 0.0) {
-        await CartDataSource.delete(product.id);
+        await CartDataSource.delete(product.productId.toString());
       } else {
         await CartDataSource.update(product);
       }
@@ -219,7 +212,7 @@ class RemoveFromCartLocalAction extends ReduxAction<AppState> {
 //    Item selectedProduct = state.productState.selectedProduct;
 
     allItemList.forEach((value) {
-      if (value.id == product.id) {
+      if (value.productId == product.productId) {
         value.count = product.count;
       }
 //      if (state.productState?.selectedProduct != null &&
@@ -255,17 +248,22 @@ class PlaceOrderAction extends ReduxAction<AppState> {
         params: request.toJson(),
         requestType: RequestType.post);
 
-    if (response.data['statusCode'] == 200) {
-      request.order.status = "UNCONFIRMED";
+    if (response.status == ResponseStatus.success200) {
+//      request.order.status = "UNCONFIRMED";
+      var responseModel = PlaceOrderResponse.fromJson(response.data);
+
       Fluttertoast.showToast(msg: 'Order Placed');
       await CartDataSource.deleteAllMerchants();
       await CartDataSource.deleteAll();
       dispatch(GetCartFromLocal());
       dispatch(UpdateSelectedTabAction(2));
       dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+      return state.copyWith(
+          productState:
+              state.productState.copyWith(placeOrderResponse: responseModel));
     } else {
-      request.order.status = "COMPLETED";
-      Fluttertoast.showToast(msg: response.data['status']);
+//      request.order.status = "COMPLETED";
+      Fluttertoast.showToast(msg: response.data['message']);
     }
     return null;
   }
