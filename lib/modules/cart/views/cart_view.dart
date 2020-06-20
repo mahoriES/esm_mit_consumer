@@ -5,6 +5,7 @@ import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
+import 'package:esamudaayapp/modules/cart/models/charge_details_response.dart';
 import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
 import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
@@ -16,6 +17,7 @@ import 'package:esamudaayapp/repository/cart_datasourse.dart';
 import 'package:esamudaayapp/store.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
+import 'package:esamudaayapp/utilities/extensions.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -62,40 +64,7 @@ class _CartViewState extends State<CartView> {
           model: _ViewModel(),
           onInit: (store) {
             if (store.state.productState.localCartItems.isNotEmpty) {
-              var total = store.state.productState.localCartItems.fold(0,
-                      (previous, current) {
-                    double price =
-                        double.parse(current.skus.first.basePrice.toString()) *
-                            current.count;
-
-                    return double.parse(previous.toString()) + price;
-                  }) ??
-                  0.0;
-
-//              var request = PlaceOrderRequest(
-//                  phoneNumber: store.state.authState.user.phone,
-//                  comments: "",
-//                  order: Orders(
-//                      merchantID:
-//                          store.state.productState.selectedMerchand.merchantID,
-//                      codPaymentCompleted: false,
-//                      paymentType: "CASH_ON_DELIVERY",
-//                      cart: Cart(
-//                          service: store.state.productState.selectedMerchand
-//                                          .servicesOffered !=
-//                                      null &&
-//                                  store.state.productState.selectedMerchand
-//                                      .servicesOffered.isNotEmpty
-//                              ? store.state.productState.selectedMerchand
-//                                  .servicesOffered.first
-//                              : "FOOD_DELIVERY",
-//                          total: total.toDouble(),
-//                          itemsEnhanced: store.state.productState.localCartItems
-//                              .map((cart) {
-//                            return ItemsEnhanced(
-//                                item: cart, number: cart.count);
-//                          }).toList())));
-//              store.dispatch(GetOrderTaxAction(request: request));
+              store.dispatch(GetOrderTaxAction());
             }
           },
           builder: (context, snapshot) {
@@ -356,186 +325,189 @@ class _CartViewState extends State<CartView> {
                                                   textAlign: TextAlign.center)
                                               .tr(),
                                         ),
-                                        snapshot.placeOrderResponse == null
-                                            ? Container()
-                                            : Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 20),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Column(
+                                            children: <Widget>[
+                                              ListView.separated(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount:
+                                                    snapshot.charges.length + 1,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return index == 0
+                                                      ? Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: <Widget>[
+                                                            // Item Total
+                                                            Text("screen_order.item_total",
+                                                                    style: const TextStyle(
+                                                                        color: const Color(
+                                                                            0xff696666),
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        fontStyle:
+                                                                            FontStyle
+                                                                                .normal,
+                                                                        fontSize:
+                                                                            16.0),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left)
+                                                                .tr(), // ₹ 175.00
+                                                            Text(
+                                                                "₹ ${snapshot.getCartTotal()}",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: <Widget>[
+                                                            // Item Total
+                                                            Text(
+                                                                snapshot
+                                                                    .charges[index -
+                                                                        1]
+                                                                    .chargeName
+                                                                    .toLowerCase()
+                                                                    .replaceAll(
+                                                                        "_",
+                                                                        " ")
+                                                                    .capitalize(),
+                                                                style: const TextStyle(
+                                                                    color:
+                                                                        const Color(
+                                                                            0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign: TextAlign
+                                                                    .left), // ₹ 175.00
+                                                            Text(
+                                                                "₹ ${snapshot.charges[index - 1].chargeValue.toString()}",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                          ],
+                                                        );
+                                                  return Container();
+                                                },
+                                                separatorBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return Container(
+                                                    height: 13,
+                                                  );
+                                                },
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 10, bottom: 10),
                                                 child: Column(
                                                   children: <Widget>[
-                                                    ListView.separated(
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          NeverScrollableScrollPhysics(),
-//                                                      itemCount: snapshot
-//                                                              .placeOrderResponse
-//                                                              .order
-//                                                              .serviceSpecificData
-//                                                              .length +
-//                                                          1,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-//                                                        return index == 0
-//                                                            ? Row(
-//                                                                mainAxisAlignment:
-//                                                                    MainAxisAlignment
-//                                                                        .spaceBetween,
-//                                                                children: <
-//                                                                    Widget>[
-//                                                                  // Item Total
-//                                                                  Text("screen_order.item_total",
-//                                                                          style: const TextStyle(
-//                                                                              color: const Color(0xff696666),
-//                                                                              fontWeight: FontWeight.w500,
-//                                                                              fontFamily: "Avenir",
-//                                                                              fontStyle: FontStyle.normal,
-//                                                                              fontSize: 16.0),
-//                                                                          textAlign: TextAlign.left)
-//                                                                      .tr(), // ₹ 175.00
-//                                                                  Text(
-//                                                                      "₹ ${snapshot.getCartTotal()}",
-//                                                                      style: const TextStyle(
-//                                                                          color: const Color(
-//                                                                              0xff696666),
-//                                                                          fontWeight: FontWeight
-//                                                                              .w500,
-//                                                                          fontFamily:
-//                                                                              "Avenir",
-//                                                                          fontStyle: FontStyle
-//                                                                              .normal,
-//                                                                          fontSize:
-//                                                                              16.0),
-//                                                                      textAlign:
-//                                                                          TextAlign
-//                                                                              .left)
-//                                                                ],
-//                                                              )
-//                                                            : Row(
-//                                                                mainAxisAlignment:
-//                                                                    MainAxisAlignment
-//                                                                        .spaceBetween,
-//                                                                children: <
-//                                                                    Widget>[
-//                                                                  // Item Total
-//                                                                  Text(
-//                                                                      snapshot
-//                                                                          .placeOrderResponse
-//                                                                          .order
-//                                                                          .serviceSpecificData
-//                                                                          .keys
-//                                                                          .toList()[index -
-//                                                                              1]
-//                                                                          .toString()
-//                                                                          .toLowerCase()
-//                                                                          .replaceAll("_",
-//                                                                              " ")
-//                                                                          .capitalize(),
-//                                                                      style: const TextStyle(
-//                                                                          color: const Color(
-//                                                                              0xff696666),
-//                                                                          fontWeight: FontWeight
-//                                                                              .w500,
-//                                                                          fontFamily:
-//                                                                              "Avenir",
-//                                                                          fontStyle: FontStyle
-//                                                                              .normal,
-//                                                                          fontSize:
-//                                                                              16.0),
-//                                                                      textAlign:
-//                                                                          TextAlign
-//                                                                              .left), // ₹ 175.00
-//                                                                  Text(
-//                                                                      "₹ ${snapshot.placeOrderResponse.order.serviceSpecificData.values.toList()[index - 1].toString()}",
-//                                                                      style: const TextStyle(
-//                                                                          color: const Color(
-//                                                                              0xff696666),
-//                                                                          fontWeight: FontWeight
-//                                                                              .w500,
-//                                                                          fontFamily:
-//                                                                              "Avenir",
-//                                                                          fontStyle: FontStyle
-//                                                                              .normal,
-//                                                                          fontSize:
-//                                                                              16.0),
-//                                                                      textAlign:
-//                                                                          TextAlign
-//                                                                              .left)
-//                                                                ],
-//                                                              );
-                                                        return Container();
-                                                      },
-                                                      separatorBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return Container(
-                                                          height: 13,
-                                                        );
-                                                      },
-                                                    ),
                                                     Container(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10, bottom: 10),
-                                                      child: Column(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            height: 0.5,
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    bottom: 10),
-                                                            color: Colors.grey,
-                                                          ),
-                                                          // Amount to be paid
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: <Widget>[
-                                                              Text("cart.total_amount",
-                                                                      style: const TextStyle(
-                                                                          color: const Color(
-                                                                              0xff696666),
-                                                                          fontWeight: FontWeight
-                                                                              .w500,
-                                                                          fontFamily:
-                                                                              "Avenir",
-                                                                          fontStyle: FontStyle
-                                                                              .normal,
-                                                                          fontSize:
-                                                                              16.0),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .left)
-                                                                  .tr(),
-                                                              // ₹ 195.00
-                                                              // ₹ 195.00
-                                                              //update with addition of tax etc
-                                                              Text(
-                                                                  "₹ ${snapshot.getCartTotal() ?? 0.0}",
-                                                                  style: const TextStyle(
-                                                                      color: const Color(
-                                                                          0xff5091cd),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontFamily:
-                                                                          "Avenir",
-                                                                      fontStyle:
-                                                                          FontStyle
-                                                                              .normal,
-                                                                      fontSize:
-                                                                          16.0),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .left)
-                                                            ],
-                                                          )
-                                                        ],
-                                                      ),
+                                                      height: 0.5,
+                                                      margin: EdgeInsets.only(
+                                                          bottom: 10),
+                                                      color: Colors.grey,
+                                                    ),
+                                                    // Amount to be paid
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        Text("cart.total_amount",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                            .tr(),
+                                                        // ₹ 195.00
+                                                        // ₹ 195.00
+                                                        //update with addition of tax etc
+                                                        Text(
+                                                            "₹ ${snapshot.getCartTotal() ?? 0.0}",
+                                                            style: const TextStyle(
+                                                                color: const Color(
+                                                                    0xff5091cd),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontFamily:
+                                                                    "Avenir",
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 16.0),
+                                                            textAlign:
+                                                                TextAlign.left)
+                                                      ],
                                                     )
                                                   ],
                                                 ),
                                               )
+                                            ],
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -1002,7 +974,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Product) removeFromCart;
   VoidCallback navigateToCart;
   Business selectedMerchant;
-  PlaceOrderResponse placeOrderResponse;
+  List<Charge> charges;
   Function getCartTotal;
   Function(PlaceOrderRequest) placeOrder;
   Function(PlaceOrderRequest) getTaxOfOrder;
@@ -1014,6 +986,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   _ViewModel.build(
       {this.localCart,
+      this.charges,
       this.updateSelectedMerchant,
       this.placeOrder,
       this.user,
@@ -1024,26 +997,25 @@ class _ViewModel extends BaseModel<AppState> {
       this.selectedMerchant,
       this.address,
       this.getTaxOfOrder,
-      this.placeOrderResponse,
       this.loadingStatus,
       this.getOrderTax})
       : super(equals: [
           localCart,
           selectedMerchant,
           user,
-          placeOrderResponse,
           loadingStatus,
-          address
+          address,
+          charges
         ]);
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        charges: state.productState.charges,
         address: state.authState.address,
         selectedMerchant: state.productState.selectedMerchand,
         localCart: state.productState.localCartItems,
         user: state.authState.user,
-        placeOrderResponse: state.productState.placeOrderResponse,
         loadingStatus: state.authState.loadingStatus,
         getCartTotal: () {
           if (state.productState.localCartItems.isNotEmpty) {
@@ -1069,7 +1041,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(PlaceOrderAction(request: request));
         },
         getTaxOfOrder: (request) {
-          dispatch(GetOrderTaxAction(request: request));
+          dispatch(GetOrderTaxAction());
         },
         addToCart: (item, context) {
           dispatch(AddToCartLocalAction(product: item, context: context));

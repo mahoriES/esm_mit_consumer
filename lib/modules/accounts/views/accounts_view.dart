@@ -1,9 +1,9 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/accounts/action/account_action.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AccountsView extends StatefulWidget {
   @override
@@ -54,22 +54,22 @@ class _AccountsViewState extends State<AccountsView> {
                       .tr(),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
-                ListTile(
-                  leading: Image.asset("assets/images/AI_chat.png"),
-                  title: Text('screen_account.recommend',
-                          style: const TextStyle(
-                              color: const Color(0xff3c3c3c),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "CircularStd-Book",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                          textAlign: TextAlign.left)
-                      .tr(),
-                  trailing: Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    snapshot.navigateToRecommendedShop();
-                  },
-                ),
+//                ListTile(
+//                  leading: Image.asset("assets/images/AI_chat.png"),
+//                  title: Text('screen_account.recommend',
+//                          style: const TextStyle(
+//                              color: const Color(0xff3c3c3c),
+//                              fontWeight: FontWeight.w400,
+//                              fontFamily: "CircularStd-Book",
+//                              fontStyle: FontStyle.normal,
+//                              fontSize: 16.0),
+//                          textAlign: TextAlign.left)
+//                      .tr(),
+//                  trailing: Icon(Icons.keyboard_arrow_right),
+//                  onTap: () {
+//                    snapshot.navigateToRecommendedShop();
+//                  },
+//                ),
                 ListTile(
                   leading: Image.asset("assets/images/question_cr.png"),
                   title: Text('screen_account.about',

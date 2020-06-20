@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
+import 'package:esamudaayapp/modules/cart/models/charge_details_response.dart';
 import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
 import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
@@ -86,7 +87,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
 //                            .contains('DELIVERY')
 //                        ? 'DELIVERY'
 //                        : "";
-//                    await CartDataSource.insertToMerchants(merchants: merchant);
+                    await CartDataSource.insertToMerchants(
+                        business: state.productState.selectedMerchand);
                     bool isInCart = await CartDataSource.isAvailableInCart(
                         id: product.productId.toString());
                     if (isInCart) {
@@ -115,18 +117,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
             ));
       } else {
         await CartDataSource.deleteAllMerchants();
-//        var merchant = MerchantLocal(
-//            merchantID: state.productState.selectedMerchand.merchantID,
-//            cardViewLine2: state.productState.selectedMerchand.cardViewLine2,
-//            displayPicture: state.productState.selectedMerchand.displayPicture,
-//            address1: state.productState.selectedMerchand.address.addressLine1,
-//            address2: state.productState.selectedMerchand.address.addressLine2,
-//            shopName: state.productState.selectedMerchand.shopName);
-//        merchant.flag =
-//            state.productState.selectedMerchand.flags.contains('DELIVERY')
-//                ? 'DELIVERY'
-//                : "";
-//        await CartDataSource.insertToMerchants(merchants: merchant);
+        await CartDataSource.insertToMerchants(
+            business: state.productState.selectedMerchand);
         bool isInCart = await CartDataSource.isAvailableInCart(
             id: product.productId.toString());
         if (isInCart) {
@@ -153,18 +145,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       }
     } else {
       await CartDataSource.deleteAllMerchants();
-//      var merchant = MerchantLocal(
-//          merchantID: state.productState.selectedMerchand.merchantID,
-//          cardViewLine2: state.productState.selectedMerchand.cardViewLine2,
-//          displayPicture: state.productState.selectedMerchand.displayPicture,
-//          shopName: state.productState.selectedMerchand.shopName,
-//          address1: state.productState.selectedMerchand.address.addressLine1,
-//          address2: state.productState.selectedMerchand.address.addressLine2);
-//      merchant.flag =
-//          state.productState.selectedMerchand.flags.contains('DELIVERY')
-//              ? 'DELIVERY'
-//              : "";
-//      await CartDataSource.insertToMerchants(merchants: merchant);
+      await CartDataSource.insertToMerchants(
+          business: state.productState.selectedMerchand);
       bool isInCart = await CartDataSource.isAvailableInCart(
           id: product.productId.toString());
       if (isInCart) {
@@ -256,7 +238,7 @@ class PlaceOrderAction extends ReduxAction<AppState> {
       await CartDataSource.deleteAllMerchants();
       await CartDataSource.deleteAll();
       dispatch(GetCartFromLocal());
-      dispatch(UpdateSelectedTabAction(2));
+      dispatch(UpdateSelectedTabAction(1));
       dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
       return state.copyWith(
           productState:
@@ -274,23 +256,23 @@ class PlaceOrderAction extends ReduxAction<AppState> {
 }
 
 class GetOrderTaxAction extends ReduxAction<AppState> {
-  final PlaceOrderRequest request;
-
-  GetOrderTaxAction({this.request});
-
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.getOrderTaxUrl,
-        params: request.toJson(),
-        requestType: RequestType.post);
-    if (response.data['statusCode'] == 200) {
-//      Fluttertoast.showToast(msg: 'Tax and delivery charges received');
-      PlaceOrderResponse res = PlaceOrderResponse.fromJson(response.data);
+        url: ApiURL.getBusinessesUrl +
+            "${state.productState.selectedMerchand.businessId}" +
+            "/charges",
+        params: {"": ""},
+        requestType: RequestType.get);
+    if (response.status == ResponseStatus.success200) {
+      List<Charge> charge = new List<Charge>();
+      response.data.forEach((v) {
+        charge.add(new Charge.fromJson(v));
+      });
       return state.copyWith(
-          productState: state.productState.copyWith(placeOrderResponse: res));
+          productState: state.productState.copyWith(charges: charge));
     } else {
-      Fluttertoast.showToast(msg: response.data['status']);
+      Fluttertoast.showToast(msg: response.data['message']);
       return null;
     }
   }

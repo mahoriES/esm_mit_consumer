@@ -36,7 +36,9 @@ class CartDataSource {
   static Future<List<Business>> getListOfMerchants() async {
     var dbClient = await DatabaseManager().db;
     List<Map> list = await dbClient.query(merchantTable);
-    var products = list.map((item) => Business.fromJson(item)).toList();
+    var products = list
+        .map((item) => Business.fromJson(jsonDecode(item["business"])))
+        .toList();
     return products;
   }
 

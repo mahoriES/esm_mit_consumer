@@ -8,8 +8,11 @@ import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/store.dart';
 import 'package:esamudaayapp/utilities/customAlert.dart';
+import 'package:esamudaayapp/utilities/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ExpandableListView extends StatefulWidget {
   final int merchantIndex;
@@ -205,14 +208,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         EdgeInsets.only(left: 15, right: 15),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    itemCount: 0
-//                                    snapshot
-//                                            .getOrderListResponse
-//                                            .results[widget.merchantIndex]
-//                                            .serviceSpecificData
-//                                            .length +
-//                                        1
-                                    ,
+                                    itemCount: snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .otherChargesDetail ==
+                                            null
+                                        ? 0
+                                        : snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .otherChargesDetail
+                                                .length +
+                                            1,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return index == 0
@@ -237,21 +244,16 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${
-//                                                        snapshot.getOrderListResponse.results[widget.merchantIndex].cart.itemsEnhanced.fold(0, (previous, current) {
-//                                                          return double.parse(
-//                                                                  previous
-//                                                                      .toString()) +
-//                                                              double.parse(current
-//                                                                      .item
-//                                                                      .skus
-//                                                                      .first
-//                                                                      .basePrice
-//                                                                      .toString()) *
-//                                                                  current
-//                                                                      .number;
-//                                                        }) ??
-                                                    0.0}",
+                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems.fold(0, (previous, current) {
+                                                          return double.parse(
+                                                                  previous
+                                                                      .toString()) +
+                                                              double.parse(current
+                                                                      .unitPrice
+                                                                      .toString()) *
+                                                                  current
+                                                                      .quantity;
+                                                        }) ?? 0.0}",
                                                     style: const TextStyle(
                                                         color: const Color(
                                                             0xff696666),
@@ -271,19 +273,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               children: <Widget>[
                                                 // Item Total
                                                 Text(
-//                                                    snapshot
-//                                                        .getOrderListResponse
-//                                                        .results[widget
-//                                                            .merchantIndex]
-//                                                        .serviceSpecificData
-//                                                        .keys
-//                                                        .toList()[index - 1]
-//                                                        .toString()
-//                                                        .toLowerCase()
-//                                                        .replaceAll("_", " ")
-//                                                        .capitalize()
-
-                                                    "",
+                                                    snapshot
+                                                        .getOrderListResponse
+                                                        .results[widget
+                                                            .merchantIndex]
+                                                        .otherChargesDetail[
+                                                            index - 1]
+                                                        .name
+                                                        .toLowerCase()
+                                                        .capitalize(),
                                                     style: const TextStyle(
                                                         color: const Color(
                                                             0xff696666),
@@ -296,9 +294,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                     textAlign: TextAlign
                                                         .left), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${
-//                                                        snapshot.getOrderListResponse.results[widget.merchantIndex].serviceSpecificData.values.toList()[index - 1].toString()
-                                                    0}",
+                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherChargesDetail[index - 1].name}",
                                                     style: const TextStyle(
                                                         color: const Color(
                                                             0xff696666),
@@ -354,9 +350,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               // ₹ 195.00
                                               // ₹ 195.00
                                               Text(
-                                                  "₹ ${0
-//                                                      snapshot.getOrderListResponse.results[widget.merchantIndex].totalOrderCost
-                                                  }",
+                                                  "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal}",
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xff5091cd),
@@ -630,15 +624,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                         FocusScope.of(context)
                                                                             .requestFocus(FocusNode());
 
-//                                                                        snapshot.rateOrder(AddReviewRequest(
-//                                                                            reviewCandidate:
-//                                                                                "ORDER",
-//                                                                            reviewCandidateID:
-//                                                                                snapshot.getOrderListResponse.orders[widget.merchantIndex].transactionID,
-//                                                                            reviewerTye: "CUSTOMER",
-//                                                                            reviewerID: snapshot.getOrderListResponse.orders[widget.merchantIndex].customerID,
-//                                                                            comments: reviewController.text,
-//                                                                            rating: rating));
+                                                                        snapshot.rateOrder(
+                                                                            AddReviewRequest(
+                                                                                ratingComment: reviewController.text,
+                                                                                ratingValue: rating),
+                                                                            snapshot.getOrderListResponse.results[widget.merchantIndex].orderId);
                                                                         reviewController.text =
                                                                             "";
                                                                       }
@@ -713,15 +703,38 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                     ),
                                     Spacer(),
                                     InkWell(
-                                      onTap: () {
-//                                        snapshot.updateOrderId(
-//                                          snapshot
-//                                              .getOrderListResponse
-//                                              .orders[widget.merchantIndex]
-//                                              .transactionID,
-//                                        );
-                                        Navigator.of(context)
-                                            .pushNamed('/Support');
+                                      onTap: () async {
+                                        snapshot.updateOrderId(
+                                          snapshot
+                                              .getOrderListResponse
+                                              .results[widget.merchantIndex]
+                                              .orderId,
+                                        );
+                                        if (snapshot
+                                                    .getOrderListResponse
+                                                    .results[
+                                                        widget.merchantIndex]
+                                                    .businessPhones !=
+                                                null &&
+                                            snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .businessPhones
+                                                .isNotEmpty) {
+                                          var url =
+                                              'tel:${snapshot.getOrderListResponse.results[widget.merchantIndex].businessPhones.first}';
+                                          if (await canLaunch(url)) {
+                                            await launch(url);
+                                          } else {
+                                            throw 'Could not launch $url';
+                                          }
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  "No contact details available.");
+                                        }
+//                                        Navigator.of(context)
+//                                            .pushNamed('/Support');
                                       },
                                       child: Row(
                                         children: <Widget>[
@@ -811,7 +824,7 @@ class _ExpandableContainerState extends State<ExpandableContainer>
 class _ViewModel extends BaseModel<AppState> {
   Function(String orderId) updateOrderId;
   GetOrderListResponse getOrderListResponse;
-  Function(AddReviewRequest) rateOrder;
+  Function(AddReviewRequest, String) rateOrder;
   Function(LoadingStatus) updateLoadingStatus;
   LoadingStatus loadingStatus;
   _ViewModel();
@@ -826,8 +839,8 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        rateOrder: (request) {
-          dispatch(AddRatingAPIAction(request: request));
+        rateOrder: (request, orderId) {
+          dispatch(AddRatingAPIAction(request: request, orderId: orderId));
         },
         updateLoadingStatus: (loadingStatus) {
           dispatch(ChangeLoadingStatusAction(loadingStatus));

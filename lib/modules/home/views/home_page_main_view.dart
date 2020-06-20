@@ -36,6 +36,10 @@ class _HomePageMainViewState extends State<HomePageMainView> {
           centerTitle: false,
           title: StoreConnector<AppState, _ViewModel>(
               model: _ViewModel(),
+              onInit: (store) {
+                store.dispatch(GetCartFromLocal());
+                store.dispatch(GetUserFromLocalStorageAction());
+              },
               builder: (context, snapshot) {
                 return Text(snapshot?.cluster?.clusterName ?? "",
                     style: TextStyle(
@@ -67,23 +71,23 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     ),
                   );
                 }),
-            StoreConnector<AppState, _ViewModel>(
-                onInit: (store) {
-//                store.dispatch(GetLocationAction());
-                  store.dispatch(GetCartFromLocal());
-                  store.dispatch(GetUserFromLocalStorageAction());
-                },
-                model: _ViewModel(),
-                builder: (context, snapshot) {
-                  return IconButton(
-                      icon: ImageIcon(
-                        AssetImage('assets/images/search_icon.png'),
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        snapshot.navigateToProductSearch();
-                      });
-                }),
+//            StoreConnector<AppState, _ViewModel>(
+//                onInit: (store) {
+////                store.dispatch(GetLocationAction());
+//                  store.dispatch(GetCartFromLocal());
+//                  store.dispatch(GetUserFromLocalStorageAction());
+//                },
+//                model: _ViewModel(),
+//                builder: (context, snapshot) {
+//                  return IconButton(
+//                      icon: ImageIcon(
+//                        AssetImage('assets/images/search_icon.png'),
+//                        color: Colors.grey,
+//                      ),
+//                      onPressed: () {
+//                        snapshot.navigateToProductSearch();
+//                      });
+//                }),
             NavigationNotificationItem(
               icon: Icon(
                 Icons.notifications_none,

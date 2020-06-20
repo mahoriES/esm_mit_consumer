@@ -390,7 +390,8 @@ class ProductListingItemView extends StatelessWidget {
                                 child: CachedNetworkImage(
                                     height: 500.0,
                                     fit: BoxFit.cover,
-                                    imageUrl: item.images.first,
+                                    imageUrl:
+                                        item?.images?.first?.photoUrl ?? "",
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>

@@ -58,6 +58,8 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
         if (e.orderId == orderId) {
           print("equal");
           e.orderItems = responseModel.orderItems;
+          e.otherChargesDetail = responseModel.otherChargesDetail;
+          e.businessPhones = responseModel.businessPhones;
         }
       });
       return state.copyWith(
@@ -76,19 +78,22 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
 
 class AddRatingAPIAction extends ReduxAction<AppState> {
   final AddReviewRequest request;
-
-  AddRatingAPIAction({this.request});
+  final String orderId;
+  AddRatingAPIAction({
+    this.request,
+    this.orderId,
+  });
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.reviewOrderURL,
+        url: ApiURL.placeOrderUrl + "$orderId" + "/rating",
         params: request.toJson(),
         requestType: RequestType.post);
 
-    if (response.data['statusCode'] == 200) {
+    if (response.status == ResponseStatus.success200) {
       dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
     } else {
-      Fluttertoast.showToast(msg: response.data['status']);
+      Fluttertoast.showToast(msg: response.data['message']);
     }
     return null;
   }

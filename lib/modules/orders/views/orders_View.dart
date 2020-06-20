@@ -14,7 +14,9 @@ import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrdersView extends StatefulWidget {
   @override
@@ -393,13 +395,29 @@ class OrderItemBottomView extends StatelessWidget {
               // Support
             ],
           ),
-          (orderStatus != "COMPLETED" && orderStatus != "CANCELLED") && expanded
+          (orderStatus == "CREATED") && expanded
               ? Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async {
                       snapshot.updateOrderId(orderId);
-                      Navigator.of(context).pushNamed('/Support');
+                      if (snapshot.getOrderListResponse.results[index]
+                                  .businessPhones !=
+                              null &&
+                          snapshot.getOrderListResponse.results[index]
+                              .businessPhones.isNotEmpty) {
+                        var url =
+                            'tel:${snapshot.getOrderListResponse.results[index].businessPhones.first}';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "No contact details available.");
+                      }
+//                      Navigator.of(context).pushNamed('/Support');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

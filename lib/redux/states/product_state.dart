@@ -1,4 +1,5 @@
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
+import 'package:esamudaayapp/modules/cart/models/charge_details_response.dart';
 import 'package:esamudaayapp/modules/home/models/category_response.dart';
 import 'package:esamudaayapp/modules/home/models/cluster.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
@@ -13,6 +14,7 @@ class ProductState {
   final List<Product> productListingTempDataSource;
   final List<Merchants> searchResults;
   final List<Product> localCartItems;
+  final List<Charge> charges;
   final CategoriesNew selectedCategory;
   final PlaceOrderResponse placeOrderResponse;
   final Business selectedMerchand;
@@ -23,6 +25,7 @@ class ProductState {
 
   ProductState({
     @required this.localCartItems,
+    @required this.charges,
     @required this.selectedCluster,
     @required this.placeOrderResponse,
     @required this.getOrderListResponse,
@@ -38,6 +41,7 @@ class ProductState {
   factory ProductState.initial() {
     return new ProductState(
         selectedCluster: null,
+        charges: [],
         categories: [],
         supportOrder: "",
         getOrderListResponse: GetOrderListResponse(results: []),
@@ -56,6 +60,7 @@ class ProductState {
       List<Product> localCartItems,
       List<CategoriesNew> categories,
       List<Merchants> searchResults,
+      List<Charge> charges,
       Business selectedMerchant,
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
@@ -63,6 +68,7 @@ class ProductState {
       String supportOrder,
       Cluster selectedCluster}) {
     return ProductState(
+        charges: charges ?? this.charges,
         selectedCluster: selectedCluster ?? this.selectedCluster,
         searchResults: searchResults ?? this.searchResults,
         getOrderListResponse: getOrderListResponse ?? this.getOrderListResponse,

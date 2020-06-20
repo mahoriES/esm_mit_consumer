@@ -7,6 +7,7 @@ import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/repository/cart_datasourse.dart';
 import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/api_manager.dart';
 
@@ -23,6 +24,15 @@ class GetMerchantDetails extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       var responseModel = GetBusinessesResponse.fromJson(response.data);
+
+      var merchants = await CartDataSource.getListOfMerchants();
+      if (merchants.isNotEmpty) {
+        return state.copyWith(
+            homePageState:
+                state.homePageState.copyWith(merchants: responseModel.results),
+            productState:
+                state.productState.copyWith(selectedMerchant: merchants.first));
+      }
       return state.copyWith(
           homePageState:
               state.homePageState.copyWith(merchants: responseModel.results));
@@ -194,7 +204,6 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
   UpdateSelectedMerchantAction({this.selectedMerchant});
   @override
   FutureOr<AppState> reduce() {
-    // TODO: implement reduce
     return state.copyWith(
         productState:
             state.productState.copyWith(selectedMerchant: selectedMerchant));

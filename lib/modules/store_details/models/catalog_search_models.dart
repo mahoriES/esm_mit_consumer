@@ -1,3 +1,5 @@
+import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
+
 class CatalogSearchRequest {
   String merchantID;
   List<String> categoryIDs;
@@ -218,7 +220,7 @@ class Product {
   String productDescription;
   bool isActive;
   bool inStock;
-  List<String> images;
+  List<Photo> images;
   String longDescription;
   String displayLine1;
   String unitName;
@@ -247,7 +249,13 @@ class Product {
     productDescription = json['product_description'];
     isActive = json['is_active'];
     inStock = json['in_stock'];
-    images = json['images'].cast<String>();
+    if (json['images'] != null) {
+      images = new List<Photo>();
+      json['images'].forEach((e) {
+        images.add(Photo.fromJson(e));
+      });
+//      images = json['images'].cast<String>();
+    }
     longDescription = json['long_description'];
     displayLine1 = json['display_line_1'];
     unitName = json['unit_name'];
@@ -270,7 +278,7 @@ class Product {
     data['product_description'] = this.productDescription;
     data['is_active'] = this.isActive;
     data['in_stock'] = this.inStock;
-    data['images'] = this.images;
+    data['images'] = this.images.map((e) => e.toJson()).toList();
     data['long_description'] = this.longDescription;
     data['display_line_1'] = this.displayLine1;
     data['unit_name'] = this.unitName;

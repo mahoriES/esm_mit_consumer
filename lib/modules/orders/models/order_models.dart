@@ -43,38 +43,20 @@ class GetOrderListResponse {
 }
 
 class AddReviewRequest {
-  String reviewCandidate;
-  String reviewCandidateID;
-  String reviewerTye;
-  String reviewerID;
-  int rating;
-  String comments;
+  int ratingValue;
+  String ratingComment;
 
-  AddReviewRequest(
-      {this.reviewCandidate,
-      this.reviewCandidateID,
-      this.reviewerTye,
-      this.reviewerID,
-      this.rating,
-      this.comments});
+  AddReviewRequest({this.ratingValue, this.ratingComment});
 
   AddReviewRequest.fromJson(Map<String, dynamic> json) {
-    reviewCandidate = json['reviewCandidate'];
-    reviewCandidateID = json['reviewCandidateID'];
-    reviewerTye = json['reviewerTye'];
-    reviewerID = json['reviewerID'];
-    rating = json['rating'];
-    comments = json['comments'];
+    ratingValue = json['rating_value'];
+    ratingComment = json['rating_comment'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['reviewCandidate'] = this.reviewCandidate;
-    data['reviewCandidateID'] = this.reviewCandidateID;
-    data['reviewerTye'] = this.reviewerTye;
-    data['reviewerID'] = this.reviewerID;
-    data['rating'] = this.rating;
-    data['comments'] = this.comments;
+    data['rating_value'] = this.ratingValue;
+    data['rating_comment'] = this.ratingComment;
     return data;
   }
 }

@@ -8,7 +8,6 @@ import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/home/views/home_page_main_view.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/orders/views/orders_View.dart';
-import 'package:esamudaayapp/modules/search/views/Search_View.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
@@ -39,12 +38,14 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       return HomePageMainView(
 //        key: keyOne,
           );
-    } else if (index == 1) {
-      return ProductSearchView();
-//      return CartView(
-//        key: keyTwo,
-//      );
-    } else if (index == 2) {
+    }
+//    else if (index == 1) {
+//      return ProductSearchView();
+////      return CartView(
+////        key: keyTwo,
+////      );
+//    }
+    else if (index == 1) {
       return OrdersView();
 //      return ProfileView(
 //        key: keyThree,
@@ -97,19 +98,19 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     tr('screen_home.tab_bar.store'),
                   ),
                 ),
-                BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/search_icon.png'),
-                    color: Colors.black,
-                  ),
-                  activeIcon: ImageIcon(
-                    AssetImage('assets/images/search_icon.png'),
-                    color: AppColors.mainColor,
-                  ),
-                  title: new Text(
-                    tr('screen_home.tab_bar.search'),
-                  ),
-                ),
+//                BottomNavigationBarItem(
+//                  icon: ImageIcon(
+//                    AssetImage('assets/images/search_icon.png'),
+//                    color: Colors.black,
+//                  ),
+//                  activeIcon: ImageIcon(
+//                    AssetImage('assets/images/search_icon.png'),
+//                    color: AppColors.mainColor,
+//                  ),
+//                  title: new Text(
+//                    tr('screen_home.tab_bar.search'),
+//                  ),
+//                ),
                 BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage('assets/images/path338.png'),
