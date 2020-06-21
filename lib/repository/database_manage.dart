@@ -73,17 +73,7 @@ create table if not exists Config (
 create table if not exists User (
   _id integer primary key autoincrement,
   id integer,
-  email text,
-  first_name text,
-  last_name text,
-  last_login text,
-  username text,
-  date_joined text,
-  avatar text,
-  phone text,
-  address text,
-  user_type text,
-  rating text
+  user text
   )
 ''');
     } catch (e) {
@@ -97,16 +87,7 @@ create table if not exists User (
 create table if not exists User (
   _id integer primary key autoincrement,
   id integer,
-  email text,
-  first_name text,
-  last_name text,
-  last_login text,
-  username text,
-  date_joined text,
-  avatar text,
-  phone text,
-  user_type text,
-  rating text
+  user text
   )
 ''');
     } catch (e) {

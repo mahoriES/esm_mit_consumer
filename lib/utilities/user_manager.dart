@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:esamudaayapp/models/User.dart';
 import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/repository/cart_datasourse.dart';
@@ -14,7 +13,7 @@ class UserManager {
     var dbClient = await DatabaseManager().db;
     List<Map> maps = await dbClient.rawQuery('SELECT * FROM User');
     if (maps.length > 0) {
-      return Data.fromJson(maps.first);
+      return Data.fromJson(jsonDecode(maps.first['user']));
     }
     return null;
   }
@@ -113,8 +112,11 @@ class UserManager {
 
   static Future<int> saveUser(Data user) async {
     var dbClient = await DatabaseManager().db;
+    Map<String, String> userData = Map<String, String>();
+    userData['user'] = jsonEncode(user.toJson());
+    userData['id'] = user.userProfile.userId;
     int resp = await dbClient.delete('User');
-    int res = await dbClient.insert("User", user.toJson());
+    int res = await dbClient.insert("User", userData);
     return res;
   }
 
