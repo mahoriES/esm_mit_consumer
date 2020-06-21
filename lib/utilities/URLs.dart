@@ -22,7 +22,8 @@ class ApiURL {
   static const supportURL = "Support/raiseSupportTicket";
   static const logoutURL = "Customer/v4/Logout";
   static const recommendStoreURL = "Customer/v4/recommendAStore";
-  static const profileUpdateURL = "Customer/v4/updateDetails";
+  static const profileUpdateURL = "/api/v1/auth/profiles";
   static const getClustersUrl = "api/v1/clusters/";
   static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
+  static const imageUpload = "$baseURL" + "api/v1/media/photo/";
 }

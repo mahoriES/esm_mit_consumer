@@ -1,39 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/modules/cart/models/charge_details_response.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ios/Podfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Podfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/action/account_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/action/account_action.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/views/accounts_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/views/accounts_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/cart/actions/cart_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/actions/cart_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/model/profile_update_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/model/profile_update_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/views/recommended_shop.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/views/recommended_shop.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/actions/home_page_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/actions/home_page_actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/my_home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/my_home.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/orders/models/order_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/models/order_models.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/login/actions/login_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/actions/login_actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/redux/states/product_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/product_state.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/repository/cart_datasourse.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repository/cart_datasourse.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/support.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/register/action/register_Action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/action/register_Action.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/register/model/register_request_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/model/register_request_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/search/views/Search_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/search/views/Search_View.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/redux/states/auth_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/auth_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utilities/URLs.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/URLs.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utilities/user_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/user_manager.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="1f3aa53b" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -70,6 +77,18 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="flutter.settings" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
@@ -219,10 +238,40 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="Dart">
+        <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart</url>
           <line>344</line>
           <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
+          <line>149</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
+          <line>146</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
+          <line>143</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
+          <line>139</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
+          <line>135</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
+          <line>30</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -518,13 +518,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               15),
                                                                       child:
                                                                           IgnorePointer(
-                                                                        ignoring:
-                                                                            snapshot.loadingStatus ==
-                                                                                LoadingStatus.loading,
+                                                                        ignoring: snapshot.loadingStatus == LoadingStatus.loading || widget != null
+                                                                            ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating ==
+                                                                                null
+                                                                            : false,
                                                                         child:
                                                                             RatingBar(
-                                                                          initialRating:
-                                                                              0,
+                                                                          initialRating: widget != null
+                                                                              ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue.ceilToDouble() : 0 : 0
+                                                                              : 0,
                                                                           minRating:
                                                                               1,
                                                                           itemSize:
@@ -679,24 +681,57 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               },
                                             );
                                           },
-                                          child: RatingBar(
-                                            initialRating: 0,
-                                            minRating: 0,
-                                            itemSize: 25,
-                                            direction: Axis.horizontal,
-                                            allowHalfRating: true,
-                                            itemCount: 5,
-                                            itemPadding: EdgeInsets.symmetric(
-                                                horizontal: 1.0),
-                                            itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
+                                          child: IgnorePointer(
+                                            ignoring: widget != null
+                                                ? snapshot
+                                                        .getOrderListResponse
+                                                        .results[widget
+                                                            .merchantIndex]
+                                                        .rating !=
+                                                    null
+                                                : true,
+                                            child: RatingBar(
+                                              initialRating: widget != null
+                                                  ? snapshot
+                                                              .getOrderListResponse
+                                                              .results[widget
+                                                                  .merchantIndex]
+                                                              .rating !=
+                                                          null
+                                                      ? snapshot
+                                                                  .getOrderListResponse
+                                                                  .results[widget
+                                                                      .merchantIndex]
+                                                                  .rating
+                                                                  .ratingValue !=
+                                                              null
+                                                          ? snapshot
+                                                              .getOrderListResponse
+                                                              .results[widget
+                                                                  .merchantIndex]
+                                                              .rating
+                                                              .ratingValue
+                                                              .ceilToDouble()
+                                                          : 0
+                                                      : 0
+                                                  : 0,
+                                              minRating: 0,
+                                              itemSize: 25,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 1.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              tapOnlyMode: true,
+                                              ignoreGestures: true,
+                                              onRatingUpdate: (rating) {
+                                                print(rating);
+                                              },
                                             ),
-                                            tapOnlyMode: true,
-                                            ignoreGestures: true,
-                                            onRatingUpdate: (rating) {
-                                              print(rating);
-                                            },
                                           ),
                                         )
                                       ],

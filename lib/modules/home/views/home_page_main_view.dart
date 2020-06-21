@@ -383,8 +383,7 @@ class _ViewModel extends BaseModel<AppState> {
     // TODO: implement fromStore
     return _ViewModel.build(
         cluster: state.authState.cluster,
-        userAddress:
-            state.authState.user != null ? state.authState.user.address : "",
+        userAddress: "",
         loadingStatus: state.authState.loadingStatus,
         merchants: state.homePageState.merchants,
         banners: state.homePageState.banners,

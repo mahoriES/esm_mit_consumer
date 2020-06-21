@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/res/merged/release/layout/notification_template_part_time.xml",
+        "source": "/Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0993ca3454d4bb8e2f683e143dc061c5/core-1.1.0/res/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/res/merged/release/layout/custom_dialog.xml",
+        "source": "/Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0993ca3454d4bb8e2f683e143dc061c5/core-1.1.0/res/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/res/merged/release/layout/notification_action.xml",
+        "source": "/Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0993ca3454d4bb8e2f683e143dc061c5/core-1.1.0/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/res/merged/release/layout/notification_template_part_chronometer.xml",
+        "source": "/Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0993ca3454d4bb8e2f683e143dc061c5/core-1.1.0/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/res/merged/release/layout/notification_template_icon_group.xml",
+        "source": "/Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0993ca3454d4bb8e2f683e143dc061c5/core-1.1.0/res/layout/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/res/merged/release/layout/notification_action_tombstone.xml",
+        "source": "/Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0993ca3454d4bb8e2f683e143dc061c5/core-1.1.0/res/layout/notification_action_tombstone.xml"
+    }
+]

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/User.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
@@ -94,7 +95,7 @@ class UpdateIsSignUpAction extends ReduxAction<AppState> {
 class GetUserFromLocalStorageAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    User user = await UserManager.userDetails();
+    Data user = await UserManager.userDetails();
     return state.copyWith(authState: state.authState.copyWith(user: user));
   }
 }

@@ -47,5 +47,9 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>E-samudaay need to use your gallery for uploading photo to Profile.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>E-samudaay need to use your camera for uploading image to Profile.</string>
 </dict>
 </plist>

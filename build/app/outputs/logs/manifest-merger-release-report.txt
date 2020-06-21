@@ -1,0 +1,511 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+MERGED from [:flutter_country_picker] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/flutter_country_picker/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:2:1-20:12
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:17:1-45:12
+MERGED from [:fluttertoast] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/fluttertoast/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:geolocator] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/geolocator/intermediates/library_manifest/release/AndroidManifest.xml:2:1-9:12
+MERGED from [:google_api_availability] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/google_api_availability/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:sqflite] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/sqflite/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:path_provider] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/path_provider/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:path_provider_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/path_provider_macos/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:2:1-10:12
+MERGED from [:connectivity_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity_macos/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:google_maps_flutter] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/google_maps_flutter/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:flutter_plugin_android_lifecycle] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences_web] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences_web/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences_macos/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [:location_permissions] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:17:1-47:12
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9e744fb85d2103581e3d8e9b691267aa/jetified-play-services-location-16.0.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:17:1-38:12
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/75a27a27ee02ef129f4b9a70cf4244bb/jetified-firebase-iid-interop-17.0.0/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:17:1-29:12
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b681ba7101e59e015fff032d277c450a/jetified-play-services-stats-17.0.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:15:1-34:12
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:2:1-23:12
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:15:1-39:12
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/6af2cee59e84c11aafabf1d1e50e1eb5/jetified-firebase-measurement-connector-18.0.0/AndroidManifest.xml:17:1-25:12
+MERGED from [com.google.firebase:firebase-installations-interop:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1bbf2e246aa18270bc4c49304be52796/jetified-firebase-installations-interop-16.0.0/AndroidManifest.xml:15:1-23:12
+MERGED from [com.google.android.gms:play-services-tasks:17.0.2] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/f7f86fa434afa3efd1b1b54bced74e2d/jetified-play-services-tasks-17.0.2/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0f03bdba05c8bcb652ace4b4ad4e7149/jetified-play-services-places-placereport-16.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.fragment:fragment:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b74df83c3b1ed1fb0a72623e7b7692b5/fragment-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4f9afdb84ba0fd441ed14cb2046764e3/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/122a152f00bd6d8f2336169196f2e0cd/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8b262aa9f9e3c704643aeec60a7748f4/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9ebe9f8e358d5325e36c91b27c8e5714/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/009550aa452b769b98efe7db9d68ae38/coordinatorlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7883fff7aa79749dea914dc0878518fb/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/86a3b608e17bfaa2aad8e0d93005007d/slidingpanelayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/5663f37eeaf377dd44cca231de3df826/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4abae1486d4a092ec6f058872ff0c46f/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/53f34e93fec33b982a20bfde75cfbd46/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/ea0643f183d14506d7c0ee86fa7d1191/core-1.2.0/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8561f2928d65ef8cc28ee11e85bcad49/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:15:1-38:12
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.datatransport:transport-api:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d78d353779a5a58a329db5c023d683d1/jetified-transport-api-2.2.0/AndroidManifest.xml:15:1-22:12
+MERGED from [com.google.firebase:firebase-components:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c5354f84f826d32152982c5500072ae5/jetified-firebase-components-16.0.0/AndroidManifest.xml:15:1-23:12
+MERGED from [com.google.firebase:firebase-encoders-json:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4c745977c6c29fffcb15ffe75e4fb5d1/jetified-firebase-encoders-json-16.0.0/AndroidManifest.xml:15:1-23:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/fc2baf275d89a06fe8e32535b15d3340/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/663256f6124feb019352fd70727a8822/lifecycle-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/fcaa25cb495cbf5214d149a0df5a4ef5/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/156bac230dd911bf68c3829b5c3b894d/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b5dfe6af3dd7954534b4438bcba1d90d/core-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9a4f05526b53c2565c1c1caacee90817/lifecycle-viewmodel-2.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/95afded9acffd986e058c6c45e736dd2/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/a2e804e2d77f94fc9cb80f7c4b67b9b7/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8e0c12a99c9748acb48587073f72d48c/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0e9e6e38355c18ddc90cd7b850945194/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.multidex:multidex:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d3b9fcf6500fe0a20977acbd7e9cd790/multidex-2.0.0/AndroidManifest.xml:17:1-22:12
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+	package
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:2:5-36
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:1-56:12
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:3:5-67
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:23:5-67
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:24:5-67
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:11:5-67
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:11:5-67
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:26:5-67
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:26:5-67
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:3:22-64
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:4:5-79
+MERGED from [:geolocator] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/geolocator/intermediates/library_manifest/release/AndroidManifest.xml:7:5-79
+MERGED from [:geolocator] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/geolocator/intermediates/library_manifest/release/AndroidManifest.xml:7:5-79
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:4:22-76
+application
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:11:5-55:19
+MERGED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:7:5-18:19
+MERGED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:7:5-18:19
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:22:5-43:19
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:22:5-43:19
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:28:5-45:19
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:28:5-45:19
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9e744fb85d2103581e3d8e9b691267aa/jetified-play-services-location-16.0.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9e744fb85d2103581e3d8e9b691267aa/jetified-play-services-location-16.0.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:30:5-36:19
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:30:5-36:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/75a27a27ee02ef129f4b9a70cf4244bb/jetified-firebase-iid-interop-17.0.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/75a27a27ee02ef129f4b9a70cf4244bb/jetified-firebase-iid-interop-17.0.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b681ba7101e59e015fff032d277c450a/jetified-play-services-stats-17.0.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b681ba7101e59e015fff032d277c450a/jetified-play-services-stats-17.0.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:24:5-32:19
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:24:5-32:19
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:13:5-21:19
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:13:5-21:19
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:25:5-37:19
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:25:5-37:19
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/6af2cee59e84c11aafabf1d1e50e1eb5/jetified-firebase-measurement-connector-18.0.0/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/6af2cee59e84c11aafabf1d1e50e1eb5/jetified-firebase-measurement-connector-18.0.0/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.android.gms:play-services-tasks:17.0.2] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/f7f86fa434afa3efd1b1b54bced74e2d/jetified-play-services-tasks-17.0.2/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-tasks:17.0.2] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/f7f86fa434afa3efd1b1b54bced74e2d/jetified-play-services-tasks-17.0.2/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0f03bdba05c8bcb652ace4b4ad4e7149/jetified-play-services-places-placereport-16.0.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0f03bdba05c8bcb652ace4b4ad4e7149/jetified-play-services-places-placereport-16.0.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:22:5-26:19
+MERGED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core:1.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/ea0643f183d14506d7c0ee86fa7d1191/core-1.2.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/ea0643f183d14506d7c0ee86fa7d1191/core-1.2.0/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8561f2928d65ef8cc28ee11e85bcad49/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8561f2928d65ef8cc28ee11e85bcad49/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:25:5-39:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/ea0643f183d14506d7c0ee86fa7d1191/core-1.2.0/AndroidManifest.xml:24:18-86
+	android:label
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:13:9-37
+	android:icon
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:14:9-43
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:12:9-57
+meta-data#com.google.android.geo.API_KEY
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:15:9-16:70
+	android:value
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:16:13-68
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:15:20-65
+activity#com.example.esamudaay.MainActivity
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:17:9-48:20
+	android:launchMode
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:19:13-43
+	android:hardwareAccelerated
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:22:13-47
+	android:windowSoftInputMode
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:23:13-55
+	android:configChanges
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:21:13-163
+	android:theme
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:20:13-47
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:18:13-41
+meta-data#io.flutter.embedding.android.NormalTheme
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:29:13-32:17
+	android:resource
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:31:15-52
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:30:15-70
+meta-data#io.flutter.embedding.android.SplashScreenDrawable
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:38:13-41:17
+	android:resource
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:40:15-61
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:39:15-79
+intent-filter#action:name:FLUTTER_NOTIFICATION_CLICK+action:name:android.intent.action.MAIN+category:name:android.intent.category.DEFAULT+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:42:13-47:29
+action#android.intent.action.MAIN
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:43:17-68
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:43:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:44:17-76
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:44:27-74
+action#FLUTTER_NOTIFICATION_CLICK
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:45:17-69
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:45:25-66
+category#android.intent.category.DEFAULT
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:46:17-76
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:46:27-73
+meta-data#flutterEmbedding
+ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:51:9-53:33
+	android:value
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:53:13-30
+	android:name
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml:52:13-44
+uses-sdk
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+MERGED from [:flutter_country_picker] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/flutter_country_picker/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_country_picker] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/flutter_country_picker/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:20:5-44
+MERGED from [:fluttertoast] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/fluttertoast/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:fluttertoast] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/fluttertoast/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:geolocator] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/geolocator/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:geolocator] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/geolocator/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:google_api_availability] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/google_api_availability/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:google_api_availability] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/google_api_availability/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:sqflite] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/sqflite/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:sqflite] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/sqflite/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/path_provider/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/path_provider/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/path_provider_macos/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/path_provider_macos/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity_macos/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity_macos/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:google_maps_flutter] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/google_maps_flutter/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:google_maps_flutter] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/google_maps_flutter/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_web] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences_web/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_web] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences_web/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences_macos/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_macos] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/shared_preferences_macos/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:location_permissions] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:location_permissions] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/location_permissions/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9e744fb85d2103581e3d8e9b691267aa/jetified-play-services-location-16.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9e744fb85d2103581e3d8e9b691267aa/jetified-play-services-location-16.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/75a27a27ee02ef129f4b9a70cf4244bb/jetified-firebase-iid-interop-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/75a27a27ee02ef129f4b9a70cf4244bb/jetified-firebase-iid-interop-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b681ba7101e59e015fff032d277c450a/jetified-play-services-stats-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b681ba7101e59e015fff032d277c450a/jetified-play-services-stats-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:6:5-8:41
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:6:5-8:41
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/6af2cee59e84c11aafabf1d1e50e1eb5/jetified-firebase-measurement-connector-18.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/6af2cee59e84c11aafabf1d1e50e1eb5/jetified-firebase-measurement-connector-18.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-installations-interop:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1bbf2e246aa18270bc4c49304be52796/jetified-firebase-installations-interop-16.0.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-installations-interop:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1bbf2e246aa18270bc4c49304be52796/jetified-firebase-installations-interop-16.0.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.gms:play-services-tasks:17.0.2] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/f7f86fa434afa3efd1b1b54bced74e2d/jetified-play-services-tasks-17.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:17.0.2] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/f7f86fa434afa3efd1b1b54bced74e2d/jetified-play-services-tasks-17.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0f03bdba05c8bcb652ace4b4ad4e7149/jetified-play-services-places-placereport-16.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0f03bdba05c8bcb652ace4b4ad4e7149/jetified-play-services-places-placereport-16.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b74df83c3b1ed1fb0a72623e7b7692b5/fragment-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b74df83c3b1ed1fb0a72623e7b7692b5/fragment-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4f9afdb84ba0fd441ed14cb2046764e3/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4f9afdb84ba0fd441ed14cb2046764e3/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/122a152f00bd6d8f2336169196f2e0cd/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/122a152f00bd6d8f2336169196f2e0cd/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8b262aa9f9e3c704643aeec60a7748f4/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8b262aa9f9e3c704643aeec60a7748f4/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9ebe9f8e358d5325e36c91b27c8e5714/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9ebe9f8e358d5325e36c91b27c8e5714/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/009550aa452b769b98efe7db9d68ae38/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/009550aa452b769b98efe7db9d68ae38/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7883fff7aa79749dea914dc0878518fb/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7883fff7aa79749dea914dc0878518fb/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/86a3b608e17bfaa2aad8e0d93005007d/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/86a3b608e17bfaa2aad8e0d93005007d/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/5663f37eeaf377dd44cca231de3df826/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/5663f37eeaf377dd44cca231de3df826/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4abae1486d4a092ec6f058872ff0c46f/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4abae1486d4a092ec6f058872ff0c46f/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/53f34e93fec33b982a20bfde75cfbd46/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/53f34e93fec33b982a20bfde75cfbd46/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/ea0643f183d14506d7c0ee86fa7d1191/core-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/ea0643f183d14506d7c0ee86fa7d1191/core-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8561f2928d65ef8cc28ee11e85bcad49/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8561f2928d65ef8cc28ee11e85bcad49/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d78d353779a5a58a329db5c023d683d1/jetified-transport-api-2.2.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d78d353779a5a58a329db5c023d683d1/jetified-transport-api-2.2.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-components:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c5354f84f826d32152982c5500072ae5/jetified-firebase-components-16.0.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-components:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c5354f84f826d32152982c5500072ae5/jetified-firebase-components-16.0.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4c745977c6c29fffcb15ffe75e4fb5d1/jetified-firebase-encoders-json-16.0.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:16.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/4c745977c6c29fffcb15ffe75e4fb5d1/jetified-firebase-encoders-json-16.0.0/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/fc2baf275d89a06fe8e32535b15d3340/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/fc2baf275d89a06fe8e32535b15d3340/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/663256f6124feb019352fd70727a8822/lifecycle-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/663256f6124feb019352fd70727a8822/lifecycle-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/fcaa25cb495cbf5214d149a0df5a4ef5/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/fcaa25cb495cbf5214d149a0df5a4ef5/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/156bac230dd911bf68c3829b5c3b894d/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/156bac230dd911bf68c3829b5c3b894d/lifecycle-livedata-core-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b5dfe6af3dd7954534b4438bcba1d90d/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b5dfe6af3dd7954534b4438bcba1d90d/core-runtime-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9a4f05526b53c2565c1c1caacee90817/lifecycle-viewmodel-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/9a4f05526b53c2565c1c1caacee90817/lifecycle-viewmodel-2.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/95afded9acffd986e058c6c45e736dd2/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/95afded9acffd986e058c6c45e736dd2/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/a2e804e2d77f94fc9cb80f7c4b67b9b7/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/a2e804e2d77f94fc9cb80f7c4b67b9b7/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8e0c12a99c9748acb48587073f72d48c/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/8e0c12a99c9748acb48587073f72d48c/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0e9e6e38355c18ddc90cd7b850945194/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/0e9e6e38355c18ddc90cd7b850945194/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.multidex:multidex:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d3b9fcf6500fe0a20977acbd7e9cd790/multidex-2.0.0/AndroidManifest.xml:20:5-43
+MERGED from [androidx.multidex:multidex:2.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d3b9fcf6500fe0a20977acbd7e9cd790/multidex-2.0.0/AndroidManifest.xml:20:5-43
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/android/app/src/main/AndroidManifest.xml
+service#io.flutter.plugins.firebasemessaging.FlutterFirebaseMessagingService
+ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:8:9-12:19
+	android:name
+		ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:8:18-101
+intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
+ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:9:13-11:29
+action#com.google.firebase.MESSAGING_EVENT
+ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:10:17-78
+	android:name
+		ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:10:25-75
+service#com.google.firebase.components.ComponentDiscoveryService
+ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:13:9-17:19
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:36:9-42:19
+MERGED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:36:9-42:19
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:25:9-31:19
+MERGED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:25:9-31:19
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:14:9-20:19
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:14:9-20:19
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:32:9-36:35
+MERGED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:32:9-36:35
+	android:exported
+		ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:38:13-37
+	tools:targetApi
+		ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:36:13-32
+	android:directBootAware
+		ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:34:13-43
+	android:name
+		ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:13:18-89
+meta-data#com.google.firebase.components:io.flutter.plugins.firebasemessaging.FlutterFirebaseAppRegistrar
+ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:14:13-16:85
+	android:value
+		ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:16:17-82
+	android:name
+		ADDED from [:firebase_messaging] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:15:17-127
+service#com.google.firebase.messaging.FirebaseMessagingService
+ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:28:9-35:19
+	android:exported
+		ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:31:13-37
+	android:directBootAware
+		ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:30:13-43
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:29:13-82
+meta-data#com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar
+ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:39:13-41:85
+	android:value
+		ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:41:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/aabea83ed6f255be58ddd071acfa5b40/jetified-firebase-messaging-20.2.0/AndroidManifest.xml:40:17-119
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:7:5-79
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:22:5-79
+MERGED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:23:5-79
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:10:5-79
+MERGED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:10:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:22:5-79
+	android:name
+		ADDED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:7:22-76
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:8:5-76
+	android:name
+		ADDED from [:connectivity] /Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/connectivity/intermediates/library_manifest/release/AndroidManifest.xml:8:22-73
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:24:5-68
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:24:22-65
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:26:5-82
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:26:22-79
+meta-data#com.google.firebase.components:com.google.firebase.iid.Registrar
+ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:32:13-34:85
+	android:value
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:34:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:33:17-96
+receiver#com.google.firebase.iid.FirebaseInstanceIdReceiver
+ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:37:9-44:20
+	android:exported
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:39:13-36
+	android:permission
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:40:13-73
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:38:13-78
+intent-filter#action:name:com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:41:13-43:29
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:42:17-81
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/90fe3689b253d78f2a3d9cd9d1407a58/jetified-firebase-iid-20.2.0/AndroidManifest.xml:42:25-78
+uses-feature#0x00020000
+ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:26:5-28:35
+	android:glEsVersion
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:27:9-41
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:28:9-32
+uses-library#org.apache.http.legacy
+ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:33:9-35:40
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:35:13-37
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/560e5c357dac16db773ddf21ae0650b4/jetified-play-services-maps-17.0.0/AndroidManifest.xml:34:13-50
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:23:9-26:75
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:25:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:26:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/d8c09541878310180a89b081dfb99529/jetified-play-services-base-17.2.1/AndroidManifest.xml:24:13-79
+meta-data#com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar
+ADDED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:28:13-30:85
+	android:value
+		ADDED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:30:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-datatransport:17.0.3] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/2a563b8b878920856db220337f8e15f0/jetified-firebase-datatransport-17.0.3/AndroidManifest.xml:29:17-115
+meta-data#com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar
+ADDED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:17:13-19:85
+	android:value
+		ADDED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:19:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-installations:16.3.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/1b5ae8c4ff17aec2010b857c81bdd85f/jetified-firebase-installations-16.3.1/AndroidManifest.xml:18:17-127
+provider#com.google.firebase.provider.FirebaseInitProvider
+ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:26:9-30:39
+	android:authorities
+		ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:28:13-72
+	android:exported
+		ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:29:13-37
+	android:initOrder
+		ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:30:13-36
+	android:name
+		ADDED from [com.google.firebase:firebase-common:19.3.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/c07714d12c0b19a5ce8099a9b07fdfd3/jetified-firebase-common-19.3.0/AndroidManifest.xml:27:13-77
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:23:9-25:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:25:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:17.2.1] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7cfba5f1164bb73f3ef619ae7d3cac8f/jetified-play-services-basement-17.2.1/AndroidManifest.xml:24:13-58
+service#com.google.android.datatransport.runtime.backends.TransportBackendDiscovery
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:36:9-38:40
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:36:9-38:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:31:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:30:13-103
+meta-data#backend:com.google.android.datatransport.cct.CctBackendFactory
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:32:13-34:39
+	android:value
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:34:17-36
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/b25f2e6c56b72e7f55ae414375c3aca3/jetified-transport-backend-cct-2.2.0/AndroidManifest.xml:33:17-94
+service#com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:26:9-30:19
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:28:13-37
+	android:permission
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:29:13-69
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:27:13-117
+receiver#com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:32:9-34:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.0] /Users/ileaf-macmini/.gradle/caches/transforms-2/files-2.1/7233fd66b5ae8de784c04b520470111a/jetified-transport-runtime-2.2.0/AndroidManifest.xml:33:13-132

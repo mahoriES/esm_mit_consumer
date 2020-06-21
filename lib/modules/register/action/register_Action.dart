@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/User.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/otp/action/otp_action.dart';
 import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
@@ -29,14 +30,7 @@ class GetUserDetailAction extends ReduxAction<AppState> {
       } else {
         await UserManager.saveToken(token: authResponse.cUSTOMER.token);
 
-        var user = User(
-          id: authResponse.cUSTOMER.data.userProfile.userId,
-          firstName: authResponse.cUSTOMER.data.profileName,
-//        address: authResponse.customer.addresses.isEmpty
-//            ? ""
-//            : authResponse.customer.addresses.first.addressLine1,
-          phone: authResponse.cUSTOMER.data.userProfile.phone,
-        );
+        Data user = authResponse.cUSTOMER.data;
         await UserManager.saveUser(user).then((onValue) {
           store.dispatch(GetUserFromLocalStorageAction());
         });
@@ -74,14 +68,7 @@ class AddUserDetailAction extends ReduxAction<AppState> {
       RegisterResponse authResponse = RegisterResponse.fromJson(response.data);
       await UserManager.saveToken(token: authResponse.token);
 
-      var user = User(
-        id: authResponse.data.userProfile.userId,
-        firstName: authResponse.data.profileName,
-//        address: authResponse.customer.addresses.isEmpty
-//            ? ""
-//            : authResponse.customer.addresses.first.addressLine1,
-        phone: authResponse.data.userProfile.phone,
-      );
+      Data user = authResponse.data;
       await UserManager.saveUser(user).then((onValue) {
         store.dispatch(GetUserFromLocalStorageAction());
       });

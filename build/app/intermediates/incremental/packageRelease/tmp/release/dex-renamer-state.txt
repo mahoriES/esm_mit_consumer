@@ -1,0 +1,4 @@
+#Wed Jun 17 14:44:26 IST 2020
+base.0=/Users/ileaf-macmini/Desktop/Aneesh_Project/Esamudaay_Stable/build/app/intermediates/dex/release/shrunkDex/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

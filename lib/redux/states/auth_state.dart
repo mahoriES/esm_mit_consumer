@@ -1,6 +1,7 @@
 import 'package:esamudaayapp/models/User.dart';
 import 'package:esamudaayapp/models/api_response_handler.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/modules/home/models/cluster.dart';
 import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
@@ -19,7 +20,7 @@ class AuthState {
   final bool isLoggedIn;
   final bool isLoginSkipped;
   final Address address;
-  final User user;
+  final Data user;
   final bool isPhoneNumberValid;
   final bool isOtpEntered;
   final bool isSignUp;
@@ -60,7 +61,7 @@ class AuthState {
   }
 
   AuthState copyWith(
-      {User user,
+      {Data user,
       Address address,
       LoadingStatus loadingStatus,
       String mobileNumber,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/Profile/action/profile_update_action.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 
@@ -22,6 +25,8 @@ class _ProfileViewState extends State<ProfileView> {
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   String latitude, longitude;
+  File _image;
+  final picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +35,8 @@ class _ProfileViewState extends State<ProfileView> {
           model: _ViewModel(),
           builder: (context, snapshot) {
             nameController.text = snapshot.userName;
-            phoneNumberController.text = snapshot.userPhone;
+            phoneNumberController.text =
+                snapshot.userPhone != null ? snapshot.userPhone : "";
             if (addressController.text == "")
               addressController.text = snapshot.userAddress;
 
@@ -65,7 +71,19 @@ class _ProfileViewState extends State<ProfileView> {
                           SizedBox(
                             height: 100,
                           ),
-                          Image.asset('assets/images/user.jpg'),
+                          InkWell(
+                            onTap: () {
+                              _settingModalBottomSheet(context, snapshot);
+                            },
+                            child: Container(
+                              height: 80,
+                              width: 80,
+                              child: _image != null
+                                  ? Image.file(_image)
+                                  : Image.network(
+                                      snapshot.user.profilePic.photoUrl),
+                            ),
+                          ),
                           //name
                           Padding(
                             padding: const EdgeInsets.only(top: 20.0),
@@ -205,7 +223,7 @@ class _ProfileViewState extends State<ProfileView> {
                                           keyboardType: TextInputType.text,
                                           decoration: InputDecoration(
                                             hintText: tr(
-                                                'screen_recommended.address'),
+                                                'screen_register.address.title'),
                                             border: InputBorder.none,
                                             focusedBorder: InputBorder.none,
                                             enabledBorder: InputBorder.none,
@@ -298,12 +316,7 @@ class _ProfileViewState extends State<ProfileView> {
                                         msg: tr(
                                             'screen_phone.valid_phone_error_message'));
                                   } else {
-                                    snapshot.profileUpdate(ProfileUpdateRequest(
-                                        latitude: latitude,
-                                        longitude: longitude,
-                                        phoneNumber: snapshot.userPhone,
-                                        name: nameController.text,
-                                        address: addressController.text));
+                                    snapshot.profileUpdate(_image, null);
                                   }
                                 } else {
                                   Fluttertoast.showToast(
@@ -390,6 +403,49 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  void _settingModalBottomSheet(context, _ViewModel snapshot) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: new Wrap(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Center(child: Text("Image Upload From ?")),
+                ),
+                new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () => {imageSelectorCamera(snapshot)}),
+                new ListTile(
+                  leading: new Icon(Icons.photo_album),
+                  title: new Text('Gallery'),
+                  onTap: () => {imageSelectorGallery(snapshot)},
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  imageSelectorGallery(_ViewModel snapshot) async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile.path);
+//      snapshot.profileUpdate(_image);
+    });
+  }
+
+  //display image selected from camera
+  imageSelectorCamera(_ViewModel snapshot) async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    setState(() {
+      _image = File(pickedFile.path);
+//      snapshot.profileUpdate(_image);
+    });
+  }
+
   void dispose() {
     nameController.dispose();
     addressController.dispose();
@@ -400,13 +456,15 @@ class _ProfileViewState extends State<ProfileView> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+  Data user;
   LoadingStatus loadingStatus;
-  Function(ProfileUpdateRequest request) profileUpdate;
+  Function(File image, String address) profileUpdate;
   Function navigateToHomePage;
   bool isPhoneNumberValid;
   String userPhone;
   String userName;
   String userAddress;
+
   _ViewModel.build(
       {this.navigateToHomePage,
       this.profileUpdate,
@@ -414,29 +472,35 @@ class _ViewModel extends BaseModel<AppState> {
       this.isPhoneNumberValid,
       this.userPhone,
       this.userName,
-      this.userAddress})
+      this.userAddress,
+      this.user})
       : super(equals: [
           loadingStatus,
           isPhoneNumberValid,
           userPhone,
           userName,
-          userAddress
+          userAddress,
+          user
         ]);
 
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        userPhone: state.authState.user.phone,
-        userName: state.authState.user.firstName,
-        userAddress: state.authState.user.address,
-        isPhoneNumberValid: state.authState.isPhoneNumberValid,
+        user: state.authState.user,
+        userAddress: "",
         loadingStatus: state.authState.loadingStatus,
         navigateToHomePage: () {
           //dispatch(NavigateAction.pushNamed('/myHomeView'));
         },
-        profileUpdate: (request) {
-          dispatch(UpdateProfileAction(request: request));
+        profileUpdate: (image, address) {
+          if (image != null) {
+            dispatch(UploadImageAction(imageFile: image));
+          } else if (address != null) {
+            dispatch(UpdateAddressAction());
+          }
+
+          ///dispatch(UpdateProfileAction(request: request));
         });
   }
 }

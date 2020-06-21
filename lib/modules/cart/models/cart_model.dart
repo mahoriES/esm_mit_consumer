@@ -108,6 +108,7 @@ class PlaceOrderResponse {
   List<OrderTrail> orderTrail;
   String created;
   String modified;
+  Rating rating;
 
   PlaceOrderResponse(
       {this.orderId,
@@ -128,7 +129,8 @@ class PlaceOrderResponse {
       this.otherChargesDetail,
       this.orderTrail,
       this.created,
-      this.modified});
+      this.modified,
+      this.rating});
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
@@ -177,6 +179,8 @@ class PlaceOrderResponse {
     }
     created = json['created'];
     modified = json['modified'];
+    rating =
+        json['rating'] != null ? new Rating.fromJson(json['rating']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -212,6 +216,28 @@ class PlaceOrderResponse {
     }
     data['created'] = this.created;
     data['modified'] = this.modified;
+    if (this.rating != null) {
+      data['rating'] = this.rating.toJson();
+    }
+    return data;
+  }
+}
+
+class Rating {
+  int ratingValue;
+  String ratingComment;
+
+  Rating({this.ratingValue, this.ratingComment});
+
+  Rating.fromJson(Map<String, dynamic> json) {
+    ratingValue = json['rating_value'];
+    ratingComment = json['rating_comment'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['rating_value'] = this.ratingValue;
+    data['rating_comment'] = this.ratingComment;
     return data;
   }
 }

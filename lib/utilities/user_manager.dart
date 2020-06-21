@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:esamudaayapp/models/User.dart';
+import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/repository/cart_datasourse.dart';
 import 'package:esamudaayapp/repository/database_manage.dart';
@@ -9,11 +10,11 @@ import 'package:esamudaayapp/utilities/stringConstants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserManager {
-  static Future<User> userDetails() async {
+  static Future<Data> userDetails() async {
     var dbClient = await DatabaseManager().db;
     List<Map> maps = await dbClient.rawQuery('SELECT * FROM User');
     if (maps.length > 0) {
-      return User.fromJson(maps.first);
+      return Data.fromJson(maps.first);
     }
     return null;
   }
@@ -110,7 +111,7 @@ class UserManager {
     await prefs.setString(fcmToken, token);
   }
 
-  static Future<int> saveUser(User user) async {
+  static Future<int> saveUser(Data user) async {
     var dbClient = await DatabaseManager().db;
     int resp = await dbClient.delete('User');
     int res = await dbClient.insert("User", user.toJson());

@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/User.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
+import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
 import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
@@ -982,7 +983,7 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatus loadingStatus;
   Function(Business) updateSelectedMerchant;
   Address address;
-  User user;
+  Data user;
   _ViewModel();
   _ViewModel.build(
       {this.localCart,

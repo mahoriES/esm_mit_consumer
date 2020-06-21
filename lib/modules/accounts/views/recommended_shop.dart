@@ -441,7 +441,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        userPhone: state.authState.user.phone,
+        userPhone: state.authState.user.userProfile.phone,
         isPhoneNumberValid: state.authState.isPhoneNumberValid,
         loadingStatus: state.authState.loadingStatus,
         navigateToHomePage: () {

@@ -297,24 +297,17 @@ class _ViewModel extends BaseModel<AppState> {
       this.sendSupportRequest,
       this.userId,
       this.userEmail})
-      : super(equals: [
-          loadingStatus,
-          orderId,
-          userName,
-          userPhone,
-          userId,
-          userEmail
-        ]);
+      : super(equals: [loadingStatus, orderId, userName, userPhone, userId]);
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
-        userName: state.authState.user.firstName,
-        userPhone: state.authState.user.phone,
+        userName: state.authState.user.profileName,
+        userPhone: state.authState.user.userProfile.phone,
         orderId: state.productState.supportOrder,
-        userId: state.authState.user.id,
-        userEmail: state.authState.user.email,
+        userId: state.authState.user.userProfile.userId,
+//        userEmail: state.authState.user.email,
         sendSupportRequest: (request) {
           dispatch(SupportAPIAction(request: request));
         });
