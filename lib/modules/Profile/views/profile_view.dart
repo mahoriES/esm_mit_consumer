@@ -4,9 +4,12 @@ import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/Profile/action/profile_update_action.dart';
 import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
+import 'package:esamudaayapp/modules/address/actions/address_actions.dart';
+import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/keys.dart';
+import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,6 +30,15 @@ class _ProfileViewState extends State<ProfileView> {
   String latitude, longitude;
   File _image;
   final picker = ImagePicker();
+  Address address;
+
+  getAddress(_ViewModel snapshot) async {
+    address = await UserManager.getAddress();
+    if (address != null) {
+      addressController.text = address.prettyAddress;
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,11 +46,11 @@ class _ProfileViewState extends State<ProfileView> {
           onInit: (store) {},
           model: _ViewModel(),
           builder: (context, snapshot) {
-            nameController.text = snapshot.userName;
-            phoneNumberController.text =
-                snapshot.userPhone != null ? snapshot.userPhone : "";
-            if (addressController.text == "")
-              addressController.text = snapshot.userAddress;
+            getAddress(snapshot);
+            nameController.text = snapshot.user.profileName;
+            phoneNumberController.text = snapshot.user.userProfile.phone != null
+                ? snapshot.user.userProfile.phone
+                : "";
 
             return WillPopScope(
               onWillPop: () async {
@@ -78,10 +90,24 @@ class _ProfileViewState extends State<ProfileView> {
                             child: Container(
                               height: 80,
                               width: 80,
-                              child: _image != null
-                                  ? Image.file(_image)
-                                  : Image.network(
-                                      snapshot.user.profilePic.photoUrl),
+                              decoration: new BoxDecoration(
+                                  boxShadow: [
+                                    new BoxShadow(
+                                      color: Colors.white30,
+                                      blurRadius: 0.0,
+                                    ),
+                                  ],
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: _image != null
+                                          ? FileImage(_image)
+                                          : snapshot.user.profilePic.photoUrl !=
+                                                  null
+                                              ? new NetworkImage(snapshot
+                                                  .user.profilePic.photoUrl)
+                                              : AssetImage(
+                                                  'assets/images/user.jpg'))),
                             ),
                           ),
                           //name
@@ -165,11 +191,6 @@ class _ProfileViewState extends State<ProfileView> {
                                           decoration: InputDecoration(
                                             hintText:
                                                 tr('screen_recommended.phone'),
-                                            errorText: snapshot
-                                                    .isPhoneNumberValid
-                                                ? null
-                                                : tr(
-                                                    'screen_phone.valid_phone_error_message'),
                                             border: InputBorder.none,
                                             focusedBorder: InputBorder.none,
                                             enabledBorder: InputBorder.none,
@@ -316,7 +337,23 @@ class _ProfileViewState extends State<ProfileView> {
                                         msg: tr(
                                             'screen_phone.valid_phone_error_message'));
                                   } else {
-                                    snapshot.profileUpdate(_image, null);
+                                    snapshot.profileUpdate(
+                                        _image,
+                                        addressController.text !=
+                                                address.prettyAddress
+                                            ? AddressRequest(
+                                                addressName:
+                                                    nameController.text,
+                                                lat: latitude != null
+                                                    ? double.parse(latitude)
+                                                    : 0.0,
+                                                lon: longitude != null
+                                                    ? double.parse(longitude)
+                                                    : 0.0,
+                                                prettyAddress:
+                                                    addressController.text,
+                                                geoAddr: GeoAddr(pincode: ""))
+                                            : null);
                                   }
                                 } else {
                                   Fluttertoast.showToast(
@@ -417,11 +454,17 @@ class _ProfileViewState extends State<ProfileView> {
                 new ListTile(
                     leading: new Icon(Icons.photo_camera),
                     title: new Text('Camera'),
-                    onTap: () => {imageSelectorCamera(snapshot)}),
+                    onTap: () {
+                      imageSelectorCamera(snapshot);
+                      Navigator.pop(context);
+                    }),
                 new ListTile(
                   leading: new Icon(Icons.photo_album),
                   title: new Text('Gallery'),
-                  onTap: () => {imageSelectorGallery(snapshot)},
+                  onTap: () {
+                    imageSelectorGallery(snapshot);
+                    Navigator.pop(context);
+                  },
                 ),
               ],
             ),
@@ -456,9 +499,10 @@ class _ProfileViewState extends State<ProfileView> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+  Function() getAddress;
   Data user;
   LoadingStatus loadingStatus;
-  Function(File image, String address) profileUpdate;
+  Function(File image, AddressRequest address) profileUpdate;
   Function navigateToHomePage;
   bool isPhoneNumberValid;
   String userPhone;
@@ -473,7 +517,8 @@ class _ViewModel extends BaseModel<AppState> {
       this.userPhone,
       this.userName,
       this.userAddress,
-      this.user})
+      this.user,
+      this.getAddress})
       : super(equals: [
           loadingStatus,
           isPhoneNumberValid,
@@ -493,11 +538,14 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToHomePage: () {
           //dispatch(NavigateAction.pushNamed('/myHomeView'));
         },
+        getAddress: () {
+          dispatch(GetAddressAction());
+        },
         profileUpdate: (image, address) {
           if (image != null) {
             dispatch(UploadImageAction(imageFile: image));
           } else if (address != null) {
-            dispatch(UpdateAddressAction());
+            dispatch(AddAddressAction(request: address));
           }
 
           ///dispatch(UpdateProfileAction(request: request));

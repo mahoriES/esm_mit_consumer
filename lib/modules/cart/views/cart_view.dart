@@ -64,6 +64,9 @@ class _CartViewState extends State<CartView> {
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) {
+            _radioValue = _radioValue == 0
+                ? store.state.productState.selectedMerchand.hasDelivery ? 1 : 2
+                : _radioValue;
             if (store.state.productState.localCartItems.isNotEmpty) {
               store.dispatch(GetOrderTaxAction());
             }
@@ -73,7 +76,9 @@ class _CartViewState extends State<CartView> {
               inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
               child: Container(
                 child: snapshot.localCart.isEmpty
-                    ? EmptyView()
+                    ? snapshot.loadingStatus != LoadingStatus.loading
+                        ? EmptyView()
+                        : Container()
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -836,24 +841,32 @@ class _CartViewState extends State<CartView> {
                                     msg: "please select Delivery / Pickup");
 //                                return;
                               } else {
-                                var address = await UserManager.getAddress();
-                                List<Product> cart =
-                                    await CartDataSource.getListOfCartWith();
+                                if (snapshot.selectedMerchant.isOpen) {
+                                  var address = await UserManager.getAddress();
+                                  List<Product> cart =
+                                      await CartDataSource.getListOfCartWith();
 
-                                PlaceOrderRequest request = PlaceOrderRequest();
-                                request.businessId =
-                                    snapshot.selectedMerchant.businessId;
-                                request.deliveryAddressId = address.addressId;
-                                request.deliveryType = _radioValue == 1
-                                    ? "DA_DELIVERY"
-                                    : "SELF_PICK_UP";
-                                request.orderItems = cart
-                                    .map((e) => OrderItems(
-                                        skuId: e.skus.first.skuId,
-                                        quantity: e.count))
-                                    .toList();
+                                  PlaceOrderRequest request =
+                                      PlaceOrderRequest();
+                                  request.businessId =
+                                      snapshot.selectedMerchant.businessId;
+                                  request.deliveryAddressId = _radioValue == 1
+                                      ? address.addressId
+                                      : null;
+                                  request.deliveryType = _radioValue == 1
+                                      ? "DA_DELIVERY"
+                                      : "SELF_PICK_UP";
+                                  request.orderItems = cart
+                                      .map((e) => OrderItems(
+                                          skuId: e.skus.first.skuId,
+                                          quantity: e.count))
+                                      .toList();
 
-                                snapshot.placeOrder(request);
+                                  snapshot.placeOrder(request);
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: "The shop is closed");
+                                }
                               }
                             },
                           )

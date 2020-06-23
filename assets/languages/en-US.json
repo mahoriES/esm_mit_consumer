@@ -25,7 +25,7 @@
   "screen_otp": {
     "get_otp": "Get OTP",
     "resend_otp": "Resend OTP",
-    "hint_text": "We are trying to auto verify your number with SMS sent to",
+    "hint_text": "Please enter the OTP sent to",
     "resend_text": "Resend in",
     "sec": "sec",
     "verify": "Verify",
@@ -61,7 +61,7 @@
       "orders": "ORDERS",
       "account": "ACCOUNT"
     },
-    "store_near_you": "Stores near you"
+    "store_near_you": "Stores in your circle"
 
   },
 
@@ -147,7 +147,9 @@
     "pending": "Pending confirmation",
     "accept_order": "Accept order",
     "on_the_way" : "On the way",
-    "processing": "Processing"
+    "processing": "Processing",
+    "empty_pro": "Empty",
+    "empty_pro_hint": "Look like there is no item to show"
   },
 
   "screen_support": {

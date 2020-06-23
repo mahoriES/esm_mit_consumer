@@ -15,6 +15,7 @@ import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePageMainView extends StatefulWidget {
   @override
@@ -23,6 +24,26 @@ class HomePageMainView extends StatefulWidget {
 
 class _HomePageMainViewState extends State<HomePageMainView> {
   String address = "";
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    snapshot.getMerchantList();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+//    items.add((items.length + 1).toString());
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return UserExceptionDialog<AppState>(
@@ -71,23 +92,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     ),
                   );
                 }),
-//            StoreConnector<AppState, _ViewModel>(
-//                onInit: (store) {
-////                store.dispatch(GetLocationAction());
-//                  store.dispatch(GetCartFromLocal());
-//                  store.dispatch(GetUserFromLocalStorageAction());
-//                },
-//                model: _ViewModel(),
-//                builder: (context, snapshot) {
-//                  return IconButton(
-//                      icon: ImageIcon(
-//                        AssetImage('assets/images/search_icon.png'),
-//                        color: Colors.grey,
-//                      ),
-//                      onPressed: () {
-//                        snapshot.navigateToProductSearch();
-//                      });
-//                }),
             NavigationNotificationItem(
               icon: Icon(
                 Icons.notifications_none,
@@ -102,104 +106,137 @@ class _HomePageMainViewState extends State<HomePageMainView> {
               return ModalProgressHUD(
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading &&
                     snapshot.merchants.isEmpty,
-                child: ListView(
-                  padding: EdgeInsets.all(15.0),
-                  children: <Widget>[
-                    snapshot.banners.isEmpty
-                        ? Container()
-                        : CarouselSlider(
-                            enlargeCenterPage: true,
-                            items: snapshot.banners.isEmpty
-                                ? [Container()]
-                                : snapshot.banners
-                                    .map((banner) => Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 2.0, right: 2.0),
-                                          child: InkWell(
-                                            onTap: () {},
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(15.0)),
-                                              child: CachedNetworkImage(
-                                                  height: 500.0,
-                                                  fit: BoxFit.cover,
-                                                  imageUrl: banner.photoUrl,
-                                                  placeholder: (context, url) =>
-                                                      CupertinoActivityIndicator(),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      Center(
-                                                        child:
-                                                            Icon(Icons.error),
-                                                      )),
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  header: WaterDropHeader(),
+                  footer: CustomFooter(
+                    builder: (BuildContext context, LoadStatus mode) {
+                      Widget body;
+                      if (mode == LoadStatus.idle) {
+                        body = Text("");
+                      } else if (mode == LoadStatus.loading) {
+                        body = CupertinoActivityIndicator();
+                      } else if (mode == LoadStatus.failed) {
+                        body = Text("Load Failed!Click retry!");
+                      } else if (mode == LoadStatus.canLoading) {
+                        body = Text("");
+                      } else {
+                        body = Text("No more Data");
+                      }
+                      return Container(
+                        height: 55.0,
+                        child: Center(child: body),
+                      );
+                    },
+                  ),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    _onRefresh(snapshot);
+                  },
+                  onLoading: _onLoading,
+                  child: ListView(
+                    padding: EdgeInsets.all(15.0),
+                    children: <Widget>[
+                      snapshot.banners.isEmpty
+                          ? Container()
+                          : CarouselSlider(
+                              enlargeCenterPage: true,
+                              items: snapshot.banners.isEmpty
+                                  ? [Container()]
+                                  : snapshot.banners
+                                      .map((banner) => Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 2.0, right: 2.0),
+                                            child: InkWell(
+                                              onTap: () {},
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(15.0)),
+                                                child: CachedNetworkImage(
+                                                    height: 500.0,
+                                                    fit: BoxFit.cover,
+                                                    imageUrl: banner.photoUrl,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        CupertinoActivityIndicator(),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        Center(
+                                                          child:
+                                                              Icon(Icons.error),
+                                                        )),
+                                              ),
                                             ),
-                                          ),
-                                        ))
-                                    .toList(),
-                            height: 200,
-                            aspectRatio: 16 / 9,
-                            viewportFraction: 1.0,
-                            initialPage: 0,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 3),
-                            autoPlayAnimationDuration:
-                                Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            pauseAutoPlayOnTouch: Duration(seconds: 10),
+                                          ))
+                                      .toList(),
+                              height: 200,
+                              aspectRatio: 16 / 9,
+                              viewportFraction: 1.0,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: Duration(seconds: 3),
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              pauseAutoPlayOnTouch: Duration(seconds: 10),
 //                  enlargeCenterPage: true,
-                            scrollDirection: Axis.horizontal,
-                          ),
-                    // Stores near you
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 10),
-                      child: Text('screen_home.store_near_you',
-                              style: const TextStyle(
-                                  color: const Color(0xff2c2c2c),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: "Avenir",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 16.0),
-                              textAlign: TextAlign.left)
-                          .tr(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                              onTap: () {
-                                snapshot.updateSelectedMerchant(
-                                    snapshot.merchants[index]);
-                                snapshot.navigateToStoreDetailsPage();
-                              },
-                              child: StoresListView(
-                                items: snapshot.merchants[index]?.description ??
-                                    "",
-                                shopImage: snapshot.merchants[index].images ==
-                                            null ||
-                                        snapshot.merchants[index].images.isEmpty
-                                    ? null
-                                    : snapshot
-                                        .merchants[index].images.first.photoUrl,
-                                name: snapshot.merchants[index].businessName,
-                                deliveryStatus:
-                                    snapshot.merchants[index].hasDelivery,
-                                shopClosed: snapshot.merchants[index].isOpen,
-                              ));
-                        },
-                        itemCount: snapshot.merchants.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Container(
-                            height: 10,
-                          );
-                        },
+                              scrollDirection: Axis.horizontal,
+                            ),
+                      // Stores near you
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text('screen_home.store_near_you',
+                                style: const TextStyle(
+                                    color: const Color(0xff2c2c2c),
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.0),
+                                textAlign: TextAlign.left)
+                            .tr(),
                       ),
-                    )
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                                onTap: () {
+                                  snapshot.updateSelectedMerchant(
+                                      snapshot.merchants[index]);
+                                  snapshot.navigateToStoreDetailsPage();
+                                },
+                                child: StoresListView(
+                                  items:
+                                      snapshot.merchants[index]?.description ??
+                                          "",
+                                  shopImage: snapshot.merchants[index].images ==
+                                              null ||
+                                          snapshot
+                                              .merchants[index].images.isEmpty
+                                      ? null
+                                      : snapshot.merchants[index].images.first
+                                          .photoUrl,
+                                  name: snapshot.merchants[index].businessName,
+                                  deliveryStatus:
+                                      snapshot.merchants[index].hasDelivery,
+                                  shopClosed: !snapshot.merchants[index].isOpen,
+                                ));
+                          },
+                          itemCount: snapshot.merchants.length,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Container(
+                              height: 10,
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               );
             }),
@@ -344,6 +381,7 @@ class StoresListView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+  Function getMerchantList;
   String userAddress;
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
@@ -368,7 +406,8 @@ class _ViewModel extends BaseModel<AppState> {
       this.loadingStatus,
       this.merchants,
       this.userAddress,
-      this.updateSelectedMerchant})
+      this.updateSelectedMerchant,
+      this.getMerchantList})
       : super(equals: [
           currentIndex,
           merchants,
@@ -401,6 +440,9 @@ class _ViewModel extends BaseModel<AppState> {
         },
         navigateToProductSearch: () {
           dispatch(UpdateSelectedTabAction(1));
+        },
+        getMerchantList: () {
+          dispatch(GetMerchantDetails());
         },
         currentIndex: state.homePageState.currentIndex);
   }

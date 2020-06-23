@@ -290,9 +290,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .all(25.0),
+                                                                .all(15.0),
                                                         child:
                                                             CachedNetworkImage(
+                                                                height: 75,
                                                                 fit: BoxFit
                                                                     .cover,
 //                                                  height: 80,
@@ -301,12 +302,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                                             index]
                                                                         .images
                                                                         .isEmpty
-                                                                    ? null
+                                                                    ? ""
                                                                     : snapshot
                                                                         .categories[
                                                                             index]
                                                                         .images
-                                                                        .first,
+                                                                        .first
+                                                                        .photoUrl,
                                                                 placeholder: (context,
                                                                         url) =>
                                                                     Container(

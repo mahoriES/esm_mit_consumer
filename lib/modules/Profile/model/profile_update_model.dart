@@ -1,3 +1,5 @@
+import 'package:esamudaayapp/modules/address/models/addess_models.dart';
+
 class UpdateProfile {
   String role;
   String profileName;
@@ -213,25 +215,6 @@ class AddAddress {
     if (this.geoAddr != null) {
       data['geo_addr'] = this.geoAddr.toJson();
     }
-    return data;
-  }
-}
-
-class GeoAddr {
-  String pincode;
-  String city;
-
-  GeoAddr({this.pincode, this.city});
-
-  GeoAddr.fromJson(Map<String, dynamic> json) {
-    pincode = json['pincode'];
-    city = json['city'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['pincode'] = this.pincode;
-    data['city'] = this.city;
     return data;
   }
 }

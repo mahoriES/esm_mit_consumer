@@ -46,7 +46,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       child: OrdersListView(
                         isExpanded: expandFlag,
                         orderId: snapshot.getOrderListResponse
-                            .results[widget.merchantIndex].orderId,
+                            .results[widget.merchantIndex].orderShortNumber,
                         shopImage: snapshot
                                         .getOrderListResponse
                                         .results[widget.merchantIndex]
@@ -154,10 +154,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   // Faux Sued Ankle Mango - 500 GM x 3
                                   Text(
                                       snapshot
-                                          .getOrderListResponse
-                                          .results[widget.merchantIndex]
-                                          .orderItems[index]
-                                          .productName,
+                                              .getOrderListResponse
+                                              .results[widget.merchantIndex]
+                                              .orderItems[index]
+                                              .productName +
+                                          "${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size + snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].unitName : ""}"
+                                              " -  x " +
+                                          snapshot
+                                              .getOrderListResponse
+                                              .results[widget.merchantIndex]
+                                              .orderItems[index]
+                                              .quantity
+                                              .toString(),
                                       style: const TextStyle(
                                           color: const Color(0xff7c7c7c),
                                           fontWeight: FontWeight.w400,

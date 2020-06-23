@@ -16,11 +16,10 @@ class TextInputBG extends StatelessWidget {
 //        border: Border.all(color: Colors.redAccent),
         boxShadow: [
           BoxShadow(
-            color: Color(0x80c7d0f8),
-            offset: Offset(0, 6),
-            blurRadius: 20,
-            spreadRadius: 0,
-          ),
+              color: const Color(0x80c7d0f8),
+              offset: Offset(0, 6),
+              blurRadius: 5,
+              spreadRadius: 0)
         ],
       ),
       child: Opacity(

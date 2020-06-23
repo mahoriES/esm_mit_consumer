@@ -91,6 +91,7 @@ class PlaceOrderRequest {
 class PlaceOrderResponse {
   String orderId;
   String orderShortNumber;
+  String businessId;
   String deliveryType;
   String orderStatus;
   int itemTotal;
@@ -130,10 +131,12 @@ class PlaceOrderResponse {
       this.orderTrail,
       this.created,
       this.modified,
-      this.rating});
+      this.rating,
+      this.businessId});
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
+    businessId = json['business_id'];
     orderShortNumber = json['order_short_number'];
     deliveryType = json['delivery_type'];
     orderStatus = json['order_status'];
@@ -186,6 +189,7 @@ class PlaceOrderResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['order_id'] = this.orderId;
+    data['business_id'] = this.businessId;
     data['order_short_number'] = this.orderShortNumber;
     data['delivery_type'] = this.deliveryType;
     data['order_status'] = this.orderStatus;

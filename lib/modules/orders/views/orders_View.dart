@@ -13,9 +13,11 @@ import 'package:esamudaayapp/store.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrdersView extends StatefulWidget {
@@ -24,6 +26,26 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    snapshot.getOrderList();
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+//    items.add((items.length + 1).toString());
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,131 +76,163 @@ class _OrdersViewState extends State<OrdersView> {
                 child: (snapshot.getOrderListResponse == null ||
                         snapshot.getOrderListResponse.results == null ||
                         snapshot.getOrderListResponse.results.isEmpty)
-                    ? Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Stack(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: ClipPath(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.45,
-                                      color: const Color(0xfff0f0f0),
-                                    ),
-                                    clipper: CustomClipPath(),
-                                  ),
-                                ),
-                                Positioned(
-                                    bottom: 20,
-                                    right: MediaQuery.of(context).size.width *
-                                        0.15,
-                                    child: Image.asset(
-                                      'assets/images/clipart.png',
-                                      fit: BoxFit.cover,
-                                    )),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 50,
-                            ),
-                            Text('screen_order.not_found',
-                                    style: const TextStyle(
-                                        color: const Color(0xff1f1f1f),
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: "Avenir",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 20.0),
-                                    textAlign: TextAlign.left)
-                                .tr(),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 30.0, right: 30),
-                              child: Text('screen_order.empty_content',
-                                      maxLines: 2,
-                                      style: const TextStyle(
-                                          color: const Color(0xff6f6d6d),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 16.0),
-                                      textAlign: TextAlign.center)
-                                  .tr(),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                snapshot.viewStore();
-                              },
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: Container(
-                                  height: 46,
-                                  width: 160,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff5091cd),
-                                    borderRadius: BorderRadius.circular(23),
-                                  ),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          'common.view_store',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontFamily: 'Avenir',
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ).tr(),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? snapshot.loadingStatus == LoadingStatus.loading
+                        ? buildEmptyView(context, snapshot)
+                        : Container()
                     : Container(
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder:
-                              (BuildContext context, int merchantIndex) {
-                            return NewWidget(
-                              orderId: snapshot.getOrderListResponse
-                                  .results[merchantIndex].orderId,
-                              snapshot: snapshot,
-                              merchantIndex: merchantIndex,
-                              orderStatus: snapshot.getOrderListResponse
-                                  .results[merchantIndex].orderStatus,
-                            );
+                        child: SmartRefresher(
+                          enablePullDown: true,
+                          enablePullUp: true,
+                          header: WaterDropHeader(),
+                          footer: CustomFooter(
+                            builder: (BuildContext context, LoadStatus mode) {
+                              Widget body;
+                              if (mode == LoadStatus.idle) {
+                                body = Text("");
+                              } else if (mode == LoadStatus.loading) {
+                                body = CupertinoActivityIndicator();
+                              } else if (mode == LoadStatus.failed) {
+                                body = Text("Load Failed!Click retry!");
+                              } else if (mode == LoadStatus.canLoading) {
+                                body = Text("");
+                              } else {
+                                body = Text("No more Data");
+                              }
+                              return Container(
+                                height: 55.0,
+                                child: Center(child: body),
+                              );
+                            },
+                          ),
+                          controller: _refreshController,
+                          onRefresh: () {
+                            _onRefresh(snapshot);
                           },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Container(
-                              height: 20,
-                              color: Color(0xfff2f2f2),
-                            );
-                          },
-                          itemCount:
-                              snapshot.getOrderListResponse.results.length,
+                          onLoading: _onLoading,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemBuilder:
+                                (BuildContext context, int merchantIndex) {
+                              return NewWidget(
+                                orderId: snapshot.getOrderListResponse
+                                    .results[merchantIndex].orderId,
+                                snapshot: snapshot,
+                                merchantIndex: merchantIndex,
+                                orderStatus: snapshot.getOrderListResponse
+                                    .results[merchantIndex].orderStatus,
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 20,
+                                color: Color(0xfff2f2f2),
+                              );
+                            },
+                            itemCount:
+                                snapshot.getOrderListResponse.results.length,
+                          ),
                         ),
                       ),
               );
             }));
+  }
+
+  Container buildEmptyView(BuildContext context, _ViewModel snapshot) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: ClipPath(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    color: const Color(0xfff0f0f0),
+                  ),
+                  clipper: CustomClipPath(),
+                ),
+              ),
+              Positioned(
+                  bottom: 20,
+                  right: MediaQuery.of(context).size.width * 0.15,
+                  child: Image.asset(
+                    'assets/images/clipart.png',
+                    fit: BoxFit.cover,
+                  )),
+            ],
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Text('screen_order.not_found',
+                  style: const TextStyle(
+                      color: const Color(0xff1f1f1f),
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "Avenir",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 20.0),
+                  textAlign: TextAlign.left)
+              .tr(),
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0, right: 30),
+            child: Text('screen_order.empty_content',
+                    maxLines: 2,
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                    textAlign: TextAlign.center)
+                .tr(),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          InkWell(
+            onTap: () {
+              snapshot.viewStore();
+            },
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                height: 46,
+                width: 160,
+                decoration: BoxDecoration(
+                  color: Color(0xff5091cd),
+                  borderRadius: BorderRadius.circular(23),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'common.view_store',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontFamily: 'Avenir',
+                          fontWeight: FontWeight.w900,
+                        ),
+                        textAlign: TextAlign.center,
+                      ).tr(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -355,6 +409,10 @@ class OrderItemBottomView extends StatelessWidget {
                                   var address = await UserManager.getAddress();
                                   PlaceOrderRequest request =
                                       PlaceOrderRequest();
+                                  request.businessId = snapshot
+                                      .getOrderListResponse
+                                      .results[index]
+                                      .businessId;
                                   request.deliveryAddressId = address.addressId;
                                   request.deliveryType = snapshot
                                       .getOrderListResponse
@@ -710,6 +768,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String) acceptOrder;
   Function(String) cancelOrder;
   LoadingStatus loadingStatus;
+  Function getOrderList;
   _ViewModel();
   _ViewModel.build(
       {this.getOrderListResponse,
@@ -718,7 +777,8 @@ class _ViewModel extends BaseModel<AppState> {
       this.cancelOrder,
       this.acceptOrder,
       this.loadingStatus,
-      this.viewStore})
+      this.viewStore,
+      this.getOrderList})
       : super(equals: [getOrderListResponse, loadingStatus]);
   @override
   BaseModel fromStore() {
@@ -726,6 +786,9 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         updateOrderId: (value) {
           dispatch(OrderSupportAction(orderId: value));
+        },
+        getOrderList: () {
+          dispatch(GetOrderListAPIAction());
         },
         loadingStatus: state.authState.loadingStatus,
         getOrderListResponse: state.productState.getOrderListResponse,

@@ -9,12 +9,14 @@
          FlutterApplication and put your custom class here. -->
 
     <application
+
         android:name="io.flutter.app.FlutterApplication"
         android:label="esamudaayapp"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD3ZjnWwt13LsCqxFDAaONroroB9PbtAX8"/>
+            android:value="AIzaSyB-RQkEISTyRxtZhAuLjjK6_TKGW8-Y6ws"/>
         <activity
+
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

@@ -298,7 +298,7 @@ class PossibleVariations {
   PossibleVariations({this.size});
 
   PossibleVariations.fromJson(Map<String, dynamic> json) {
-    size = json['Size'].cast<String>();
+    size = json['Size'] != null ? json['Size'].cast<String>() : null;
   }
 
   Map<String, dynamic> toJson() {

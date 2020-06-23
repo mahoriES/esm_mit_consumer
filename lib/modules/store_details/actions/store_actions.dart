@@ -42,16 +42,6 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
           }
         });
       });
-//      products.sort((a, b) {
-//        bool aOutOfStock = a.inStock;
-//        bool bOutOfStock = b.restockingAt == null ||
-//            (DateTime.fromMillisecondsSinceEpoch(
-//                        int.parse(b.restockingAt) * 1000))
-//                    .difference(DateTime.now())
-//                    .inSeconds <=
-//                0;
-//        return bOutOfStock.toString().compareTo(aOutOfStock.toString());
-//      });
 
       return state.copyWith(
           productState:

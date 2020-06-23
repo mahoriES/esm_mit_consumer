@@ -22,12 +22,14 @@ import 'package:esamudaayapp/presentations/splash_screen.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/store.dart';
 import 'package:esamudaayapp/utilities/push_notification.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'modules/About/view/about_view.dart';
 import 'modules/language/view/language_view.dart';
 import 'modules/otp/view/otp_view.dart';
 
@@ -36,6 +38,10 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() {
   NavigateAction.setNavigatorKey(navigatorKey);
+  Crashlytics.instance.enableInDevMode = true;
+
+  // Pass all uncaught errors from the framework to Crashlytics.
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runApp(EasyLocalization(
     child: MyAppBase(),
@@ -84,7 +90,7 @@ class _MyAppState extends State<MyApp> {
           return CustomSplashScreen(
             errorSplash: errorSplash(),
             backgroundColor: Colors.white,
-            loadingSplash: loadingSplash(),
+            loadingSplash: null,
             seconds: 0,
             home: CheckUser(builder: (context, snapshot) {
               return snapshot
@@ -108,7 +114,11 @@ class _MyAppState extends State<MyApp> {
 
   Widget loadingSplash() {
     return Container(
-      child: Center(child: Image.asset('assets/images/app_main_icon.png')),
+      child: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(100.0),
+        child: Image.asset('assets/images/app_main_icon.png'),
+      )),
     );
   }
 }
@@ -164,6 +174,7 @@ class MyAppBase extends StatelessWidget {
           "/Support": (BuildContext context) => Support(),
           "/RecommendShop": (BuildContext context) => RecommendedShop(),
           "/profile": (BuildContext context) => ProfileView(),
+          "/about": (BuildContext context) => AboutView(),
 
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
@@ -217,7 +228,13 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      child: Center(child: Image.asset('assets/images/app_main_icon.png')),
+      child: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Hero(
+            tag: "#image",
+            child: Image.asset('assets/images/app_main_icon.png')),
+      )),
     );
   }
 

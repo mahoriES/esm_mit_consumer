@@ -4,16 +4,19 @@ import 'package:esamudaayapp/main.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
 import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
+import 'package:esamudaayapp/modules/cart/views/cart_view.dart';
 import 'package:esamudaayapp/modules/home/models/category_response.dart';
 import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
 import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/store.dart';
+import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class StoreProductListingView extends StatefulWidget {
   @override
@@ -59,13 +62,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
   @override
   void initState() {
-//    store.state.productState.selectedMerchand.categories
-//        .asMap()
-//        .forEach((index, a) {
-//      if (a.id == store.state.productState.selectedCategory.id) {
-//        _currentPosition = index + 1;
-//      }
-//    });
+    store.state.productState.categories.asMap().forEach((index, a) {
+      if (a.categoryId ==
+          store.state.productState.selectedCategory.categoryId) {
+        _currentPosition = index;
+      }
+    });
     controller = TabController(
       length: store.state.productState.categories.length,
       vsync: this,
@@ -76,10 +78,13 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
         if (controller.index != 0) {
           store.dispatch(UpdateSelectedCategoryAction(
               selectedCategory:
-                  store.state.productState.categories[controller.index - 1]));
+                  store.state.productState.categories[controller.index]));
           store.dispatch(UpdateProductListingDataAction(listingData: []));
           store.dispatch(GetCatalogDetailsAction());
         } else {
+          store.dispatch(UpdateSelectedCategoryAction(
+              selectedCategory:
+                  store.state.productState.categories[controller.index]));
           store.dispatch(GetCatalogDetailsAction());
         }
       }
@@ -210,25 +215,29 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 //                        physics: NeverScrollableScrollPhysics(),
                         children: List.generate(
                           snapshot.categories.length,
-                          (index) => // All
-                              ListView.separated(
-                            padding: EdgeInsets.all(15),
-                            itemCount: snapshot.products.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return Container(
-                                height: 15,
-                              );
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              return ProductListingItemView(
-                                index: index,
-                                imageLink:
-                                    snapshot.selectedCategory.images.first,
-                                item: snapshot.products[index],
-                              );
-                            },
-                          ),
+                          (index) => snapshot.products.isEmpty
+                              ? snapshot.loadingStatus == LoadingStatus.loading
+                                  ? Container()
+                                  : EmptyViewProduct()
+                              : ListView.separated(
+                                  padding: EdgeInsets.all(15),
+                                  itemCount: snapshot.products.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      height: 15,
+                                    );
+                                  },
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return ProductListingItemView(
+                                      index: index,
+                                      imageLink: snapshot.selectedCategory
+                                          .images.first.photoUrl,
+                                      item: snapshot.products[index],
+                                    );
+                                  },
+                                ),
                         ),
                       ),
                     ),
@@ -249,6 +258,76 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
               ),
             );
           }),
+    );
+  }
+}
+
+class EmptyViewProduct extends StatelessWidget {
+  const EmptyViewProduct({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: ClipPath(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    color: const Color(0xfff0f0f0),
+                  ),
+                  clipper: CustomClipPath(),
+                ),
+              ),
+              Positioned(
+                  bottom: 20,
+                  right: MediaQuery.of(context).size.width * 0.15,
+                  child: Image.asset(
+                    'assets/images/clipart.png',
+                    fit: BoxFit.cover,
+                  )),
+            ],
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Text('screen_order.empty_pro',
+                  style: const TextStyle(
+                      color: const Color(0xff1f1f1f),
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "Avenir",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 20.0),
+                  textAlign: TextAlign.left)
+              .tr(),
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0, right: 30),
+            child: Text('screen_order.empty_pro_hint',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                    textAlign: TextAlign.center)
+                .tr(),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -462,7 +541,12 @@ class ProductListingItemView extends StatelessWidget {
                                 Text(
                                     item.skus.isEmpty
                                         ? "NA"
-                                        : item.skus.first.variationOptions.size,
+                                        : item.skus.first.variationOptions
+                                                    .size !=
+                                                null
+                                            ? item.skus.first.variationOptions
+                                                .size
+                                            : "NA",
                                     style: TextStyle(
                                         color: Color(0xffa7a7a7),
                                         fontWeight: FontWeight.w500,

@@ -27,25 +27,11 @@ class AddAddressAction extends ReduxAction<AppState> {
       Address responseModel = Address.fromJson(response.data);
       await UserManager.saveAddress(
           address: jsonEncode(responseModel.toJson()));
-//      AuthResponse authResponse = AuthResponse.fromJson(response.data);
-//      UserManager.saveToken(token: authResponse.customer.customerID);
-//      var user = User(
-//        id: authResponse.customer.customerID,
-//        firstName: authResponse.customer.name,
-//        address: authResponse.customer.addresses.isEmpty
-//            ? ""
-//            : authResponse.customer.addresses.first.addressLine1,
-//        phone: authResponse.customer.phoneNumber,
-//      );
-//      UserManager.saveUser(user).then((onValue) {
-//        store.dispatch(GetUserFromLocalStorageAction());
-//      });
-
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
       //throw UserException(response.data['status']);
     }
-    return null;
+    return state.copyWith(authState: state.authState.copyWith());
   }
 
   void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));

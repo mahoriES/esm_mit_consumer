@@ -82,6 +82,9 @@ class _AccountsViewState extends State<AccountsView> {
                           textAlign: TextAlign.left)
                       .tr(),
                   trailing: Icon(Icons.keyboard_arrow_right),
+                  onTap: () {
+                    snapshot.navigateToRecommendedShop();
+                  },
                 ),
                 ListTile(
                   onTap: () {
@@ -186,7 +189,7 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         navigateToRecommendedShop: () {
-          dispatch(NavigateAction.pushNamed('/RecommendShop'));
+          dispatch(NavigateAction.pushNamed('/about'));
         },
         logout: () {
           dispatch(LogoutAction());

@@ -259,26 +259,67 @@ class Merchants {
 }
 
 class Categories {
-  String id;
-  String name;
-  String description;
-  String imageLink;
+  int categoryId;
+  String categoryName;
+  String categoryDescription;
+  Null parentCategoryId;
+  bool isActive;
+  List<Images> images;
 
-  Categories({this.id, this.name, this.description, this.imageLink});
+  Categories(
+      {this.categoryId,
+      this.categoryName,
+      this.categoryDescription,
+      this.parentCategoryId,
+      this.isActive,
+      this.images});
 
   Categories.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    description = json['description'];
-    imageLink = json['imageLink'];
+    categoryId = json['category_id'];
+    categoryName = json['category_name'];
+    categoryDescription = json['category_description'];
+    parentCategoryId = json['parent_category_id'];
+    isActive = json['is_active'];
+    if (json['images'] != null) {
+      images = new List<Images>();
+      json['images'].forEach((v) {
+        images.add(new Images.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['imageLink'] = this.imageLink;
+    data['category_id'] = this.categoryId;
+    data['category_name'] = this.categoryName;
+    data['category_description'] = this.categoryDescription;
+    data['parent_category_id'] = this.parentCategoryId;
+    data['is_active'] = this.isActive;
+    if (this.images != null) {
+      data['images'] = this.images.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Images {
+  String photoId;
+  String photoUrl;
+  String contentType;
+
+  Images({this.photoId, this.photoUrl, this.contentType});
+
+  Images.fromJson(Map<String, dynamic> json) {
+    photoId = json['photo_id'];
+    photoUrl = json['photo_url'];
+    contentType = json['content_type'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['photo_id'] = this.photoId;
+    data['photo_url'] = this.photoUrl;
+    data['content_type'] = this.contentType;
     return data;
   }
 }
