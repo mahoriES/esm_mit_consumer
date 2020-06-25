@@ -46,7 +46,10 @@ class _ProfileViewState extends State<ProfileView> {
           onInit: (store) {},
           model: _ViewModel(),
           builder: (context, snapshot) {
-            getAddress(snapshot);
+            if (snapshot.loadingStatus != LoadingStatus.loading) {
+              getAddress(snapshot);
+            }
+
             nameController.text = snapshot.user.profileName;
             phoneNumberController.text = snapshot.user.userProfile.phone != null
                 ? snapshot.user.userProfile.phone
@@ -542,10 +545,11 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(GetAddressAction());
         },
         profileUpdate: (image, address) {
+          if (address != null && address.prettyAddress == "") {
+            dispatch(AddAddressAction(request: address));
+          }
           if (image != null) {
             dispatch(UploadImageAction(imageFile: image));
-          } else if (address != null) {
-            dispatch(AddAddressAction(request: address));
           }
 
           ///dispatch(UpdateProfileAction(request: request));

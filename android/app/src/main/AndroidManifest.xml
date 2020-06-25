@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.esamudaay">
+    package="com.esamudaay.customer">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -14,7 +14,7 @@
         android:label="esamudaayapp"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB-RQkEISTyRxtZhAuLjjK6_TKGW8-Y6ws"/>
+            android:value="AIzaSyBSQ5DSWVNK5UndZ39QUdsoSvsjKoOOQC4"/>
         <activity
 
             android:name=".MainActivity"

@@ -146,7 +146,8 @@
     "cancelled_merchant": "ಇವರಿಂದ ರದ್ದುಗೊಂಡಿದೆ",
     "accept_order": "ಆದೇಶವನ್ನು ಸ್ವೀಕರಿಸಿ",
     "on_the_way" : "ದಾರಿಯಲ್ಲಿ",
-    "processing": "ಸಂಸ್ಕರಣೆ"
+    "processing": "ಸಂಸ್ಕರಣೆ",
+    "ready_pickup": "ಪಿಕಪ್ ಮಾಡಲು ಆದೇಶ ಸಿದ್ಧವಾಗಿದೆ"
   },
 
   "screen_support": {

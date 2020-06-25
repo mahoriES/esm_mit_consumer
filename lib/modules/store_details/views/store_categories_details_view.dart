@@ -252,7 +252,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               crossAxisCount: 3,
                                               crossAxisSpacing: 20.0,
                                               mainAxisSpacing: 20.0,
-                                              childAspectRatio: 100 / 130),
+                                              childAspectRatio: 100 / 150),
                                       itemBuilder: (context, index) {
                                         return Container(
 //                                  color: Colors.red,

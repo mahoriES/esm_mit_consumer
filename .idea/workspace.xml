@@ -5,74 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/android/settings_aar.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/1024.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/120-1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/120.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/180.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/40.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/58.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/60.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/80.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/87.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/modules/About/view/about_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Esamudaay_Stable.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Esamudaay_Stable.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/debug/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/kotlin/com/example/esamudaayapp/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/kotlin/com/example/esamudaayapp/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/profile/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/profile/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/1.0x/app_main_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/1.0x/app_main_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/2.0x/app_main_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/2.0x/app_main_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/3.0x/app_main_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/3.0x/app_main_icon.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/languages/en-US.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/en-US.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/languages/ka-IN.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/ka-IN.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/languages/ml-IN.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/ml-IN.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Runner/AppDelegate.swift" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner/AppDelegate.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-1024.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-120.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-121.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-180.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-40.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-58.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-60.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-80.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-87.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/model/profile_update_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/model/profile_update_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Runner/GoogleService-Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner/GoogleService-Info.plist" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/views/accounts_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/views/accounts_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/action/account_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/action/account_action.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/models/category_response.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/models/category_response.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/models/merchant_response.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/models/merchant_response.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/cart_bottom_navigation_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/cart_bottom_navigation_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/categories_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/categories_models.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utilities/URLs.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/URLs.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utilities/custom_widgets.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/custom_widgets.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/utilities/keys.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/keys.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +35,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="1f3aa53b" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3a_XL_API_29" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -111,7 +66,6 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -120,11 +74,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/android/app" />
+      <recent name="$PROJECT_DIR$/ios/Runner" />
       <recent name="$PROJECT_DIR$/assets/images/3.0x" />
       <recent name="$PROJECT_DIR$/assets/images/2.0x" />
       <recent name="$PROJECT_DIR$/assets/images/1.0x" />
-      <recent name="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi" />
-      <recent name="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -351,7 +305,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
-          <line>547</line>
+          <line>548</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
@@ -366,7 +320,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart</url>
-          <line>27</line>
+          <line>29</line>
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
@@ -403,6 +357,16 @@
           <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
           <line>36</line>
           <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
+          <line>344</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
+          <line>550</line>
+          <option name="timeStamp" value="57" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

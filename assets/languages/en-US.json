@@ -149,6 +149,7 @@
     "on_the_way" : "On the way",
     "processing": "Processing",
     "empty_pro": "Empty",
+    "ready_pickup": "Order ready for pickup",
     "empty_pro_hint": "Look like there is no item to show"
   },
 

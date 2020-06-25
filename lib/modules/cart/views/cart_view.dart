@@ -65,7 +65,11 @@ class _CartViewState extends State<CartView> {
           model: _ViewModel(),
           onInit: (store) {
             _radioValue = _radioValue == 0
-                ? store.state.productState.selectedMerchand.hasDelivery ? 1 : 2
+                ? store.state.productState.selectedMerchand != null
+                    ? store.state.productState.selectedMerchand.hasDelivery
+                        ? 1
+                        : 2
+                    : 0
                 : _radioValue;
             if (store.state.productState.localCartItems.isNotEmpty) {
               store.dispatch(GetOrderTaxAction());

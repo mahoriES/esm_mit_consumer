@@ -24,6 +24,8 @@ class AddAddressAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
+      Fluttertoast.showToast(msg: "Updated");
+
       Address responseModel = Address.fromJson(response.data);
       await UserManager.saveAddress(
           address: jsonEncode(responseModel.toJson()));

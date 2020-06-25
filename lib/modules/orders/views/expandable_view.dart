@@ -158,7 +158,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               .results[widget.merchantIndex]
                                               .orderItems[index]
                                               .productName +
-                                          "${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size + snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].unitName : ""}"
+                                          " ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size : ""}"
                                               " -  x " +
                                           snapshot
                                               .getOrderListResponse

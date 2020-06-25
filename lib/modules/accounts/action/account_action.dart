@@ -13,6 +13,7 @@ import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/api_manager.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogoutAction extends ReduxAction<AppState> {
   LogoutAction();
@@ -30,6 +31,8 @@ class LogoutAction extends ReduxAction<AppState> {
 //      Fluttertoast.showToast(msg: response.data['status']);
 //      //throw UserException(response.data['status']);
 //    }
+    final pref = await SharedPreferences.getInstance();
+    await pref.clear();
     await CartDataSource.deleteAllMerchants();
     await CartDataSource.deleteAll();
     await UserManager.deleteUser();

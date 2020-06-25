@@ -146,7 +146,8 @@
     "cancelled_merchant": "റദ്ദാക്കിയത്",
     "accept_order": "ഓർഡർ സ്വീകരിക്കുക",
     "on_the_way" : "വഴിയില് ആണ്",
-    "processing": "പ്രോസസ്സിംഗ്"
+    "processing": "പ്രോസസ്സിംഗ്",
+    "ready_pickup": "പിക്കപ്പിനായി ഓർഡർ തയ്യാറാണ്"
   },
 
   "screen_support": {

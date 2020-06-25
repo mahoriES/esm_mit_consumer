@@ -1,4 +1,4 @@
-package com.example.esamudaay
+package com.esamudaay.customer
 
 import io.flutter.embedding.android.FlutterActivity
 

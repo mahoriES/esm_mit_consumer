@@ -76,7 +76,7 @@ class _OrdersViewState extends State<OrdersView> {
                 child: (snapshot.getOrderListResponse == null ||
                         snapshot.getOrderListResponse.results == null ||
                         snapshot.getOrderListResponse.results.isEmpty)
-                    ? snapshot.loadingStatus == LoadingStatus.loading
+                    ? snapshot.loadingStatus != LoadingStatus.loading
                         ? buildEmptyView(context, snapshot)
                         : Container()
                     : Container(
@@ -358,8 +358,12 @@ class OrderItemBottomView extends StatelessWidget {
                                               : orderStatus == "PICKED_UP_BY_DA"
                                                   ? tr(
                                                       'screen_order.on_the_way')
-                                                  : tr(
-                                                      'screen_order.processing'),
+                                                  : orderStatus ==
+                                                          "READY_FOR_PICKUP"
+                                                      ? tr(
+                                                          'screen_order.ready_pickup')
+                                                      : tr(
+                                                          'screen_order.processing'),
                       style: const TextStyle(
                           color: const Color(0xff958d8d),
                           fontWeight: FontWeight.w500,
