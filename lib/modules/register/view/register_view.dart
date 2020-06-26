@@ -424,16 +424,17 @@ class _ViewModel extends BaseModel<AppState> {
 
   LoadingStatus loadingStatus;
   Function(CustomerDetailsRequest request, AddressRequest)
-  updateCustomerDetails;
+      updateCustomerDetails;
   Function(AddressRequest) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
 
-  _ViewModel.build({this.navigateToHomePage,
-    this.updateCustomerDetails,
-    this.addAddress,
-    this.loadingStatus,
-    this.phoneNumber})
+  _ViewModel.build(
+      {this.navigateToHomePage,
+      this.updateCustomerDetails,
+      this.addAddress,
+      this.loadingStatus,
+      this.phoneNumber})
       : super(equals: [loadingStatus, phoneNumber]);
 
   @override

@@ -514,9 +514,10 @@ class _ViewModel extends BaseModel<AppState> {
   String userName;
   String userAddress;
 
-  _ViewModel.build({this.navigateToHomePage,
-    this.profileUpdate,
-    this.loadingStatus,
+  _ViewModel.build(
+      {this.navigateToHomePage,
+      this.profileUpdate,
+      this.loadingStatus,
       this.isPhoneNumberValid,
       this.userPhone,
       this.userName,
