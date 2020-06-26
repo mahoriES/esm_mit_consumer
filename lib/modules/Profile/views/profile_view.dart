@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/Profile/action/profile_update_action.dart';
 import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
@@ -11,7 +12,6 @@ import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/keys.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -356,7 +356,8 @@ class _ProfileViewState extends State<ProfileView> {
                                                 prettyAddress:
                                                     addressController.text,
                                                 geoAddr: GeoAddr(pincode: ""))
-                                            : null);
+                                            : null,
+                                        address.addressId);
                                   }
                                 } else {
                                   Fluttertoast.showToast(
@@ -502,20 +503,20 @@ class _ProfileViewState extends State<ProfileView> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function() getAddress;
   Data user;
   LoadingStatus loadingStatus;
-  Function(File image, AddressRequest address) profileUpdate;
+  Function(File image, AddressRequest address, String addressID) profileUpdate;
   Function navigateToHomePage;
   bool isPhoneNumberValid;
   String userPhone;
   String userName;
   String userAddress;
 
-  _ViewModel.build(
-      {this.navigateToHomePage,
-      this.profileUpdate,
-      this.loadingStatus,
+  _ViewModel.build({this.navigateToHomePage,
+    this.profileUpdate,
+    this.loadingStatus,
       this.isPhoneNumberValid,
       this.userPhone,
       this.userName,
@@ -544,9 +545,10 @@ class _ViewModel extends BaseModel<AppState> {
         getAddress: () {
           dispatch(GetAddressAction());
         },
-        profileUpdate: (image, address) {
-          if (address != null && address.prettyAddress == "") {
-            dispatch(AddAddressAction(request: address));
+        profileUpdate: (image, address, addressId) {
+          if (address != null && address.prettyAddress != "") {
+            dispatch(
+                UpdateAddressAction(request: address, addressID: addressId));
           }
           if (image != null) {
             dispatch(UploadImageAction(imageFile: image));

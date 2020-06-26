@@ -304,6 +304,31 @@ class OrderItemBottomView extends StatelessWidget {
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
       child: Column(
         children: <Widget>[
+          orderStatus == "MERCHANT_UPDATED"
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    onTap: () {
+                      snapshot.cancelOrder(
+                          snapshot.getOrderListResponse.results[index].orderId);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20, bottom: 8),
+                      child: Container(
+                        child: // Cancel order
+                            Text("Cancel order",
+                                style: const TextStyle(
+                                    color: const Color(0xffe33a3a),
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 14.0),
+                                textAlign: TextAlign.left),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -373,6 +398,7 @@ class OrderItemBottomView extends StatelessWidget {
                       textAlign: TextAlign.left)
                 ],
               ),
+
               orderStatus != "CREATED" &&
                       orderStatus != "COMPLETED" &&
                       orderStatus != "MERCHANT_UPDATED"

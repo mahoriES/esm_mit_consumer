@@ -315,14 +315,16 @@ class _RegistrationState extends State<Registration> {
                                         CustomerDetailsRequest(
                                             profileName: nameController.text,
                                             clusterCode: pinCodeController.text,
-                                            role: "CUSTOMER"));
-                                    snapshot.addAddress(AddressRequest(
-                                        addressName: nameController.text,
-                                        lat: double.parse(latitude),
-                                        lon: double.parse(longitude),
-                                        prettyAddress: addressController.text,
-                                        geoAddr: GeoAddr(
-                                            pincode: pinCodeController.text)));
+                                            role: "CUSTOMER"),
+                                        AddressRequest(
+                                            addressName: nameController.text,
+                                            lat: double.parse(latitude ?? "0"),
+                                            lon: double.parse(longitude ?? "0"),
+                                            prettyAddress:
+                                                addressController.text,
+                                            geoAddr: GeoAddr(
+                                                pincode:
+                                                    pinCodeController.text)));
                                   }
                                 } else {
                                   Fluttertoast.showToast(
@@ -419,17 +421,19 @@ class _RegistrationState extends State<Registration> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   LoadingStatus loadingStatus;
-  Function(CustomerDetailsRequest request) updateCustomerDetails;
+  Function(CustomerDetailsRequest request, AddressRequest)
+  updateCustomerDetails;
   Function(AddressRequest) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
-  _ViewModel.build(
-      {this.navigateToHomePage,
-      this.updateCustomerDetails,
-      this.addAddress,
-      this.loadingStatus,
-      this.phoneNumber})
+
+  _ViewModel.build({this.navigateToHomePage,
+    this.updateCustomerDetails,
+    this.addAddress,
+    this.loadingStatus,
+    this.phoneNumber})
       : super(equals: [loadingStatus, phoneNumber]);
 
   @override
@@ -444,8 +448,11 @@ class _ViewModel extends BaseModel<AppState> {
         addAddress: (address) {
           dispatch(AddAddressAction(request: address));
         },
-        updateCustomerDetails: (request) {
-          dispatch(AddUserDetailAction(request: request));
+        updateCustomerDetails: (request, address) {
+          dispatchFuture(AddUserDetailAction(request: request))
+              .whenComplete(() {
+            dispatch(AddAddressAction(request: address));
+          });
         });
   }
 }
