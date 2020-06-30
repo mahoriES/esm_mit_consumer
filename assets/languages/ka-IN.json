@@ -147,7 +147,8 @@
     "accept_order": "ಆದೇಶವನ್ನು ಸ್ವೀಕರಿಸಿ",
     "on_the_way" : "ದಾರಿಯಲ್ಲಿ",
     "processing": "ಸಂಸ್ಕರಣೆ",
-    "ready_pickup": "ಪಿಕಪ್ ಮಾಡಲು ಆದೇಶ ಸಿದ್ಧವಾಗಿದೆ"
+    "ready_pickup": "ಪಿಕಪ್ ಮಾಡಲು ಆದೇಶ ಸಿದ್ಧವಾಗಿದೆ",
+    "pickup": "Pick Up"
   },
 
   "screen_support": {

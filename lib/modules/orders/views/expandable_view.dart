@@ -782,24 +782,10 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                       child: Row(
                                         children: <Widget>[
                                           Icon(
-                                            Icons.help_outline,
-                                            size: 15,
+                                            Icons.phone,
+                                            size: 30,
                                             color: Color(0xff5091cd),
                                           ),
-                                          Padding(padding: EdgeInsets.all(5)),
-                                          // Support
-                                          Text('screen_support.title',
-                                                  style: const TextStyle(
-                                                      color: const Color(
-                                                          0xff5091cd),
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Avenir",
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      fontSize: 14.0),
-                                                  textAlign: TextAlign.left)
-                                              .tr()
                                         ],
                                       ),
                                     )

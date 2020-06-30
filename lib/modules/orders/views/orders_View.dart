@@ -120,6 +120,8 @@ class _OrdersViewState extends State<OrdersView> {
                                 merchantIndex: merchantIndex,
                                 orderStatus: snapshot.getOrderListResponse
                                     .results[merchantIndex].orderStatus,
+                                deliveryStatus: snapshot.getOrderListResponse
+                                    .results[merchantIndex].deliveryType,
                               );
                             },
                             separatorBuilder:
@@ -241,8 +243,10 @@ class NewWidget extends StatefulWidget {
   final String orderId;
   final merchantIndex;
   final String orderStatus;
+  final String deliveryStatus;
   const NewWidget(
       {Key key,
+      this.deliveryStatus,
       this.merchantIndex,
       this.orderStatus,
       this.orderId,
@@ -276,6 +280,7 @@ class _NewWidgetState extends State<NewWidget> {
             index: widget.merchantIndex,
             expanded: expanded,
             orderStatus: widget.orderStatus,
+            deliveryStatus: widget.deliveryStatus,
           )
         ],
       ),
@@ -288,6 +293,7 @@ class OrderItemBottomView extends StatelessWidget {
   final String orderId;
   final _ViewModel snapshot;
   final String orderStatus;
+  final String deliveryStatus;
   final bool expanded;
   const OrderItemBottomView(
       {Key key,
@@ -295,7 +301,8 @@ class OrderItemBottomView extends StatelessWidget {
       this.orderStatus,
       this.expanded,
       this.orderId,
-      this.snapshot})
+      this.snapshot,
+      this.deliveryStatus})
       : super(key: key);
 
   @override
@@ -342,7 +349,8 @@ class OrderItemBottomView extends StatelessWidget {
                           ? Icons.close
                           : orderStatus == "COMPLETED"
                               ? Icons.check_circle_outline
-                              : orderStatus == "CREATED"
+                              : orderStatus == "CREATED" &&
+                                      deliveryStatus != "SELF_PICK_UP"
                                   ? Icons.autorenew
                                   : orderStatus == "MERCHANT_ACCEPTED"
                                       ? Icons.check_circle_outline
@@ -374,17 +382,21 @@ class OrderItemBottomView extends StatelessWidget {
                                       .businessName
                               : orderStatus == "COMPLETED"
                                   ? tr('screen_order.completed')
-                                  : orderStatus == "CREATED"
+                                  : orderStatus == "CREATED" &&
+                                          deliveryStatus == "DA_DELIVERY"
                                       ? tr('screen_order.pending')
                                       : orderStatus == "MERCHANT_ACCEPTED"
                                           ? tr('screen_order.confirmed')
                                           : orderStatus == "MERCHANT_UPDATED"
                                               ? tr('screen_order.not_available')
-                                              : orderStatus == "PICKED_UP_BY_DA"
+                                              : orderStatus == "CREATED" &&
+                                                      deliveryStatus ==
+                                                          "PICKED_UP_BY_DA"
                                                   ? tr(
                                                       'screen_order.on_the_way')
-                                                  : orderStatus ==
-                                                          "READY_FOR_PICKUP"
+                                                  : orderStatus == "CREATED" &&
+                                                          deliveryStatus ==
+                                                              "SELF_PICK_UP"
                                                       ? tr(
                                                           'screen_order.ready_pickup')
                                                       : tr(
@@ -409,7 +421,8 @@ class OrderItemBottomView extends StatelessWidget {
                       model: _ViewModel(),
                       builder: (context, snapshot) {
                         return CustomButton(
-                          title: orderStatus == "CREATED"
+                          title: orderStatus == "CREATED" &&
+                                  deliveryStatus == "DA_DELIVERY"
                               ? tr('screen_order.cancel_order')
                               : orderStatus == "COMPLETED"
                                   ? tr('screen_order.re_order')
@@ -419,7 +432,11 @@ class OrderItemBottomView extends StatelessWidget {
                                           ? tr('screen_order.payment')
                                           : orderStatus == "MERCHANT_UPDATED"
                                               ? tr('screen_order.accept_order')
-                                              : "",
+                                              : orderStatus == "CREATED" &&
+                                                      deliveryStatus ==
+                                                          "SELF_PICK_UP"
+                                                  ? tr('screen_order.pickup')
+                                                  : "",
                           backgroundColor: orderStatus == "COMPLETED"
                               ? AppColors.mainColor
                               : orderStatus == "CREATED"
@@ -472,9 +489,14 @@ class OrderItemBottomView extends StatelessWidget {
                               //accept order api
                               snapshot.acceptOrder(snapshot
                                   .getOrderListResponse.results[index].orderId);
-                            } else if (orderStatus == "CREATED") {
+                            } else if (orderStatus == "CREATED" &&
+                                deliveryStatus != "SELF_PICK_UP") {
                               //cancel order api
                               snapshot.cancelOrder(snapshot
+                                  .getOrderListResponse.results[index].orderId);
+                            } else if (orderStatus == "CREATED" &&
+                                deliveryStatus == "SELF_PICK_UP") {
+                              snapshot.completeOrder(snapshot
                                   .getOrderListResponse.results[index].orderId);
                             }
                           },
@@ -797,6 +819,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(PlaceOrderRequest) placeOrder;
   Function(String) acceptOrder;
   Function(String) cancelOrder;
+  Function(String) completeOrder;
   LoadingStatus loadingStatus;
   Function getOrderList;
   _ViewModel();
@@ -808,7 +831,8 @@ class _ViewModel extends BaseModel<AppState> {
       this.acceptOrder,
       this.loadingStatus,
       this.viewStore,
-      this.getOrderList})
+      this.getOrderList,
+      this.completeOrder})
       : super(equals: [getOrderListResponse, loadingStatus]);
   @override
   BaseModel fromStore() {
@@ -826,6 +850,9 @@ class _ViewModel extends BaseModel<AppState> {
           dispatchFuture(PlaceOrderAction(request: request)).whenComplete(() {
             dispatch(GetOrderListAPIAction());
           });
+        },
+        completeOrder: (orderId) {
+          dispatch(CompleteOrderAPIAction(orderId: orderId));
         },
         viewStore: () {
           dispatch(UpdateSelectedTabAction(0));

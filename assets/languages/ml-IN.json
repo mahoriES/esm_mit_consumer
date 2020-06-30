@@ -147,7 +147,8 @@
     "accept_order": "ഓർഡർ സ്വീകരിക്കുക",
     "on_the_way" : "വഴിയില് ആണ്",
     "processing": "പ്രോസസ്സിംഗ്",
-    "ready_pickup": "പിക്കപ്പിനായി ഓർഡർ തയ്യാറാണ്"
+    "ready_pickup": "പിക്കപ്പിനായി ഓർഡർ തയ്യാറാണ്",
+    "pickup": "Pick Up"
   },
 
   "screen_support": {

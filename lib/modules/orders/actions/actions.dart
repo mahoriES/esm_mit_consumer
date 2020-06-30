@@ -154,6 +154,33 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
 }
 
+class CompleteOrderAPIAction extends ReduxAction<AppState> {
+  final String orderId;
+
+  CompleteOrderAPIAction({this.orderId});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+        url: ApiURL.placeOrderUrl + orderId + "/complete",
+        params: {"": ""},
+        requestType: RequestType.post);
+
+    if (response.status == ResponseStatus.success200) {
+      dispatch(GetOrderListAPIAction());
+
+      dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+    } else {
+      Fluttertoast.showToast(msg: response.data['message']);
+    }
+    return null;
+  }
+
+  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+}
+
 class SupportAPIAction extends ReduxAction<AppState> {
   final SupportRequest request;
 

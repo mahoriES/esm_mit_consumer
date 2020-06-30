@@ -210,16 +210,18 @@ class _OtpScreenState extends State<OtpScreen> {
                                                                 100)),
                                                     gradient: LinearGradient(
                                                         begin: Alignment(
-                                                            0.023085936903953545,
+                                                            0.27639952301979065,
                                                             0.5),
-                                                        end: Alignment(0.980859398841858, 0.5),
+                                                        end: Alignment(
+                                                            0.980859398841858,
+                                                            0.5),
                                                         colors: [
                                                           const Color(
-                                                              0xff00dab2),
+                                                              0xff5f3a9f),
                                                           const Color(
-                                                              0xff3a90d3),
+                                                              0xffe1517d),
                                                           const Color(
-                                                              0xff3a90d3)
+                                                              0xfffb7452)
                                                         ]))),
                                           ),
                                           // Get OTP
