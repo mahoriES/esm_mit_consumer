@@ -10,6 +10,7 @@ import 'package:esamudaayapp/modules/orders/models/order_models.dart';
 import 'package:esamudaayapp/modules/orders/views/expandable_view.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/store.dart';
+import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
@@ -26,6 +27,7 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
+  ScrollController _scrollController = new ScrollController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -33,16 +35,40 @@ class _OrdersViewState extends State<OrdersView> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
-    snapshot.getOrderList();
+    if (snapshot.getOrderListResponse.previous != null) {
+      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
+    } else {
+      snapshot.getOrderList(ApiURL.placeOrderUrl);
+    }
+    if (mounted)
+      setState(() {
+        _scrollController.animateTo(
+          0.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        );
+      });
     _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async {
+  void _onLoading(_ViewModel snapshot) async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
 //    items.add((items.length + 1).toString());
-    if (mounted) setState(() {});
+
+    if (snapshot.getOrderListResponse.next != null) {
+      snapshot.getOrderList(snapshot.getOrderListResponse.next);
+    }
+
+    if (mounted)
+      setState(() {
+        _scrollController.animateTo(
+          0.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        );
+      });
     _refreshController.loadComplete();
   }
 
@@ -68,7 +94,8 @@ class _OrdersViewState extends State<OrdersView> {
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             onInit: (store) {
-              store.dispatch(GetOrderListAPIAction());
+              store.dispatch(
+                  GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(
@@ -108,8 +135,11 @@ class _OrdersViewState extends State<OrdersView> {
                           onRefresh: () {
                             _onRefresh(snapshot);
                           },
-                          onLoading: _onLoading,
+                          onLoading: () {
+                            _onLoading(snapshot);
+                          },
                           child: ListView.separated(
+                            controller: _scrollController,
                             shrinkWrap: true,
                             itemBuilder:
                                 (BuildContext context, int merchantIndex) {
@@ -382,8 +412,7 @@ class OrderItemBottomView extends StatelessWidget {
                                       .businessName
                               : orderStatus == "COMPLETED"
                                   ? tr('screen_order.completed')
-                                  : orderStatus == "CREATED" &&
-                                          deliveryStatus == "DA_DELIVERY"
+                                  : orderStatus == "CREATED"
                                       ? tr('screen_order.pending')
                                       : orderStatus == "MERCHANT_ACCEPTED"
                                           ? tr('screen_order.confirmed')
@@ -394,11 +423,12 @@ class OrderItemBottomView extends StatelessWidget {
                                                           "PICKED_UP_BY_DA"
                                                   ? tr(
                                                       'screen_order.on_the_way')
-                                                  : orderStatus == "CREATED" &&
+                                                  : orderStatus ==
+                                                              "MERCHANT_ACCEPTED" &&
                                                           deliveryStatus ==
                                                               "SELF_PICK_UP"
                                                       ? tr(
-                                                          'screen_order.ready_pickup')
+                                                          'screen_order.complete')
                                                       : tr(
                                                           'screen_order.processing'),
                       style: const TextStyle(
@@ -421,8 +451,7 @@ class OrderItemBottomView extends StatelessWidget {
                       model: _ViewModel(),
                       builder: (context, snapshot) {
                         return CustomButton(
-                          title: orderStatus == "CREATED" &&
-                                  deliveryStatus == "DA_DELIVERY"
+                          title: orderStatus == "CREATED"
                               ? tr('screen_order.cancel_order')
                               : orderStatus == "COMPLETED"
                                   ? tr('screen_order.re_order')
@@ -432,16 +461,17 @@ class OrderItemBottomView extends StatelessWidget {
                                           ? tr('screen_order.payment')
                                           : orderStatus == "MERCHANT_UPDATED"
                                               ? tr('screen_order.accept_order')
-                                              : orderStatus == "CREATED" &&
+                                              : orderStatus ==
+                                                          "MERCHANT_ACCEPTED" &&
                                                       deliveryStatus ==
                                                           "SELF_PICK_UP"
-                                                  ? tr('screen_order.pickup')
+                                                  ? tr('screen_order.complete')
                                                   : "",
                           backgroundColor: orderStatus == "COMPLETED"
-                              ? AppColors.mainColor
+                              ? AppColors.icColors
                               : orderStatus == "CREATED"
                                   ? AppColors.orange
-                                  : AppColors.mainColor,
+                                  : AppColors.icColors,
                           didPresButton: () async {
                             if (orderStatus == "COMPLETED") {
                               //reorder api
@@ -489,14 +519,13 @@ class OrderItemBottomView extends StatelessWidget {
                               //accept order api
                               snapshot.acceptOrder(snapshot
                                   .getOrderListResponse.results[index].orderId);
-                            } else if (orderStatus == "CREATED" &&
-                                deliveryStatus != "SELF_PICK_UP") {
-                              //cancel order api
-                              snapshot.cancelOrder(snapshot
-                                  .getOrderListResponse.results[index].orderId);
-                            } else if (orderStatus == "CREATED" &&
+                            } else if (orderStatus == "MERCHANT_ACCEPTED" &&
                                 deliveryStatus == "SELF_PICK_UP") {
                               snapshot.completeOrder(snapshot
+                                  .getOrderListResponse.results[index].orderId);
+                            } else {
+                              //cancel order api
+                              snapshot.cancelOrder(snapshot
                                   .getOrderListResponse.results[index].orderId);
                             }
                           },
@@ -534,21 +563,12 @@ class OrderItemBottomView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          Icons.help_outline,
-                          size: 15,
-                          color: Color(0xff3b3939),
+                          Icons.phone,
+                          size: 35,
+                          color: AppColors.icColors,
                         ),
                         Padding(padding: EdgeInsets.all(5)),
                         // Support
-                        Text("screen_support.title",
-                                style: const TextStyle(
-                                    color: const Color(0xff3b3939),
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Avenir",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 14.0),
-                                textAlign: TextAlign.left)
-                            .tr()
                       ],
                     ),
                   ),
@@ -821,7 +841,8 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String) cancelOrder;
   Function(String) completeOrder;
   LoadingStatus loadingStatus;
-  Function getOrderList;
+  Function(String) getOrderList;
+
   _ViewModel();
   _ViewModel.build(
       {this.getOrderListResponse,
@@ -841,8 +862,8 @@ class _ViewModel extends BaseModel<AppState> {
         updateOrderId: (value) {
           dispatch(OrderSupportAction(orderId: value));
         },
-        getOrderList: () {
-          dispatch(GetOrderListAPIAction());
+        getOrderList: (url) {
+          dispatch(GetOrderListAPIAction(orderRequestApi: url));
         },
         loadingStatus: state.authState.loadingStatus,
         getOrderListResponse: state.productState.getOrderListResponse,

@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -160,7 +161,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                       height: 46,
                       width: widget.buttonTitle == 'VIEW ITEMS' ? 120 : 160,
                       decoration: BoxDecoration(
-                        color: Color(0xff5091cd),
+                        color: AppColors.icColors,
                         borderRadius: BorderRadius.circular(23),
                       ),
                       child: Center(

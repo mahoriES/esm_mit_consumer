@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/User.dart';
+
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
@@ -25,12 +25,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class CartView extends StatefulWidget {
+  int radioValue = 0;
   @override
   _CartViewState createState() => _CartViewState();
 }
 
 class _CartViewState extends State<CartView> {
-  int _radioValue = 0;
+  String deliveryCharge = "0";
+  double totalValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +66,13 @@ class _CartViewState extends State<CartView> {
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) {
-            _radioValue = _radioValue == 0
+            widget.radioValue = widget.radioValue == 0
                 ? store.state.productState.selectedMerchand != null
                     ? store.state.productState.selectedMerchand.hasDelivery
                         ? 1
                         : 2
                     : 0
-                : _radioValue;
+                : widget.radioValue;
             if (store.state.productState.localCartItems.isNotEmpty) {
               store.dispatch(GetOrderTaxAction());
             }
@@ -153,8 +155,9 @@ class _CartViewState extends State<CartView> {
                                                                           .nan);
                                                           snapshot.addToCart(
                                                               item, context);
-                                                          snapshot
-                                                              .getOrderTax();
+                                                          snapshot.getOrderTax(
+                                                              widget
+                                                                  .radioValue);
                                                         },
                                                         didPressRemove: () {
                                                           var item = snapshot
@@ -170,8 +173,9 @@ class _CartViewState extends State<CartView> {
                                                           snapshot
                                                               .removeFromCart(
                                                                   item);
-                                                          snapshot
-                                                              .getOrderTax();
+                                                          snapshot.getOrderTax(
+                                                              widget
+                                                                  .radioValue);
                                                         },
                                                       ),
                                                       // ₹ 55.00
@@ -402,18 +406,13 @@ class _CartViewState extends State<CartView> {
                                                             // Item Total
                                                             Text(
                                                                 snapshot
-                                                                    .charges[index -
-                                                                        1]
-                                                                    .chargeName
-                                                                    .toLowerCase()
-                                                                    .replaceAll(
-                                                                        "_",
-                                                                        " ")
-                                                                    .capitalize(),
+                                                                    .charges[
+                                                                        index -
+                                                                            1]
+                                                                    .chargeName,
                                                                 style: const TextStyle(
-                                                                    color:
-                                                                        const Color(
-                                                                            0xff696666),
+                                                                    color: const Color(
+                                                                        0xff696666),
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -427,7 +426,16 @@ class _CartViewState extends State<CartView> {
                                                                 textAlign: TextAlign
                                                                     .left), // ₹ 175.00
                                                             Text(
-                                                                "₹ ${snapshot.charges[index - 1].chargeValue.toString()}",
+                                                                snapshot
+                                                                            .charges[index -
+                                                                                1]
+                                                                            .chargeName
+                                                                            .contains(
+                                                                                "DELIVERY") &&
+                                                                        widget.radioValue ==
+                                                                            2
+                                                                    ? "0"
+                                                                    : "₹ ${snapshot.charges[index - 1].chargeValue.toString()}",
                                                                 style: const TextStyle(
                                                                     color: const Color(
                                                                         0xff696666),
@@ -495,7 +503,7 @@ class _CartViewState extends State<CartView> {
                                                         // ₹ 195.00
                                                         //update with addition of tax etc
                                                         Text(
-                                                            "₹ ${snapshot.getCartTotal() ?? 0.0}",
+                                                            "₹ ${snapshot.getOrderTax(widget.radioValue) ?? 0.0}",
                                                             style: const TextStyle(
                                                                 color: const Color(
                                                                     0xff5091cd),
@@ -528,17 +536,18 @@ class _CartViewState extends State<CartView> {
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Radio(
+                                            activeColor: AppColors.icColors,
                                             value: 1,
                                             groupValue: snapshot
                                                     .selectedMerchant
                                                     .hasDelivery
-                                                ? _radioValue
+                                                ? widget.radioValue
                                                 : null,
                                             onChanged: ((value) {
                                               if (snapshot.selectedMerchant
                                                   .hasDelivery) {
                                                 setState(() {
-                                                  _radioValue = value;
+                                                  widget.radioValue = value;
                                                 });
                                               }
                                             })),
@@ -554,11 +563,12 @@ class _CartViewState extends State<CartView> {
                                                 textAlign: TextAlign.left)
                                             .tr(),
                                         Radio(
+                                            activeColor: AppColors.icColors,
                                             value: 2,
-                                            groupValue: _radioValue,
+                                            groupValue: widget.radioValue,
                                             onChanged: ((value) {
                                               setState(() {
-                                                _radioValue = value;
+                                                widget.radioValue = value;
                                               });
                                             })),
                                         // Pickup
@@ -576,7 +586,7 @@ class _CartViewState extends State<CartView> {
                                     ),
                                   ),
                                   snapshot.selectedMerchant.hasDelivery
-                                      ? _radioValue != 1
+                                      ? widget.radioValue != 1
                                           ? Container()
                                           : Container(
                                               color: Colors.white,
@@ -593,8 +603,12 @@ class _CartViewState extends State<CartView> {
                                                       padding:
                                                           const EdgeInsets.only(
                                                               right: 8),
-                                                      child: ImageIcon(AssetImage(
-                                                          'assets/images/home41.png')),
+                                                      child: ImageIcon(
+                                                        AssetImage(
+                                                            'assets/images/home41.png'),
+                                                        color:
+                                                            AppColors.icColors,
+                                                      ),
                                                     ),
                                                     Expanded(
                                                       child: Column(
@@ -660,8 +674,11 @@ class _CartViewState extends State<CartView> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           right: 8),
-                                                  child: ImageIcon(AssetImage(
-                                                      'assets/images/pen2.png')),
+                                                  child: ImageIcon(
+                                                    AssetImage(
+                                                        'assets/images/pen2.png'),
+                                                    color: AppColors.icColors,
+                                                  ),
                                                 ),
                                                 // Door number 1244 ,  Indiranagar, 2nd cross road
                                                 // Delivering to:
@@ -716,7 +733,7 @@ class _CartViewState extends State<CartView> {
                                           ),
                                         ),
                                   snapshot.selectedMerchant.hasDelivery &&
-                                          _radioValue == 1
+                                          widget.radioValue == 1
                                       ? Container()
                                       : Container(
                                           color: Colors.white,
@@ -736,7 +753,7 @@ class _CartViewState extends State<CartView> {
                                                     AssetImage(
                                                       'assets/images/path330.png',
                                                     ),
-                                                    color: Colors.black,
+                                                    color: AppColors.icColors,
                                                   ),
                                                 ),
                                                 // Door number 1244 ,  Indiranagar, 2nd cross road
@@ -840,7 +857,7 @@ class _CartViewState extends State<CartView> {
                             buttonTitle: tr('cart.confirm_order'),
                             height: 80,
                             didPressButton: () async {
-                              if (_radioValue == 0) {
+                              if (widget.radioValue == 0) {
                                 Fluttertoast.showToast(
                                     msg: "please select Delivery / Pickup");
 //                                return;
@@ -854,10 +871,11 @@ class _CartViewState extends State<CartView> {
                                       PlaceOrderRequest();
                                   request.businessId =
                                       snapshot.selectedMerchant.businessId;
-                                  request.deliveryAddressId = _radioValue == 1
-                                      ? address.addressId
-                                      : null;
-                                  request.deliveryType = _radioValue == 1
+                                  request.deliveryAddressId =
+                                      widget.radioValue == 1
+                                          ? address.addressId
+                                          : null;
+                                  request.deliveryType = widget.radioValue == 1
                                       ? "DA_DELIVERY"
                                       : "SELF_PICK_UP";
                                   request.orderItems = cart
@@ -996,7 +1014,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function getCartTotal;
   Function(PlaceOrderRequest) placeOrder;
   Function(PlaceOrderRequest) getTaxOfOrder;
-  Function getOrderTax;
+  Function(int) getOrderTax;
   LoadingStatus loadingStatus;
   Function(Business) updateSelectedMerchant;
   Address address;
@@ -1070,9 +1088,9 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
-        getOrderTax: () {
-          if (store.state.productState.localCartItems.isNotEmpty) {
-            var total = store.state.productState.localCartItems.fold(0,
+        getOrderTax: (value) {
+          if (state.productState.localCartItems.isNotEmpty) {
+            var total = state.productState.localCartItems.fold(0,
                     (previous, current) {
                   double price =
                       double.parse(current.skus.first.basePrice.toString()) *
@@ -1082,28 +1100,18 @@ class _ViewModel extends BaseModel<AppState> {
                 }) ??
                 0.0;
 
-//            var request = PlaceOrderRequest(
-//                phoneNumber: state.authState.user.phone,
-//                comments: "",
-//                order: Orders(
-//                    merchantID: state.productState.selectedMerchand.merchantID,
-//                    codPaymentCompleted: false,
-//                    paymentType: "CASH_ON_DELIVERY",
-//                    cart: Cart(
-//                        service: state.productState.selectedMerchand
-//                                        .servicesOffered !=
-//                                    null &&
-//                                state.productState.selectedMerchand
-//                                    .servicesOffered.isNotEmpty
-//                            ? state.productState.selectedMerchand
-//                                .servicesOffered.first
-//                            : "FOOD_DELIVERY",
-//                        total: total.toDouble(),
-//                        itemsEnhanced:
-//                            state.productState.localCartItems.map((cart) {
-//                          return ItemsEnhanced(item: cart, number: cart.count);
-//                        }).toList())));
-//            dispatch(GetOrderTaxAction(request: request));
+            num sum = 0;
+            state.productState.charges.forEach((e) {
+              sum += e.chargeName.contains("DELIVERY") && value == 2
+                  ? 0
+                  : e.chargeValue;
+            });
+            print(sum);
+
+            return (total + sum)
+                .toDouble(); //formatCurrency.format(total.toDouble());
+          } else {
+            return 0.0;
           }
         });
   }

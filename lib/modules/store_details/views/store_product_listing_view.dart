@@ -11,6 +11,7 @@ import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
 import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/store.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +105,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: AppColors.icColors,
           ),
         ),
         title: StoreConnector<AppState, _ViewModel>(
@@ -135,12 +136,15 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
 //          autofocus: true,
                       decoration: new InputDecoration(
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppColors.icColors,
+                          ),
                           hintText: "Search for item",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: new BorderSide(
-                                color: Colors.grey,
+                                color: AppColors.icColors,
                               ))),
                       onSubmitted: (String value) {
                         _controller.text = "";
@@ -270,63 +274,65 @@ class EmptyViewProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: ClipPath(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.45,
-                    color: const Color(0xfff0f0f0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: ClipPath(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.45,
+                      color: const Color(0xfff0f0f0),
+                    ),
+                    clipper: CustomClipPath(),
                   ),
-                  clipper: CustomClipPath(),
                 ),
-              ),
-              Positioned(
-                  bottom: 20,
-                  right: MediaQuery.of(context).size.width * 0.15,
-                  child: Image.asset(
-                    'assets/images/clipart.png',
-                    fit: BoxFit.cover,
-                  )),
-            ],
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          Text('screen_order.empty_pro',
-                  style: const TextStyle(
-                      color: const Color(0xff1f1f1f),
-                      fontWeight: FontWeight.w400,
-                      fontFamily: "Avenir",
-                      fontStyle: FontStyle.normal,
-                      fontSize: 20.0),
-                  textAlign: TextAlign.left)
-              .tr(),
-          SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 30),
-            child: Text('screen_order.empty_pro_hint',
+                Positioned(
+                    bottom: 20,
+                    right: MediaQuery.of(context).size.width * 0.15,
+                    child: Image.asset(
+                      'assets/images/clipart.png',
+                      fit: BoxFit.cover,
+                    )),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Text('screen_order.empty_pro',
                     style: const TextStyle(
-                        color: const Color(0xff6f6d6d),
+                        color: const Color(0xff1f1f1f),
                         fontWeight: FontWeight.w400,
                         fontFamily: "Avenir",
                         fontStyle: FontStyle.normal,
-                        fontSize: 16.0),
-                    textAlign: TextAlign.center)
+                        fontSize: 20.0),
+                    textAlign: TextAlign.left)
                 .tr(),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-        ],
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, right: 30),
+              child: Text('screen_order.empty_pro_hint',
+                      style: const TextStyle(
+                          color: const Color(0xff6f6d6d),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.center)
+                  .tr(),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -559,7 +565,7 @@ class ProductListingItemView extends StatelessWidget {
                             CSStepper(
                               backgroundColor: !isOutOfStock
                                   ? Color(0xffb1b1b1)
-                                  : Color(0xff5091cd),
+                                  : AppColors.icColors,
                               didPressAdd: () {
                                 item.count = ((item?.count ?? 0) + 1)
                                     .clamp(0, double.nan);
@@ -608,7 +614,7 @@ class CSStepper extends StatelessWidget {
       height: 30,
       width: 73,
       decoration: BoxDecoration(
-        color: this.backgroundColor ?? Color(0xff5091cd),
+        color: this.backgroundColor ?? AppColors.icColors,
         borderRadius: BorderRadius.circular(100),
       ),
       child: value.contains("Add")

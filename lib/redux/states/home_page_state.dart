@@ -4,6 +4,7 @@ import 'package:esamudaayapp/modules/register/model/register_request_model.dart'
 import 'package:meta/meta.dart';
 
 class HomePageState {
+  final GetBusinessesResponse response;
   final LoadingStatus loadingStatus;
   final List<Business> merchants;
   final String homePageLoadedDate;
@@ -15,7 +16,8 @@ class HomePageState {
       @required this.loadingStatus,
       @required this.merchants,
       @required this.homePageLoadedDate,
-      @required this.banners});
+      @required this.banners,
+      this.response});
 
 //  static HomePageState fromJson(dynamic json) =>
 //      HomePageState(homePageLoadedDate: json["homePageLoadedDate"]);
@@ -28,12 +30,12 @@ class HomePageState {
 
   factory HomePageState.initial() {
     return new HomePageState(
-      loadingStatus: LoadingStatus.success,
-      merchants: [],
-      homePageLoadedDate: "0",
-      currentIndex: 0,
-      banners: <Photo>[],
-    );
+        loadingStatus: LoadingStatus.success,
+        merchants: [],
+        homePageLoadedDate: "0",
+        currentIndex: 0,
+        banners: <Photo>[],
+        response: GetBusinessesResponse());
   }
 
   HomePageState copyWith(
@@ -41,12 +43,14 @@ class HomePageState {
       List<Business> merchants,
       List<Photo> banners,
       int currentIndex,
-      String homePageLoadedDate}) {
+      String homePageLoadedDate,
+      GetBusinessesResponse response}) {
     return new HomePageState(
         currentIndex: currentIndex ?? this.currentIndex,
         loadingStatus: loadingStatus ?? this.loadingStatus,
         merchants: merchants ?? this.merchants,
         homePageLoadedDate: homePageLoadedDate ?? this.homePageLoadedDate,
+        response: response ?? this.response,
         banners: banners ?? this.banners);
   }
 }

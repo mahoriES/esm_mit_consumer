@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/global.dart' as globals;
 import 'package:esamudaayapp/utilities/stringConstants.dart';
@@ -192,7 +193,7 @@ class _LoginViewState extends State<LoginView> {
                                       ),
                                       Icon(
                                         Icons.phone_android,
-                                        color: Colors.blueAccent,
+                                        color: AppColors.icColors,
                                       )
                                     ],
                                   ),
@@ -237,18 +238,8 @@ class _LoginViewState extends State<LoginView> {
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(100)),
-                                                  gradient: LinearGradient(
-                                                      begin: Alignment(
-                                                          0.27639952301979065,
-                                                          0.5),
-                                                      end: Alignment(
-                                                          0.980859398841858,
-                                                          0.5),
-                                                      colors: [
-                                                        const Color(0xff5f3a9f),
-                                                        const Color(0xffe1517d),
-                                                        const Color(0xfffb7452)
-                                                      ]))),
+                                                  gradient: AppColors
+                                                      .linearGradient)),
                                         ),
                                         // Get OTP
                                         PositionedDirectional(

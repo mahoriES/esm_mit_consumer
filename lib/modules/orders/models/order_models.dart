@@ -18,12 +18,16 @@ class GetOrderListRequest {
 
 class GetOrderListResponse {
   int count;
+  String next;
+  String previous;
   List<PlaceOrderResponse> results;
 
   GetOrderListResponse({this.count, this.results});
 
   GetOrderListResponse.fromJson(Map<String, dynamic> json) {
     count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
     if (json['results'] != null) {
       results = new List<PlaceOrderResponse>();
       json['results'].forEach((v) {
@@ -35,6 +39,8 @@ class GetOrderListResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['count'] = this.count;
+    data['next'] = this.next;
+    data['previous'] = this.previous;
     if (this.results != null) {
       data['results'] = this.results.map((v) => v.toJson()).toList();
     }

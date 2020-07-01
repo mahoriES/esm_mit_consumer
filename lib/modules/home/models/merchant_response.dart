@@ -2,12 +2,16 @@ import 'package:esamudaayapp/modules/register/model/register_request_model.dart'
 
 class GetBusinessesResponse {
   int count;
+  String next;
+  String previous;
   List<Business> results;
 
   GetBusinessesResponse({this.count, this.results});
 
   GetBusinessesResponse.fromJson(Map<String, dynamic> json) {
     count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
     if (json['results'] != null) {
       results = new List<Business>();
       json['results'].forEach((v) {
@@ -19,6 +23,8 @@ class GetBusinessesResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['count'] = this.count;
+    data['next'] = this.next;
+    data['previous'] = this.previous;
     if (this.results != null) {
       data['results'] = this.results.map((v) => v.toJson()).toList();
     }

@@ -43,7 +43,8 @@
     "pin_code": {
       "title": "Circle",
       "validation_error": "Please enter valid circle",
-      "empty_error": "Please enter your circle."
+      "empty_error": "Please enter your circle.",
+      "no_circle_code": "Don't have circle code?"
     },
     "register": "Register",
     "update": "Update",
@@ -126,6 +127,7 @@
     "empty_content": "Look like you haven’t order anything yet Lets start !",
 
     "completed": "Completed",
+    "complete": "Complete",
     "confirmed": "Confirmed",
     "cancel_order": "Cancel order",
     "re_order": "Re-Order",

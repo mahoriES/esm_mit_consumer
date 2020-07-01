@@ -7,6 +7,7 @@ import 'package:esamudaayapp/modules/orders/views/orders_View.dart';
 import 'package:esamudaayapp/redux/actions/general_actions.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
 import 'package:esamudaayapp/store.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/customAlert.dart';
 import 'package:esamudaayapp/utilities/extensions.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                     .results[widget.merchantIndex].created)
                                 .toLocal()), //"20 -April, 07.45 PM ",
                         price:
-                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal}",
+                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal}",
                       ),
                     ),
                     AnimatedContainer(
@@ -216,18 +217,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         EdgeInsets.only(left: 15, right: 15),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    itemCount: snapshot
-                                                .getOrderListResponse
-                                                .results[widget.merchantIndex]
-                                                .otherChargesDetail ==
-                                            null
-                                        ? 0
-                                        : snapshot
-                                                .getOrderListResponse
-                                                .results[widget.merchantIndex]
-                                                .otherChargesDetail
-                                                .length +
-                                            1,
+                                    itemCount: 3,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return index == 0
@@ -252,69 +242,94 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems.fold(0, (previous, current) {
-                                                          return double.parse(
-                                                                  previous
-                                                                      .toString()) +
-                                                              double.parse(current
-                                                                      .unitPrice
-                                                                      .toString()) *
-                                                                  current
-                                                                      .quantity;
-                                                        }) ?? 0.0}",
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "Avenir",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
+                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal}" ??
+                                                        "0.0",
+                                                    style:
+                                                        const TextStyle(
+                                                            color:
+                                                                const Color(
+                                                                    0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
                                                     textAlign: TextAlign.left)
                                               ],
                                             )
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                // Item Total
-                                                Text(
-                                                    snapshot
-                                                        .getOrderListResponse
-                                                        .results[widget
-                                                            .merchantIndex]
-                                                        .otherChargesDetail[
-                                                            index - 1]
-                                                        .name
-                                                        .toLowerCase()
-                                                        .capitalize(),
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "Avenir",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
-                                                    textAlign: TextAlign
-                                                        .left), // ₹ 175.00
-                                                Text(
-                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherChargesDetail[index - 1].name}",
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "Avenir",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
-                                                    textAlign: TextAlign.left)
-                                              ],
-                                            );
+                                          : index == 1
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    // Item Total
+                                                    Text('Delivery Charge',
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign: TextAlign
+                                                            .left), // ₹ 175.00
+                                                    Text(
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges}",
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign:
+                                                            TextAlign.left)
+                                                  ],
+                                                )
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    // Item Total
+                                                    Text('Other Charges',
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign: TextAlign
+                                                            .left), // ₹ 175.00
+                                                    Text(
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges}",
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign:
+                                                            TextAlign.left)
+                                                  ],
+                                                );
                                     },
                                     separatorBuilder:
                                         (BuildContext context, int index) {
@@ -784,7 +799,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                           Icon(
                                             Icons.phone,
                                             size: 30,
-                                            color: Color(0xff5091cd),
+                                            color: AppColors.icColors,
                                           ),
                                         ],
                                       ),

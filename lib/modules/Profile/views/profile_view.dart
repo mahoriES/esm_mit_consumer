@@ -8,6 +8,7 @@ import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
 import 'package:esamudaayapp/modules/address/actions/address_actions.dart';
 import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/keys.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
@@ -158,7 +159,7 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
                                     Icon(
                                       Icons.account_circle,
-                                      color: Colors.blueAccent,
+                                      color: AppColors.icColors,
                                     )
                                   ],
                                 ),
@@ -210,7 +211,7 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
                                     Icon(
                                       Icons.phone_iphone,
-                                      color: Colors.blueAccent,
+                                      color: AppColors.icColors,
                                     )
                                   ],
                                 ),
@@ -306,7 +307,7 @@ class _ProfileViewState extends State<ProfileView> {
                                         },
                                         child: Icon(
                                           Icons.add_location,
-                                          color: Colors.blueAccent,
+                                          color: AppColors.icColors,
                                         ),
                                       ),
                                     )
@@ -387,18 +388,8 @@ class _ProfileViewState extends State<ProfileView> {
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(100)),
-                                                  gradient: LinearGradient(
-                                                      begin: Alignment(
-                                                          0.023085936903953545,
-                                                          0.5),
-                                                      end: Alignment(
-                                                          0.980859398841858,
-                                                          0.5),
-                                                      colors: [
-                                                        const Color(0xff00dab2),
-                                                        const Color(0xff3a90d3),
-                                                        const Color(0xff3a90d3)
-                                                      ]))),
+                                                  gradient: AppColors
+                                                      .linearGradient)),
                                         ),
                                         // Get OTP
                                         PositionedDirectional(

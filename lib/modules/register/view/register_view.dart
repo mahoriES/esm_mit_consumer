@@ -6,6 +6,7 @@ import 'package:esamudaayapp/modules/address/models/addess_models.dart';
 import 'package:esamudaayapp/modules/register/action/register_Action.dart';
 import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/keys.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -120,7 +122,7 @@ class _RegistrationState extends State<Registration> {
                                     ),
                                     Icon(
                                       Icons.account_circle,
-                                      color: Colors.blueAccent,
+                                      color: AppColors.icColors,
                                     )
                                   ],
                                 ),
@@ -216,7 +218,7 @@ class _RegistrationState extends State<Registration> {
                                         },
                                         child: Icon(
                                           Icons.add_location,
-                                          color: Colors.blueAccent,
+                                          color: AppColors.icColors,
                                         ),
                                       ),
                                     )
@@ -277,11 +279,29 @@ class _RegistrationState extends State<Registration> {
                                     ),
                                     Icon(
                                       Icons.local_post_office,
-                                      color: Colors.blueAccent,
+                                      color: AppColors.icColors,
                                     )
                                   ],
                                 ),
                               ),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: InkWell(
+                              onTap: () {
+                                launchURL();
+                              },
+                              child: Text(
+                                "screen_register.pin_code.no_circle_code",
+                                style: const TextStyle(
+                                    color: AppColors.icColors,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.0),
+                              ).tr(),
                             ),
                           ),
 
@@ -354,18 +374,8 @@ class _RegistrationState extends State<Registration> {
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(100)),
-                                                  gradient: LinearGradient(
-                                                      begin: Alignment(
-                                                          0.27639952301979065,
-                                                          0.5),
-                                                      end: Alignment(
-                                                          0.980859398841858,
-                                                          0.5),
-                                                      colors: [
-                                                        const Color(0xff5f3a9f),
-                                                        const Color(0xffe1517d),
-                                                        const Color(0xfffb7452)
-                                                      ]))),
+                                                  gradient: AppColors
+                                                      .linearGradient)),
                                         ),
                                         // Get OTP
                                         PositionedDirectional(
@@ -409,6 +419,16 @@ class _RegistrationState extends State<Registration> {
             );
           }),
     );
+  }
+
+  launchURL() async {
+    const url =
+        'https://docs.google.com/forms/d/e/1FAIpQLSe479y0f0lIwD8CpqRILJNDS5P6OvZTonooAatQ8ngHLnz5pA/viewform?usp=pp_url';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   void dispose() {

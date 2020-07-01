@@ -14,10 +14,13 @@ import 'package:esamudaayapp/utilities/api_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GetOrderListAPIAction extends ReduxAction<AppState> {
+  final String orderRequestApi;
+
+  GetOrderListAPIAction({this.orderRequestApi});
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.placeOrderUrl,
+        url: orderRequestApi == null ? ApiURL.placeOrderUrl : orderRequestApi,
         params: {"": ""},
         requestType: RequestType.get);
 

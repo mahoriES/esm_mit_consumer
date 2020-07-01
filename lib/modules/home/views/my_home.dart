@@ -9,6 +9,7 @@ import 'package:esamudaayapp/modules/home/views/home_page_main_view.dart';
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/orders/views/orders_View.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/foundation.dart';
@@ -74,7 +75,8 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
               } else {
                 store.dispatch(GetAddressFromLocal());
               }
-              store.dispatch(GetMerchantDetails());
+              store.dispatch(
+                  GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
               store.dispatch(GetBannerDetailsAction());
               store.dispatch(GetCartFromLocal());
             });
@@ -82,6 +84,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           },
           builder: (context, snapshot) {
             return BottomNavigationBar(
+              selectedItemColor: AppColors.icColors,
               currentIndex: snapshot.currentIndex,
               type: BottomNavigationBarType.fixed,
               items: [
@@ -92,7 +95,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                   ),
                   activeIcon: ImageIcon(
                     AssetImage('assets/images/path330.png'),
-                    color: AppColors.mainColor,
+                    color: AppColors.icColors,
                   ),
                   title: new Text(
                     tr('screen_home.tab_bar.store'),
@@ -118,7 +121,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path338.png'),
-                      color: AppColors.mainColor,
+                      color: AppColors.icColors,
                     ),
                     title: Text(
                       tr('screen_home.tab_bar.orders'),
@@ -130,7 +133,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path5.png'),
-                      color: AppColors.mainColor,
+                      color: AppColors.icColors,
                     ),
                     title: Text(
                       'screen_home.tab_bar.account',

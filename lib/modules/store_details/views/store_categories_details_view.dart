@@ -40,7 +40,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
             leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  color: Colors.black,
+                  color: AppColors.icColors,
                 ),
                 onPressed: () async {
                   List<Business> merchants =

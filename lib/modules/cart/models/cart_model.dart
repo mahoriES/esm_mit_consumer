@@ -96,6 +96,7 @@ class PlaceOrderResponse {
   String orderStatus;
   int itemTotal;
   int otherCharges;
+  int deliveryCharges;
   int orderTotal;
   List<BusinessImages> businessImages;
   String businessName;
@@ -112,7 +113,8 @@ class PlaceOrderResponse {
   Rating rating;
 
   PlaceOrderResponse(
-      {this.orderId,
+      {this.deliveryCharges,
+      this.orderId,
       this.orderShortNumber,
       this.deliveryType,
       this.orderStatus,
@@ -142,6 +144,7 @@ class PlaceOrderResponse {
     orderStatus = json['order_status'];
     itemTotal = json['item_total'];
     otherCharges = json['other_charges'];
+    deliveryCharges = json['delivery_charges'];
     orderTotal = json['order_total'];
     if (json['business_images'] != null) {
       businessImages = new List<BusinessImages>();
@@ -195,6 +198,7 @@ class PlaceOrderResponse {
     data['order_status'] = this.orderStatus;
     data['item_total'] = this.itemTotal;
     data['other_charges'] = this.otherCharges;
+    data['delivery_charges'] = this.deliveryCharges;
     data['order_total'] = this.orderTotal;
     if (this.businessImages != null) {
       data['business_images'] =

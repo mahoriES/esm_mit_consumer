@@ -12,10 +12,13 @@ import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/api_manager.dart';
 
 class GetMerchantDetails extends ReduxAction<AppState> {
+  final String getUrl;
+
+  GetMerchantDetails({this.getUrl});
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl,
+        url: getUrl,
         params: {"cluster_id": state.authState.cluster.clusterId},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -28,14 +31,14 @@ class GetMerchantDetails extends ReduxAction<AppState> {
       var merchants = await CartDataSource.getListOfMerchants();
       if (merchants.isNotEmpty) {
         return state.copyWith(
-            homePageState:
-                state.homePageState.copyWith(merchants: responseModel.results),
+            homePageState: state.homePageState.copyWith(
+                merchants: responseModel.results, response: responseModel),
             productState:
                 state.productState.copyWith(selectedMerchant: merchants.first));
       }
       return state.copyWith(
-          homePageState:
-              state.homePageState.copyWith(merchants: responseModel.results));
+          homePageState: state.homePageState.copyWith(
+              merchants: responseModel.results, response: responseModel));
     }
   }
 

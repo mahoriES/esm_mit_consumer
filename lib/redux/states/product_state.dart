@@ -13,6 +13,7 @@ class ProductState {
   final List<Product> productListingDataSource;
   final List<Product> productListingTempDataSource;
   final List<Merchants> searchResults;
+  final bool currentOrderIsPickUp;
   final List<Product> localCartItems;
   final List<Charge> charges;
   final CategoriesNew selectedCategory;
@@ -23,20 +24,20 @@ class ProductState {
   final List<CategoriesNew> categories;
   final Cluster selectedCluster;
 
-  ProductState({
-    @required this.localCartItems,
-    @required this.charges,
-    @required this.selectedCluster,
-    @required this.placeOrderResponse,
-    @required this.getOrderListResponse,
-    @required this.selectedCategory,
-    @required this.productListingTempDataSource,
-    @required this.selectedMerchand,
-    @required this.searchResults,
-    @required this.productListingDataSource,
-    @required this.supportOrder,
-    @required this.categories,
-  });
+  ProductState(
+      {@required this.localCartItems,
+      @required this.charges,
+      @required this.selectedCluster,
+      @required this.placeOrderResponse,
+      @required this.getOrderListResponse,
+      @required this.selectedCategory,
+      @required this.productListingTempDataSource,
+      @required this.selectedMerchand,
+      @required this.searchResults,
+      @required this.productListingDataSource,
+      @required this.supportOrder,
+      @required this.categories,
+      @required this.currentOrderIsPickUp});
 
   factory ProductState.initial() {
     return new ProductState(
@@ -51,7 +52,8 @@ class ProductState {
         productListingTempDataSource: [],
         productListingDataSource: [],
         selectedCategory: null,
-        placeOrderResponse: null);
+        placeOrderResponse: null,
+        currentOrderIsPickUp: false);
   }
 
   ProductState copyWith(
@@ -66,6 +68,7 @@ class ProductState {
       GetOrderListResponse getOrderListResponse,
       CategoriesNew selectedCategory,
       String supportOrder,
+      bool currentOrderIsPickUp,
       Cluster selectedCluster}) {
     return ProductState(
         charges: charges ?? this.charges,
@@ -81,6 +84,8 @@ class ProductState {
             productListingDataSource ?? this.productListingDataSource,
         selectedCategory: selectedCategory ?? this.selectedCategory,
         supportOrder: supportOrder ?? this.supportOrder,
-        categories: categories ?? this.categories);
+        categories: categories ?? this.categories,
+        currentOrderIsPickUp:
+            currentOrderIsPickUp ?? this.currentOrderIsPickUp);
   }
 }

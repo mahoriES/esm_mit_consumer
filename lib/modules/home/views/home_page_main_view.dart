@@ -11,6 +11,7 @@ import 'package:esamudaayapp/modules/home/views/cart_bottom_navigation_view.dart
 import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
 import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/utilities/URLs.dart';
 import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,15 +32,24 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
-    snapshot.getMerchantList();
+
+    if (snapshot.response.previous != null) {
+      snapshot.getMerchantList(snapshot.response.previous);
+    } else {
+      snapshot.getMerchantList(ApiURL.getBusinessesUrl);
+    }
+
     _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async {
+  void _onLoading(_ViewModel snapshot) async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
 //    items.add((items.length + 1).toString());
+    if (snapshot.response.next != null) {
+      snapshot.getMerchantList(snapshot.response.next);
+    }
     if (mounted) setState(() {});
     _refreshController.loadComplete();
   }
@@ -134,7 +144,9 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   onRefresh: () {
                     _onRefresh(snapshot);
                   },
-                  onLoading: _onLoading,
+                  onLoading: () {
+                    _onLoading(snapshot);
+                  },
                   child: ListView(
                     padding: EdgeInsets.all(15.0),
                     children: <Widget>[
@@ -381,7 +393,7 @@ class StoresListView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  Function getMerchantList;
+  Function(String) getMerchantList;
   String userAddress;
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
@@ -394,6 +406,7 @@ class _ViewModel extends BaseModel<AppState> {
   List<Photo> banners;
   LoadingStatus loadingStatus;
   Cluster cluster;
+  GetBusinessesResponse response;
   _ViewModel.build(
       {this.navigateToAddAddressPage,
       this.navigateToCart,
@@ -407,20 +420,23 @@ class _ViewModel extends BaseModel<AppState> {
       this.merchants,
       this.userAddress,
       this.updateSelectedMerchant,
-      this.getMerchantList})
+      this.getMerchantList,
+      this.response})
       : super(equals: [
           currentIndex,
           merchants,
           banners,
           loadingStatus,
           userAddress,
-          cluster
+          cluster,
+          response
         ]);
 
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        response: state.homePageState.response,
         cluster: state.authState.cluster,
         userAddress: "",
         loadingStatus: state.authState.loadingStatus,
@@ -441,8 +457,8 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToProductSearch: () {
           dispatch(UpdateSelectedTabAction(1));
         },
-        getMerchantList: () {
-          dispatch(GetMerchantDetails());
+        getMerchantList: (url) {
+          dispatch(GetMerchantDetails(getUrl: url));
         },
         currentIndex: state.homePageState.currentIndex);
   }

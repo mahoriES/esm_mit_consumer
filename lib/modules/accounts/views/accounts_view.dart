@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaayapp/models/loading_status.dart';
 import 'package:esamudaayapp/modules/accounts/action/account_action.dart';
 import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:flutter/material.dart';
 
 class AccountsView extends StatefulWidget {
@@ -42,7 +43,10 @@ class _AccountsViewState extends State<AccountsView> {
                   onTap: () {
                     snapshot.navigateToProfile();
                   },
-                  leading: Image.asset("assets/images/AI_user.png"),
+                  leading: Image.asset(
+                    "assets/images/AI_user.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.profile',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
@@ -71,7 +75,10 @@ class _AccountsViewState extends State<AccountsView> {
 //                  },
 //                ),
                 ListTile(
-                  leading: Image.asset("assets/images/question_cr.png"),
+                  leading: Image.asset(
+                    "assets/images/question_cr.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.about',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
@@ -90,7 +97,10 @@ class _AccountsViewState extends State<AccountsView> {
                   onTap: () {
                     snapshot.navigateLanguage();
                   },
-                  leading: Image.asset("assets/images/Group_240.png"),
+                  leading: Image.asset(
+                    "assets/images/Group_240.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.language',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
@@ -126,7 +136,10 @@ class _AccountsViewState extends State<AccountsView> {
                           ],
                         ));
                   },
-                  leading: Image.asset("assets/images/power.png"),
+                  leading: Image.asset(
+                    "assets/images/power.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.logout',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),

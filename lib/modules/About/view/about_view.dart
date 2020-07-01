@@ -1,3 +1,4 @@
+import 'package:esamudaayapp/utilities/colors.dart';
 import 'package:flutter/material.dart';
 
 class AboutView extends StatefulWidget {
@@ -16,7 +17,7 @@ class _AboutViewState extends State<AboutView> {
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.black,
+              color: AppColors.icColors,
             ),
             onPressed: () {
               Navigator.pop(context);
