@@ -259,9 +259,11 @@ class PlaceOrderAction extends ReduxAction<AppState> {
 class GetOrderTaxAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
+    var merchant = await CartDataSource.getListOfMerchants();
+
     var response = await APIManager.shared.request(
         url: ApiURL.getBusinessesUrl +
-            "${state.productState.selectedMerchand.businessId}" +
+            "${merchant.first.businessId}" +
             "/charges",
         params: {"": ""},
         requestType: RequestType.get);
