@@ -475,35 +475,18 @@ class OrderItemBottomView extends StatelessWidget {
                           didPresButton: () async {
                             if (orderStatus == "COMPLETED") {
                               //reorder api
-                              if (snapshot.getOrderListResponse.results[index]
-                                      .orderItems ==
-                                  null) {
-                                store
-                                    .dispatchFuture(GetOrderDetailsAPIAction(
-                                        orderId: snapshot.getOrderListResponse
-                                            .results[index].orderId))
-                                    .whenComplete(() async {
-                                  var address = await UserManager.getAddress();
-                                  PlaceOrderRequest request =
-                                      PlaceOrderRequest();
-                                  request.businessId = snapshot
-                                      .getOrderListResponse
-                                      .results[index]
-                                      .businessId;
-                                  request.deliveryAddressId = address.addressId;
-                                  request.deliveryType = snapshot
-                                      .getOrderListResponse
-                                      .results[index]
-                                      .deliveryType;
-                                  request.orderItems = snapshot
-                                      .getOrderListResponse
-                                      .results[index]
-                                      .orderItems;
-                                  snapshot.placeOrder(request);
-                                });
-                              } else {
+
+                              store
+                                  .dispatchFuture(GetOrderDetailsAPIAction(
+                                      orderId: snapshot.getOrderListResponse
+                                          .results[index].orderId))
+                                  .whenComplete(() async {
                                 var address = await UserManager.getAddress();
                                 PlaceOrderRequest request = PlaceOrderRequest();
+                                request.businessId = snapshot
+                                    .getOrderListResponse
+                                    .results[index]
+                                    .businessId;
                                 request.deliveryAddressId = address.addressId;
                                 request.deliveryType = snapshot
                                     .getOrderListResponse
@@ -514,7 +497,7 @@ class OrderItemBottomView extends StatelessWidget {
                                     .results[index]
                                     .orderItems;
                                 snapshot.placeOrder(request);
-                              }
+                              });
                             } else if (orderStatus == "MERCHANT_UPDATED") {
                               //accept order api
                               snapshot.acceptOrder(snapshot
