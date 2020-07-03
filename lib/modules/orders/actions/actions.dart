@@ -71,6 +71,7 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
           e.orderItems = responseModel.orderItems;
           e.otherChargesDetail = responseModel.otherChargesDetail;
           e.businessPhones = responseModel.businessPhones;
+          e.businessId = responseModel.businessId;
         }
       });
       return state.copyWith(
