@@ -65,7 +65,11 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                 return snapshot.loadingStatus == LoadingStatus.loading
                     ? Container(
                         child: Center(
-                          child: CircularProgressIndicator(),
+                          child: Image.asset(
+                            'assets/images/indicator.gif',
+                            height: 75,
+                            width: 75,
+                          ),
                         ),
                       )
                     : ListView(
@@ -319,9 +323,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                                     (context,
                                                                             url,
                                                                             error) =>
-                                                                        Center(
+                                                                        Container(
+                                                                          height:
+                                                                              75,
                                                                           child:
-                                                                              Icon(Icons.error),
+                                                                              Center(
+                                                                            child:
+                                                                                Icon(Icons.error),
+                                                                          ),
                                                                         )),
                                                       ),
                                                     ),
@@ -344,7 +353,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                             fontFamily:
-                                                                "JTLeonor",
+                                                                "Avenir",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 15.0)),

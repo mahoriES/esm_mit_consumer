@@ -681,12 +681,13 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               LoadingStatus
                                                                                   .loading
                                                                           ? Container(
-                                                                              height: 30,
-                                                                              width: 30,
-                                                                              child: CircularProgressIndicator(
-//                                                                              valueColor: AlwaysStoppedAnimation<Color>(Colors
-//                                                                                  .white),
-                                                                                  backgroundColor: Colors.white),
+                                                                              height: 75,
+                                                                              width: 75,
+                                                                              child: Image.asset(
+                                                                                'assets/images/indicator.gif',
+                                                                                height: 75,
+                                                                                width: 75,
+                                                                              ),
                                                                             )
                                                                           : Text(
                                                                               snapshot.loadingStatus == LoadingStatus.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
@@ -800,6 +801,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                             Icons.phone,
                                             size: 30,
                                             color: AppColors.icColors,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(5),
+                                            child: Text(
+                                              'Call shop',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontFamily: 'Avenir',
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),

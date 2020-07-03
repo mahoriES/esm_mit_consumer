@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StoreProductListingView extends StatefulWidget {
   @override
@@ -31,6 +32,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
   TabController controller;
   int _currentPosition = 0;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void didChangeDependencies() {
@@ -59,6 +62,31 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
     store.dispatch(UpdateProductListingDataAction(
         listingData: store.state.productState.productListingDataSource));
     super.didPopNext();
+  }
+
+  void _onRefresh(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+//    if (snapshot.getOrderListResponse.previous != null) {
+////      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
+//    } else {
+//      snapshot.getOrderList(ApiURL.placeOrderUrl);
+//    }
+    if (mounted) _refreshController.refreshCompleted();
+  }
+
+  void _onLoading(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+//    items.add((items.length + 1).toString());
+
+//    if (snapshot.getOrderListResponse.next != null) {
+//      snapshot.getOrderList(snapshot.getOrderListResponse.next);
+//    }
+
+    _refreshController.loadComplete();
   }
 
   @override
@@ -228,24 +256,71 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                               ? snapshot.loadingStatus == LoadingStatus.loading
                                   ? Container()
                                   : EmptyViewProduct()
-                              : ListView.separated(
-                                  padding: EdgeInsets.all(15),
-                                  itemCount: snapshot.products.length,
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      height: 15,
-                                    );
+                              : SmartRefresher(
+                                  enablePullDown: true,
+                                  enablePullUp: true,
+                                  header: WaterDropHeader(
+                                    complete: Image.asset(
+                                      'assets/images/indicator.gif',
+                                      height: 75,
+                                      width: 75,
+                                    ),
+                                    waterDropColor: AppColors.icColors,
+                                    refresh: Image.asset(
+                                      'assets/images/indicator.gif',
+                                      height: 75,
+                                      width: 75,
+                                    ),
+                                  ),
+                                  footer: CustomFooter(
+                                    loadStyle: LoadStyle.ShowWhenLoading,
+                                    builder: (BuildContext context,
+                                        LoadStatus mode) {
+                                      Widget body;
+                                      if (mode == LoadStatus.idle) {
+                                        body = Text("");
+                                      } else if (mode == LoadStatus.loading) {
+                                        body = CupertinoActivityIndicator();
+                                      } else if (mode == LoadStatus.failed) {
+                                        body = Text("Load Failed!Click retry!");
+                                      } else if (mode ==
+                                          LoadStatus.canLoading) {
+                                        body = Text("");
+                                      } else {
+                                        body = Text("No more Data");
+                                      }
+                                      return Container(
+                                        height: 55.0,
+                                        child: Center(child: body),
+                                      );
+                                    },
+                                  ),
+                                  controller: _refreshController,
+                                  onRefresh: () {
+                                    _onRefresh(snapshot);
                                   },
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return ProductListingItemView(
-                                      index: index,
-                                      imageLink: snapshot.selectedCategory
-                                          .images.first.photoUrl,
-                                      item: snapshot.products[index],
-                                    );
+                                  onLoading: () {
+                                    _onLoading(snapshot);
                                   },
+                                  child: ListView.separated(
+                                    padding: EdgeInsets.all(15),
+                                    itemCount: snapshot.products.length,
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        height: 15,
+                                      );
+                                    },
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return ProductListingItemView(
+                                        index: index,
+                                        imageLink: snapshot.selectedCategory
+                                            .images.first.photoUrl,
+                                        item: snapshot.products[index],
+                                      );
+                                    },
+                                  ),
                                 ),
                         ),
                       ),

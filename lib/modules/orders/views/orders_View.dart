@@ -61,15 +61,7 @@ class _OrdersViewState extends State<OrdersView> {
       snapshot.getOrderList(snapshot.getOrderListResponse.next);
     }
 
-    if (mounted)
-      setState(() {
-        _scrollController.animateTo(
-          0.0,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 300),
-        );
-      });
-    _refreshController.loadComplete();
+    if (mounted) _refreshController.loadComplete();
   }
 
   @override
@@ -365,7 +357,8 @@ class OrderItemBottomView extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       snapshot.cancelOrder(
-                          snapshot.getOrderListResponse.results[index].orderId);
+                          snapshot.getOrderListResponse.results[index].orderId,
+                          index);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20, bottom: 8),
@@ -403,8 +396,54 @@ class OrderItemBottomView extends StatelessWidget {
                       builder: (context, snapshot) {
                         return buildCustomButton(snapshot);
                       })
-                  : Container(
-                      height: 40,
+                  : Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: InkWell(
+                        onTap: () async {
+                          snapshot.updateOrderId(orderId);
+                          if (snapshot.getOrderListResponse.results[index]
+                                      .businessPhones !=
+                                  null &&
+                              snapshot.getOrderListResponse.results[index]
+                                  .businessPhones.isNotEmpty) {
+                            var url =
+                                'tel:${snapshot.getOrderListResponse.results[index].businessPhones.first}';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "No contact details available.");
+                          }
+//                      Navigator.of(context).pushNamed('/Support');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.phone,
+                              size: 35,
+                              color: AppColors.icColors,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Text(
+                                'Call shop',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontFamily: 'Avenir',
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            // Support
+                          ],
+                        ),
+                      ),
                     ),
               // Support
             ],
@@ -442,7 +481,18 @@ class OrderItemBottomView extends StatelessWidget {
                           size: 35,
                           color: AppColors.icColors,
                         ),
-                        Padding(padding: EdgeInsets.all(5)),
+                        Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                            'Call shop',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontFamily: 'Avenir',
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
                         // Support
                       ],
                     ),
@@ -497,15 +547,15 @@ class OrderItemBottomView extends StatelessWidget {
         } else if (orderStatus == "MERCHANT_UPDATED") {
           //accept order api
           snapshot.acceptOrder(
-              snapshot.getOrderListResponse.results[index].orderId);
-        } else if (orderStatus == "MERCHANT_ACCEPTED" &&
+              snapshot.getOrderListResponse.results[index].orderId, index);
+        } else if (orderStatus == "READY_FOR_PICKUP" &&
             deliveryStatus == "SELF_PICK_UP") {
           snapshot.completeOrder(
-              snapshot.getOrderListResponse.results[index].orderId);
+              snapshot.getOrderListResponse.results[index].orderId, index);
         } else {
           //cancel order api
           snapshot.cancelOrder(
-              snapshot.getOrderListResponse.results[index].orderId);
+              snapshot.getOrderListResponse.results[index].orderId, index);
         }
       },
     );
@@ -541,49 +591,73 @@ class OrderItemBottomView extends StatelessWidget {
     } else if (orderStatus == "PICKED_UP_BY_DA") {
       return tr('screen_order.on_the_way');
     }
-
-    return orderStatus == "CREATED"
-        ? tr('screen_order.cancel_order')
-        : orderStatus == "COMPLETED"
-            ? tr('screen_order.re_order')
-            : orderStatus == "UNCONFIRMED"
-                ? tr('screen_order.cancel_order')
-                : orderStatus == "MERCHANT_ACCEPTED"
-                    ? tr('screen_order.payment')
-                    : orderStatus == "MERCHANT_UPDATED"
-                        ? tr('screen_order.accept_order')
-                        : orderStatus == "MERCHANT_ACCEPTED" &&
-                                deliveryStatus == "SELF_PICK_UP"
-                            ? tr('screen_order.complete')
-                            : "";
   }
 
   Text buildText() {
+    TextStyle newStyle = TextStyle(
+      color: Colors.black,
+      fontSize: 12,
+      fontFamily: 'Avenir',
+      fontWeight: FontWeight.w800,
+    );
     if (orderStatus == "CREATED") {
-      return Text(tr('screen_order.pending'));
+      return Text(
+        tr('screen_order.pending'),
+        style: newStyle,
+      );
     } else if (orderStatus == "MERCHANT_ACCEPTED") {
-      return Text(tr('screen_order.confirmed'));
+      return Text(
+        tr('screen_order.confirmed'),
+        style: newStyle,
+      );
     } else if (orderStatus == "CUSTOMER_CANCELLED") {
-      return Text(tr('screen_order.cancelled_customer'));
+      return Text(
+        tr('screen_order.cancelled_customer'),
+        style: newStyle,
+      );
     } else if (orderStatus == "MERCHANT_CANCELLED") {
-      return Text(tr('screen_order.cancelled_merchant') +
-          " " +
-          snapshot.getOrderListResponse.results[index].businessName);
+      return Text(
+        tr('screen_order.cancelled_merchant') +
+            " " +
+            snapshot.getOrderListResponse.results[index].businessName,
+        style: newStyle,
+      );
     } else if (orderStatus == "MERCHANT_UPDATED") {
-      return Text(tr('screen_order.not_available'));
+      return Text(
+        tr('screen_order.not_available'),
+        style: newStyle,
+      );
     } else if (orderStatus == "COMPLETED") {
-      return Text(tr('screen_order.completed'));
+      return Text(
+        tr('screen_order.completed'),
+        style: newStyle,
+      );
     } else if (orderStatus == "READY_FOR_PICKUP") {
       if (deliveryStatus == "SELF_PICK_UP")
-        return Text(tr('screen_order.ready_pickup'));
+        return Text(
+          tr('screen_order.ready_pickup'),
+          style: newStyle,
+        );
       else
-        return Text(tr('screen_order.on_the_way'));
+        return Text(
+          tr('screen_order.on_the_way'),
+          style: newStyle,
+        );
     } else if (orderStatus == "REQUESTING_TO_DA") {
-      return Text(tr('screen_order.on_the_way'));
+      return Text(
+        tr('screen_order.on_the_way'),
+        style: newStyle,
+      );
     } else if (orderStatus == "ASSIGNED_TO_DA") {
-      return Text(tr('screen_order.on_the_way'));
+      return Text(
+        tr('screen_order.on_the_way'),
+        style: newStyle,
+      );
     } else if (orderStatus == "PICKED_UP_BY_DA") {
-      return Text(tr('screen_order.on_the_way'));
+      return Text(
+        tr('screen_order.on_the_way'),
+        style: newStyle,
+      );
     }
   }
 
@@ -687,13 +761,15 @@ class CustomButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Container(),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontFamily: 'Avenir',
-                    fontWeight: FontWeight.w900,
+                Container(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontFamily: 'Avenir',
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 Padding(
@@ -916,9 +992,9 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String orderId) updateOrderId;
   Function viewStore;
   Function(PlaceOrderRequest) placeOrder;
-  Function(String) acceptOrder;
-  Function(String) cancelOrder;
-  Function(String) completeOrder;
+  Function(String, int) acceptOrder;
+  Function(String, int) cancelOrder;
+  Function(String, int) completeOrder;
   LoadingStatus loadingStatus;
   Function(String) getOrderList;
 
@@ -951,17 +1027,17 @@ class _ViewModel extends BaseModel<AppState> {
             dispatch(GetOrderListAPIAction());
           });
         },
-        completeOrder: (orderId) {
-          dispatch(CompleteOrderAPIAction(orderId: orderId));
+        completeOrder: (orderId, index) {
+          dispatch(CompleteOrderAPIAction(orderId: orderId, index: index));
         },
         viewStore: () {
           dispatch(UpdateSelectedTabAction(0));
         },
-        cancelOrder: (id) {
-          dispatch(CancelOrderAPIAction(orderId: id));
+        cancelOrder: (id, index) {
+          dispatch(CancelOrderAPIAction(orderId: id, index: index));
         },
-        acceptOrder: (orderId) {
-          dispatch(AcceptOrderAPIAction(orderId: orderId));
+        acceptOrder: (orderId, index) {
+          dispatch(AcceptOrderAPIAction(orderId: orderId, index: index));
         });
   }
 }

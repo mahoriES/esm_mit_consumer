@@ -13,6 +13,7 @@ import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/keys.dart';
 import 'package:esamudaayapp/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,351 +86,20 @@ class _ProfileViewState extends State<ProfileView> {
                   body: Padding(
                     padding: const EdgeInsets.only(left: 25.0, right: 25.0),
                     child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 100,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              _settingModalBottomSheet(context, snapshot);
-                            },
-                            child: Container(
-                              height: 80,
-                              width: 80,
-                              decoration: new BoxDecoration(
-                                  boxShadow: [
-                                    new BoxShadow(
-                                      color: Colors.white30,
-                                      blurRadius: 0.0,
-                                    ),
-                                  ],
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: _image != null
-                                          ? FileImage(_image)
-                                          : snapshot.user.profilePic.photoUrl !=
-                                                  null
-                                              ? new NetworkImage(snapshot
-                                                  .user.profilePic.photoUrl)
-                                              : AssetImage(
-                                                  'assets/images/user.jpg'))),
+                      child: AnimationLimiter(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 375),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              horizontalOffset:
+                                  MediaQuery.of(context).size.width / 2,
+                              child: FadeInAnimation(child: widget),
                             ),
+                            children: buildUI(context, snapshot),
                           ),
-                          //name
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: TextInputBG(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextFormField(
-                                          validator: (value) {
-                                            if (value.length == 0) return null;
-                                            if (value.length < 3) {
-                                              return tr(
-                                                  'screen_register.name.empty_error');
-                                              return null;
-                                            }
-                                            return null;
-                                          },
-                                          autovalidate: true,
-                                          enabled: false,
-                                          controller: nameController,
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                tr('screen_recommended.name'),
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          style: const TextStyle(
-                                              color: const Color(0xff1a1a1a),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 13.0),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Icon(
-                                      Icons.account_circle,
-                                      color: AppColors.icColors,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          //pin code
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: TextInputBG(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextFormField(
-                                          enabled: false,
-                                          validator: (value) {
-                                            if (value.length == 0) return null;
-                                            if (value.length < 10 ||
-                                                !validator.phone(value)) {
-                                              return tr(
-                                                  'screen_phone.valid_phone_error_message');
-                                            }
-                                            return null;
-                                          },
-                                          autovalidate: true,
-                                          controller: phoneNumberController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                tr('screen_recommended.phone'),
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          style: const TextStyle(
-                                              color: const Color(0xff1a1a1a),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 13.0),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Icon(
-                                      Icons.phone_iphone,
-                                      color: AppColors.icColors,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          //address
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 20.0, bottom: 40.0),
-                            child: TextInputBG(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextFormField(
-                                          maxLines: null,
-                                          // enableInteractiveSelection: false,
-                                          validator: (value) {
-                                            if (value.isEmpty) return null;
-//                                          if (value.length < 10) {
-//                                            return tr(
-//                                                'screen_register.address.empty_error');
-//                                            return null;
-//                                          }
-                                            return null;
-                                          },
-                                          autovalidate: true,
-                                          controller: addressController,
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText: tr(
-                                                'screen_register.address.title'),
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          style: const TextStyle(
-                                              color: const Color(0xff1a1a1a),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 13.0),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Material(
-                                      type: MaterialType.transparency,
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => PlacePicker(
-                                                apiKey: Keys
-                                                    .googleAPIkey, // Put YOUR OWN KEY here.
-                                                onPlacePicked: (result) {
-                                                  // Handle the result in your way
-                                                  print(
-                                                      result?.formattedAddress);
-                                                  // print(result?.a);
-                                                  if (result
-                                                          ?.formattedAddress !=
-                                                      null) {
-                                                    addressController.text =
-                                                        result
-                                                            ?.formattedAddress;
-                                                  }
-//                                                if (result?.postalCode !=
-//                                                    null) {
-//                                                  pinCodeController.text =
-//                                                      result?.postalCode;
-//                                                }
-                                                  latitude = result
-                                                      .geometry.location.lat
-                                                      .toString();
-                                                  longitude = result
-                                                      .geometry.location.lng
-                                                      .toString();
-                                                  print(result.adrAddress);
-                                                  Navigator.of(context).pop();
-                                                },
-//                                              initialPosition: HomePage.kInitialPosition,
-                                                useCurrentLocation: true,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Icon(
-                                          Icons.add_location,
-                                          color: AppColors.icColors,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //location
-                          //Register_but
-                          // Rectangle 10
-                          Material(
-                            type: MaterialType.transparency,
-                            child: InkWell(
-                              onTap: () {
-                                if (nameController.text.isNotEmpty &&
-                                    addressController.text.isNotEmpty &&
-                                    phoneNumberController.text.isNotEmpty) {
-                                  if ((nameController.text.length < 3 ||
-                                      !nameController.text
-                                          .contains(new RegExp(r'[a-z]')))) {
-                                    Fluttertoast.showToast(
-                                        msg: tr(
-                                            'screen_register.name.empty_error'));
-                                  } else if (phoneNumberController.text.length <
-                                          10 ||
-                                      !validator
-                                          .phone(phoneNumberController.text)) {
-                                    Fluttertoast.showToast(
-                                        msg: tr(
-                                            'screen_phone.valid_phone_error_message'));
-                                  } else {
-                                    snapshot.profileUpdate(
-                                        _image,
-                                        addressController.text !=
-                                                address.prettyAddress
-                                            ? AddressRequest(
-                                                addressName:
-                                                    nameController.text,
-                                                lat: latitude != null
-                                                    ? double.parse(latitude)
-                                                    : 0.0,
-                                                lon: longitude != null
-                                                    ? double.parse(longitude)
-                                                    : 0.0,
-                                                prettyAddress:
-                                                    addressController.text,
-                                                geoAddr: GeoAddr(pincode: ""))
-                                            : null,
-                                        address.addressId);
-                                  }
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "all fields required");
-                                }
-                              },
-                              child: Hero(
-                                tag: '#getOtp',
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          1.2,
-                                      height: 60,
-                                      child: Stack(children: [
-                                        // Rectangle 10
-                                        PositionedDirectional(
-                                          top: 0,
-                                          start: 0,
-                                          child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.2,
-                                              height: 52,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(100)),
-                                                  gradient: AppColors
-                                                      .linearGradient)),
-                                        ),
-                                        // Get OTP
-                                        PositionedDirectional(
-                                          top: 16.000030517578125,
-                                          start: 0,
-                                          child: SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.2,
-                                              height: 22,
-                                              child: Text(
-                                                      'screen_register.update',
-                                                      style: const TextStyle(
-                                                          color: const Color(
-                                                              0xffffffff),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontFamily: "Avenir",
-                                                          fontStyle:
-                                                              FontStyle.normal,
-                                                          fontSize: 16.0),
-                                                      textAlign:
-                                                          TextAlign.center)
-                                                  .tr()),
-                                        )
-                                      ])),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -438,6 +108,305 @@ class _ProfileViewState extends State<ProfileView> {
             );
           }),
     );
+  }
+
+  List<Widget> buildUI(BuildContext context, _ViewModel snapshot) {
+    return <Widget>[
+      SizedBox(
+        height: 100,
+      ),
+      InkWell(
+        onTap: () {
+          _settingModalBottomSheet(context, snapshot);
+        },
+        child: Container(
+          height: 80,
+          width: 80,
+          decoration: new BoxDecoration(
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.white30,
+                  blurRadius: 0.0,
+                ),
+              ],
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                  fit: BoxFit.cover,
+                  image: _image != null
+                      ? FileImage(_image)
+                      : snapshot.user.profilePic.photoUrl != null
+                          ? new NetworkImage(snapshot.user.profilePic.photoUrl)
+                          : AssetImage('assets/images/user.jpg'))),
+        ),
+      ),
+      //name
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: TextInputBG(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                      validator: (value) {
+                        if (value.length == 0) return null;
+                        if (value.length < 3) {
+                          return tr('screen_register.name.empty_error');
+                          return null;
+                        }
+                        return null;
+                      },
+                      autovalidate: true,
+                      enabled: false,
+                      controller: nameController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_recommended.name'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Icon(
+                  Icons.account_circle,
+                  color: AppColors.icColors,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      //pin code
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: TextInputBG(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                      enabled: false,
+                      validator: (value) {
+                        if (value.length == 0) return null;
+                        if (value.length < 10 || !validator.phone(value)) {
+                          return tr('screen_phone.valid_phone_error_message');
+                        }
+                        return null;
+                      },
+                      autovalidate: true,
+                      controller: phoneNumberController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_recommended.phone'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Icon(
+                  Icons.phone_iphone,
+                  color: AppColors.icColors,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      //address
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, bottom: 40.0),
+        child: TextInputBG(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                      maxLines: null,
+                      // enableInteractiveSelection: false,
+                      validator: (value) {
+                        if (value.isEmpty) return null;
+//                                          if (value.length < 10) {
+//                                            return tr(
+//                                                'screen_register.address.empty_error');
+//                                            return null;
+//                                          }
+                        return null;
+                      },
+                      autovalidate: true,
+                      controller: addressController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_register.address.title'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          fullscreenDialog: false,
+                          builder: (context) => PlacePicker(
+                            apiKey: Keys.googleAPIkey, // Put YOUR OWN KEY here.
+                            onPlacePicked: (result) {
+                              // Handle the result in your way
+                              print(result?.formattedAddress);
+                              // print(result?.a);
+                              if (result?.formattedAddress != null) {
+                                addressController.text =
+                                    result?.formattedAddress;
+                              }
+//                                                if (result?.postalCode !=
+//                                                    null) {
+//                                                  pinCodeController.text =
+//                                                      result?.postalCode;
+//                                                }
+                              latitude =
+                                  result.geometry.location.lat.toString();
+                              longitude =
+                                  result.geometry.location.lng.toString();
+                              print(result.adrAddress);
+                              Navigator.of(context).pop();
+                            },
+//                                              initialPosition: HomePage.kInitialPosition,
+                            useCurrentLocation: true,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.add_location,
+                      color: AppColors.icColors,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      //location
+      //Register_but
+      // Rectangle 10
+      Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () {
+            if (nameController.text.isNotEmpty &&
+                addressController.text.isNotEmpty &&
+                phoneNumberController.text.isNotEmpty) {
+              if ((nameController.text.length < 3 ||
+                  !nameController.text.contains(new RegExp(r'[a-z]')))) {
+                Fluttertoast.showToast(
+                    msg: tr('screen_register.name.empty_error'));
+              } else if (phoneNumberController.text.length < 10 ||
+                  !validator.phone(phoneNumberController.text)) {
+                Fluttertoast.showToast(
+                    msg: tr('screen_phone.valid_phone_error_message'));
+              } else {
+                snapshot.profileUpdate(
+                    _image,
+                    addressController.text != address.prettyAddress
+                        ? AddressRequest(
+                            addressName: nameController.text,
+                            lat:
+                                latitude != null ? double.parse(latitude) : 0.0,
+                            lon: longitude != null
+                                ? double.parse(longitude)
+                                : 0.0,
+                            prettyAddress: addressController.text,
+                            geoAddr: GeoAddr(pincode: ""))
+                        : null,
+                    address.addressId);
+              }
+            } else {
+              Fluttertoast.showToast(msg: "all fields required");
+            }
+          },
+          child: Hero(
+            tag: '#getOtp',
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: 60,
+                  child: Stack(children: [
+                    // Rectangle 10
+                    PositionedDirectional(
+                      top: 0,
+                      start: 0,
+                      child: Container(
+                          width: MediaQuery.of(context).size.width / 1.2,
+                          height: 52,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              gradient: AppColors.linearGradient)),
+                    ),
+                    // Get OTP
+                    PositionedDirectional(
+                      top: 16.000030517578125,
+                      start: 0,
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.2,
+                          height: 22,
+                          child: Text('screen_register.update',
+                                  style: const TextStyle(
+                                      color: const Color(0xffffffff),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Avenir",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 16.0),
+                                  textAlign: TextAlign.center)
+                              .tr()),
+                    )
+                  ])),
+            ),
+          ),
+        ),
+      ),
+      SizedBox(
+        height: 50,
+      ),
+    ];
   }
 
   void _settingModalBottomSheet(context, _ViewModel snapshot) {

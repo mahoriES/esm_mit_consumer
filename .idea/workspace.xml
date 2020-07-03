@@ -5,15 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/home/actions/home_page_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/actions/home_page_actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -257,7 +266,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
-          <line>546</line>
+          <line>515</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
@@ -302,7 +311,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
-          <line>549</line>
+          <line>518</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
@@ -314,6 +323,16 @@
           <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
           <line>37</line>
           <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
+          <line>31</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
+          <line>34</line>
+          <option name="timeStamp" value="71" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/android/app/build.gradle</url>

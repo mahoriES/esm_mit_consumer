@@ -190,12 +190,16 @@ class CatalogSearchRequest {
 
 class CatalogSearchResponse {
   int count;
+  String next;
+  String previous;
   List<Product> results;
 
   CatalogSearchResponse({this.count, this.results});
 
   CatalogSearchResponse.fromJson(Map<String, dynamic> json) {
     count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
     if (json['results'] != null) {
       results = new List<Product>();
       json['results'].forEach((v) {
@@ -207,6 +211,8 @@ class CatalogSearchResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['count'] = this.count;
+    data['next'] = this.next;
+    data['previous'] = this.previous;
     if (this.results != null) {
       data['results'] = this.results.map((v) => v.toJson()).toList();
     }

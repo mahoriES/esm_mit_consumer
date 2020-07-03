@@ -29,6 +29,13 @@ class GetMerchantDetails extends ReduxAction<AppState> {
       var responseModel = GetBusinessesResponse.fromJson(response.data);
 
       var merchants = await CartDataSource.getListOfMerchants();
+
+      if (getUrl == ApiURL.getBusinessesUrl) {
+      } else {
+        var businessList = state.homePageState.merchants;
+        responseModel.results = businessList + responseModel.results;
+      }
+
       if (merchants.isNotEmpty) {
         return state.copyWith(
             homePageState: state.homePageState.copyWith(

@@ -43,6 +43,12 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
         });
       });
 
+      if (state.productState.productListingDataSource.length > 20) {
+        var totalProduct =
+            state.productState.productListingDataSource + products;
+        products = totalProduct;
+      } else {}
+
       return state.copyWith(
           productState:
               state.productState.copyWith(productListingDataSource: products));

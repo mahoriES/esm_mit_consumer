@@ -11,6 +11,7 @@ import 'package:esamudaayapp/utilities/custom_widgets.dart';
 import 'package:esamudaayapp/utilities/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -58,364 +59,20 @@ class _RegistrationState extends State<Registration> {
                   body: Padding(
                     padding: const EdgeInsets.only(left: 25.0, right: 25.0),
                     child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 100,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.2,
-                            child: Hero(
-                              tag: '#text',
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: Text('screen_register.title',
-                                        style: const TextStyle(
-                                            color: const Color(0xff797979),
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Avenir",
-                                            fontStyle: FontStyle.normal,
-                                            fontSize: 18.0),
-                                        textAlign: TextAlign.left)
-                                    .tr(),
-                              ),
+                      child: AnimationLimiter(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 375),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              horizontalOffset:
+                                  MediaQuery.of(context).size.width / 2,
+                              child: FadeInAnimation(child: widget),
                             ),
+                            children: buildUI(context, snapshot),
                           ),
-                          //name
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: TextInputBG(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextFormField(
-                                          validator: (value) {
-                                            if (value.length == 0) return null;
-                                            if (value.length < 3) {
-                                              return tr(
-                                                  'screen_register.name.empty_error');
-                                              return null;
-                                            }
-                                            return null;
-                                          },
-                                          autovalidate: true,
-                                          controller: nameController,
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText: tr(
-                                                'screen_register.name.title'),
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          style: const TextStyle(
-                                              color: const Color(0xff1a1a1a),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 13.0),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Icon(
-                                      Icons.account_circle,
-                                      color: AppColors.icColors,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //address
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0),
-                            child: TextInputBG(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextFormField(
-                                          maxLines: null,
-                                          // enableInteractiveSelection: false,
-                                          validator: (value) {
-                                            if (value.isEmpty) return null;
-//                                          if (value.length < 10) {
-//                                            return tr(
-//                                                'screen_register.address.empty_error');
-//                                            return null;
-//                                          }
-                                            return null;
-                                          },
-                                          autovalidate: true,
-                                          controller: addressController,
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText: tr(
-                                                'screen_register.address.title'),
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          style: const TextStyle(
-                                              color: const Color(0xff1a1a1a),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 13.0),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Material(
-                                      type: MaterialType.transparency,
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => PlacePicker(
-                                                apiKey: Keys
-                                                    .googleAPIkey, // Put YOUR OWN KEY here.
-                                                onPlacePicked: (result) {
-                                                  // Handle the result in your way
-                                                  print(
-                                                      result?.formattedAddress);
-                                                  // print(result?.a);
-                                                  if (result
-                                                          ?.formattedAddress !=
-                                                      null) {
-                                                    addressController.text =
-                                                        result
-                                                            ?.formattedAddress;
-                                                  }
-//                                                if (result?.postalCode !=
-//                                                    null) {
-//                                                  pinCodeController.text =
-//                                                      result?.postalCode;
-//                                                }
-                                                  latitude = result
-                                                      .geometry.location.lat
-                                                      .toString();
-                                                  longitude = result
-                                                      .geometry.location.lng
-                                                      .toString();
-                                                  print(result.adrAddress);
-                                                  Navigator.of(context).pop();
-                                                },
-//                                              initialPosition: HomePage.kInitialPosition,
-                                                useCurrentLocation: true,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Icon(
-                                          Icons.add_location,
-                                          color: AppColors.icColors,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //pin code
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 20.0, bottom: 40),
-                            child: TextInputBG(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: TextFormField(
-                                          validator: (value) {
-                                            if (value.length == 0) return null;
-
-                                            if (value.isEmpty
-//                                                ||
-//                                                !pinCodeController.text
-//                                                    .contains(new RegExp(
-//                                                        r'^[1-9][0-9]{5}$'))
-                                                ) {
-                                              return tr(
-                                                  'screen_register.pin_code.title');
-                                              return null;
-                                            }
-                                            return null;
-                                          },
-                                          autovalidate: true,
-                                          controller: pinCodeController,
-                                          keyboardType: TextInputType.text,
-                                          decoration: InputDecoration(
-                                            hintText: tr(
-                                                'screen_register.pin_code.title'),
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          style: const TextStyle(
-                                              color: const Color(0xff1a1a1a),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 13.0),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Icon(
-                                      Icons.local_post_office,
-                                      color: AppColors.icColors,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: InkWell(
-                              onTap: () {
-                                launchURL();
-                              },
-                              child: Text(
-                                "screen_register.pin_code.no_circle_code",
-                                style: const TextStyle(
-                                    color: AppColors.icColors,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Avenir",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 16.0),
-                              ).tr(),
-                            ),
-                          ),
-
-                          //location
-                          //Register_but
-                          // Rectangle 10
-                          Material(
-                            type: MaterialType.transparency,
-                            child: InkWell(
-                              onTap: () {
-                                if (nameController.text.isNotEmpty &&
-                                    addressController.text.isNotEmpty &&
-                                    pinCodeController.text.isNotEmpty) {
-                                  if ((nameController.text.length < 3 ||
-                                      !nameController.text
-                                          .contains(new RegExp(r'[a-z]')))) {
-                                    Fluttertoast.showToast(
-                                        msg: tr(
-                                            'screen_register.name.empty_error'));
-                                  } else if (pinCodeController.text.isEmpty
-//                                      ||
-//                                      !pinCodeController.text
-//                                          .contains(new RegExp(r'^\d{6}$'))
-
-                                      ) {
-                                    Fluttertoast.showToast(
-                                        msg: tr(
-                                            'screen_register.pin_code.title'));
-                                  } else {
-                                    snapshot.updateCustomerDetails(
-                                        CustomerDetailsRequest(
-                                            profileName: nameController.text,
-                                            clusterCode: pinCodeController.text,
-                                            role: "CUSTOMER"),
-                                        AddressRequest(
-                                            addressName: nameController.text,
-                                            lat: double.parse(latitude ?? "0"),
-                                            lon: double.parse(longitude ?? "0"),
-                                            prettyAddress:
-                                                addressController.text,
-                                            geoAddr: GeoAddr(
-                                                pincode:
-                                                    pinCodeController.text)));
-                                  }
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "all fields required");
-                                }
-                              },
-                              child: Hero(
-                                tag: '#getOtp',
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          1.2,
-                                      height: 60,
-                                      child: Stack(children: [
-                                        // Rectangle 10
-                                        PositionedDirectional(
-                                          top: 0,
-                                          start: 0,
-                                          child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.2,
-                                              height: 52,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(100)),
-                                                  gradient: AppColors
-                                                      .linearGradient)),
-                                        ),
-                                        // Get OTP
-                                        PositionedDirectional(
-                                          top: 16.000030517578125,
-                                          start: 0,
-                                          child: SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1.2,
-                                              height: 22,
-                                              child: Text(
-                                                      'screen_register.register',
-                                                      style: const TextStyle(
-                                                          color: const Color(
-                                                              0xffffffff),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontFamily: "Avenir",
-                                                          fontStyle:
-                                                              FontStyle.normal,
-                                                          fontSize: 16.0),
-                                                      textAlign:
-                                                          TextAlign.center)
-                                                  .tr()),
-                                        )
-                                      ])),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -424,6 +81,324 @@ class _RegistrationState extends State<Registration> {
             );
           }),
     );
+  }
+
+  List<Widget> buildUI(BuildContext context, _ViewModel snapshot) {
+    return <Widget>[
+      SizedBox(
+        height: 100,
+      ),
+      Container(
+        width: MediaQuery.of(context).size.width / 1.2,
+        child: Hero(
+          tag: '#text',
+          child: Material(
+            type: MaterialType.transparency,
+            child: Text('screen_register.title',
+                    style: const TextStyle(
+                        color: const Color(0xff797979),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 18.0),
+                    textAlign: TextAlign.left)
+                .tr(),
+          ),
+        ),
+      ),
+      //name
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: TextInputBG(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                      validator: (value) {
+                        if (value.length == 0) return null;
+                        if (value.length < 3) {
+                          return tr('screen_register.name.empty_error');
+                          return null;
+                        }
+                        return null;
+                      },
+                      autovalidate: true,
+                      controller: nameController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_register.name.title'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Icon(
+                  Icons.account_circle,
+                  color: AppColors.icColors,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      //address
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: TextInputBG(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                      maxLines: null,
+                      // enableInteractiveSelection: false,
+                      validator: (value) {
+                        if (value.isEmpty) return null;
+//                                          if (value.length < 10) {
+//                                            return tr(
+//                                                'screen_register.address.empty_error');
+//                                            return null;
+//                                          }
+                        return null;
+                      },
+                      autovalidate: true,
+                      controller: addressController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_register.address.title'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PlacePicker(
+                            apiKey: Keys.googleAPIkey, // Put YOUR OWN KEY here.
+                            onPlacePicked: (result) {
+                              // Handle the result in your way
+                              print(result?.formattedAddress);
+                              // print(result?.a);
+                              if (result?.formattedAddress != null) {
+                                addressController.text =
+                                    result?.formattedAddress;
+                              }
+//                                                if (result?.postalCode !=
+//                                                    null) {
+//                                                  pinCodeController.text =
+//                                                      result?.postalCode;
+//                                                }
+                              latitude =
+                                  result.geometry.location.lat.toString();
+                              longitude =
+                                  result.geometry.location.lng.toString();
+                              print(result.adrAddress);
+                              Navigator.of(context).pop();
+                            },
+//                                              initialPosition: HomePage.kInitialPosition,
+                            useCurrentLocation: true,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.add_location,
+                      color: AppColors.icColors,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      //pin code
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, bottom: 40),
+        child: TextInputBG(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                      validator: (value) {
+                        if (value.length == 0) return null;
+
+                        if (value.isEmpty
+//                                                ||
+//                                                !pinCodeController.text
+//                                                    .contains(new RegExp(
+//                                                        r'^[1-9][0-9]{5}$'))
+                            ) {
+                          return tr('screen_register.pin_code.title');
+                          return null;
+                        }
+                        return null;
+                      },
+                      autovalidate: true,
+                      controller: pinCodeController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_register.pin_code.title'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Icon(
+                  Icons.local_post_office,
+                  color: AppColors.icColors,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      //location
+      //Register_but
+      // Rectangle 10
+      Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () {
+            if (nameController.text.isNotEmpty &&
+                addressController.text.isNotEmpty &&
+                pinCodeController.text.isNotEmpty) {
+              if ((nameController.text.length < 3 ||
+                  !nameController.text.contains(new RegExp(r'[a-z]')))) {
+                Fluttertoast.showToast(
+                    msg: tr('screen_register.name.empty_error'));
+              } else if (pinCodeController.text.isEmpty
+//                                      ||
+//                                      !pinCodeController.text
+//                                          .contains(new RegExp(r'^\d{6}$'))
+
+                  ) {
+                Fluttertoast.showToast(
+                    msg: tr('screen_register.pin_code.title'));
+              } else {
+                snapshot.updateCustomerDetails(
+                    CustomerDetailsRequest(
+                        profileName: nameController.text,
+                        clusterCode: pinCodeController.text,
+                        role: "CUSTOMER"),
+                    AddressRequest(
+                        addressName: nameController.text,
+                        lat: double.parse(latitude ?? "0"),
+                        lon: double.parse(longitude ?? "0"),
+                        prettyAddress: addressController.text,
+                        geoAddr: GeoAddr(pincode: pinCodeController.text)));
+              }
+            } else {
+              Fluttertoast.showToast(msg: "all fields required");
+            }
+          },
+          child: Hero(
+            tag: '#getOtp',
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: 60,
+                  child: Stack(children: [
+                    // Rectangle 10
+                    PositionedDirectional(
+                      top: 0,
+                      start: 0,
+                      child: Container(
+                          width: MediaQuery.of(context).size.width / 1.2,
+                          height: 52,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              gradient: AppColors.linearGradient)),
+                    ),
+                    // Get OTP
+                    PositionedDirectional(
+                      top: 16.000030517578125,
+                      start: 0,
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.2,
+                          height: 22,
+                          child: Text('screen_register.register',
+                                  style: const TextStyle(
+                                      color: const Color(0xffffffff),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Avenir",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 16.0),
+                                  textAlign: TextAlign.center)
+                              .tr()),
+                    )
+                  ])),
+            ),
+          ),
+        ),
+      ),
+
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        child: InkWell(
+          onTap: () {
+            launchURL();
+          },
+          child: Text(
+            "screen_register.pin_code.no_circle_code",
+            style: const TextStyle(
+                color: AppColors.icColors,
+                fontWeight: FontWeight.w500,
+                fontFamily: "Avenir",
+                fontStyle: FontStyle.normal,
+                fontSize: 16.0),
+          ).tr(),
+        ),
+      ),
+      SizedBox(
+        height: 50,
+      ),
+    ];
   }
 
   launchURL() async {

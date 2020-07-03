@@ -30,9 +30,9 @@ class GetOrderListAPIAction extends ReduxAction<AppState> {
       if (orderRequestApi == ApiURL.placeOrderUrl) {
       } else {
         var data = state.productState.getOrderListResponse.results;
-        var data_new = responseModel.results;
+        var data_new = data + responseModel.results;
 
-        responseModel.results = data + data_new;
+        responseModel.results = data_new;
       }
 
       return state.copyWith(
@@ -117,8 +117,9 @@ class AddRatingAPIAction extends ReduxAction<AppState> {
 
 class CancelOrderAPIAction extends ReduxAction<AppState> {
   final String orderId;
+  final int index;
 
-  CancelOrderAPIAction({this.orderId});
+  CancelOrderAPIAction({this.orderId, this.index});
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -127,12 +128,15 @@ class CancelOrderAPIAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      dispatch(GetOrderListAPIAction());
+      // dispatch(GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
+      state.productState.getOrderListResponse.results[index].orderStatus =
+          "CUSTOMER_CANCELLED";
+
       dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
-    return null;
+    return state.copyWith(productState: state.productState.copyWith());
   }
 
   void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
@@ -142,8 +146,12 @@ class CancelOrderAPIAction extends ReduxAction<AppState> {
 
 class AcceptOrderAPIAction extends ReduxAction<AppState> {
   final String orderId;
+  final int index;
 
-  AcceptOrderAPIAction({this.orderId});
+  AcceptOrderAPIAction({
+    this.orderId,
+    this.index,
+  });
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -152,13 +160,14 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      dispatch(GetOrderListAPIAction());
-
+//      dispatch(GetOrderListAPIAction());
+      state.productState.getOrderListResponse.results[index].orderStatus =
+          "MERCHANT_ACCEPTED";
       dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
-    return null;
+    return state.copyWith(productState: state.productState.copyWith());
   }
 
   void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
@@ -168,8 +177,8 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
 
 class CompleteOrderAPIAction extends ReduxAction<AppState> {
   final String orderId;
-
-  CompleteOrderAPIAction({this.orderId});
+  final int index;
+  CompleteOrderAPIAction({this.orderId, this.index});
 
   @override
   FutureOr<AppState> reduce() async {
@@ -179,13 +188,15 @@ class CompleteOrderAPIAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      dispatch(GetOrderListAPIAction());
+      // dispatch(GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
+      state.productState.getOrderListResponse.results[index].orderStatus =
+          "COMPLETED";
 
       dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
-    return null;
+    return state.copyWith(productState: state.productState.copyWith());
   }
 
   void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
