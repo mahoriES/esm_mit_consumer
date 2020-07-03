@@ -125,6 +125,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   enablePullDown: true,
                   enablePullUp: true,
                   header: WaterDropHeader(
+                    waterDropColor: AppColors.icColors,
                     complete: Image.asset(
                       'assets/images/indicator.gif',
                       height: 75,
@@ -182,8 +183,8 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(15.0)),
                                                 child: CachedNetworkImage(
-                                                    height: 500.0,
-                                                    fit: BoxFit.cover,
+                                                    height: 400.0,
+                                                    fit: BoxFit.contain,
                                                     imageUrl: banner.photoUrl,
                                                     placeholder: (context,
                                                             url) =>
@@ -314,17 +315,20 @@ class StoresListView extends StatelessWidget {
                           'assets/images/shop1.png',
                           fit: BoxFit.cover,
                         )
-                      : CachedNetworkImage(
-                          height: 500.0,
-                          fit: BoxFit.cover,
-                          imageUrl: shopImage,
-                          placeholder: (context, url) => Icon(
-                                Icons.image,
-                                size: 30,
-                              ),
-                          errorWidget: (context, url, error) => Center(
-                                child: Icon(Icons.error),
-                              )),
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: CachedNetworkImage(
+                              height: 100.0,
+                              fit: BoxFit.cover,
+                              imageUrl: shopImage,
+                              placeholder: (context, url) => Icon(
+                                    Icons.image,
+                                    size: 30,
+                                  ),
+                              errorWidget: (context, url, error) => Center(
+                                    child: Icon(Icons.error),
+                                  )),
+                        ),
                 ),
                 shopClosed
                     ? Positioned(

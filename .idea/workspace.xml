@@ -5,30 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/android/app/release/output.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/indicator.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Esamudaay_Stable.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Esamudaay_Stable.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/release/app-release.aab" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/release/app-release.apk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/key.properties" beforeDir="false" afterPath="$PROJECT_DIR$/android/key.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/About/view/about_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/About/view/about_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/views/recommended_shop.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/views/recommended_shop.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/otp/view/otp_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/otp/view/otp_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -291,11 +276,6 @@
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/utilities/user_manager.dart</url>
-          <line>115</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
           <line>35</line>
           <option name="timeStamp" value="48" />
@@ -316,19 +296,9 @@
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/utilities/user_manager.dart</url>
-          <line>113</line>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
           <line>36</line>
           <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
-          <line>350</line>
-          <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
@@ -336,24 +306,14 @@
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart</url>
-          <line>498</line>
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart</url>
-          <line>503</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart</url>
-          <line>518</line>
-          <option name="timeStamp" value="62" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
           <line>28</line>
           <option name="timeStamp" value="64" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
+          <line>37</line>
+          <option name="timeStamp" value="67" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/android/app/build.gradle</url>

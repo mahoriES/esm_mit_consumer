@@ -27,6 +27,14 @@ class GetOrderListAPIAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       GetOrderListResponse responseModel =
           GetOrderListResponse.fromJson(response.data);
+      if (orderRequestApi == ApiURL.placeOrderUrl) {
+      } else {
+        var data = state.productState.getOrderListResponse.results;
+        var data_new = responseModel.results;
+
+        responseModel.results = data + data_new;
+      }
+
       return state.copyWith(
           productState:
               state.productState.copyWith(getOrderListResponse: responseModel));

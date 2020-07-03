@@ -36,7 +36,7 @@ class _OrdersViewState extends State<OrdersView> {
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
     if (snapshot.getOrderListResponse.previous != null) {
-      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
+//      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
     } else {
       snapshot.getOrderList(ApiURL.placeOrderUrl);
     }
@@ -391,147 +391,21 @@ class OrderItemBottomView extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(left: 5, right: 10),
-                    child: Icon(
-                      orderStatus == "CUSTOMER_CANCELLED" ||
-                              orderStatus == "MERCHANT_CANCELLED"
-                          ? Icons.close
-                          : orderStatus == "COMPLETED"
-                              ? Icons.check_circle_outline
-                              : orderStatus == "CREATED" &&
-                                      deliveryStatus != "SELF_PICK_UP"
-                                  ? Icons.autorenew
-                                  : orderStatus == "MERCHANT_ACCEPTED"
-                                      ? Icons.check_circle_outline
-                                      : orderStatus == "MERCHANT_UPDATED"
-                                          ? Icons.help_outline
-                                          : Icons.autorenew,
-                      color: orderStatus == "CUSTOMER_CANCELLED" ||
-                              orderStatus == "MERCHANT_CANCELLED"
-                          ? Colors.red
-                          : orderStatus == "COMPLETED"
-                              ? AppColors.green
-                              : orderStatus == "CREATED"
-                                  ? Color(0xffeb730c)
-                                  : orderStatus == "MERCHANT_ACCEPTED"
-                                      ? Color(0xffa4c73f)
-                                      : orderStatus == "MERCHANT_UPDATED"
-                                          ? Colors.red
-                                          : AppColors.green,
-                      size: 18,
-                    ),
+                    child: buildIcon(),
                   ), // Processing
-                  Text(
-                      orderStatus == "CUSTOMER_CANCELLED"
-                          ? tr('screen_order.cancelled_customer')
-                          : orderStatus == "MERCHANT_CANCELLED"
-                              ? tr('screen_order.cancelled_merchant') +
-                                  " " +
-                                  snapshot.getOrderListResponse.results[index]
-                                      .businessName
-                              : orderStatus == "COMPLETED"
-                                  ? tr('screen_order.completed')
-                                  : orderStatus == "CREATED"
-                                      ? tr('screen_order.pending')
-                                      : orderStatus == "MERCHANT_ACCEPTED"
-                                          ? tr('screen_order.confirmed')
-                                          : orderStatus == "MERCHANT_UPDATED"
-                                              ? tr('screen_order.not_available')
-                                              : orderStatus == "CREATED" &&
-                                                      deliveryStatus ==
-                                                          "PICKED_UP_BY_DA"
-                                                  ? tr(
-                                                      'screen_order.on_the_way')
-                                                  : orderStatus ==
-                                                              "MERCHANT_ACCEPTED" &&
-                                                          deliveryStatus ==
-                                                              "SELF_PICK_UP"
-                                                      ? tr(
-                                                          'screen_order.complete')
-                                                      : tr(
-                                                          'screen_order.processing'),
-                      style: const TextStyle(
-                          color: const Color(0xff958d8d),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14.0),
-                      textAlign: TextAlign.left)
+                  buildText()
                 ],
               ),
 
-              orderStatus != "CREATED" &&
-                      orderStatus != "COMPLETED" &&
-                      orderStatus != "MERCHANT_UPDATED"
-                  ? Container(
-                      height: 40,
-                    )
-                  : StoreConnector<AppState, _ViewModel>(
+              isButtonShow()
+                  ? StoreConnector<AppState, _ViewModel>(
                       model: _ViewModel(),
                       builder: (context, snapshot) {
-                        return CustomButton(
-                          title: orderStatus == "CREATED"
-                              ? tr('screen_order.cancel_order')
-                              : orderStatus == "COMPLETED"
-                                  ? tr('screen_order.re_order')
-                                  : orderStatus == "UNCONFIRMED"
-                                      ? tr('screen_order.cancel_order')
-                                      : orderStatus == "MERCHANT_ACCEPTED"
-                                          ? tr('screen_order.payment')
-                                          : orderStatus == "MERCHANT_UPDATED"
-                                              ? tr('screen_order.accept_order')
-                                              : orderStatus ==
-                                                          "MERCHANT_ACCEPTED" &&
-                                                      deliveryStatus ==
-                                                          "SELF_PICK_UP"
-                                                  ? tr('screen_order.complete')
-                                                  : "",
-                          backgroundColor: orderStatus == "COMPLETED"
-                              ? AppColors.icColors
-                              : orderStatus == "CREATED"
-                                  ? AppColors.orange
-                                  : AppColors.icColors,
-                          didPresButton: () async {
-                            if (orderStatus == "COMPLETED") {
-                              //reorder api
-
-                              store
-                                  .dispatchFuture(GetOrderDetailsAPIAction(
-                                      orderId: snapshot.getOrderListResponse
-                                          .results[index].orderId))
-                                  .whenComplete(() async {
-                                var address = await UserManager.getAddress();
-                                PlaceOrderRequest request = PlaceOrderRequest();
-                                request.businessId = snapshot
-                                    .getOrderListResponse
-                                    .results[index]
-                                    .businessId;
-                                request.deliveryAddressId = address.addressId;
-                                request.deliveryType = snapshot
-                                    .getOrderListResponse
-                                    .results[index]
-                                    .deliveryType;
-                                request.orderItems = snapshot
-                                    .getOrderListResponse
-                                    .results[index]
-                                    .orderItems;
-                                snapshot.placeOrder(request);
-                              });
-                            } else if (orderStatus == "MERCHANT_UPDATED") {
-                              //accept order api
-                              snapshot.acceptOrder(snapshot
-                                  .getOrderListResponse.results[index].orderId);
-                            } else if (orderStatus == "MERCHANT_ACCEPTED" &&
-                                deliveryStatus == "SELF_PICK_UP") {
-                              snapshot.completeOrder(snapshot
-                                  .getOrderListResponse.results[index].orderId);
-                            } else {
-                              //cancel order api
-                              snapshot.cancelOrder(snapshot
-                                  .getOrderListResponse.results[index].orderId);
-                            }
-                          },
-                        );
-                      }),
+                        return buildCustomButton(snapshot);
+                      })
+                  : Container(
+                      height: 40,
+                    ),
               // Support
             ],
           ),
@@ -578,6 +452,207 @@ class OrderItemBottomView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  bool isButtonShow() {
+    if (orderStatus == "CREATED" ||
+        orderStatus == "COMPLETED" ||
+        orderStatus == "MERCHANT_UPDATED") {
+      return true;
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return true;
+      else
+        return false;
+    } else {
+      return false;
+    }
+  }
+
+  CustomButton buildCustomButton(_ViewModel snapshot) {
+    return CustomButton(
+      title: title(),
+      backgroundColor: orderStatus == "COMPLETED"
+          ? AppColors.icColors
+          : orderStatus == "CREATED" ? AppColors.orange : AppColors.icColors,
+      didPresButton: () async {
+        if (orderStatus == "COMPLETED") {
+          //reorder api
+          store
+              .dispatchFuture(GetOrderDetailsAPIAction(
+                  orderId:
+                      snapshot.getOrderListResponse.results[index].orderId))
+              .whenComplete(() async {
+            var address = await UserManager.getAddress();
+            PlaceOrderRequest request = PlaceOrderRequest();
+            request.businessId =
+                snapshot.getOrderListResponse.results[index].businessId;
+            request.deliveryAddressId = address.addressId;
+            request.deliveryType =
+                snapshot.getOrderListResponse.results[index].deliveryType;
+            request.orderItems =
+                snapshot.getOrderListResponse.results[index].orderItems;
+            snapshot.placeOrder(request);
+          });
+        } else if (orderStatus == "MERCHANT_UPDATED") {
+          //accept order api
+          snapshot.acceptOrder(
+              snapshot.getOrderListResponse.results[index].orderId);
+        } else if (orderStatus == "MERCHANT_ACCEPTED" &&
+            deliveryStatus == "SELF_PICK_UP") {
+          snapshot.completeOrder(
+              snapshot.getOrderListResponse.results[index].orderId);
+        } else {
+          //cancel order api
+          snapshot.cancelOrder(
+              snapshot.getOrderListResponse.results[index].orderId);
+        }
+      },
+    );
+  }
+
+  String title() {
+    if (orderStatus == "CREATED") {
+      return tr('screen_order.cancel_order');
+    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return tr('screen_order.pickup');
+      else
+        return "";
+    } else if (orderStatus == "CUSTOMER_CANCELLED") {
+      return tr('screen_order.cancelled_customer');
+    } else if (orderStatus == "MERCHANT_CANCELLED") {
+      return tr('screen_order.cancelled_merchant') +
+          " " +
+          snapshot.getOrderListResponse.results[index].businessName;
+    } else if (orderStatus == "MERCHANT_UPDATED") {
+      return tr('screen_order.accept_order');
+    } else if (orderStatus == "COMPLETED") {
+      return tr('screen_order.re_order');
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return tr('screen_order.pickup');
+      else
+        return tr('screen_order.on_the_way');
+    } else if (orderStatus == "REQUESTING_TO_DA") {
+      return tr('screen_order.on_the_way');
+    } else if (orderStatus == "ASSIGNED_TO_DA") {
+      return tr('screen_order.on_the_way');
+    } else if (orderStatus == "PICKED_UP_BY_DA") {
+      return tr('screen_order.on_the_way');
+    }
+
+    return orderStatus == "CREATED"
+        ? tr('screen_order.cancel_order')
+        : orderStatus == "COMPLETED"
+            ? tr('screen_order.re_order')
+            : orderStatus == "UNCONFIRMED"
+                ? tr('screen_order.cancel_order')
+                : orderStatus == "MERCHANT_ACCEPTED"
+                    ? tr('screen_order.payment')
+                    : orderStatus == "MERCHANT_UPDATED"
+                        ? tr('screen_order.accept_order')
+                        : orderStatus == "MERCHANT_ACCEPTED" &&
+                                deliveryStatus == "SELF_PICK_UP"
+                            ? tr('screen_order.complete')
+                            : "";
+  }
+
+  Text buildText() {
+    if (orderStatus == "CREATED") {
+      return Text(tr('screen_order.pending'));
+    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+      return Text(tr('screen_order.confirmed'));
+    } else if (orderStatus == "CUSTOMER_CANCELLED") {
+      return Text(tr('screen_order.cancelled_customer'));
+    } else if (orderStatus == "MERCHANT_CANCELLED") {
+      return Text(tr('screen_order.cancelled_merchant') +
+          " " +
+          snapshot.getOrderListResponse.results[index].businessName);
+    } else if (orderStatus == "MERCHANT_UPDATED") {
+      return Text(tr('screen_order.not_available'));
+    } else if (orderStatus == "COMPLETED") {
+      return Text(tr('screen_order.completed'));
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return Text(tr('screen_order.ready_pickup'));
+      else
+        return Text(tr('screen_order.on_the_way'));
+    } else if (orderStatus == "REQUESTING_TO_DA") {
+      return Text(tr('screen_order.on_the_way'));
+    } else if (orderStatus == "ASSIGNED_TO_DA") {
+      return Text(tr('screen_order.on_the_way'));
+    } else if (orderStatus == "PICKED_UP_BY_DA") {
+      return Text(tr('screen_order.on_the_way'));
+    }
+  }
+
+  Icon buildIcon() {
+    if (orderStatus == "CREATED") {
+      return Icon(
+        Icons.autorenew,
+        color: Color(0xffeb730c),
+      );
+    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: Color(0xffa4c73f),
+      );
+    } else if (orderStatus == "CUSTOMER_CANCELLED" ||
+        orderStatus == "MERCHANT_CANCELLED") {
+      return Icon(
+        Icons.close,
+        color: Colors.red,
+      );
+    } else if (orderStatus == "MERCHANT_UPDATED") {
+      return Icon(
+        Icons.help_outline,
+        color: Colors.red,
+      );
+    } else if (orderStatus == "COMPLETED") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: AppColors.green,
+      );
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: AppColors.green,
+      );
+    } else if (orderStatus == "REQUESTING_TO_DA") {
+      return Icon(Icons.account_box, color: AppColors.icColors);
+    } else if (orderStatus == "ASSIGNED_TO_DA") {
+      return Icon(Icons.account_box, color: AppColors.icColors);
+    } else if (orderStatus == "PICKED_UP_BY_DA") {
+      return Icon(Icons.account_box, color: AppColors.icColors);
+    }
+
+//    return Icon(
+//      orderStatus == "CUSTOMER_CANCELLED" || orderStatus == "MERCHANT_CANCELLED"
+//          ? Icons.close
+//          : orderStatus == "COMPLETED"
+//              ? Icons.check_circle_outline
+//              : orderStatus == "CREATED" && deliveryStatus != "SELF_PICK_UP"
+//                  ? Icons.autorenew
+//                  : orderStatus == "MERCHANT_ACCEPTED"
+//                      ? Icons.check_circle_outline
+//                      : orderStatus == "MERCHANT_UPDATED"
+//                          ? Icons.help_outline
+//                          : Icons.autorenew,
+//      color: orderStatus == "CUSTOMER_CANCELLED" ||
+//              orderStatus == "MERCHANT_CANCELLED"
+//          ? Colors.red
+//          : orderStatus == "COMPLETED"
+//              ? AppColors.green
+//              : orderStatus == "CREATED"
+//                  ? Color(0xffeb730c)
+//                  : orderStatus == "MERCHANT_ACCEPTED"
+//                      ? Color(0xffa4c73f)
+//                      : orderStatus == "MERCHANT_UPDATED"
+//                          ? Colors.red
+//                          : AppColors.green,
+//      size: 18,
+//    );
   }
 }
 
@@ -706,16 +781,19 @@ class _OrdersListViewState extends State<OrdersListView>
                     "assets/images/shop1.png",
                     fit: BoxFit.cover,
                   )
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: widget.shopImage,
-                    placeholder: (context, url) => Icon(
-                          Icons.image,
-                          size: 30,
-                        ),
-                    errorWidget: (context, url, error) => Center(
-                          child: Icon(Icons.error),
-                        )),
+                : ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: widget.shopImage,
+                        placeholder: (context, url) => Icon(
+                              Icons.image,
+                              size: 30,
+                            ),
+                        errorWidget: (context, url, error) => Center(
+                              child: Icon(Icons.error),
+                            )),
+                  ),
           ),
           Flexible(
             child: Padding(
