@@ -58,6 +58,11 @@ class _OtpScreenState extends State<OtpScreen> {
           model: _ViewModel(),
           builder: (context, snapshot) {
             return ModalProgressHUD(
+              progressIndicator: Image.asset(
+                'assets/images/indicator.gif',
+                height: 75,
+                width: 75,
+              ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
               child: Scaffold(
                   appBar: AppBar(

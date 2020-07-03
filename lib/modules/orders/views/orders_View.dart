@@ -99,6 +99,11 @@ class _OrdersViewState extends State<OrdersView> {
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(
+                progressIndicator: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
                 child: (snapshot.getOrderListResponse == null ||
                         snapshot.getOrderListResponse.results == null ||
@@ -110,8 +115,21 @@ class _OrdersViewState extends State<OrdersView> {
                         child: SmartRefresher(
                           enablePullDown: true,
                           enablePullUp: true,
-                          header: WaterDropHeader(),
+                          header: WaterDropHeader(
+                            complete: Image.asset(
+                              'assets/images/indicator.gif',
+                              height: 75,
+                              width: 75,
+                            ),
+                            waterDropColor: AppColors.icColors,
+                            refresh: Image.asset(
+                              'assets/images/indicator.gif',
+                              height: 75,
+                              width: 75,
+                            ),
+                          ),
                           footer: CustomFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
                             builder: (BuildContext context, LoadStatus mode) {
                               Widget body;
                               if (mode == LoadStatus.idle) {

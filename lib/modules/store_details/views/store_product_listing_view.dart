@@ -211,6 +211,11 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                   ),
                   Expanded(
                     child: ModalProgressHUD(
+                      progressIndicator: Image.asset(
+                        'assets/images/indicator.gif',
+                        height: 75,
+                        width: 75,
+                      ),
                       inAsyncCall:
                           snapshot.loadingStatus == LoadingStatus.loading,
                       opacity: 0,

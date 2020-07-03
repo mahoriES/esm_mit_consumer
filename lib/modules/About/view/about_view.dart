@@ -25,27 +25,33 @@ class _AboutViewState extends State<AboutView> {
       ),
       body: Container(
         child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset('assets/images/app_main_icon.png'),
-              SizedBox(
-                height: 50,
-              ),
-              Text(
-                'Product by'
-                '\nNirmund Digital Distributions Pvt Ltd',
-                style: TextStyle(
-                  color: Color(0xff797979),
-                  fontSize: 18,
-                  fontFamily: 'Avenir',
-                  fontWeight: FontWeight.w500,
+          padding: const EdgeInsets.all(0.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 200,
+                  width: 200,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+                SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  'Product by'
+                  '\nNirmund Digital Distributions Pvt Ltd',
+                  style: TextStyle(
+                    color: Color(0xff797979),
+                    fontSize: 18,
+                    fontFamily: 'Avenir',
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),
