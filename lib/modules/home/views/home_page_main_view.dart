@@ -114,12 +114,28 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             model: _ViewModel(),
             builder: (context, snapshot) {
               return ModalProgressHUD(
+                progressIndicator: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading &&
                     snapshot.merchants.isEmpty,
                 child: SmartRefresher(
                   enablePullDown: true,
                   enablePullUp: true,
-                  header: WaterDropHeader(),
+                  header: WaterDropHeader(
+                    complete: Image.asset(
+                      'assets/images/indicator.gif',
+                      height: 75,
+                      width: 75,
+                    ),
+                    refresh: Image.asset(
+                      'assets/images/indicator.gif',
+                      height: 75,
+                      width: 75,
+                    ),
+                  ),
                   footer: CustomFooter(
                     builder: (BuildContext context, LoadStatus mode) {
                       Widget body;

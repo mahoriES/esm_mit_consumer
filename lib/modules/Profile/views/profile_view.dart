@@ -62,6 +62,11 @@ class _ProfileViewState extends State<ProfileView> {
                     false); //return a `Future` with false value so this route cant be popped or closed.
               },
               child: ModalProgressHUD(
+                progressIndicator: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
                 child: Scaffold(
                   appBar: AppBar(
