@@ -1,22 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:esamudaayapp/modules/address/models/addess_models.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
-import 'package:esamudaayapp/modules/login/model/authentication_response.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/login/model/authentication_response.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:status_alert/status_alert.dart';
 
 class UpdateProfileAction extends ReduxAction<AppState> {
   final UpdateProfile request;

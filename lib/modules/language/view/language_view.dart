@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 
 class LanguageScreen extends StatefulWidget {

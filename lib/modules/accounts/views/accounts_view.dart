@@ -1,9 +1,10 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/accounts/action/account_action.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/accounts/action/account_action.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 
 class AccountsView extends StatefulWidget {
@@ -71,7 +72,8 @@ class _AccountsViewState extends State<AccountsView> {
 //                      .tr(),
 //                  trailing: Icon(Icons.keyboard_arrow_right),
 //                  onTap: () {
-//                    snapshot.navigateToRecommendedShop();
+//                    PushNotificationsManager().moveToScreen();
+////                    snapshot.navigateToRecommendedShop();
 //                  },
 //                ),
                 ListTile(

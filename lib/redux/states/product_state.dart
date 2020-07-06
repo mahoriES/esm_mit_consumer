@@ -1,10 +1,10 @@
-import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
-import 'package:esamudaayapp/modules/cart/models/charge_details_response.dart';
-import 'package:esamudaayapp/modules/home/models/category_response.dart';
-import 'package:esamudaayapp/modules/home/models/cluster.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/orders/models/order_models.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/cluster.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +23,7 @@ class ProductState {
   final String supportOrder;
   final List<CategoriesNew> categories;
   final Cluster selectedCluster;
+  final CatalogSearchResponse productResponse;
 
   ProductState(
       {@required this.localCartItems,
@@ -37,10 +38,12 @@ class ProductState {
       @required this.productListingDataSource,
       @required this.supportOrder,
       @required this.categories,
-      @required this.currentOrderIsPickUp});
+      @required this.currentOrderIsPickUp,
+      @required this.productResponse});
 
   factory ProductState.initial() {
     return new ProductState(
+        productResponse: CatalogSearchResponse(),
         selectedCluster: null,
         charges: [],
         categories: [],
@@ -69,8 +72,10 @@ class ProductState {
       CategoriesNew selectedCategory,
       String supportOrder,
       bool currentOrderIsPickUp,
+      CatalogSearchResponse productResponse,
       Cluster selectedCluster}) {
     return ProductState(
+        productResponse: productResponse ?? this.productResponse,
         charges: charges ?? this.charges,
         selectedCluster: selectedCluster ?? this.selectedCluster,
         searchResults: searchResults ?? this.searchResults,

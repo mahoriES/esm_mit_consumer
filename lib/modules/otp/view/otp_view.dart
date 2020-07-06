@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/modules/otp/action/otp_action.dart';
-import 'package:esamudaayapp/modules/otp/model/validate_otp_request.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/modules/otp/action/otp_action.dart';
+import 'package:eSamudaay/modules/otp/model/validate_otp_request.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -58,10 +58,12 @@ class _OtpScreenState extends State<OtpScreen> {
           model: _ViewModel(),
           builder: (context, snapshot) {
             return ModalProgressHUD(
-              progressIndicator: Image.asset(
-                'assets/images/indicator.gif',
-                height: 75,
-                width: 75,
+              progressIndicator: Card(
+                child: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
               ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
               child: Scaffold(

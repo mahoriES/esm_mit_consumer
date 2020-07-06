@@ -1,23 +1,25 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/models/category_response.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/repository/cart_datasourse.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
 
 class GetCatalogDetailsAction extends ReduxAction<AppState> {
   final String query;
+  final String url;
 
-  GetCatalogDetailsAction({this.query});
+  GetCatalogDetailsAction({this.query, this.url});
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url:
-            "api/v1/businesses/${state.productState.selectedMerchand.businessId}/catalog/categories/${state.productState.selectedCategory.categoryId}/products",
+        url: url == null
+            ? "api/v1/businesses/${state.productState.selectedMerchand.businessId}/catalog/categories/${state.productState.selectedCategory.categoryId}/products"
+            : url,
         params: query == null ? {"": ""} : {"filter": query},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -43,15 +45,17 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
         });
       });
 
-      if (state.productState.productListingDataSource.length > 20) {
+      if (url != null) {
         var totalProduct =
-            state.productState.productListingDataSource + products;
+            state.productState.productResponse.results + products;
         products = totalProduct;
+        responseModel.results = products;
       } else {}
 
       return state.copyWith(
-          productState:
-              state.productState.copyWith(productListingDataSource: products));
+          productState: state.productState.copyWith(
+              productListingDataSource: products,
+              productResponse: responseModel));
     }
   }
 

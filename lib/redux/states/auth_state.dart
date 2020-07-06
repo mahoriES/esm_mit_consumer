@@ -1,12 +1,12 @@
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/models/api_response_handler.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
-import 'package:esamudaayapp/modules/address/models/addess_models.dart';
-import 'package:esamudaayapp/modules/home/models/cluster.dart';
-import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
-import 'package:esamudaayapp/modules/otp/model/validate_otp_request.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/models/User.dart';
+import 'package:eSamudaay/models/api_response_handler.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/home/models/cluster.dart';
+import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
+import 'package:eSamudaay/modules/otp/model/validate_otp_request.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthState {

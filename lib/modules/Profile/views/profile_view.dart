@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/Profile/action/profile_update_action.dart';
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
-import 'package:esamudaayapp/modules/address/actions/address_actions.dart';
-import 'package:esamudaayapp/modules/address/models/addess_models.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:esamudaayapp/utilities/keys.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/action/profile_update_action.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/actions/address_actions.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/keys.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -63,10 +63,12 @@ class _ProfileViewState extends State<ProfileView> {
                     false); //return a `Future` with false value so this route cant be popped or closed.
               },
               child: ModalProgressHUD(
-                progressIndicator: Image.asset(
-                  'assets/images/indicator.gif',
-                  height: 75,
-                  width: 75,
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
+                  ),
                 ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
                 child: Scaffold(

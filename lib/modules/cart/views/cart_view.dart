@@ -1,25 +1,25 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
-import 'package:esamudaayapp/modules/address/models/addess_models.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
-import 'package:esamudaayapp/modules/cart/models/charge_details_response.dart';
-import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/modules/store_details/views/store_categories_details_view.dart';
-import 'package:esamudaayapp/modules/store_details/views/store_product_listing_view.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/repository/cart_datasourse.dart';
-import 'package:esamudaayapp/store.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:esamudaayapp/utilities/extensions.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
+import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
+import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -79,10 +79,12 @@ class _CartViewState extends State<CartView> {
           },
           builder: (context, snapshot) {
             return ModalProgressHUD(
-              progressIndicator: Image.asset(
-                'assets/images/indicator.gif',
-                height: 75,
-                width: 75,
+              progressIndicator: Card(
+                child: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
               ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
               child: Container(

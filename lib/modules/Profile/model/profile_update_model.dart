@@ -1,4 +1,4 @@
-import 'package:esamudaayapp/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
 
 class UpdateProfile {
   String role;

@@ -1,19 +1,19 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/orders/actions/actions.dart';
-import 'package:esamudaayapp/modules/orders/models/order_models.dart';
-import 'package:esamudaayapp/modules/orders/views/expandable_view.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/store.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/orders/views/expandable_view.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -91,10 +91,12 @@ class _OrdersViewState extends State<OrdersView> {
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(
-                progressIndicator: Image.asset(
-                  'assets/images/indicator.gif',
-                  height: 75,
-                  width: 75,
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
+                  ),
                 ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
                 child: (snapshot.getOrderListResponse == null ||
@@ -640,12 +642,12 @@ class OrderItemBottomView extends StatelessWidget {
         );
       else
         return Text(
-          tr('screen_order.on_the_way'),
+          tr('screen_order.confirmed'),
           style: newStyle,
         );
     } else if (orderStatus == "REQUESTING_TO_DA") {
       return Text(
-        tr('screen_order.on_the_way'),
+        tr('screen_order.confirmed'),
         style: newStyle,
       );
     } else if (orderStatus == "ASSIGNED_TO_DA") {
@@ -694,7 +696,10 @@ class OrderItemBottomView extends StatelessWidget {
         color: AppColors.green,
       );
     } else if (orderStatus == "REQUESTING_TO_DA") {
-      return Icon(Icons.account_box, color: AppColors.icColors);
+      return Icon(
+        Icons.check_circle_outline,
+        color: AppColors.green,
+      );
     } else if (orderStatus == "ASSIGNED_TO_DA") {
       return Icon(Icons.account_box, color: AppColors.icColors);
     } else if (orderStatus == "PICKED_UP_BY_DA") {

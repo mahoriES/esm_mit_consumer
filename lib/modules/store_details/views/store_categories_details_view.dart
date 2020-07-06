@@ -1,16 +1,17 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/home/models/category_response.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/store_details/actions/categories_actions.dart';
-import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/repository/cart_datasourse.dart';
-import 'package:esamudaayapp/store.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
+import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 
 class StoreDetailsView extends StatefulWidget {
@@ -256,7 +257,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               crossAxisCount: 3,
                                               crossAxisSpacing: 20.0,
                                               mainAxisSpacing: 20.0,
-                                              childAspectRatio: 100 / 150),
+                                              childAspectRatio: 100 / 160),
                                       itemBuilder: (context, index) {
                                         return Container(
 //                                  color: Colors.red,
@@ -341,22 +342,30 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                       EdgeInsets.only(top: 10),
 //                                      height: 30,
                                                   child: Center(
-                                                    child: Text(
-                                                        snapshot
-                                                            .categories[index]
-                                                            .categoryName,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff747474),
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontFamily:
-                                                                "Avenir",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 15.0)),
+                                                    child: Wrap(
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          snapshot
+                                                              .categories[index]
+                                                              .categoryName,
+                                                          style: const TextStyle(
+                                                              color: const Color(
+                                                                  0xff747474),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontFamily:
+                                                                  "Avenir",
+                                                              fontStyle:
+                                                                  FontStyle
+                                                                      .normal,
+                                                              fontSize: 14.0),
+                                                          maxLines: 2,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                                 Spacer()

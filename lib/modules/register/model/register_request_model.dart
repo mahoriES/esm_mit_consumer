@@ -1,4 +1,4 @@
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
 
 class CustomerDetailsRequest {
   String role;

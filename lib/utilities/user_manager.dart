@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
-import 'package:esamudaayapp/modules/address/models/addess_models.dart';
-import 'package:esamudaayapp/repository/cart_datasourse.dart';
-import 'package:esamudaayapp/repository/database_manage.dart';
-import 'package:esamudaayapp/utilities/stringConstants.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/repository/database_manage.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserManager {

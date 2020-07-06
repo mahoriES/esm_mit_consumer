@@ -1,13 +1,13 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/accounts/action/account_action.dart';
-import 'package:esamudaayapp/modules/accounts/model/recommend_request.dart';
-import 'package:esamudaayapp/modules/register/action/register_Action.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:esamudaayapp/utilities/keys.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/accounts/action/account_action.dart';
+import 'package:eSamudaay/modules/accounts/model/recommend_request.dart';
+import 'package:eSamudaay/modules/register/action/register_Action.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -42,10 +42,12 @@ class _RecommendedShopState extends State<RecommendedShop> {
                     false); //return a `Future` with false value so this route cant be popped or closed.
               },
               child: ModalProgressHUD(
-                progressIndicator: Image.asset(
-                  'assets/images/indicator.gif',
-                  height: 75,
-                  width: 75,
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
+                  ),
                 ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
                 child: Scaffold(

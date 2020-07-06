@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/Profile/model/profile_update_model.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/modules/otp/action/otp_action.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/User.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/modules/otp/action/otp_action.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GetUserDetailAction extends ReduxAction<AppState> {

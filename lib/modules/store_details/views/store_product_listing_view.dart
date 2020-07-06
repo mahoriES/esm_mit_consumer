@@ -1,18 +1,18 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:esamudaayapp/main.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
-import 'package:esamudaayapp/modules/cart/views/cart_view.dart';
-import 'package:esamudaayapp/modules/home/models/category_response.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/store.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
+import 'package:eSamudaay/main.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -68,11 +68,11 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
-//    if (snapshot.getOrderListResponse.previous != null) {
-////      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
-//    } else {
-//      snapshot.getOrderList(ApiURL.placeOrderUrl);
-//    }
+    if (snapshot.productResponse.previous != null) {
+//      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
+    } else {
+      snapshot.getProducts(null, null, null);
+    }
     if (mounted) _refreshController.refreshCompleted();
   }
 
@@ -82,9 +82,9 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
     // if failed,use loadFailed(),if no data return,use LoadNodata()
 //    items.add((items.length + 1).toString());
 
-//    if (snapshot.getOrderListResponse.next != null) {
-//      snapshot.getOrderList(snapshot.getOrderListResponse.next);
-//    }
+    if (snapshot.productResponse.next != null) {
+      snapshot.getProducts(null, null, snapshot.productResponse.next);
+    }
 
     _refreshController.loadComplete();
   }
@@ -214,8 +214,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       indicator: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
+                            color: AppColors.icColors,
+                            width: 3,
                           ),
                         ),
                       ),
@@ -239,10 +239,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                   ),
                   Expanded(
                     child: ModalProgressHUD(
-                      progressIndicator: Image.asset(
-                        'assets/images/indicator.gif',
-                        height: 75,
-                        width: 75,
+                      progressIndicator: Card(
+                        child: Image.asset(
+                          'assets/images/indicator.gif',
+                          height: 75,
+                          width: 75,
+                        ),
                       ),
                       inAsyncCall:
                           snapshot.loadingStatus == LoadingStatus.loading,
@@ -420,6 +422,7 @@ class EmptyViewProduct extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   Function navigateToCart;
+  CatalogSearchResponse productResponse;
   List<Product> products;
   LoadingStatus loadingStatus;
   List<Product> localCartListing;
@@ -429,7 +432,7 @@ class _ViewModel extends BaseModel<AppState> {
   CategoriesNew selectedCategory;
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
-  Function(String, String) getProducts;
+  Function(String, String, String) getProducts;
   Function(CategoriesNew) updateSelectedCategory;
   Function(List<Product>) updateTempProductList;
   Function(List<Product>) updateProductList;
@@ -437,7 +440,8 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   _ViewModel.build(
-      {this.navigateToCart,
+      {this.productResponse,
+      this.navigateToCart,
       this.updateSelectedCategory,
       this.loadingStatus,
       this.selectedCategory,
@@ -458,7 +462,8 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatus,
           productTempListing,
           selectedCategory,
-          categories
+          categories,
+          productResponse
         ]);
   @override
   BaseModel fromStore() {
@@ -473,9 +478,9 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
-        getProducts: (categoryId, merchantId) {
+        getProducts: (categoryId, merchantId, url) {
           dispatch(UpdateProductListingDataAction(listingData: []));
-          dispatch(GetCatalogDetailsAction());
+          dispatch(GetCatalogDetailsAction(url: url));
         },
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
@@ -493,7 +498,8 @@ class _ViewModel extends BaseModel<AppState> {
 
 //        selectedMerchant: state.productState.selectedMerchand,
         products: state.productState.productListingDataSource,
-        localCartListing: state.productState.localCartItems);
+        localCartListing: state.productState.localCartItems,
+        productResponse: state.productState.productResponse);
   }
 }
 

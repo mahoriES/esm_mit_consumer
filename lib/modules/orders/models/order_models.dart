@@ -1,4 +1,4 @@
-import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 
 class GetOrderListRequest {
   String phoneNumber;

@@ -1,4 +1,4 @@
-import 'package:esamudaayapp/utilities/colors.dart';
+import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 
 class AboutView extends StatefulWidget {

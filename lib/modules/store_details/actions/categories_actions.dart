@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/models/category_response.dart';
-import 'package:esamudaayapp/modules/store_details/models/categories_models.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/store_details/models/categories_models.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GetCategoriesDetailsAction extends ReduxAction<AppState> {

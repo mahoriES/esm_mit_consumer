@@ -1,5 +1,5 @@
-import 'package:esamudaayapp/modules/home/models/category_response.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 
 class GetCategoriesResponse {
   String merchantID;

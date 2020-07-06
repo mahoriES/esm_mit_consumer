@@ -1,4 +1,4 @@
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
 class GetBusinessesResponse {
   int count;

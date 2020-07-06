@@ -2,18 +2,18 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/home/models/cluster.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/home/views/cart_bottom_navigation_view.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/home/models/cluster.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -36,7 +36,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     // if failed,use refreshFailed()
 
     if (snapshot.response.previous != null) {
-      snapshot.getMerchantList(snapshot.response.previous);
+//      snapshot.getMerchantList(snapshot.response.previous);
     } else {
       snapshot.getMerchantList(ApiURL.getBusinessesUrl);
     }
@@ -96,30 +96,35 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     onTap: () {
                       snapshot.navigateToCart();
                     },
-                    child: NavigationCartItem(
-                      icon: ImageIcon(
-                        AssetImage('assets/images/bag2.png'),
-                        color: Colors.grey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: NavigationCartItem(
+                        icon: ImageIcon(
+                          AssetImage('assets/images/bag2.png'),
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   );
                 }),
-            NavigationNotificationItem(
-              icon: Icon(
-                Icons.notifications_none,
-                color: Colors.grey,
-              ),
-            ),
+//            NavigationNotificationItem(
+//              icon: Icon(
+//                Icons.notifications_none,
+//                color: Colors.grey,
+//              ),
+//            ),
           ],
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
               return ModalProgressHUD(
-                progressIndicator: Image.asset(
-                  'assets/images/indicator.gif',
-                  height: 75,
-                  width: 75,
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
+                  ),
                 ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading &&
                     snapshot.merchants.isEmpty,

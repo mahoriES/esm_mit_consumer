@@ -1,9 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/orders/actions/actions.dart';
-import 'package:esamudaayapp/modules/orders/models/support_request_model.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/models/support_request_model.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';

@@ -1,5 +1,5 @@
-import 'package:esamudaayapp/redux/states/home_page_state.dart';
-import 'package:esamudaayapp/redux/states/product_state.dart';
+import 'package:eSamudaay/redux/states/home_page_state.dart';
+import 'package:eSamudaay/redux/states/product_state.dart';
 
 import 'auth_state.dart';
 

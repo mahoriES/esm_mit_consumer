@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/repository/database_manage.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/repository/database_manage.dart';
 
 final String cartTable = "Cart";
 final String merchantTable = "Merchants";

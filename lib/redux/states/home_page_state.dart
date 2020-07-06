@@ -1,6 +1,6 @@
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:meta/meta.dart';
 
 class HomePageState {
