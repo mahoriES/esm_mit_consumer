@@ -1,18 +1,24 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:esamudaayapp/main.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/store_details/actions/store_actions.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/store.dart';
+import 'package:eSamudaay/main.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StoreProductListingView extends StatefulWidget {
   @override
@@ -26,6 +32,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
   TabController controller;
   int _currentPosition = 0;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void didChangeDependencies() {
@@ -56,39 +64,59 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
     super.didPopNext();
   }
 
+  void _onRefresh(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    if (snapshot.productResponse.previous != null) {
+//      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
+    } else {
+      snapshot.getProducts(null, null, null);
+    }
+    if (mounted) _refreshController.refreshCompleted();
+  }
+
+  void _onLoading(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+//    items.add((items.length + 1).toString());
+
+    if (snapshot.productResponse.next != null) {
+      snapshot.getProducts(null, null, snapshot.productResponse.next);
+    }
+
+    _refreshController.loadComplete();
+  }
+
   @override
   void initState() {
-//    store.state.productState.selectedMerchand.categories
-//        .asMap()
-//        .forEach((index, a) {
-//      if (a.id == store.state.productState.selectedCategory.id) {
-//        _currentPosition = index + 1;
-//      }
-//    });
-//    controller = TabController(
-//      length: store.state.productState.selectedMerchand.categories.length + 1,
-//      vsync: this,
-//      initialIndex: _currentPosition,
-//    );
+    store.state.productState.categories.asMap().forEach((index, a) {
+      if (a.categoryId ==
+          store.state.productState.selectedCategory.categoryId) {
+        _currentPosition = index;
+      }
+    });
+    controller = TabController(
+      length: store.state.productState.categories.length,
+      vsync: this,
+      initialIndex: _currentPosition,
+    );
     controller.addListener(() {
-//      if (!controller.indexIsChanging) {
-//        if (controller.index != 0) {
-//          store.dispatch(UpdateSelectedCategoryAction(
-//              selectedCategory: store.state.productState.selectedMerchand
-//                  .categories[controller.index - 1]));
-//          store.dispatch(UpdateProductListingDataAction(listingData: []));
-//          store.dispatch(GetCatalogDetailsAction(
-//              request: CatalogSearchRequest(
-//                  categoryIDs: [store.state.productState.selectedCategory.id],
-//                  merchantID:
-//                      store.state.productState.selectedMerchand.merchantID)));
-//        } else {
-//          store.dispatch(GetCatalogDetailsAction(
-//              request: CatalogSearchRequest(
-//                  merchantID:
-//                      store.state.productState.selectedMerchand.merchantID)));
-//        }
-//      }
+      if (!controller.indexIsChanging) {
+        if (controller.index != 0) {
+          store.dispatch(UpdateSelectedCategoryAction(
+              selectedCategory:
+                  store.state.productState.categories[controller.index]));
+          store.dispatch(UpdateProductListingDataAction(listingData: []));
+          store.dispatch(GetCatalogDetailsAction());
+        } else {
+          store.dispatch(UpdateSelectedCategoryAction(
+              selectedCategory:
+                  store.state.productState.categories[controller.index]));
+          store.dispatch(GetCatalogDetailsAction());
+        }
+      }
     });
     super.initState();
   }
@@ -105,14 +133,14 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: AppColors.icColors,
           ),
         ),
         title: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
               return Text(
-                snapshot.selectedCategory.name,
+                snapshot.selectedCategory.categoryName,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -136,12 +164,15 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
 //          autofocus: true,
                       decoration: new InputDecoration(
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppColors.icColors,
+                          ),
                           hintText: "Search for item",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: new BorderSide(
-                                color: Colors.grey,
+                                color: AppColors.icColors,
                               ))),
                       onSubmitted: (String value) {
                         _controller.text = "";
@@ -153,7 +184,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         }
                         var filteredResult =
                             snapshot.productTempListing.where((product) {
-                          return product.name
+                          return product.productName
                               .toLowerCase()
                               .contains(text.toLowerCase());
                         }).toList();
@@ -183,8 +214,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       indicator: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
+                            color: AppColors.icColors,
+                            width: 3,
                           ),
                         ),
                       ),
@@ -194,16 +225,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         }
                       },
                       tabs: List.generate(
-                        snapshot.selectedMerchant.categories.length + 1,
+                        snapshot.categories.length,
                         (index) => // All
                             Container(
                           height: 50,
                           child: Center(
-                            child: Text(
-                                index == 0
-                                    ? "All"
-                                    : snapshot.selectedMerchant
-                                        .categories[index - 1].name,
+                            child: Text(snapshot.categories[index].categoryName,
                                 textAlign: TextAlign.left),
                           ),
                         ),
@@ -212,6 +239,13 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                   ),
                   Expanded(
                     child: ModalProgressHUD(
+                      progressIndicator: Card(
+                        child: Image.asset(
+                          'assets/images/indicator.gif',
+                          height: 75,
+                          width: 75,
+                        ),
+                      ),
                       inAsyncCall:
                           snapshot.loadingStatus == LoadingStatus.loading,
                       opacity: 0,
@@ -219,25 +253,77 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         controller: controller,
 //                        physics: NeverScrollableScrollPhysics(),
                         children: List.generate(
-                          snapshot.selectedMerchant.categories.length + 1,
-                          (index) => // All
-                              ListView.separated(
-                            padding: EdgeInsets.all(15),
-                            itemCount: snapshot.products.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return Container(
-                                height: 15,
-                              );
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              return ProductListingItemView(
-                                index: index,
-                                imageLink: snapshot.selectedCategory.imageLink,
-                                item: snapshot.products[index],
-                              );
-                            },
-                          ),
+                          snapshot.categories.length,
+                          (index) => snapshot.products.isEmpty
+                              ? snapshot.loadingStatus == LoadingStatus.loading
+                                  ? Container()
+                                  : EmptyViewProduct()
+                              : SmartRefresher(
+                                  enablePullDown: true,
+                                  enablePullUp: true,
+                                  header: WaterDropHeader(
+                                    complete: Image.asset(
+                                      'assets/images/indicator.gif',
+                                      height: 75,
+                                      width: 75,
+                                    ),
+                                    waterDropColor: AppColors.icColors,
+                                    refresh: Image.asset(
+                                      'assets/images/indicator.gif',
+                                      height: 75,
+                                      width: 75,
+                                    ),
+                                  ),
+                                  footer: CustomFooter(
+                                    loadStyle: LoadStyle.ShowWhenLoading,
+                                    builder: (BuildContext context,
+                                        LoadStatus mode) {
+                                      Widget body;
+                                      if (mode == LoadStatus.idle) {
+                                        body = Text("");
+                                      } else if (mode == LoadStatus.loading) {
+                                        body = CupertinoActivityIndicator();
+                                      } else if (mode == LoadStatus.failed) {
+                                        body = Text("Load Failed!Click retry!");
+                                      } else if (mode ==
+                                          LoadStatus.canLoading) {
+                                        body = Text("");
+                                      } else {
+                                        body = Text("No more Data");
+                                      }
+                                      return Container(
+                                        height: 55.0,
+                                        child: Center(child: body),
+                                      );
+                                    },
+                                  ),
+                                  controller: _refreshController,
+                                  onRefresh: () {
+                                    _onRefresh(snapshot);
+                                  },
+                                  onLoading: () {
+                                    _onLoading(snapshot);
+                                  },
+                                  child: ListView.separated(
+                                    padding: EdgeInsets.all(15),
+                                    itemCount: snapshot.products.length,
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        height: 15,
+                                      );
+                                    },
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return ProductListingItemView(
+                                        index: index,
+                                        imageLink: snapshot.selectedCategory
+                                            .images.first.photoUrl,
+                                        item: snapshot.products[index],
+                                      );
+                                    },
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -246,7 +332,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     height: snapshot.localCartListing.isEmpty ? 0 : 86,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
-                      storeName: snapshot.selectedMerchant.shopName,
+                      storeName: snapshot.selectedMerchant?.shopName ?? "",
                       height: snapshot.localCartListing.isEmpty ? 0 : 86,
                       buttonTitle: "VIEW ITEMS",
                       didPressButton: () {
@@ -262,31 +348,107 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
   }
 }
 
+class EmptyViewProduct extends StatelessWidget {
+  const EmptyViewProduct({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: ClipPath(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.45,
+                      color: const Color(0xfff0f0f0),
+                    ),
+                    clipper: CustomClipPath(),
+                  ),
+                ),
+                Positioned(
+                    bottom: 20,
+                    right: MediaQuery.of(context).size.width * 0.15,
+                    child: Image.asset(
+                      'assets/images/clipart.png',
+                      fit: BoxFit.cover,
+                    )),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Text('screen_order.empty_pro',
+                    style: const TextStyle(
+                        color: const Color(0xff1f1f1f),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 20.0),
+                    textAlign: TextAlign.left)
+                .tr(),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, right: 30),
+              child: Text('screen_order.empty_pro_hint',
+                      style: const TextStyle(
+                          color: const Color(0xff6f6d6d),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.center)
+                  .tr(),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ViewModel extends BaseModel<AppState> {
   Function navigateToCart;
+  CatalogSearchResponse productResponse;
   List<Product> products;
   LoadingStatus loadingStatus;
   List<Product> localCartListing;
   List<Product> productTempListing;
   Merchants selectedMerchant;
-  Categories selectedCategory;
+  List<CategoriesNew> categories;
+  CategoriesNew selectedCategory;
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
-  Function(String, String) getProducts;
-  Function(Categories) updateSelectedCategory;
+  Function(String, String, String) getProducts;
+  Function(CategoriesNew) updateSelectedCategory;
   Function(List<Product>) updateTempProductList;
   Function(List<Product>) updateProductList;
 
   _ViewModel();
 
   _ViewModel.build(
-      {this.navigateToCart,
+      {this.productResponse,
+      this.navigateToCart,
       this.updateSelectedCategory,
       this.loadingStatus,
       this.selectedCategory,
       this.products,
       this.addToCart,
       this.removeFromCart,
+      this.categories,
       this.localCartListing,
       this.getProducts,
       this.productTempListing,
@@ -299,7 +461,9 @@ class _ViewModel extends BaseModel<AppState> {
           selectedMerchant,
           loadingStatus,
           productTempListing,
-          selectedCategory
+          selectedCategory,
+          categories,
+          productResponse
         ]);
   @override
   BaseModel fromStore() {
@@ -314,11 +478,9 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
-        getProducts: (categoryId, merchantId) {
+        getProducts: (categoryId, merchantId, url) {
           dispatch(UpdateProductListingDataAction(listingData: []));
-          dispatch(GetCatalogDetailsAction(
-              request: CatalogSearchRequest(
-                  categoryIDs: [categoryId], merchantID: merchantId)));
+          dispatch(GetCatalogDetailsAction(url: url));
         },
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
@@ -329,12 +491,15 @@ class _ViewModel extends BaseModel<AppState> {
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
         },
+        categories: state.productState.categories,
         productTempListing: state.productState.productListingTempDataSource,
         loadingStatus: state.authState.loadingStatus,
         selectedCategory: state.productState.selectedCategory,
+
 //        selectedMerchant: state.productState.selectedMerchand,
         products: state.productState.productListingDataSource,
-        localCartListing: state.productState.localCartItems);
+        localCartListing: state.productState.localCartItems,
+        productResponse: state.productState.productResponse);
   }
 }
 
@@ -350,14 +515,7 @@ class ProductListingItemView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          print(item.restockingAt);
-          bool isOutOfStock = item.restockingAt == null ||
-              item.restockingAt == "" ||
-              (DateTime.fromMillisecondsSinceEpoch(
-                          int.parse(item.restockingAt) * 1000))
-                      .difference(DateTime.now())
-                      .inSeconds <=
-                  0;
+          bool isOutOfStock = item.inStock;
           return IgnorePointer(
             ignoring: !isOutOfStock,
             child: Row(
@@ -384,7 +542,7 @@ class ProductListingItemView extends StatelessWidget {
                     alignment: Alignment.center,
                     children: <Widget>[
                       ColorFiltered(
-                        child: item.imageLink == null
+                        child: item.images == null
                             ? Padding(
                                 padding: const EdgeInsets.all(25.0),
                                 child: CachedNetworkImage(
@@ -403,7 +561,8 @@ class ProductListingItemView extends StatelessWidget {
                                 child: CachedNetworkImage(
                                     height: 500.0,
                                     fit: BoxFit.cover,
-                                    imageUrl: item.imageLink,
+                                    imageUrl:
+                                        item?.images?.first?.photoUrl ?? "",
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -441,7 +600,7 @@ class ProductListingItemView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Text(item.name,
+                        Text(item.productName,
                             style: const TextStyle(
                                 color: const Color(0xff515c6f),
                                 fontWeight: FontWeight.w500,
@@ -457,7 +616,8 @@ class ProductListingItemView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                Text("₹ ${item.price.toString()}",
+                                Text(
+                                    "₹ ${item.skus.isEmpty ? 0 : item.skus.first.basePrice.toString()}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
@@ -470,7 +630,15 @@ class ProductListingItemView extends StatelessWidget {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text(item.skuSize,
+                                Text(
+                                    item.skus.isEmpty
+                                        ? "NA"
+                                        : item.skus.first.variationOptions
+                                                    .size !=
+                                                null
+                                            ? item.skus.first.variationOptions
+                                                .size
+                                            : "NA",
                                     style: TextStyle(
                                         color: Color(0xffa7a7a7),
                                         fontWeight: FontWeight.w500,
@@ -483,7 +651,7 @@ class ProductListingItemView extends StatelessWidget {
                             CSStepper(
                               backgroundColor: !isOutOfStock
                                   ? Color(0xffb1b1b1)
-                                  : Color(0xff5091cd),
+                                  : AppColors.icColors,
                               didPressAdd: () {
                                 item.count = ((item?.count ?? 0) + 1)
                                     .clamp(0, double.nan);
@@ -532,7 +700,7 @@ class CSStepper extends StatelessWidget {
       height: 30,
       width: 73,
       decoration: BoxDecoration(
-        color: this.backgroundColor ?? Color(0xff5091cd),
+        color: this.backgroundColor ?? AppColors.icColors,
         borderRadius: BorderRadius.circular(100),
       ),
       child: value.contains("Add")

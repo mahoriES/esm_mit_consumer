@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:flutter/material.dart';
 
 class NavigationCartItem extends StatelessWidget {
@@ -93,7 +93,7 @@ class NavigationNotificationItem extends StatelessWidget {
               child: new Container(
                 padding: EdgeInsets.all(1),
                 decoration: new BoxDecoration(
-                  color: Colors.red,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 constraints: BoxConstraints(
@@ -102,7 +102,7 @@ class NavigationNotificationItem extends StatelessWidget {
                 ),
                 child: CartCount(builder: (context, vm) {
                   return new Text(
-                    "20",
+                    "0",
 //                    (vm.localCart.length).toString(),
                     style: new TextStyle(
                       color: Colors.white,

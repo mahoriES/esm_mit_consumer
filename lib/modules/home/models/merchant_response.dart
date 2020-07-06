@@ -1,44 +1,17 @@
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
-
-class MerchantSearchResponse {
-  List<Merchants> merchants;
-  int statusCode;
-  String status;
-
-  MerchantSearchResponse({this.merchants, this.statusCode, this.status});
-
-  MerchantSearchResponse.fromJson(Map<String, dynamic> json) {
-    if (json['merchants'] != null) {
-      merchants = new List<Merchants>();
-      json['merchants'].forEach((v) {
-        merchants.add(new Merchants.fromJson(v));
-      });
-    } else {
-      merchants = [];
-    }
-    statusCode = json['statusCode'];
-    status = json['status'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.merchants != null) {
-      data['merchants'] = this.merchants.map((v) => v.toJson()).toList();
-    }
-    data['statusCode'] = this.statusCode;
-    data['status'] = this.status;
-    return data;
-  }
-}
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
 class GetBusinessesResponse {
   int count;
+  String next;
+  String previous;
   List<Business> results;
 
   GetBusinessesResponse({this.count, this.results});
 
   GetBusinessesResponse.fromJson(Map<String, dynamic> json) {
     count = json['count'];
+    next = json['next'];
+    previous = json['previous'];
     if (json['results'] != null) {
       results = new List<Business>();
       json['results'].forEach((v) {
@@ -50,6 +23,8 @@ class GetBusinessesResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['count'] = this.count;
+    data['next'] = this.next;
+    data['previous'] = this.previous;
     if (this.results != null) {
       data['results'] = this.results.map((v) => v.toJson()).toList();
     }
@@ -203,7 +178,7 @@ class MerchantLocal {
 }
 
 class Merchants {
-  Address address;
+  AddressNew address;
   String merchantID;
   List<String> secondaryPhoneNumbers;
   String openTime;
@@ -236,8 +211,9 @@ class Merchants {
   });
 
   Merchants.fromJson(Map<String, dynamic> json) {
-    address =
-        json['address'] != null ? new Address.fromJson(json['address']) : null;
+    address = json['address'] != null
+        ? new AddressNew.fromJson(json['address'])
+        : null;
     merchantID = json['merchantID'];
     if (json['secondaryPhoneNumbers'] != null) {
       secondaryPhoneNumbers = json['secondaryPhoneNumbers'].cast<String>();
@@ -288,73 +264,68 @@ class Merchants {
   }
 }
 
-class Address {
-  String addressLine1;
-  String addressLine2;
-  String latitude;
-  String longitude;
-  String name;
-  String area;
-  String formattedAddress;
+class Categories {
+  int categoryId;
+  String categoryName;
+  String categoryDescription;
+  Null parentCategoryId;
+  bool isActive;
+  List<Images> images;
 
-  Address(
-      {this.addressLine1,
-      this.addressLine2,
-      this.latitude,
-      this.longitude,
-      this.name,
-      this.area,
-      this.formattedAddress});
+  Categories(
+      {this.categoryId,
+      this.categoryName,
+      this.categoryDescription,
+      this.parentCategoryId,
+      this.isActive,
+      this.images});
 
-  Address.fromJson(Map<String, dynamic> json) {
-    if (json['tags'] != null) {
-      addressLine1 = json['addressLine1'];
-      addressLine2 = json['addressLine2'];
-      latitude = json['latitude'];
-      longitude = json['longitude'];
-
-      name = json['name'];
-      area = json['area'];
-      formattedAddress = json['formattedAddress'];
+  Categories.fromJson(Map<String, dynamic> json) {
+    categoryId = json['category_id'];
+    categoryName = json['category_name'];
+    categoryDescription = json['category_description'];
+    parentCategoryId = json['parent_category_id'];
+    isActive = json['is_active'];
+    if (json['images'] != null) {
+      images = new List<Images>();
+      json['images'].forEach((v) {
+        images.add(new Images.fromJson(v));
+      });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-
-    data['addressLine1'] = this.addressLine1;
-    data['addressLine2'] = this.addressLine2;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-
-    data['name'] = this.name;
-    data['area'] = this.area;
-    data['formattedAddress'] = this.formattedAddress;
+    data['category_id'] = this.categoryId;
+    data['category_name'] = this.categoryName;
+    data['category_description'] = this.categoryDescription;
+    data['parent_category_id'] = this.parentCategoryId;
+    data['is_active'] = this.isActive;
+    if (this.images != null) {
+      data['images'] = this.images.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
 
-class Categories {
-  String id;
-  String name;
-  String description;
-  String imageLink;
+class Images {
+  String photoId;
+  String photoUrl;
+  String contentType;
 
-  Categories({this.id, this.name, this.description, this.imageLink});
+  Images({this.photoId, this.photoUrl, this.contentType});
 
-  Categories.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    description = json['description'];
-    imageLink = json['imageLink'];
+  Images.fromJson(Map<String, dynamic> json) {
+    photoId = json['photo_id'];
+    photoUrl = json['photo_url'];
+    contentType = json['content_type'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['imageLink'] = this.imageLink;
+    data['photo_id'] = this.photoId;
+    data['photo_url'] = this.photoUrl;
+    data['content_type'] = this.contentType;
     return data;
   }
 }

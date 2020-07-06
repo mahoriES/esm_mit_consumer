@@ -3,7 +3,7 @@
 class ApiURL {
   static const developmentURL = "http://13.127.43.195/api/ChangePay/";
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
-  static const liveURL = "https://sewer-viewer.com";
+  static const liveURL = "https://api.esamudaay.com/";
   static const baseURL = eSamudayDevelopmentURL;
   static const generateOTPUrl = "api/v1/auth/token/";
   static const generateOtpRegisterUrl = "api/v1/auth/user/";
@@ -12,7 +12,7 @@ class ApiURL {
   static const getBusinessesUrl = "api/v1/businesses/";
   static const bannerUrl = "Customer/v4/getLandingPageOffers";
   static const getCatalogUrl = "Customer/v4/getCatalog";
-  static const placeOrderUrl = "Customer/v4/placeOrderAtMerchant";
+  static const placeOrderUrl = "api/v1/orders/";
   static const updateOrderUrl = "Customer/v4/updateOrders";
   static const getOrderTaxUrl = "Customer/v4/populateOrderCharges";
   static const getOrderListUrl = "Customer/v4/getOrders";
@@ -22,7 +22,8 @@ class ApiURL {
   static const supportURL = "Support/raiseSupportTicket";
   static const logoutURL = "Customer/v4/Logout";
   static const recommendStoreURL = "Customer/v4/recommendAStore";
-  static const profileUpdateURL = "Customer/v4/updateDetails";
+  static const profileUpdateURL = "/api/v1/auth/profiles";
   static const getClustersUrl = "api/v1/clusters/";
   static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
+  static const imageUpload = "$baseURL" + "api/v1/media/photo/";
 }

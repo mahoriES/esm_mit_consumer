@@ -1,3 +1,5 @@
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+
 class CustomerDetailsRequest {
   String role;
   String profileName;
@@ -62,49 +64,6 @@ class Photo {
     data['photo_id'] = this.photoId;
     data['photo_url'] = this.photoUrl;
     data['content_type'] = this.contentType;
-    return data;
-  }
-}
-
-class Data {
-  UserProfile userProfile;
-  Photo profilePic;
-  String profileName;
-  String created;
-  String modified;
-  bool isSuspended;
-
-  Data(
-      {this.userProfile,
-      this.profilePic,
-      this.profileName,
-      this.created,
-      this.modified,
-      this.isSuspended});
-
-  Data.fromJson(Map<String, dynamic> json) {
-    userProfile = json['user_profile'] != null
-        ? new UserProfile.fromJson(json['user_profile'])
-        : null;
-    profilePic = json['profile_pic'] != null
-        ? new Photo.fromJson(json['profile_pic'])
-        : null;
-    profileName = json['profile_name'];
-    created = json['created'];
-    modified = json['modified'];
-    isSuspended = json['is_suspended'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.userProfile != null) {
-      data['user_profile'] = this.userProfile.toJson();
-    }
-    data['profile_pic'] = this.profilePic;
-    data['profile_name'] = this.profileName;
-    data['created'] = this.created;
-    data['modified'] = this.modified;
-    data['is_suspended'] = this.isSuspended;
     return data;
   }
 }

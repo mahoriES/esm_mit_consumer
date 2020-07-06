@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:esamudaayapp/repository/cart_datasourse.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,15 +35,8 @@ class DatabaseManager {
       await db.execute('''
 create table if not exists Cart (
   _id integer primary key autoincrement,
-  category text,
-  count integer,
-  description text,
   id text,
-  imageLink text,
-  name text,
-  service text,
-  restockingAt text,
-  price double
+  product text
   )
 ''');
     } catch (e) {
@@ -54,13 +47,7 @@ create table if not exists Cart (
       await db.execute('''
 create table if not exists $merchantTable (
   _id integer primary key autoincrement,
-  shopName text,
-  displayPicture text,
-  cardViewLine2 text,
-  flag text,
-  merchantID text,
-  address1 text,
-  address2 text
+  business text
   )
 ''');
     } catch (e) {
@@ -86,17 +73,7 @@ create table if not exists Config (
 create table if not exists User (
   _id integer primary key autoincrement,
   id integer,
-  email text,
-  first_name text,
-  last_name text,
-  last_login text,
-  username text,
-  date_joined text,
-  avatar text,
-  phone text,
-  address text,
-  user_type text,
-  rating text
+  user text
   )
 ''');
     } catch (e) {
@@ -110,16 +87,7 @@ create table if not exists User (
 create table if not exists User (
   _id integer primary key autoincrement,
   id integer,
-  email text,
-  first_name text,
-  last_name text,
-  last_login text,
-  username text,
-  date_joined text,
-  avatar text,
-  phone text,
-  user_type text,
-  rating text
+  user text
   )
 ''');
     } catch (e) {

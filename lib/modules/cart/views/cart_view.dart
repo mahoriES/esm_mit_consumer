@@ -1,33 +1,38 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
-import 'package:esamudaayapp/modules/cart/views/cart_bottom_view.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/orders/models/order_models.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/modules/store_details/views/store_categories_details_view.dart';
-import 'package:esamudaayapp/modules/store_details/views/store_product_listing_view.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/store.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:esamudaayapp/utilities/extensions.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
+import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
+import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class CartView extends StatefulWidget {
+  int radioValue = 0;
   @override
   _CartViewState createState() => _CartViewState();
 }
 
 class _CartViewState extends State<CartView> {
-  int _radioValue = 0;
+  String deliveryCharge = "0";
+  double totalValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -61,48 +66,32 @@ class _CartViewState extends State<CartView> {
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) {
+            widget.radioValue = widget.radioValue == 0
+                ? store.state.productState.selectedMerchand != null
+                    ? store.state.productState.selectedMerchand.hasDelivery
+                        ? 1
+                        : 2
+                    : 0
+                : widget.radioValue;
             if (store.state.productState.localCartItems.isNotEmpty) {
-              var total = store.state.productState.localCartItems.fold(0,
-                      (previous, current) {
-                    double price =
-                        double.parse(current.price.toString()) * current.count;
-
-                    return double.parse(previous.toString()) + price;
-                  }) ??
-                  0.0;
-
-//              var request = PlaceOrderRequest(
-//                  phoneNumber: store.state.authState.user.phone,
-//                  comments: "",
-//                  order: Orders(
-//                      merchantID:
-//                          store.state.productState.selectedMerchand.merchantID,
-//                      codPaymentCompleted: false,
-//                      paymentType: "CASH_ON_DELIVERY",
-//                      cart: Cart(
-//                          service: store.state.productState.selectedMerchand
-//                                          .servicesOffered !=
-//                                      null &&
-//                                  store.state.productState.selectedMerchand
-//                                      .servicesOffered.isNotEmpty
-//                              ? store.state.productState.selectedMerchand
-//                                  .servicesOffered.first
-//                              : "FOOD_DELIVERY",
-//                          total: total.toDouble(),
-//                          itemsEnhanced: store.state.productState.localCartItems
-//                              .map((cart) {
-//                            return ItemsEnhanced(
-//                                item: cart, number: cart.count);
-//                          }).toList())));
-//              store.dispatch(GetOrderTaxAction(request: request));
+              store.dispatch(GetOrderTaxAction());
             }
           },
           builder: (context, snapshot) {
             return ModalProgressHUD(
+              progressIndicator: Card(
+                child: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
+              ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
               child: Container(
                 child: snapshot.localCart.isEmpty
-                    ? EmptyView()
+                    ? snapshot.loadingStatus != LoadingStatus.loading
+                        ? EmptyView()
+                        : Container()
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -133,7 +122,7 @@ class _CartViewState extends State<CartView> {
                                                 Expanded(
                                                   child: Text(
                                                       snapshot.localCart[index]
-                                                          .name,
+                                                          .productName,
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -173,8 +162,9 @@ class _CartViewState extends State<CartView> {
                                                                           .nan);
                                                           snapshot.addToCart(
                                                               item, context);
-                                                          snapshot
-                                                              .getOrderTax();
+                                                          snapshot.getOrderTax(
+                                                              widget
+                                                                  .radioValue);
                                                         },
                                                         didPressRemove: () {
                                                           var item = snapshot
@@ -190,8 +180,9 @@ class _CartViewState extends State<CartView> {
                                                           snapshot
                                                               .removeFromCart(
                                                                   item);
-                                                          snapshot
-                                                              .getOrderTax();
+                                                          snapshot.getOrderTax(
+                                                              widget
+                                                                  .radioValue);
                                                         },
                                                       ),
                                                       // ₹ 55.00
@@ -200,7 +191,7 @@ class _CartViewState extends State<CartView> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                            "₹ ${snapshot.localCart[index].price}",
+                                                            "₹ ${snapshot.localCart[index].skus.first.basePrice}",
                                                             style: const TextStyle(
                                                                 color: const Color(
                                                                     0xff5091cd),
@@ -223,8 +214,12 @@ class _CartViewState extends State<CartView> {
                                             ),
                                             // 500GMS
                                             Text(
-                                                snapshot.localCart[index]
-                                                        .skuSize ??
+                                                snapshot
+                                                        .localCart[index]
+                                                        .skus
+                                                        .first
+                                                        .variationOptions
+                                                        .size ??
                                                     "",
                                                 style: const TextStyle(
                                                     color:
@@ -256,9 +251,8 @@ class _CartViewState extends State<CartView> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 8),
-                                                child: snapshot
-                                                        .selectedMerchant.flags
-                                                        .contains('DELIVERY')
+                                                child: snapshot.selectedMerchant
+                                                        .hasDelivery
                                                     ? Image.asset(
                                                         'assets/images/delivery.png')
                                                     : Image.asset(
@@ -266,8 +260,7 @@ class _CartViewState extends State<CartView> {
                                               ),
                                               Text(
                                                   snapshot.selectedMerchant
-                                                          .flags
-                                                          .contains('DELIVERY')
+                                                          .hasDelivery
                                                       ? tr("shop.delivery_ok")
                                                       : tr("shop.delivery_no"),
                                                   style: const TextStyle(
@@ -353,187 +346,193 @@ class _CartViewState extends State<CartView> {
                                                   textAlign: TextAlign.center)
                                               .tr(),
                                         ),
-                                        snapshot.placeOrderResponse == null
-                                            ? Container()
-                                            : Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 20),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Column(
+                                            children: <Widget>[
+                                              ListView.separated(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount:
+                                                    snapshot.charges.length + 1,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return index == 0
+                                                      ? Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: <Widget>[
+                                                            // Item Total
+                                                            Text("screen_order.item_total",
+                                                                    style: const TextStyle(
+                                                                        color: const Color(
+                                                                            0xff696666),
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        fontStyle:
+                                                                            FontStyle
+                                                                                .normal,
+                                                                        fontSize:
+                                                                            16.0),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left)
+                                                                .tr(), // ₹ 175.00
+                                                            Text(
+                                                                "₹ ${snapshot.getCartTotal()}",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: <Widget>[
+                                                            // Item Total
+                                                            Text(
+                                                                snapshot
+                                                                    .charges[
+                                                                        index -
+                                                                            1]
+                                                                    .chargeName,
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign: TextAlign
+                                                                    .left), // ₹ 175.00
+                                                            Text(
+                                                                snapshot
+                                                                            .charges[index -
+                                                                                1]
+                                                                            .chargeName
+                                                                            .contains(
+                                                                                "DELIVERY") &&
+                                                                        widget.radioValue ==
+                                                                            2
+                                                                    ? "0"
+                                                                    : "₹ ${snapshot.charges[index - 1].chargeValue.toString()}",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                          ],
+                                                        );
+                                                  return Container();
+                                                },
+                                                separatorBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return Container(
+                                                    height: 13,
+                                                  );
+                                                },
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 10, bottom: 10),
                                                 child: Column(
                                                   children: <Widget>[
-                                                    ListView.separated(
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          NeverScrollableScrollPhysics(),
-                                                      itemCount: snapshot
-                                                              .placeOrderResponse
-                                                              .order
-                                                              .serviceSpecificData
-                                                              .length +
-                                                          1,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return index == 0
-                                                            ? Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: <
-                                                                    Widget>[
-                                                                  // Item Total
-                                                                  Text("screen_order.item_total",
-                                                                          style: const TextStyle(
-                                                                              color: const Color(0xff696666),
-                                                                              fontWeight: FontWeight.w500,
-                                                                              fontFamily: "Avenir",
-                                                                              fontStyle: FontStyle.normal,
-                                                                              fontSize: 16.0),
-                                                                          textAlign: TextAlign.left)
-                                                                      .tr(), // ₹ 175.00
-                                                                  Text(
-                                                                      "₹ ${snapshot.getCartTotal()}",
-                                                                      style: const TextStyle(
-                                                                          color: const Color(
-                                                                              0xff696666),
-                                                                          fontWeight: FontWeight
-                                                                              .w500,
-                                                                          fontFamily:
-                                                                              "Avenir",
-                                                                          fontStyle: FontStyle
-                                                                              .normal,
-                                                                          fontSize:
-                                                                              16.0),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .left)
-                                                                ],
-                                                              )
-                                                            : Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: <
-                                                                    Widget>[
-                                                                  // Item Total
-                                                                  Text(
-                                                                      snapshot
-                                                                          .placeOrderResponse
-                                                                          .order
-                                                                          .serviceSpecificData
-                                                                          .keys
-                                                                          .toList()[index -
-                                                                              1]
-                                                                          .toString()
-                                                                          .toLowerCase()
-                                                                          .replaceAll("_",
-                                                                              " ")
-                                                                          .capitalize(),
-                                                                      style: const TextStyle(
-                                                                          color: const Color(
-                                                                              0xff696666),
-                                                                          fontWeight: FontWeight
-                                                                              .w500,
-                                                                          fontFamily:
-                                                                              "Avenir",
-                                                                          fontStyle: FontStyle
-                                                                              .normal,
-                                                                          fontSize:
-                                                                              16.0),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .left), // ₹ 175.00
-                                                                  Text(
-                                                                      "₹ ${snapshot.placeOrderResponse.order.serviceSpecificData.values.toList()[index - 1].toString()}",
-                                                                      style: const TextStyle(
-                                                                          color: const Color(
-                                                                              0xff696666),
-                                                                          fontWeight: FontWeight
-                                                                              .w500,
-                                                                          fontFamily:
-                                                                              "Avenir",
-                                                                          fontStyle: FontStyle
-                                                                              .normal,
-                                                                          fontSize:
-                                                                              16.0),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .left)
-                                                                ],
-                                                              );
-                                                      },
-                                                      separatorBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return Container(
-                                                          height: 13,
-                                                        );
-                                                      },
-                                                    ),
                                                     Container(
-                                                      padding: EdgeInsets.only(
-                                                          top: 10, bottom: 10),
-                                                      child: Column(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            height: 0.5,
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    bottom: 10),
-                                                            color: Colors.grey,
-                                                          ),
-                                                          // Amount to be paid
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: <Widget>[
-                                                              Text("cart.total_amount",
-                                                                      style: const TextStyle(
-                                                                          color: const Color(
-                                                                              0xff696666),
-                                                                          fontWeight: FontWeight
-                                                                              .w500,
-                                                                          fontFamily:
-                                                                              "Avenir",
-                                                                          fontStyle: FontStyle
-                                                                              .normal,
-                                                                          fontSize:
-                                                                              16.0),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .left)
-                                                                  .tr(),
-                                                              // ₹ 195.00
-                                                              // ₹ 195.00
-                                                              Text(
-                                                                  "₹ ${snapshot.getCartTotal() + snapshot.placeOrderResponse.order.serviceSpecificData.values.toList().fold(0, (previous, current) {
-                                                                        return double.parse(previous.toString()) +
-                                                                            double.parse(current.toString());
-                                                                      }) ?? 0.0}",
-                                                                  style: const TextStyle(
-                                                                      color: const Color(
-                                                                          0xff5091cd),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontFamily:
-                                                                          "Avenir",
-                                                                      fontStyle:
-                                                                          FontStyle
-                                                                              .normal,
-                                                                      fontSize:
-                                                                          16.0),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .left)
-                                                            ],
-                                                          )
-                                                        ],
-                                                      ),
+                                                      height: 0.5,
+                                                      margin: EdgeInsets.only(
+                                                          bottom: 10),
+                                                      color: Colors.grey,
+                                                    ),
+                                                    // Amount to be paid
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        Text("cart.total_amount",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff696666),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                            .tr(),
+                                                        // ₹ 195.00
+                                                        // ₹ 195.00
+                                                        //update with addition of tax etc
+                                                        Text(
+                                                            "₹ ${snapshot.getOrderTax(widget.radioValue) ?? 0.0}",
+                                                            style: const TextStyle(
+                                                                color: const Color(
+                                                                    0xff5091cd),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontFamily:
+                                                                    "Avenir",
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 16.0),
+                                                            textAlign:
+                                                                TextAlign.left)
+                                                      ],
                                                     )
                                                   ],
                                                 ),
                                               )
+                                            ],
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -544,18 +543,18 @@ class _CartViewState extends State<CartView> {
                                           CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Radio(
+                                            activeColor: AppColors.icColors,
                                             value: 1,
                                             groupValue: snapshot
-                                                    .selectedMerchant.flags
-                                                    .contains('DELIVERY')
-                                                ? _radioValue
+                                                    .selectedMerchant
+                                                    .hasDelivery
+                                                ? widget.radioValue
                                                 : null,
                                             onChanged: ((value) {
-                                              if (snapshot
-                                                  .selectedMerchant.flags
-                                                  .contains('DELIVERY')) {
+                                              if (snapshot.selectedMerchant
+                                                  .hasDelivery) {
                                                 setState(() {
-                                                  _radioValue = value;
+                                                  widget.radioValue = value;
                                                 });
                                               }
                                             })),
@@ -571,11 +570,12 @@ class _CartViewState extends State<CartView> {
                                                 textAlign: TextAlign.left)
                                             .tr(),
                                         Radio(
+                                            activeColor: AppColors.icColors,
                                             value: 2,
-                                            groupValue: _radioValue,
+                                            groupValue: widget.radioValue,
                                             onChanged: ((value) {
                                               setState(() {
-                                                _radioValue = value;
+                                                widget.radioValue = value;
                                               });
                                             })),
                                         // Pickup
@@ -592,9 +592,8 @@ class _CartViewState extends State<CartView> {
                                       ],
                                     ),
                                   ),
-                                  snapshot.selectedMerchant.flags
-                                          .contains('DELIVERY')
-                                      ? _radioValue != 1
+                                  snapshot.selectedMerchant.hasDelivery
+                                      ? widget.radioValue != 1
                                           ? Container()
                                           : Container(
                                               color: Colors.white,
@@ -611,8 +610,12 @@ class _CartViewState extends State<CartView> {
                                                       padding:
                                                           const EdgeInsets.only(
                                                               right: 8),
-                                                      child: ImageIcon(AssetImage(
-                                                          'assets/images/home41.png')),
+                                                      child: ImageIcon(
+                                                        AssetImage(
+                                                            'assets/images/home41.png'),
+                                                        color:
+                                                            AppColors.icColors,
+                                                      ),
                                                     ),
                                                     Expanded(
                                                       child: Column(
@@ -640,7 +643,7 @@ class _CartViewState extends State<CartView> {
                                                           // NJRA135, Second cross road,  Indiranagar- 6987452
                                                           Text(
                                                               snapshot
-                                                                  .user.address,
+                                                                  .address.prettyAddress,
                                                               style: const TextStyle(
                                                                   color: const Color(
                                                                       0xff4b4b4b),
@@ -678,8 +681,11 @@ class _CartViewState extends State<CartView> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           right: 8),
-                                                  child: ImageIcon(AssetImage(
-                                                      'assets/images/pen2.png')),
+                                                  child: ImageIcon(
+                                                    AssetImage(
+                                                        'assets/images/pen2.png'),
+                                                    color: AppColors.icColors,
+                                                  ),
                                                 ),
                                                 // Door number 1244 ,  Indiranagar, 2nd cross road
                                                 // Delivering to:
@@ -733,9 +739,8 @@ class _CartViewState extends State<CartView> {
                                             ),
                                           ),
                                         ),
-                                  snapshot.selectedMerchant.flags
-                                              .contains('DELIVERY') &&
-                                          _radioValue == 1
+                                  snapshot.selectedMerchant.hasDelivery &&
+                                          widget.radioValue == 1
                                       ? Container()
                                       : Container(
                                           color: Colors.white,
@@ -755,7 +760,7 @@ class _CartViewState extends State<CartView> {
                                                     AssetImage(
                                                       'assets/images/path330.png',
                                                     ),
-                                                    color: Colors.black,
+                                                    color: AppColors.icColors,
                                                   ),
                                                 ),
                                                 // Door number 1244 ,  Indiranagar, 2nd cross road
@@ -788,13 +793,9 @@ class _CartViewState extends State<CartView> {
                                                       Text(
                                                           snapshot
                                                                   .selectedMerchant
-                                                                  .address
-                                                                  .addressLine1 +
-                                                              "," +
-                                                              snapshot
-                                                                  .selectedMerchant
-                                                                  .address
-                                                                  .addressLine2,
+                                                                  ?.address
+                                                                  ?.prettyAddress ??
+                                                              "",
                                                           style: const TextStyle(
                                                               color: const Color(
                                                                   0xff4b4b4b),
@@ -859,48 +860,42 @@ class _CartViewState extends State<CartView> {
                             ),
                           ),
                           BottomView(
-                            storeName: snapshot.selectedMerchant.shopName,
+                            storeName: snapshot.selectedMerchant.businessName,
                             buttonTitle: tr('cart.confirm_order'),
                             height: 80,
                             didPressButton: () async {
-                              if (_radioValue == 0) {
+                              if (widget.radioValue == 0) {
                                 Fluttertoast.showToast(
                                     msg: "please select Delivery / Pickup");
 //                                return;
                               } else {
-                                var user = await UserManager.userDetails();
+                                if (snapshot.selectedMerchant.isOpen) {
+                                  var address = await UserManager.getAddress();
+                                  List<Product> cart =
+                                      await CartDataSource.getListOfCartWith();
 
-                                var request = PlaceOrderRequest(
-                                    phoneNumber: snapshot.user.phone,
-                                    comments: "",
-                                    order: Orders(
-                                        merchantID: snapshot
-                                            .selectedMerchant.merchantID,
-                                        codPaymentCompleted: false,
-                                        paymentType: "CASH_ON_DELIVERY",
-                                        address: _radioValue == 1
-                                            ? Address(
-                                                addressLine1: user.address)
-                                            : null,
-                                        cart: Cart(
-                                            service: snapshot.selectedMerchant
-                                                            .servicesOffered !=
-                                                        null &&
-                                                    snapshot
-                                                        .selectedMerchant
-                                                        .servicesOffered
-                                                        .isNotEmpty
-                                                ? snapshot.selectedMerchant
-                                                    .servicesOffered.first
-                                                : "FOOD_DELIVERY",
-                                            total: snapshot.getCartTotal(),
-                                            itemsEnhanced:
-                                                snapshot.localCart.map((cart) {
-                                              return ItemsEnhanced(
-                                                  item: cart,
-                                                  number: cart.count);
-                                            }).toList())));
-                                snapshot.placeOrder(request);
+                                  PlaceOrderRequest request =
+                                      PlaceOrderRequest();
+                                  request.businessId =
+                                      snapshot.selectedMerchant.businessId;
+                                  request.deliveryAddressId =
+                                      widget.radioValue == 1
+                                          ? address.addressId
+                                          : null;
+                                  request.deliveryType = widget.radioValue == 1
+                                      ? "DA_DELIVERY"
+                                      : "SELF_PICK_UP";
+                                  request.orderItems = cart
+                                      .map((e) => OrderItems(
+                                          skuId: e.skus.first.skuId,
+                                          quantity: e.count))
+                                      .toList();
+
+                                  snapshot.placeOrder(request);
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: "The shop is closed");
+                                }
                               }
                             },
                           )
@@ -1021,19 +1016,20 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
   VoidCallback navigateToCart;
-  Merchants selectedMerchant;
-  PlaceOrderResponse placeOrderResponse;
+  Business selectedMerchant;
+  List<Charge> charges;
   Function getCartTotal;
   Function(PlaceOrderRequest) placeOrder;
   Function(PlaceOrderRequest) getTaxOfOrder;
-  Function getOrderTax;
+  Function(int) getOrderTax;
   LoadingStatus loadingStatus;
   Function(Business) updateSelectedMerchant;
-
-  User user;
+  Address address;
+  Data user;
   _ViewModel();
   _ViewModel.build(
       {this.localCart,
+      this.charges,
       this.updateSelectedMerchant,
       this.placeOrder,
       this.user,
@@ -1042,36 +1038,39 @@ class _ViewModel extends BaseModel<AppState> {
       this.removeFromCart,
       this.navigateToCart,
       this.selectedMerchant,
+      this.address,
       this.getTaxOfOrder,
-      this.placeOrderResponse,
       this.loadingStatus,
       this.getOrderTax})
       : super(equals: [
           localCart,
           selectedMerchant,
           user,
-          placeOrderResponse,
-          loadingStatus
+          loadingStatus,
+          address,
+          charges
         ]);
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-//        selectedMerchant: state.productState.selectedMerchand,
+        charges: state.productState.charges,
+        address: state.authState.address,
+        selectedMerchant: state.productState.selectedMerchand,
         localCart: state.productState.localCartItems,
         user: state.authState.user,
-        placeOrderResponse: state.productState.placeOrderResponse,
         loadingStatus: state.authState.loadingStatus,
         getCartTotal: () {
           if (state.productState.localCartItems.isNotEmpty) {
-            var total =
-                state.productState.localCartItems.fold(0, (previous, current) {
-                      double price = double.parse(current.price.toString()) *
+            var total = state.productState.localCartItems.fold(0,
+                    (previous, current) {
+                  double price =
+                      double.parse(current.skus.first.basePrice.toString()) *
                           current.count;
 
-                      return double.parse(previous.toString()) + price;
-                    }) ??
-                    0.0;
+                  return double.parse(previous.toString()) + price;
+                }) ??
+                0.0;
 
             return total.toDouble(); //formatCurrency.format(total.toDouble());
           } else {
@@ -1085,7 +1084,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(PlaceOrderAction(request: request));
         },
         getTaxOfOrder: (request) {
-          dispatch(GetOrderTaxAction(request: request));
+          dispatch(GetOrderTaxAction());
         },
         addToCart: (item, context) {
           dispatch(AddToCartLocalAction(product: item, context: context));
@@ -1096,39 +1095,30 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
-        getOrderTax: () {
-          if (store.state.productState.localCartItems.isNotEmpty) {
-            var total = store.state.productState.localCartItems.fold(0,
+        getOrderTax: (value) {
+          if (state.productState.localCartItems.isNotEmpty) {
+            var total = state.productState.localCartItems.fold(0,
                     (previous, current) {
                   double price =
-                      double.parse(current.price.toString()) * current.count;
+                      double.parse(current.skus.first.basePrice.toString()) *
+                          current.count;
 
                   return double.parse(previous.toString()) + price;
                 }) ??
                 0.0;
 
-//            var request = PlaceOrderRequest(
-//                phoneNumber: state.authState.user.phone,
-//                comments: "",
-//                order: Orders(
-//                    merchantID: state.productState.selectedMerchand.merchantID,
-//                    codPaymentCompleted: false,
-//                    paymentType: "CASH_ON_DELIVERY",
-//                    cart: Cart(
-//                        service: state.productState.selectedMerchand
-//                                        .servicesOffered !=
-//                                    null &&
-//                                state.productState.selectedMerchand
-//                                    .servicesOffered.isNotEmpty
-//                            ? state.productState.selectedMerchand
-//                                .servicesOffered.first
-//                            : "FOOD_DELIVERY",
-//                        total: total.toDouble(),
-//                        itemsEnhanced:
-//                            state.productState.localCartItems.map((cart) {
-//                          return ItemsEnhanced(item: cart, number: cart.count);
-//                        }).toList())));
-//            dispatch(GetOrderTaxAction(request: request));
+            num sum = 0;
+            state.productState.charges.forEach((e) {
+              sum += e.chargeName.contains("DELIVERY") && value == 2
+                  ? 0
+                  : e.chargeValue;
+            });
+            print(sum);
+
+            return (total + sum)
+                .toDouble(); //formatCurrency.format(total.toDouble());
+          } else {
+            return 0.0;
           }
         });
   }

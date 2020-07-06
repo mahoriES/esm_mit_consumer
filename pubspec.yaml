@@ -1,4 +1,4 @@
-name: esamudaayapp
+name: eSamudaay
 description: A new Flutter application.
 
 # The following line prevents the package from being accidentally published to
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+4
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -53,9 +53,17 @@ dependencies:
   expandable: ^4.1.3
   dio_cookie_manager: ^1.0.0
   cookie_jar: ^1.0.1
-  google_maps_place_picker: ^0.9.4
+  google_maps_place_picker:
   flutter_rating_bar: ^3.0.1+1
   firebase_messaging: ^6.0.15
+  url_launcher: ^5.4.11
+  image_picker: ^0.6.7+2
+  pull_to_refresh: ^1.6.0
+  firebase_crashlytics: ^0.1.3+3
+  flutter_staggered_animations: ^0.1.2
+  status_alert: ^0.1.2
+
+
 
 
 
@@ -119,6 +127,8 @@ flutter:
     - assets/images/align2.png
     - assets/images/pen2.png
     - assets/images/group236.png
+    - assets/images/indicator.gif
+    - assets/images/splash.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

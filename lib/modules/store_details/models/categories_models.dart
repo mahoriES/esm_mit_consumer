@@ -1,8 +1,9 @@
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 
 class GetCategoriesResponse {
   String merchantID;
-  List<Categories> categories;
+  List<CategoriesNew> categories;
   int statusCode;
   String status;
 
@@ -12,9 +13,9 @@ class GetCategoriesResponse {
   GetCategoriesResponse.fromJson(Map<String, dynamic> json) {
     merchantID = json['merchantID'];
     if (json['categories'] != null) {
-      categories = new List<Categories>();
+      categories = new List<CategoriesNew>();
       json['categories'].forEach((v) {
-        categories.add(new Categories.fromJson(v));
+        categories.add(new CategoriesNew.fromJson(v));
       });
     }
     statusCode = json['statusCode'];

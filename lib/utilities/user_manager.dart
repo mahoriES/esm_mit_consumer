@@ -1,17 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/repository/cart_datasourse.dart';
-import 'package:esamudaayapp/repository/database_manage.dart';
-import 'package:esamudaayapp/utilities/stringConstants.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/repository/database_manage.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserManager {
-  static Future<User> userDetails() async {
+  static Future<Data> userDetails() async {
     var dbClient = await DatabaseManager().db;
     List<Map> maps = await dbClient.rawQuery('SELECT * FROM User');
     if (maps.length > 0) {
-      return User.fromJson(maps.first);
+      return Data.fromJson(jsonDecode(maps.first['user']));
     }
     return null;
   }
@@ -76,10 +78,23 @@ class UserManager {
     return value;
   }
 
+  static Future<Address> getAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String value = prefs.getString(userAddressKey);
+    if (value == null) return null;
+    Address address = Address.fromJson(jsonDecode(value));
+    return address;
+  }
+
   static Future<void> saveToken({token: String}) async {
     print("saved token : $token");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(tokenKey, token);
+  }
+
+  static Future<void> saveAddress({address: String}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(userAddressKey, address);
   }
 
   static Future<String> getFcmToken() async {
@@ -95,10 +110,13 @@ class UserManager {
     await prefs.setString(fcmToken, token);
   }
 
-  static Future<int> saveUser(User user) async {
+  static Future<int> saveUser(Data user) async {
     var dbClient = await DatabaseManager().db;
+    Map<String, String> userData = Map<String, String>();
+    userData['user'] = jsonEncode(user.toJson());
+    userData['id'] = user.userProfile.userId;
     int resp = await dbClient.delete('User');
-    int res = await dbClient.insert("User", user.toJson());
+    int res = await dbClient.insert("User", userData);
     return res;
   }
 

@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/modules/store_details/models/catalog_search_models.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -49,7 +50,8 @@ class _ViewModel extends BaseModel<AppState> {
           var total =
               state.productState.localCartItems.fold(0, (previous, current) {
                     double price =
-                        double.parse(current.price.toString()) * current.count;
+                        double.parse(current.skus.first.basePrice.toString()) *
+                            current.count;
 
                     return double.parse(previous.toString()) + price;
                   }) ??
@@ -159,7 +161,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                       height: 46,
                       width: widget.buttonTitle == 'VIEW ITEMS' ? 120 : 160,
                       decoration: BoxDecoration(
-                        color: Color(0xff5091cd),
+                        color: AppColors.icColors,
                         borderRadius: BorderRadius.circular(23),
                       ),
                       child: Center(

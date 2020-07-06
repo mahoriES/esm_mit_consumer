@@ -1,20 +1,24 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/models/cluster.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/models/cluster.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
 
 class GetMerchantDetails extends ReduxAction<AppState> {
+  final String getUrl;
+
+  GetMerchantDetails({this.getUrl});
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl,
+        url: getUrl,
         params: {"cluster_id": state.authState.cluster.clusterId},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -23,9 +27,25 @@ class GetMerchantDetails extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       var responseModel = GetBusinessesResponse.fromJson(response.data);
+
+      var merchants = await CartDataSource.getListOfMerchants();
+
+      if (getUrl == ApiURL.getBusinessesUrl) {
+      } else {
+        var businessList = state.homePageState.merchants;
+        responseModel.results = businessList + responseModel.results;
+      }
+
+      if (merchants.isNotEmpty) {
+        return state.copyWith(
+            homePageState: state.homePageState.copyWith(
+                merchants: responseModel.results, response: responseModel),
+            productState:
+                state.productState.copyWith(selectedMerchant: merchants.first));
+      }
       return state.copyWith(
-          homePageState:
-              state.homePageState.copyWith(merchants: responseModel.results));
+          homePageState: state.homePageState.copyWith(
+              merchants: responseModel.results, response: responseModel));
     }
   }
 
@@ -194,7 +214,6 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
   UpdateSelectedMerchantAction({this.selectedMerchant});
   @override
   FutureOr<AppState> reduce() {
-    // TODO: implement reduce
     return state.copyWith(
         productState:
             state.productState.copyWith(selectedMerchant: selectedMerchant));

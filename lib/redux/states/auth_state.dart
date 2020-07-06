@@ -1,10 +1,12 @@
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/models/api_response_handler.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/home/models/cluster.dart';
-import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
-import 'package:esamudaayapp/modules/otp/model/validate_otp_request.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/models/User.dart';
+import 'package:eSamudaay/models/api_response_handler.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/home/models/cluster.dart';
+import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
+import 'package:eSamudaay/modules/otp/model/validate_otp_request.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthState {
@@ -17,7 +19,8 @@ class AuthState {
   final String token;
   final bool isLoggedIn;
   final bool isLoginSkipped;
-  final User user;
+  final Address address;
+  final Data user;
   final bool isPhoneNumberValid;
   final bool isOtpEntered;
   final bool isSignUp;
@@ -35,10 +38,12 @@ class AuthState {
       @required this.validateOTPRequest,
       @required this.isSignUp,
       @required this.updateCustomerDetailsRequest,
-      @required this.deviceToken});
+      @required this.deviceToken,
+      @required this.address});
 
   factory AuthState.initial() {
     return new AuthState(
+      address: null,
       cluster: null,
       token: "",
       isLoggedIn: false,
@@ -56,7 +61,8 @@ class AuthState {
   }
 
   AuthState copyWith(
-      {User user,
+      {Data user,
+      Address address,
       LoadingStatus loadingStatus,
       String mobileNumber,
       bool emailError,
@@ -80,6 +86,7 @@ class AuthState {
       bool isSignUp,
       String deviceToken}) {
     return new AuthState(
+        address: address ?? this.address,
         deviceToken: token,
         cluster: cluster ?? this.cluster,
         user: user ?? this.user,

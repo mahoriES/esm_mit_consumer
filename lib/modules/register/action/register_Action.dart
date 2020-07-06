@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/modules/otp/action/otp_action.dart';
-import 'package:esamudaayapp/modules/register/model/register_request_model.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/User.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/modules/otp/action/otp_action.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GetUserDetailAction extends ReduxAction<AppState> {
@@ -29,14 +30,7 @@ class GetUserDetailAction extends ReduxAction<AppState> {
       } else {
         await UserManager.saveToken(token: authResponse.cUSTOMER.token);
 
-        var user = User(
-          id: authResponse.cUSTOMER.data.userProfile.userId,
-          firstName: authResponse.cUSTOMER.data.profileName,
-//        address: authResponse.customer.addresses.isEmpty
-//            ? ""
-//            : authResponse.customer.addresses.first.addressLine1,
-          phone: authResponse.cUSTOMER.data.userProfile.phone,
-        );
+        Data user = authResponse.cUSTOMER.data;
         await UserManager.saveUser(user).then((onValue) {
           store.dispatch(GetUserFromLocalStorageAction());
         });
@@ -74,14 +68,7 @@ class AddUserDetailAction extends ReduxAction<AppState> {
       RegisterResponse authResponse = RegisterResponse.fromJson(response.data);
       await UserManager.saveToken(token: authResponse.token);
 
-      var user = User(
-        id: authResponse.data.userProfile.userId,
-        firstName: authResponse.data.profileName,
-//        address: authResponse.customer.addresses.isEmpty
-//            ? ""
-//            : authResponse.customer.addresses.first.addressLine1,
-        phone: authResponse.data.userProfile.phone,
-      );
+      Data user = authResponse.data;
       await UserManager.saveUser(user).then((onValue) {
         store.dispatch(GetUserFromLocalStorageAction());
       });

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/home/views/home_page_main_view.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 

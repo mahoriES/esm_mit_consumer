@@ -27,7 +27,7 @@ class CategoriesNew {
   String categoryDescription;
   Null parentCategoryId;
   bool isActive;
-  List<String> images;
+  List<Images> images;
 
   CategoriesNew(
       {this.categoryId,
@@ -43,7 +43,12 @@ class CategoriesNew {
     categoryDescription = json['category_description'];
     parentCategoryId = json['parent_category_id'];
     isActive = json['is_active'];
-    images = json['images'].cast<String>();
+    if (json['images'] != null) {
+      images = new List<Images>();
+      json['images'].forEach((v) {
+        images.add(new Images.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -53,7 +58,31 @@ class CategoriesNew {
     data['category_description'] = this.categoryDescription;
     data['parent_category_id'] = this.parentCategoryId;
     data['is_active'] = this.isActive;
-    data['images'] = this.images;
+    if (this.images != null) {
+      data['images'] = this.images.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Images {
+  String photoId;
+  String photoUrl;
+  String contentType;
+
+  Images({this.photoId, this.photoUrl, this.contentType});
+
+  Images.fromJson(Map<String, dynamic> json) {
+    photoId = json['photo_id'];
+    photoUrl = json['photo_url'];
+    contentType = json['content_type'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['photo_id'] = this.photoId;
+    data['photo_url'] = this.photoUrl;
+    data['content_type'] = this.contentType;
     return data;
   }
 }

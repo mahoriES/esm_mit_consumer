@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:flutter/cupertino.dart';
 
 class CheckUser extends StatelessWidget {

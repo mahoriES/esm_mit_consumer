@@ -1,15 +1,19 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/orders/actions/actions.dart';
-import 'package:esamudaayapp/modules/orders/models/order_models.dart';
-import 'package:esamudaayapp/modules/orders/views/orders_View.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/customAlert.dart';
-import 'package:esamudaayapp/utilities/extensions.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/orders/views/orders_View.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/customAlert.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ExpandableListView extends StatefulWidget {
   final int merchantIndex;
@@ -30,8 +34,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          var orderStatus =
-              snapshot.getOrderListResponse.orders[widget.merchantIndex].status;
+          var orderStatus = snapshot
+              .getOrderListResponse.results[widget.merchantIndex].orderStatus;
           return new Column(
             children: <Widget>[
               InkWell(
@@ -43,24 +47,36 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       child: OrdersListView(
                         isExpanded: expandFlag,
                         orderId: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].transactionID,
-                        shopImage: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].displayPicture,
-                        name: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].shopName,
-                        deliveryStatus: snapshot.getOrderListResponse
-                                .orders[widget.merchantIndex].address !=
-                            null,
-                        items: snapshot.getOrderListResponse
-                            .orders[widget.merchantIndex].cardViewLine2,
-                        date: DateFormat('dd MMMM, hh:mm a').format(
-                            DateTime.fromMillisecondsSinceEpoch(int.parse(
+                            .results[widget.merchantIndex].orderShortNumber,
+                        shopImage: snapshot
+                                        .getOrderListResponse
+                                        .results[widget.merchantIndex]
+                                        .businessImages ==
+                                    null ||
                                 snapshot
                                     .getOrderListResponse
-                                    .orders[widget.merchantIndex]
-                                    .placedAt))), //"20 -April, 07.45 PM ",
+                                    .results[widget.merchantIndex]
+                                    .businessImages
+                                    .isEmpty
+                            ? ""
+                            : snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .businessImages
+                                .first
+                                .photoUrl,
+                        name: snapshot.getOrderListResponse
+                            .results[widget.merchantIndex].businessName,
+                        deliveryStatus: snapshot.getOrderListResponse
+                                .results[widget.merchantIndex].deliveryType !=
+                            "SELF_PICK_UP",
+                        items: "",
+                        date: DateFormat('dd MMMM, hh:mm a').format(
+                            DateTime.parse(snapshot.getOrderListResponse
+                                    .results[widget.merchantIndex].created)
+                                .toLocal()), //"20 -April, 07.45 PM ",
                         price:
-                            "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].totalOrderCost}",
+                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal}",
                       ),
                     ),
                     AnimatedContainer(
@@ -72,10 +88,25 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   ],
                 ),
                 onTap: () {
-                  widget.didExpand(expandFlag);
-                  setState(() {
-                    expandFlag = !expandFlag;
-                  });
+                  if (!expandFlag) {
+                    store
+                        .dispatchFuture(GetOrderDetailsAPIAction(
+                            orderId: snapshot.getOrderListResponse
+                                .results[widget.merchantIndex].orderId))
+                        .whenComplete(() {
+                      // call the details api
+                      widget.didExpand(expandFlag);
+                      setState(() {
+                        expandFlag = !expandFlag;
+                      });
+                    });
+                  } else {
+                    // call the details api
+                    widget.didExpand(expandFlag);
+                    setState(() {
+                      expandFlag = !expandFlag;
+                    });
+                  }
                 },
               ),
               ExpandableContainer(
@@ -89,17 +120,33 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               EdgeInsets.only(top: 16, left: 15, right: 15),
                           shrinkWrap: true,
                           itemCount: snapshot
-                              .getOrderListResponse
-                              .orders[widget.merchantIndex]
-                              .cart
-                              .itemsEnhanced
-                              .length,
+                                      .getOrderListResponse
+                                      .results[widget.merchantIndex]
+                                      .orderItems ==
+                                  null
+                              ? 0
+                              : snapshot
+                                  .getOrderListResponse
+                                  .results[widget.merchantIndex]
+                                  .orderItems
+                                  .length,
                           separatorBuilder: (BuildContext context, int index) {
                             return Container(
                               height: 7,
                             );
                           },
                           itemBuilder: (BuildContext context, int index) {
+                            var price = snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .orderItems[index]
+                                    .unitPrice *
+                                snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .orderItems[index]
+                                    .quantity
+                                    .toDouble();
                             return Container(
                               child: Row(
                                 mainAxisAlignment:
@@ -108,12 +155,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   // Faux Sued Ankle Mango - 500 GM x 3
                                   Text(
                                       snapshot
-                                          .getOrderListResponse
-                                          .orders[widget.merchantIndex]
-                                          .cart
-                                          .itemsEnhanced[index]
-                                          .item
-                                          .name,
+                                              .getOrderListResponse
+                                              .results[widget.merchantIndex]
+                                              .orderItems[index]
+                                              .productName +
+                                          " ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size : ""}"
+                                              " -  x " +
+                                          snapshot
+                                              .getOrderListResponse
+                                              .results[widget.merchantIndex]
+                                              .orderItems[index]
+                                              .quantity
+                                              .toString(),
                                       style: const TextStyle(
                                           color: const Color(0xff7c7c7c),
                                           fontWeight: FontWeight.w400,
@@ -122,8 +175,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left),
                                   // ₹ 55.00
-                                  Text(
-                                      "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].cart.itemsEnhanced[index].item.price}",
+                                  Text("₹ $price",
                                       style: const TextStyle(
                                           color: const Color(0xff6f6f6f),
                                           fontWeight: FontWeight.w500,
@@ -165,12 +217,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         EdgeInsets.only(left: 15, right: 15),
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    itemCount: snapshot
-                                            .getOrderListResponse
-                                            .orders[widget.merchantIndex]
-                                            .serviceSpecificData
-                                            .length +
-                                        1,
+                                    itemCount: 3,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       return index == 0
@@ -195,72 +242,94 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].cart.itemsEnhanced.fold(0, (previous, current) {
-                                                          return double.parse(
-                                                                  previous
-                                                                      .toString()) +
-                                                              double.parse(current
-                                                                      .item
-                                                                      .price
-                                                                      .toString()) *
-                                                                  current
-                                                                      .number;
-                                                        }) ?? 0.0}",
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "Avenir",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
+                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal}" ??
+                                                        "0.0",
+                                                    style:
+                                                        const TextStyle(
+                                                            color:
+                                                                const Color(
+                                                                    0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
                                                     textAlign: TextAlign.left)
                                               ],
                                             )
-                                          : Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                // Item Total
-                                                Text(
-                                                    snapshot
-                                                        .getOrderListResponse
-                                                        .orders[widget
-                                                            .merchantIndex]
-                                                        .serviceSpecificData
-                                                        .keys
-                                                        .toList()[index - 1]
-                                                        .toString()
-                                                        .toLowerCase()
-                                                        .replaceAll("_", " ")
-                                                        .capitalize(),
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "Avenir",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
-                                                    textAlign: TextAlign
-                                                        .left), // ₹ 175.00
-                                                Text(
-                                                    "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].serviceSpecificData.values.toList()[index - 1].toString()}",
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily: "Avenir",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
-                                                    textAlign: TextAlign.left)
-                                              ],
-                                            );
+                                          : index == 1
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    // Item Total
+                                                    Text('Delivery Charge',
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign: TextAlign
+                                                            .left), // ₹ 175.00
+                                                    Text(
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges}",
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign:
+                                                            TextAlign.left)
+                                                  ],
+                                                )
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    // Item Total
+                                                    Text('Other Charges',
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign: TextAlign
+                                                            .left), // ₹ 175.00
+                                                    Text(
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges}",
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
+                                                        textAlign:
+                                                            TextAlign.left)
+                                                  ],
+                                                );
                                     },
                                     separatorBuilder:
                                         (BuildContext context, int index) {
@@ -304,7 +373,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               // ₹ 195.00
                                               // ₹ 195.00
                                               Text(
-                                                  "₹ ${snapshot.getOrderListResponse.orders[widget.merchantIndex].totalOrderCost}",
+                                                  "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal}",
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xff5091cd),
@@ -472,13 +541,15 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               15),
                                                                       child:
                                                                           IgnorePointer(
-                                                                        ignoring:
-                                                                            snapshot.loadingStatus ==
-                                                                                LoadingStatus.loading,
+                                                                        ignoring: snapshot.loadingStatus == LoadingStatus.loading || widget != null
+                                                                            ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating ==
+                                                                                null
+                                                                            : false,
                                                                         child:
                                                                             RatingBar(
-                                                                          initialRating:
-                                                                              0,
+                                                                          initialRating: widget != null
+                                                                              ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue.ceilToDouble() : 0 : 0
+                                                                              : 0,
                                                                           minRating:
                                                                               1,
                                                                           itemSize:
@@ -578,15 +649,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                         FocusScope.of(context)
                                                                             .requestFocus(FocusNode());
 
-                                                                        snapshot.rateOrder(AddReviewRequest(
-                                                                            reviewCandidate:
-                                                                                "ORDER",
-                                                                            reviewCandidateID:
-                                                                                snapshot.getOrderListResponse.orders[widget.merchantIndex].transactionID,
-                                                                            reviewerTye: "CUSTOMER",
-                                                                            reviewerID: snapshot.getOrderListResponse.orders[widget.merchantIndex].customerID,
-                                                                            comments: reviewController.text,
-                                                                            rating: rating));
+                                                                        snapshot.rateOrder(
+                                                                            AddReviewRequest(
+                                                                                ratingComment: reviewController.text,
+                                                                                ratingValue: rating),
+                                                                            snapshot.getOrderListResponse.results[widget.merchantIndex].orderId);
                                                                         reviewController.text =
                                                                             "";
                                                                       }
@@ -614,12 +681,13 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               LoadingStatus
                                                                                   .loading
                                                                           ? Container(
-                                                                              height: 30,
-                                                                              width: 30,
-                                                                              child: CircularProgressIndicator(
-//                                                                              valueColor: AlwaysStoppedAnimation<Color>(Colors
-//                                                                                  .white),
-                                                                                  backgroundColor: Colors.white),
+                                                                              height: 75,
+                                                                              width: 75,
+                                                                              child: Image.asset(
+                                                                                'assets/images/indicator.gif',
+                                                                                height: 75,
+                                                                                width: 75,
+                                                                              ),
                                                                             )
                                                                           : Text(
                                                                               snapshot.loadingStatus == LoadingStatus.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
@@ -637,61 +705,115 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               },
                                             );
                                           },
-                                          child: RatingBar(
-                                            initialRating: 0,
-                                            minRating: 0,
-                                            itemSize: 25,
-                                            direction: Axis.horizontal,
-                                            allowHalfRating: true,
-                                            itemCount: 5,
-                                            itemPadding: EdgeInsets.symmetric(
-                                                horizontal: 1.0),
-                                            itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
+                                          child: IgnorePointer(
+                                            ignoring: widget != null
+                                                ? snapshot
+                                                        .getOrderListResponse
+                                                        .results[widget
+                                                            .merchantIndex]
+                                                        .rating !=
+                                                    null
+                                                : true,
+                                            child: RatingBar(
+                                              initialRating: widget != null
+                                                  ? snapshot
+                                                              .getOrderListResponse
+                                                              .results[widget
+                                                                  .merchantIndex]
+                                                              .rating !=
+                                                          null
+                                                      ? snapshot
+                                                                  .getOrderListResponse
+                                                                  .results[widget
+                                                                      .merchantIndex]
+                                                                  .rating
+                                                                  .ratingValue !=
+                                                              null
+                                                          ? snapshot
+                                                              .getOrderListResponse
+                                                              .results[widget
+                                                                  .merchantIndex]
+                                                              .rating
+                                                              .ratingValue
+                                                              .ceilToDouble()
+                                                          : 0
+                                                      : 0
+                                                  : 0,
+                                              minRating: 0,
+                                              itemSize: 25,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 1.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              tapOnlyMode: true,
+                                              ignoreGestures: true,
+                                              onRatingUpdate: (rating) {
+                                                print(rating);
+                                              },
                                             ),
-                                            tapOnlyMode: true,
-                                            ignoreGestures: true,
-                                            onRatingUpdate: (rating) {
-                                              print(rating);
-                                            },
                                           ),
                                         )
                                       ],
                                     ),
                                     Spacer(),
                                     InkWell(
-                                      onTap: () {
+                                      onTap: () async {
                                         snapshot.updateOrderId(
                                           snapshot
                                               .getOrderListResponse
-                                              .orders[widget.merchantIndex]
-                                              .transactionID,
+                                              .results[widget.merchantIndex]
+                                              .orderId,
                                         );
-                                        Navigator.of(context)
-                                            .pushNamed('/Support');
+                                        if (snapshot
+                                                    .getOrderListResponse
+                                                    .results[
+                                                        widget.merchantIndex]
+                                                    .businessPhones !=
+                                                null &&
+                                            snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .businessPhones
+                                                .isNotEmpty) {
+                                          var url =
+                                              'tel:${snapshot.getOrderListResponse.results[widget.merchantIndex].businessPhones.first}';
+                                          if (await canLaunch(url)) {
+                                            await launch(url);
+                                          } else {
+                                            throw 'Could not launch $url';
+                                          }
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  "No contact details available.");
+                                        }
+//                                        Navigator.of(context)
+//                                            .pushNamed('/Support');
                                       },
                                       child: Row(
                                         children: <Widget>[
                                           Icon(
-                                            Icons.help_outline,
-                                            size: 15,
-                                            color: Color(0xff5091cd),
+                                            Icons.phone,
+                                            size: 30,
+                                            color: AppColors.icColors,
                                           ),
-                                          Padding(padding: EdgeInsets.all(5)),
-                                          // Support
-                                          Text('screen_support.title',
-                                                  style: const TextStyle(
-                                                      color: const Color(
-                                                          0xff5091cd),
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Avenir",
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      fontSize: 14.0),
-                                                  textAlign: TextAlign.left)
-                                              .tr()
+                                          Padding(
+                                            padding: EdgeInsets.all(5),
+                                            child: Text(
+                                              'Call shop',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontFamily: 'Avenir',
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     )
@@ -759,7 +881,7 @@ class _ExpandableContainerState extends State<ExpandableContainer>
 class _ViewModel extends BaseModel<AppState> {
   Function(String orderId) updateOrderId;
   GetOrderListResponse getOrderListResponse;
-  Function(AddReviewRequest) rateOrder;
+  Function(AddReviewRequest, String) rateOrder;
   Function(LoadingStatus) updateLoadingStatus;
   LoadingStatus loadingStatus;
   _ViewModel();
@@ -774,8 +896,8 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        rateOrder: (request) {
-          dispatch(AddRatingAPIAction(request: request));
+        rateOrder: (request, orderId) {
+          dispatch(AddRatingAPIAction(request: request, orderId: orderId));
         },
         updateLoadingStatus: (loadingStatus) {
           dispatch(ChangeLoadingStatusAction(loadingStatus));

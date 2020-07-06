@@ -1,11 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/modules/home/models/merchant_response.dart';
-import 'package:esamudaayapp/modules/material_search/material_search.dart';
-import 'package:esamudaayapp/modules/search/actions/search_actions.dart';
-import 'package:esamudaayapp/modules/search/models/models.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/material_search/material_search.dart';
+import 'package:eSamudaay/modules/search/actions/search_actions.dart';
+import 'package:eSamudaay/modules/search/models/models.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 
 class ProductSearchView extends StatefulWidget {
@@ -63,8 +63,8 @@ class _ViewModel extends BaseModel<AppState> {
       searchProduct: (query) async {
         var user = await UserManager.userDetails();
         dispatch(SearchAction(
-            searchRequest:
-                SearchRequest(phoneNumber: user.phone, searchQuery: query)));
+            searchRequest: SearchRequest(
+                phoneNumber: user.userProfile.phone, searchQuery: query)));
       },
       navigateToDetailsPage: (merchant) {
 //        dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));

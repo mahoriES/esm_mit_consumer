@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/User.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/login/model/get_otp_request.dart';
-import 'package:esamudaayapp/redux/actions/general_actions.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/api_manager.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/User.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class CheckTokenAction extends ReduxAction<AppState> {
@@ -58,16 +59,14 @@ class GetOtpAction extends ReduxAction<AppState> {
         requestType: request.isSignUp ? RequestType.post : RequestType.get);
 
     if (response.status == ResponseStatus.success200) {
-      Fluttertoast.showToast(msg: response.data['token']);
+      Fluttertoast.showToast(
+          msg: response.data['token'], toastLength: Toast.LENGTH_LONG);
       fromResend ? dispatch : dispatch(NavigateAction.pushNamed("/otpScreen"));
     } else {
-      
-       if (response.data['message'] != null) {
-      Fluttertoast.showToast(msg: response.data['message']);
-
-      } else if(response.data['detail']!= null) {
-              Fluttertoast.showToast(msg: response.data['detail']);
-
+      if (response.data['message'] != null) {
+        Fluttertoast.showToast(msg: response.data['message']);
+      } else if (response.data['detail'] != null) {
+        Fluttertoast.showToast(msg: response.data['detail']);
       }
       //throw UserException(response.data['status']);
     }
@@ -96,7 +95,7 @@ class UpdateIsSignUpAction extends ReduxAction<AppState> {
 class GetUserFromLocalStorageAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    User user = await UserManager.userDetails();
+    Data user = await UserManager.userDetails();
     return state.copyWith(authState: state.authState.copyWith(user: user));
   }
 }

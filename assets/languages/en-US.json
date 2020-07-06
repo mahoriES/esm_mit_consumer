@@ -25,7 +25,7 @@
   "screen_otp": {
     "get_otp": "Get OTP",
     "resend_otp": "Resend OTP",
-    "hint_text": "We are trying to auto verify your number with SMS sent to",
+    "hint_text": "Please enter the OTP sent to",
     "resend_text": "Resend in",
     "sec": "sec",
     "verify": "Verify",
@@ -43,7 +43,8 @@
     "pin_code": {
       "title": "Circle",
       "validation_error": "Please enter valid circle",
-      "empty_error": "Please enter your circle."
+      "empty_error": "Please enter your circle.",
+      "no_circle_code": "Don't have circle code?"
     },
     "register": "Register",
     "update": "Update",
@@ -61,7 +62,7 @@
       "orders": "ORDERS",
       "account": "ACCOUNT"
     },
-    "store_near_you": "Stores near you"
+    "store_near_you": "Stores in your circle"
 
   },
 
@@ -122,17 +123,17 @@
     "payment_details": "Payment Details",
     "item_total": "Item Total",
     "total": "Total amount",
-    "pending": "Pending",
     "not_found": "No Order Found",
     "empty_content": "Look like you haven’t order anything yet Lets start !",
-    "cancelled": "Cancelled",
+
     "completed": "Completed",
+    "complete": "Complete",
     "confirmed": "Confirmed",
-    "not_available": "Items Not Available",
     "cancel_order": "Cancel order",
     "re_order": "Re-Order",
     "payment": "Payment",
     "update_order": "Update Order",
+
     "missing": "Missing Items",
     "please_pay": "Please pay your bill amount to the merchant directly using Cash, Card or UPI",
     "rate": "Rate us",
@@ -141,7 +142,18 @@
     "feedback": "Please enter a feedback",
     "write_feedback": "Write your feedback",
     "ok": "Ok",
-    "submit": "Submit"
+    "submit": "Submit",
+    "cancelled_customer": "Cancelled by you",
+    "cancelled_merchant": "Cancelled by",
+    "not_available": "Merchant updated",
+    "pending": "Pending confirmation",
+    "accept_order": "Accept order",
+    "on_the_way" : "On the way",
+    "processing": "Processing",
+    "empty_pro": "Empty",
+    "ready_pickup": "Ready for pickup",
+    "pickup": "Pick Up",
+    "empty_pro_hint": "Look like there is no item to show"
   },
 
   "screen_support": {

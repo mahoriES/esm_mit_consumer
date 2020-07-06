@@ -1,9 +1,11 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/accounts/action/account_action.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:flutter/material.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/accounts/action/account_action.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:flutter/material.dart';
 
 class AccountsView extends StatefulWidget {
   @override
@@ -42,7 +44,10 @@ class _AccountsViewState extends State<AccountsView> {
                   onTap: () {
                     snapshot.navigateToProfile();
                   },
-                  leading: Image.asset("assets/images/AI_user.png"),
+                  leading: Image.asset(
+                    "assets/images/AI_user.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.profile',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
@@ -54,9 +59,29 @@ class _AccountsViewState extends State<AccountsView> {
                       .tr(),
                   trailing: Icon(Icons.keyboard_arrow_right),
                 ),
+//                ListTile(
+//                  leading: Image.asset("assets/images/AI_chat.png"),
+//                  title: Text('screen_account.recommend',
+//                          style: const TextStyle(
+//                              color: const Color(0xff3c3c3c),
+//                              fontWeight: FontWeight.w400,
+//                              fontFamily: "CircularStd-Book",
+//                              fontStyle: FontStyle.normal,
+//                              fontSize: 16.0),
+//                          textAlign: TextAlign.left)
+//                      .tr(),
+//                  trailing: Icon(Icons.keyboard_arrow_right),
+//                  onTap: () {
+//                    PushNotificationsManager().moveToScreen();
+////                    snapshot.navigateToRecommendedShop();
+//                  },
+//                ),
                 ListTile(
-                  leading: Image.asset("assets/images/AI_chat.png"),
-                  title: Text('screen_account.recommend',
+                  leading: Image.asset(
+                    "assets/images/question_cr.png",
+                    color: AppColors.icColors,
+                  ),
+                  title: Text('screen_account.about',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
                               fontWeight: FontWeight.w400,
@@ -71,23 +96,13 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                 ),
                 ListTile(
-                  leading: Image.asset("assets/images/question_cr.png"),
-                  title: Text('screen_account.about',
-                          style: const TextStyle(
-                              color: const Color(0xff3c3c3c),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "CircularStd-Book",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                          textAlign: TextAlign.left)
-                      .tr(),
-                  trailing: Icon(Icons.keyboard_arrow_right),
-                ),
-                ListTile(
                   onTap: () {
                     snapshot.navigateLanguage();
                   },
-                  leading: Image.asset("assets/images/Group_240.png"),
+                  leading: Image.asset(
+                    "assets/images/Group_240.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.language',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
@@ -123,7 +138,10 @@ class _AccountsViewState extends State<AccountsView> {
                           ],
                         ));
                   },
-                  leading: Image.asset("assets/images/power.png"),
+                  leading: Image.asset(
+                    "assets/images/power.png",
+                    color: AppColors.icColors,
+                  ),
                   title: Text('screen_account.logout',
                           style: const TextStyle(
                               color: const Color(0xff3c3c3c),
@@ -186,7 +204,7 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         navigateToRecommendedShop: () {
-          dispatch(NavigateAction.pushNamed('/RecommendShop'));
+          dispatch(NavigateAction.pushNamed('/about'));
         },
         logout: () {
           dispatch(LogoutAction());

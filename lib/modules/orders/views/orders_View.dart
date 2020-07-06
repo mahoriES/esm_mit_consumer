@@ -1,19 +1,25 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:esamudaayapp/models/loading_status.dart';
-import 'package:esamudaayapp/modules/cart/actions/cart_actions.dart';
-import 'package:esamudaayapp/modules/cart/models/cart_model.dart';
-import 'package:esamudaayapp/modules/home/actions/home_page_actions.dart';
-import 'package:esamudaayapp/modules/orders/actions/actions.dart';
-import 'package:esamudaayapp/modules/orders/models/order_models.dart';
-import 'package:esamudaayapp/modules/orders/views/expandable_view.dart';
-import 'package:esamudaayapp/redux/states/app_state.dart';
-import 'package:esamudaayapp/utilities/colors.dart';
-import 'package:esamudaayapp/utilities/custom_widgets.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/orders/views/expandable_view.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrdersView extends StatefulWidget {
   @override
@@ -21,6 +27,43 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
+  ScrollController _scrollController = new ScrollController();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    if (snapshot.getOrderListResponse.previous != null) {
+//      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
+    } else {
+      snapshot.getOrderList(ApiURL.placeOrderUrl);
+    }
+    if (mounted)
+      setState(() {
+        _scrollController.animateTo(
+          0.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        );
+      });
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading(_ViewModel snapshot) async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+//    items.add((items.length + 1).toString());
+
+    if (snapshot.getOrderListResponse.next != null) {
+      snapshot.getOrderList(snapshot.getOrderListResponse.next);
+    }
+
+    if (mounted) _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,139 +86,197 @@ class _OrdersViewState extends State<OrdersView> {
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             onInit: (store) {
-              store.dispatch(GetOrderListAPIAction());
+              store.dispatch(
+                  GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
+                  ),
+                ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
                 child: (snapshot.getOrderListResponse == null ||
-                        snapshot.getOrderListResponse.orders == null ||
-                        snapshot.getOrderListResponse.orders.isEmpty)
-                    ? Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Stack(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: ClipPath(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.45,
-                                      color: const Color(0xfff0f0f0),
-                                    ),
-                                    clipper: CustomClipPath(),
-                                  ),
-                                ),
-                                Positioned(
-                                    bottom: 20,
-                                    right: MediaQuery.of(context).size.width *
-                                        0.15,
-                                    child: Image.asset(
-                                      'assets/images/clipart.png',
-                                      fit: BoxFit.cover,
-                                    )),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 50,
-                            ),
-                            Text('screen_order.not_found',
-                                    style: const TextStyle(
-                                        color: const Color(0xff1f1f1f),
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: "Avenir",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 20.0),
-                                    textAlign: TextAlign.left)
-                                .tr(),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 30.0, right: 30),
-                              child: Text('screen_order.empty_content',
-                                      maxLines: 2,
-                                      style: const TextStyle(
-                                          color: const Color(0xff6f6d6d),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 16.0),
-                                      textAlign: TextAlign.center)
-                                  .tr(),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                snapshot.viewStore();
-                              },
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: Container(
-                                  height: 46,
-                                  width: 160,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff5091cd),
-                                    borderRadius: BorderRadius.circular(23),
-                                  ),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          'common.view_store',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontFamily: 'Avenir',
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ).tr(),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                        snapshot.getOrderListResponse.results == null ||
+                        snapshot.getOrderListResponse.results.isEmpty)
+                    ? snapshot.loadingStatus != LoadingStatus.loading
+                        ? buildEmptyView(context, snapshot)
+                        : Container()
                     : Container(
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder:
-                              (BuildContext context, int merchantIndex) {
-                            return NewWidget(
-                              orderId: snapshot.getOrderListResponse
-                                  .orders[merchantIndex].transactionID,
-                              snapshot: snapshot,
-                              merchantIndex: merchantIndex,
-                              orderStatus: snapshot.getOrderListResponse
-                                  .orders[merchantIndex].status,
-                            );
+                        child: SmartRefresher(
+                          enablePullDown: true,
+                          enablePullUp: true,
+                          header: WaterDropHeader(
+                            complete: Image.asset(
+                              'assets/images/indicator.gif',
+                              height: 75,
+                              width: 75,
+                            ),
+                            waterDropColor: AppColors.icColors,
+                            refresh: Image.asset(
+                              'assets/images/indicator.gif',
+                              height: 75,
+                              width: 75,
+                            ),
+                          ),
+                          footer: CustomFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            builder: (BuildContext context, LoadStatus mode) {
+                              Widget body;
+                              if (mode == LoadStatus.idle) {
+                                body = Text("");
+                              } else if (mode == LoadStatus.loading) {
+                                body = CupertinoActivityIndicator();
+                              } else if (mode == LoadStatus.failed) {
+                                body = Text("Load Failed!Click retry!");
+                              } else if (mode == LoadStatus.canLoading) {
+                                body = Text("");
+                              } else {
+                                body = Text("No more Data");
+                              }
+                              return Container(
+                                height: 55.0,
+                                child: Center(child: body),
+                              );
+                            },
+                          ),
+                          controller: _refreshController,
+                          onRefresh: () {
+                            _onRefresh(snapshot);
                           },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Container(
-                              height: 20,
-                              color: Color(0xfff2f2f2),
-                            );
+                          onLoading: () {
+                            _onLoading(snapshot);
                           },
-                          itemCount:
-                              snapshot.getOrderListResponse.orders.length,
+                          child: ListView.separated(
+                            controller: _scrollController,
+                            shrinkWrap: true,
+                            itemBuilder:
+                                (BuildContext context, int merchantIndex) {
+                              return NewWidget(
+                                orderId: snapshot.getOrderListResponse
+                                    .results[merchantIndex].orderId,
+                                snapshot: snapshot,
+                                merchantIndex: merchantIndex,
+                                orderStatus: snapshot.getOrderListResponse
+                                    .results[merchantIndex].orderStatus,
+                                deliveryStatus: snapshot.getOrderListResponse
+                                    .results[merchantIndex].deliveryType,
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 20,
+                                color: Color(0xfff2f2f2),
+                              );
+                            },
+                            itemCount:
+                                snapshot.getOrderListResponse.results.length,
+                          ),
                         ),
                       ),
               );
             }));
+  }
+
+  Container buildEmptyView(BuildContext context, _ViewModel snapshot) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: ClipPath(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    color: const Color(0xfff0f0f0),
+                  ),
+                  clipper: CustomClipPath(),
+                ),
+              ),
+              Positioned(
+                  bottom: 20,
+                  right: MediaQuery.of(context).size.width * 0.15,
+                  child: Image.asset(
+                    'assets/images/clipart.png',
+                    fit: BoxFit.cover,
+                  )),
+            ],
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Text('screen_order.not_found',
+                  style: const TextStyle(
+                      color: const Color(0xff1f1f1f),
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "Avenir",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 20.0),
+                  textAlign: TextAlign.left)
+              .tr(),
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0, right: 30),
+            child: Text('screen_order.empty_content',
+                    maxLines: 2,
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                    textAlign: TextAlign.center)
+                .tr(),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          InkWell(
+            onTap: () {
+              snapshot.viewStore();
+            },
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                height: 46,
+                width: 160,
+                decoration: BoxDecoration(
+                  color: Color(0xff5091cd),
+                  borderRadius: BorderRadius.circular(23),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'common.view_store',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontFamily: 'Avenir',
+                          fontWeight: FontWeight.w900,
+                        ),
+                        textAlign: TextAlign.center,
+                      ).tr(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -184,8 +285,10 @@ class NewWidget extends StatefulWidget {
   final String orderId;
   final merchantIndex;
   final String orderStatus;
+  final String deliveryStatus;
   const NewWidget(
       {Key key,
+      this.deliveryStatus,
       this.merchantIndex,
       this.orderStatus,
       this.orderId,
@@ -219,6 +322,7 @@ class _NewWidgetState extends State<NewWidget> {
             index: widget.merchantIndex,
             expanded: expanded,
             orderStatus: widget.orderStatus,
+            deliveryStatus: widget.deliveryStatus,
           )
         ],
       ),
@@ -231,6 +335,7 @@ class OrderItemBottomView extends StatelessWidget {
   final String orderId;
   final _ViewModel snapshot;
   final String orderStatus;
+  final String deliveryStatus;
   final bool expanded;
   const OrderItemBottomView(
       {Key key,
@@ -238,7 +343,8 @@ class OrderItemBottomView extends StatelessWidget {
       this.orderStatus,
       this.expanded,
       this.orderId,
-      this.snapshot})
+      this.snapshot,
+      this.deliveryStatus})
       : super(key: key);
 
   @override
@@ -247,6 +353,32 @@ class OrderItemBottomView extends StatelessWidget {
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
       child: Column(
         children: <Widget>[
+          orderStatus == "MERCHANT_UPDATED"
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    onTap: () {
+                      snapshot.cancelOrder(
+                          snapshot.getOrderListResponse.results[index].orderId,
+                          index);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20, bottom: 8),
+                      child: Container(
+                        child: // Cancel order
+                            Text("Cancel order",
+                                style: const TextStyle(
+                                    color: const Color(0xffe33a3a),
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 14.0),
+                                textAlign: TextAlign.left),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -254,406 +386,116 @@ class OrderItemBottomView extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(left: 5, right: 10),
-                    child: orderStatus == "PENDING_CUSTOMER_REVIEW"
-                        ? ImageIcon(
-                            AssetImage('assets/images/align2.png'),
-                            color: Colors.red,
-                          )
-                        : Icon(
-                            orderStatus == "CANCELLED"
-                                ? Icons.close
-                                : orderStatus == "COMPLETED"
-                                    ? Icons.check_circle_outline
-                                    : orderStatus == "UNCONFIRMED"
-                                        ? Icons.autorenew
-                                        : orderStatus == "CONFIRMED"
-                                            ? Icons.check_circle_outline
-                                            : Icons.help_outline,
-                            color: orderStatus == "CANCELLED"
-                                ? Colors.red
-                                : orderStatus == "COMPLETED"
-                                    ? AppColors.green
-                                    : orderStatus == "UNCONFIRMED"
-                                        ? Color(0xffeb730c)
-                                        : orderStatus == "CONFIRMED"
-                                            ? Color(0xffa4c73f)
-                                            : orderStatus ==
-                                                    "PENDING_CUSTOMER_REVIEW"
-                                                ? Colors.red
-                                                : Colors.white,
-                            size: 18,
-                          ),
+                    child: buildIcon(),
                   ), // Processing
-                  Text(
-                      orderStatus == "CANCELLED"
-                          ? tr('screen_order.cancelled')
-                          : orderStatus == "COMPLETED"
-                              ? tr('screen_order.completed')
-                              : orderStatus == "UNCONFIRMED"
-                                  ? tr('screen_order.pending')
-                                  : orderStatus == "CONFIRMED"
-                                      ? tr('screen_order.confirmed')
-                                      : orderStatus == "PENDING_CUSTOMER_REVIEW"
-                                          ? tr('screen_order.not_available')
-                                          : "",
-                      style: const TextStyle(
-                          color: const Color(0xff958d8d),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14.0),
-                      textAlign: TextAlign.left)
+                  buildText()
                 ],
               ),
-              orderStatus == "CANCELLED" || orderStatus == "CONFIRMED"
-                  ? Container(
-                      height: 40,
-                    )
-                  : StoreConnector<AppState, _ViewModel>(
+
+              isButtonShow()
+                  ? StoreConnector<AppState, _ViewModel>(
                       model: _ViewModel(),
                       builder: (context, snapshot) {
-                        return CustomButton(
-                          title: orderStatus == "CANCELLED"
-                              ? tr('screen_order.cancel_order')
-                              : orderStatus == "COMPLETED"
-                                  ? tr('screen_order.re_order')
-                                  : orderStatus == "UNCONFIRMED"
-                                      ? tr('screen_order.cancel_order')
-                                      : orderStatus == "CONFIRMED"
-                                          ? tr('screen_order.payment')
-                                          : orderStatus ==
-                                                  "PENDING_CUSTOMER_REVIEW"
-                                              ? tr('screen_order.update_order')
-                                              : "",
-                          backgroundColor: orderStatus == "COMPLETED"
-                              ? AppColors.mainColor
-                              : orderStatus == "UNCONFIRMED"
-                                  ? AppColors.orange
-                                  : AppColors.mainColor,
-                          didPresButton: () async {
-                            if (orderStatus == "COMPLETED") {
-                              //reorder api
-                              var user = await UserManager.userDetails();
-                              var request = PlaceOrderRequest();
-                              request.phoneNumber = user.phone;
-                              var order =
-                                  snapshot.getOrderListResponse.orders[index];
-                              // order.status = null;
-                              request.order = order;
-                              snapshot.placeOrder(request);
-                            } else if (orderStatus == "UNCONFIRMED") {
-                              //cancel order api
-                              var user = await UserManager.userDetails();
-                              var request = UpdateOrderRequest();
-                              request.oldStatus = orderStatus;
-                              request.phoneNumber = user.phone;
-                              var order =
-                                  snapshot.getOrderListResponse.orders[index];
-                              order.status = "CANCELLED";
-                              request.orders = [order];
-
-                              snapshot.updateOrder(request);
-                            } else if (orderStatus ==
-                                "PENDING_CUSTOMER_REVIEW") {
-                              //update order action
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
-                                      color: Colors.white,
-                                      child: ListView(
-                                        shrinkWrap: true,
-                                        children: <Widget>[
-                                          Container(
-                                            height: 50,
-                                            margin: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                // Missing Items
-                                                Text('screen_order.missing',
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff1f1f1f),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.left)
-                                                    .tr(),
-                                                IconButton(
-                                                    icon: Icon(Icons.close),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    }),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 0.5,
-                                            color: Colors.grey,
-                                          ),
-                                          ListView.separated(
-                                            padding: EdgeInsets.all(10),
-                                            shrinkWrap: true,
-                                            separatorBuilder:
-                                                (BuildContext context,
-                                                    int index) {
-                                              return Container(
-                                                height: 10,
-                                              );
-                                            },
-                                            itemBuilder: (BuildContext context,
-                                                int itemIndex) {
-                                              var item = snapshot
-                                                  .getOrderListResponse
-                                                  .orders[index]
-                                                  .itemsNotAvailable[itemIndex];
-                                              return Container(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                        item.item.name +
-                                                            " " +
-                                                            item.item.skuSize +
-                                                            " x " +
-                                                            item.number
-                                                                .toString(),
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff414141),
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontFamily:
-                                                                "Avenir",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 14.0),
-                                                        textAlign:
-                                                            TextAlign.left),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                            itemCount: snapshot
-                                                .getOrderListResponse
-                                                .orders[index]
-                                                .itemsNotAvailable
-                                                .length,
-                                          ),
-                                          // base
-                                          Container(
-                                            height: 96,
-                                            margin: EdgeInsets.all(15),
-                                            decoration:
-                                                BoxDecoration(boxShadow: [
-                                              BoxShadow(
-                                                  color:
-                                                      const Color(0x65e7eaf0),
-                                                  offset: Offset(0, -8),
-                                                  blurRadius: 15,
-                                                  spreadRadius: 0)
-                                            ], color: const Color(0xffffffff)),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'cart.total',
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff515c6f),
-                                                        fontSize: 10,
-                                                        fontFamily:
-                                                            'JosefinSans',
-                                                      ),
-                                                    ).tr(),
-                                                    // ₹ 167.00
-                                                    Text(
-                                                        "₹ ${snapshot.getOrderListResponse.orders[index].totalOrderCost}",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff515c6f),
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            fontFamily:
-                                                                "JosefinSans",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 20.0),
-                                                        textAlign:
-                                                            TextAlign.left),
-                                                    // Organic Store
-                                                    Text(
-                                                        snapshot
-                                                            .getOrderListResponse
-                                                            .orders[index]
-                                                            .shopName,
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff727c8e),
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontFamily:
-                                                                "Avenir",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 12.0),
-                                                        textAlign:
-                                                            TextAlign.left)
-                                                  ],
-                                                ),
-                                                // Cancel order
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    InkWell(
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-
-                                                        var user =
-                                                            await UserManager
-                                                                .userDetails();
-                                                        var request =
-                                                            UpdateOrderRequest();
-                                                        request.oldStatus = snapshot
-                                                            .getOrderListResponse
-                                                            .orders[index]
-                                                            .status;
-                                                        request.phoneNumber =
-                                                            user.phone;
-                                                        var order = snapshot
-                                                            .getOrderListResponse
-                                                            .orders[index];
-                                                        order.status =
-                                                            "CANCELLED";
-                                                        request.orders = [
-                                                          order
-                                                        ];
-
-                                                        snapshot.updateOrder(
-                                                            request);
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                bottom: 11),
-                                                        child: Text(
-                                                                'screen_order.cancel_order',
-                                                                style: const TextStyle(
-                                                                    color: const Color(
-                                                                        0xffe33a3a),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w900,
-                                                                    fontFamily:
-                                                                        "Avenir",
-                                                                    fontStyle:
-                                                                        FontStyle
-                                                                            .normal,
-                                                                    fontSize:
-                                                                        14.0),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left)
-                                                            .tr(),
-                                                      ),
-                                                    ),
-                                                    CustomButton(
-                                                      didPresButton: () async {
-                                                        Navigator.pop(context);
-
-                                                        var user =
-                                                            await UserManager
-                                                                .userDetails();
-                                                        var request =
-                                                            UpdateOrderRequest();
-                                                        request.oldStatus = snapshot
-                                                            .getOrderListResponse
-                                                            .orders[index]
-                                                            .status;
-                                                        request.phoneNumber =
-                                                            user.phone;
-                                                        var order = snapshot
-                                                            .getOrderListResponse
-                                                            .orders[index];
-                                                        order.status =
-                                                            "CONFIRMED";
-                                                        request.orders = [
-                                                          order
-                                                        ];
-
-                                                        snapshot.updateOrder(
-                                                            request);
-                                                      },
-                                                      backgroundColor:
-                                                          AppColors.mainColor,
-                                                      title:
-                                                          tr('screen_order.update_order')
-                                                              .toUpperCase(),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  });
+                        return buildCustomButton(snapshot);
+                      })
+                  : Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: InkWell(
+                        onTap: () async {
+                          snapshot.updateOrderId(orderId);
+                          if (snapshot.getOrderListResponse.results[index]
+                                      .businessPhones !=
+                                  null &&
+                              snapshot.getOrderListResponse.results[index]
+                                  .businessPhones.isNotEmpty) {
+                            var url =
+                                'tel:${snapshot.getOrderListResponse.results[index].businessPhones.first}';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
                             }
-                          },
-                        );
-                      }),
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "No contact details available.");
+                          }
+//                      Navigator.of(context).pushNamed('/Support');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.phone,
+                              size: 35,
+                              color: AppColors.icColors,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Text(
+                                'Call shop',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontFamily: 'Avenir',
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            // Support
+                          ],
+                        ),
+                      ),
+                    ),
               // Support
             ],
           ),
-          (orderStatus != "COMPLETED" && orderStatus != "CANCELLED") && expanded
+          (orderStatus == "CREATED") && expanded
               ? Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async {
                       snapshot.updateOrderId(orderId);
-                      Navigator.of(context).pushNamed('/Support');
+                      if (snapshot.getOrderListResponse.results[index]
+                                  .businessPhones !=
+                              null &&
+                          snapshot.getOrderListResponse.results[index]
+                              .businessPhones.isNotEmpty) {
+                        var url =
+                            'tel:${snapshot.getOrderListResponse.results[index].businessPhones.first}';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "No contact details available.");
+                      }
+//                      Navigator.of(context).pushNamed('/Support');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          Icons.help_outline,
-                          size: 15,
-                          color: Color(0xff3b3939),
+                          Icons.phone,
+                          size: 35,
+                          color: AppColors.icColors,
                         ),
-                        Padding(padding: EdgeInsets.all(5)),
+                        Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Text(
+                            'Call shop',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontFamily: 'Avenir',
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
                         // Support
-                        Text("screen_support.title",
-                                style: const TextStyle(
-                                    color: const Color(0xff3b3939),
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Avenir",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 14.0),
-                                textAlign: TextAlign.left)
-                            .tr()
                       ],
                     ),
                   ),
@@ -662,6 +504,234 @@ class OrderItemBottomView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  bool isButtonShow() {
+    if (orderStatus == "CREATED" ||
+        orderStatus == "COMPLETED" ||
+        orderStatus == "MERCHANT_UPDATED") {
+      return true;
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return true;
+      else
+        return false;
+    } else {
+      return false;
+    }
+  }
+
+  CustomButton buildCustomButton(_ViewModel snapshot) {
+    return CustomButton(
+      title: title(),
+      backgroundColor: orderStatus == "COMPLETED"
+          ? AppColors.icColors
+          : orderStatus == "CREATED" ? AppColors.orange : AppColors.icColors,
+      didPresButton: () async {
+        if (orderStatus == "COMPLETED") {
+          //reorder api
+          store
+              .dispatchFuture(GetOrderDetailsAPIAction(
+                  orderId:
+                      snapshot.getOrderListResponse.results[index].orderId))
+              .whenComplete(() async {
+            var address = await UserManager.getAddress();
+            PlaceOrderRequest request = PlaceOrderRequest();
+            request.businessId =
+                snapshot.getOrderListResponse.results[index].businessId;
+            request.deliveryAddressId = address.addressId;
+            request.deliveryType =
+                snapshot.getOrderListResponse.results[index].deliveryType;
+            request.orderItems =
+                snapshot.getOrderListResponse.results[index].orderItems;
+            snapshot.placeOrder(request);
+          });
+        } else if (orderStatus == "MERCHANT_UPDATED") {
+          //accept order api
+          snapshot.acceptOrder(
+              snapshot.getOrderListResponse.results[index].orderId, index);
+        } else if (orderStatus == "READY_FOR_PICKUP" &&
+            deliveryStatus == "SELF_PICK_UP") {
+          snapshot.completeOrder(
+              snapshot.getOrderListResponse.results[index].orderId, index);
+        } else {
+          //cancel order api
+          snapshot.cancelOrder(
+              snapshot.getOrderListResponse.results[index].orderId, index);
+        }
+      },
+    );
+  }
+
+  String title() {
+    if (orderStatus == "CREATED") {
+      return tr('screen_order.cancel_order');
+    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return tr('screen_order.pickup');
+      else
+        return "";
+    } else if (orderStatus == "CUSTOMER_CANCELLED") {
+      return tr('screen_order.cancelled_customer');
+    } else if (orderStatus == "MERCHANT_CANCELLED") {
+      return tr('screen_order.cancelled_merchant') +
+          " " +
+          snapshot.getOrderListResponse.results[index].businessName;
+    } else if (orderStatus == "MERCHANT_UPDATED") {
+      return tr('screen_order.accept_order');
+    } else if (orderStatus == "COMPLETED") {
+      return tr('screen_order.re_order');
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return tr('screen_order.pickup');
+      else
+        return tr('screen_order.on_the_way');
+    } else if (orderStatus == "REQUESTING_TO_DA") {
+      return tr('screen_order.on_the_way');
+    } else if (orderStatus == "ASSIGNED_TO_DA") {
+      return tr('screen_order.on_the_way');
+    } else if (orderStatus == "PICKED_UP_BY_DA") {
+      return tr('screen_order.on_the_way');
+    }
+  }
+
+  Text buildText() {
+    TextStyle newStyle = TextStyle(
+      color: Colors.black,
+      fontSize: 12,
+      fontFamily: 'Avenir',
+      fontWeight: FontWeight.w800,
+    );
+    if (orderStatus == "CREATED") {
+      return Text(
+        tr('screen_order.pending'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+      return Text(
+        tr('screen_order.confirmed'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "CUSTOMER_CANCELLED") {
+      return Text(
+        tr('screen_order.cancelled_customer'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "MERCHANT_CANCELLED") {
+      return Text(
+        tr('screen_order.cancelled_merchant') +
+            " " +
+            snapshot.getOrderListResponse.results[index].businessName,
+        style: newStyle,
+      );
+    } else if (orderStatus == "MERCHANT_UPDATED") {
+      return Text(
+        tr('screen_order.not_available'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "COMPLETED") {
+      return Text(
+        tr('screen_order.completed'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return Text(
+          tr('screen_order.ready_pickup'),
+          style: newStyle,
+        );
+      else
+        return Text(
+          tr('screen_order.confirmed'),
+          style: newStyle,
+        );
+    } else if (orderStatus == "REQUESTING_TO_DA") {
+      return Text(
+        tr('screen_order.confirmed'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "ASSIGNED_TO_DA") {
+      return Text(
+        tr('screen_order.on_the_way'),
+        style: newStyle,
+      );
+    } else if (orderStatus == "PICKED_UP_BY_DA") {
+      return Text(
+        tr('screen_order.on_the_way'),
+        style: newStyle,
+      );
+    }
+  }
+
+  Icon buildIcon() {
+    if (orderStatus == "CREATED") {
+      return Icon(
+        Icons.autorenew,
+        color: Color(0xffeb730c),
+      );
+    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: Color(0xffa4c73f),
+      );
+    } else if (orderStatus == "CUSTOMER_CANCELLED" ||
+        orderStatus == "MERCHANT_CANCELLED") {
+      return Icon(
+        Icons.close,
+        color: Colors.red,
+      );
+    } else if (orderStatus == "MERCHANT_UPDATED") {
+      return Icon(
+        Icons.help_outline,
+        color: Colors.red,
+      );
+    } else if (orderStatus == "COMPLETED") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: AppColors.green,
+      );
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: AppColors.green,
+      );
+    } else if (orderStatus == "REQUESTING_TO_DA") {
+      return Icon(
+        Icons.check_circle_outline,
+        color: AppColors.green,
+      );
+    } else if (orderStatus == "ASSIGNED_TO_DA") {
+      return Icon(Icons.account_box, color: AppColors.icColors);
+    } else if (orderStatus == "PICKED_UP_BY_DA") {
+      return Icon(Icons.account_box, color: AppColors.icColors);
+    }
+
+//    return Icon(
+//      orderStatus == "CUSTOMER_CANCELLED" || orderStatus == "MERCHANT_CANCELLED"
+//          ? Icons.close
+//          : orderStatus == "COMPLETED"
+//              ? Icons.check_circle_outline
+//              : orderStatus == "CREATED" && deliveryStatus != "SELF_PICK_UP"
+//                  ? Icons.autorenew
+//                  : orderStatus == "MERCHANT_ACCEPTED"
+//                      ? Icons.check_circle_outline
+//                      : orderStatus == "MERCHANT_UPDATED"
+//                          ? Icons.help_outline
+//                          : Icons.autorenew,
+//      color: orderStatus == "CUSTOMER_CANCELLED" ||
+//              orderStatus == "MERCHANT_CANCELLED"
+//          ? Colors.red
+//          : orderStatus == "COMPLETED"
+//              ? AppColors.green
+//              : orderStatus == "CREATED"
+//                  ? Color(0xffeb730c)
+//                  : orderStatus == "MERCHANT_ACCEPTED"
+//                      ? Color(0xffa4c73f)
+//                      : orderStatus == "MERCHANT_UPDATED"
+//                          ? Colors.red
+//                          : AppColors.green,
+//      size: 18,
+//    );
   }
 }
 
@@ -696,13 +766,15 @@ class CustomButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Container(),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontFamily: 'Avenir',
-                    fontWeight: FontWeight.w900,
+                Container(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontFamily: 'Avenir',
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 Padding(
@@ -790,16 +862,19 @@ class _OrdersListViewState extends State<OrdersListView>
                     "assets/images/shop1.png",
                     fit: BoxFit.cover,
                   )
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: widget.shopImage,
-                    placeholder: (context, url) => Icon(
-                          Icons.image,
-                          size: 30,
-                        ),
-                    errorWidget: (context, url, error) => Center(
-                          child: Icon(Icons.error),
-                        )),
+                : ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: widget.shopImage,
+                        placeholder: (context, url) => Icon(
+                              Icons.image,
+                              size: 30,
+                            ),
+                        errorWidget: (context, url, error) => Center(
+                              child: Icon(Icons.error),
+                            )),
+                  ),
           ),
           Flexible(
             child: Padding(
@@ -842,19 +917,21 @@ class _OrdersListViewState extends State<OrdersListView>
                     padding: const EdgeInsets.only(top: 0, bottom: 8),
                     child: Row(
                       children: <Widget>[
-                        Expanded(
-                          child: Text(
-                              widget.items ?? "Milk, Egg, Bread, Etc ….",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  color: const Color(0xff7c7c7c),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 14.0),
-                              textAlign: TextAlign.left),
-                        ),
+                        widget.items == ""
+                            ? Container()
+                            : Expanded(
+                                child: Text(
+                                    widget.items ?? "Milk, Egg, Bread, Etc ….",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        color: const Color(0xff7c7c7c),
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Avenir",
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 14.0),
+                                    textAlign: TextAlign.left),
+                              ),
                       ],
                     ),
                   ),
@@ -920,16 +997,23 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String orderId) updateOrderId;
   Function viewStore;
   Function(PlaceOrderRequest) placeOrder;
-  Function(UpdateOrderRequest) updateOrder;
+  Function(String, int) acceptOrder;
+  Function(String, int) cancelOrder;
+  Function(String, int) completeOrder;
   LoadingStatus loadingStatus;
+  Function(String) getOrderList;
+
   _ViewModel();
   _ViewModel.build(
       {this.getOrderListResponse,
       this.placeOrder,
       this.updateOrderId,
-      this.updateOrder,
+      this.cancelOrder,
+      this.acceptOrder,
       this.loadingStatus,
-      this.viewStore})
+      this.viewStore,
+      this.getOrderList,
+      this.completeOrder})
       : super(equals: [getOrderListResponse, loadingStatus]);
   @override
   BaseModel fromStore() {
@@ -938,16 +1022,27 @@ class _ViewModel extends BaseModel<AppState> {
         updateOrderId: (value) {
           dispatch(OrderSupportAction(orderId: value));
         },
+        getOrderList: (url) {
+          dispatch(GetOrderListAPIAction(orderRequestApi: url));
+        },
         loadingStatus: state.authState.loadingStatus,
         getOrderListResponse: state.productState.getOrderListResponse,
         placeOrder: (request) {
-          dispatch(PlaceOrderAction(request: request));
+          dispatchFuture(PlaceOrderAction(request: request)).whenComplete(() {
+            dispatch(GetOrderListAPIAction());
+          });
+        },
+        completeOrder: (orderId, index) {
+          dispatch(CompleteOrderAPIAction(orderId: orderId, index: index));
         },
         viewStore: () {
           dispatch(UpdateSelectedTabAction(0));
         },
-        updateOrder: (request) {
-          dispatch(UpdateOrderAction(request: request));
+        cancelOrder: (id, index) {
+          dispatch(CancelOrderAPIAction(orderId: id, index: index));
+        },
+        acceptOrder: (orderId, index) {
+          dispatch(AcceptOrderAPIAction(orderId: orderId, index: index));
         });
   }
 }

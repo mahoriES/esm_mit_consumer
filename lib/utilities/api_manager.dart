@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
-import 'package:esamudaayapp/modules/login/actions/login_actions.dart';
-import 'package:esamudaayapp/store.dart';
-import 'package:esamudaayapp/utilities/URLs.dart';
-import 'package:esamudaayapp/utilities/user_manager.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/cupertino.dart';
 
 class APIManager {
@@ -133,10 +133,10 @@ class APIManager {
           } else if (res.statusCode == 401) {
             return ResponseModel(res.data, ResponseStatus.error401);
           } else if (res.statusCode == 429) {
-              return ResponseModel(res.data, ResponseStatus.error404);
-            } else {
-              return ResponseModel(res.data, ResponseStatus.success200);
-            }
+            return ResponseModel(res.data, ResponseStatus.error404);
+          } else {
+            return ResponseModel(res.data, ResponseStatus.success200);
+          }
         }).catchError((error) {
           print(error);
           return ResponseModel(null, ResponseStatus.error500);
