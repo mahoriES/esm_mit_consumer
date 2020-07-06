@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
+
       <change afterPath="$PROJECT_DIR$/assets/images/1.0x/splash.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/assets/images/2.0x/splash.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/assets/images/3.0x/splash.png" afterDir="false" />
@@ -73,6 +74,7 @@
       <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/widget_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/web/manifest.json" afterDir="false" />
+
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -81,6 +83,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="1f3aa53b" />
+
   <component name="FavoritesManager">
     <favorites_list name="eSamudaay" />
   </component>
@@ -97,6 +100,7 @@
     <option name="REMEMBER_PASSWORDS" value="true" />
     <option name="BUILD_TARGET_KEY" value="apk" />
   </component>
+
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -127,6 +131,7 @@
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -142,6 +147,7 @@
       <recent name="$PROJECT_DIR$/android" />
     </key>
   </component>
+
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>

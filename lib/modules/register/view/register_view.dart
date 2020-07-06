@@ -263,6 +263,7 @@ class _RegistrationState extends State<Registration> {
 //                                                !pinCodeController.text
 //                                                    .contains(new RegExp(
 //                                                        r'^[1-9][0-9]{5}$'))
+
                             ) {
                           return tr('screen_register.pin_code.title');
                           return null;
@@ -297,6 +298,7 @@ class _RegistrationState extends State<Registration> {
           ),
         ),
       ),
+
 
       //location
       //Register_but
