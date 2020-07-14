@@ -6,7 +6,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/assets/languages/hi-Deva-IN.json" afterDir="false" />
+=======
+
+      <change afterPath="$PROJECT_DIR$/assets/images/1.0x/splash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/2.0x/splash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/3.0x/splash.png" afterDir="false" />
+>>>>>>> e109187d2fa63458d169f8a69dca03818c7fefb5
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -38,6 +45,13 @@
       <change beforePath="$PROJECT_DIR$/lib/utilities/api_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/api_manager.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/utilities/push_notification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/push_notification.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/widget_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/web/manifest.json" afterDir="false" />
+
+>>>>>>> e109187d2fa63458d169f8a69dca03818c7fefb5
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,6 +60,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="1f3aa53b" />
+
   <component name="FavoritesManager">
     <favorites_list name="eSamudaay" />
   </component>
@@ -62,6 +77,7 @@
     <option name="REMEMBER_PASSWORDS" value="true" />
     <option name="BUILD_TARGET_KEY" value="apk" />
   </component>
+
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -91,7 +107,12 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
+<<<<<<< HEAD
     <property name="last_opened_file_path" value="$PROJECT_DIR$/assets/images/3.0x" />
+=======
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+
+>>>>>>> e109187d2fa63458d169f8a69dca03818c7fefb5
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -111,6 +132,7 @@
       <recent name="$PROJECT_DIR$/assets/images/2.0x" />
     </key>
   </component>
+
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
