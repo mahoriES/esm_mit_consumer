@@ -445,10 +445,11 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
         },
         navigateToProductDetails: () {
-          dispatch(GetCatalogDetailsAction());
-          dispatch(
-            NavigateAction.pushNamed('/StoreProductListingView'),
-          );
+          store.dispatchFuture(GetSubCatalogAction()).whenComplete(() {
+            dispatch(
+              NavigateAction.pushNamed('/StoreProductListingView'),
+            );
+          });
         },
         loadingStatus: state.authState.loadingStatus,
         selectedMerchant: state.productState.selectedMerchand);

@@ -60,8 +60,9 @@ class ValidateOtpAction extends ReduxAction<AppState> {
 //        )).then((onValue) {
 //          store.dispatch(GetUserFromLocalStorageAction());
 //        });
+//        dispatch(AddFCMTokenAction());
+        // dispatch(GetUserDetailAction());
         dispatch(AddFCMTokenAction());
-        dispatch(GetUserDetailAction());
       }
     } else {
       if (response.data['message'] != null) {
@@ -90,10 +91,10 @@ class AddFCMTokenAction extends ReduxAction<AppState> {
             .toJson(),
         requestType: RequestType.post);
     if (response.status == ResponseStatus.success200) {
-      dispatch(GetUserDetailAction());
     } else {
       // Fluttertoast.showToast(msg: response.data['message']);
     }
+    dispatch(GetUserDetailAction());
 
     return state.copyWith(authState: state.authState.copyWith());
   }

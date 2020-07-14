@@ -49,6 +49,7 @@ void main() {
       Locale('en', 'US'),
       Locale('ka', 'IN'),
       Locale('ml', 'IN'),
+      Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
     ],
     path: 'assets/languages',
   ));
@@ -69,7 +70,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     // TODO: implement initState
-    PushNotificationsManager().init();
+
     super.initState();
   }
 
@@ -116,7 +117,7 @@ class _MyAppState extends State<MyApp> {
     return Container(
       child: Center(
           child: Padding(
-        padding: const EdgeInsets.all(100.0),
+        padding: const EdgeInsets.all(20.0),
         child: Image.asset('assets/images/splash.png'),
       )),
     );

@@ -4,6 +4,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CartCount extends StatelessWidget {
   final Function(BuildContext context, _ViewModel count) builder;
@@ -53,7 +54,7 @@ class _ViewModel extends BaseModel<AppState> {
                         double.parse(current.skus.first.basePrice.toString()) *
                             current.count;
 
-                    return double.parse(previous.toString()) + price;
+                    return (double.parse(previous.toString()) + price) / 100;
                   }) ??
                   0.0;
 
@@ -119,14 +120,15 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                         shrinkWrap: true,
                         children: <Widget>[
                           // TOTAL
-                          Text("TOTAL",
-                              style: const TextStyle(
-                                  color: const Color(0xff515c6f),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "JosefinSans",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 10.0),
-                              textAlign: TextAlign.left),
+                          Text("cart.total",
+                                  style: const TextStyle(
+                                      color: const Color(0xff515c6f),
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: "JosefinSans",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 10.0),
+                                  textAlign: TextAlign.left)
+                              .tr(),
 
                           // ₹ 55.00
                           Text(snapshot.getCartTotalPrice(),
@@ -159,7 +161,9 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                     type: MaterialType.transparency,
                     child: Container(
                       height: 46,
-                      width: widget.buttonTitle == 'VIEW ITEMS' ? 120 : 160,
+                      width: widget.buttonTitle == tr('cart.view_cart')
+                          ? 120
+                          : 160,
                       decoration: BoxDecoration(
                         color: AppColors.icColors,
                         borderRadius: BorderRadius.circular(23),

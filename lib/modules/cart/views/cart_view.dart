@@ -191,7 +191,7 @@ class _CartViewState extends State<CartView> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                            "₹ ${snapshot.localCart[index].skus.first.basePrice}",
+                                                            "₹ ${snapshot.localCart[index].skus.first.basePrice / 100}",
                                                             style: const TextStyle(
                                                                 color: const Color(
                                                                     0xff5091cd),
@@ -290,19 +290,22 @@ class _CartViewState extends State<CartView> {
                                                       size: 12.0,
                                                       color: Color(0xff5091cd),
                                                     ),
-                                                    Text("Add more",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff5091cd),
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            fontFamily:
-                                                                "Avenir",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 12.0),
-                                                        textAlign:
-                                                            TextAlign.center),
+                                                    Text("new_changes.add_more",
+                                                            style: const TextStyle(
+                                                                color: const Color(
+                                                                    0xff5091cd),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900,
+                                                                fontFamily:
+                                                                    "Avenir",
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 12.0),
+                                                            textAlign: TextAlign
+                                                                .center)
+                                                        .tr(),
                                                   ],
                                                 ),
                                               ),
@@ -442,7 +445,7 @@ class _CartViewState extends State<CartView> {
                                                                         widget.radioValue ==
                                                                             2
                                                                     ? "0"
-                                                                    : "₹ ${snapshot.charges[index - 1].chargeValue.toString()}",
+                                                                    : "₹ ${snapshot.charges[index - 1].chargeValue / 100}",
                                                                 style: const TextStyle(
                                                                     color: const Color(
                                                                         0xff696666),
@@ -866,7 +869,7 @@ class _CartViewState extends State<CartView> {
                             didPressButton: () async {
                               if (widget.radioValue == 0) {
                                 Fluttertoast.showToast(
-                                    msg: "please select Delivery / Pickup");
+                                    msg: tr("new_changes.choose_one"));
 //                                return;
                               } else {
                                 if (snapshot.selectedMerchant.isOpen) {
@@ -894,7 +897,7 @@ class _CartViewState extends State<CartView> {
                                   snapshot.placeOrder(request);
                                 } else {
                                   Fluttertoast.showToast(
-                                      msg: "The shop is closed");
+                                      msg: tr('new_changes.shop_closed'));
                                 }
                               }
                             },
@@ -1068,7 +1071,7 @@ class _ViewModel extends BaseModel<AppState> {
                       double.parse(current.skus.first.basePrice.toString()) *
                           current.count;
 
-                  return double.parse(previous.toString()) + price;
+                  return (double.parse(previous.toString()) + price) / 100;
                 }) ??
                 0.0;
 
@@ -1103,7 +1106,7 @@ class _ViewModel extends BaseModel<AppState> {
                       double.parse(current.skus.first.basePrice.toString()) *
                           current.count;
 
-                  return double.parse(previous.toString()) + price;
+                  return (double.parse(previous.toString()) + price) / 100;
                 }) ??
                 0.0;
 

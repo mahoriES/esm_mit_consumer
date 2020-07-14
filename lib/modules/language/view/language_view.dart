@@ -63,6 +63,24 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   },
                 ),
 
+                ListTile(
+                  title: Text("हिन्दी",
+                      style: const TextStyle(
+                          color: const Color(0xff2e2e2e),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Poppins",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 20.0),
+                      textAlign: TextAlign.left),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    EasyLocalization.of(context).locale = Locale.fromSubtags(
+                        languageCode: 'hi', countryCode: 'Deva-IN');
+                    snapshot.navigateToPhoneNumberPage(
+                        (arguments != null) ? arguments['fromAccount'] : false);
+                  },
+                ),
+
                 // English
 
                 // മലയാളം

@@ -15,6 +15,7 @@ import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class GetCartFromLocal extends ReduxAction<AppState> {
   @override
@@ -58,16 +59,39 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
             child: AlertDialog(
               title: Text("E-samudaay"),
               content: Text(
-                  'Items from other store will be cleared. Would you like to continue.'),
+                'new_changes.clear_info',
+                style: const TextStyle(
+                    color: const Color(0xff6f6d6d),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Avenir",
+                    fontStyle: FontStyle.normal,
+                    fontSize: 16.0),
+              ).tr(),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Cancel'),
+                  child: Text(
+                    'screen_account.cancel',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                  ).tr(),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
                 FlatButton(
-                  child: Text('Continue'),
+                  child: Text(
+                    'new_changes.continue',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                  ).tr(),
                   onPressed: () async {
                     await CartDataSource.deleteAllMerchants();
                     await CartDataSource.deleteAll();

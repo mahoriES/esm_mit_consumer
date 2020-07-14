@@ -11,6 +11,7 @@ import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,7 @@ class LogoutAction extends ReduxAction<AppState> {
     await CartDataSource.deleteAllMerchants();
     await CartDataSource.deleteAll();
     await UserManager.deleteUser();
+    PushNotificationsManager().signOut();
     dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
 
     return state.copyWith(

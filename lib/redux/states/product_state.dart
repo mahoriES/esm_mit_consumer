@@ -17,11 +17,13 @@ class ProductState {
   final List<Product> localCartItems;
   final List<Charge> charges;
   final CategoriesNew selectedCategory;
+  final CategoriesNew selectedSubCategory;
   final PlaceOrderResponse placeOrderResponse;
   final Business selectedMerchand;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
   final List<CategoriesNew> categories;
+  final List<CategoriesNew> subCategories;
   final Cluster selectedCluster;
   final CatalogSearchResponse productResponse;
 
@@ -37,9 +39,11 @@ class ProductState {
       @required this.searchResults,
       @required this.productListingDataSource,
       @required this.supportOrder,
+      @required this.subCategories,
       @required this.categories,
       @required this.currentOrderIsPickUp,
-      @required this.productResponse});
+      @required this.productResponse,
+      @required this.selectedSubCategory});
 
   factory ProductState.initial() {
     return new ProductState(
@@ -47,6 +51,7 @@ class ProductState {
         selectedCluster: null,
         charges: [],
         categories: [],
+        subCategories: [],
         supportOrder: "",
         getOrderListResponse: GetOrderListResponse(results: []),
         localCartItems: [],
@@ -55,6 +60,7 @@ class ProductState {
         productListingTempDataSource: [],
         productListingDataSource: [],
         selectedCategory: null,
+        selectedSubCategory: null,
         placeOrderResponse: null,
         currentOrderIsPickUp: false);
   }
@@ -64,12 +70,14 @@ class ProductState {
       List<Product> productListingTempDataSource,
       List<Product> localCartItems,
       List<CategoriesNew> categories,
+      List<CategoriesNew> subCategories,
       List<Merchants> searchResults,
       List<Charge> charges,
       Business selectedMerchant,
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
       CategoriesNew selectedCategory,
+      CategoriesNew selectedSubCategory,
       String supportOrder,
       bool currentOrderIsPickUp,
       CatalogSearchResponse productResponse,
@@ -90,6 +98,8 @@ class ProductState {
         selectedCategory: selectedCategory ?? this.selectedCategory,
         supportOrder: supportOrder ?? this.supportOrder,
         categories: categories ?? this.categories,
+        subCategories: subCategories ?? this.subCategories,
+        selectedSubCategory: selectedSubCategory ?? this.selectedSubCategory,
         currentOrderIsPickUp:
             currentOrderIsPickUp ?? this.currentOrderIsPickUp);
   }

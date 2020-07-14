@@ -57,7 +57,7 @@
 
   "screen_home": {
     "tab_bar": {
-      "store": "STORE",
+      "store": "STORES",
       "search": "SEARCH",
       "orders": "ORDERS",
       "account": "ACCOUNT"
@@ -100,7 +100,7 @@
   },
 
   "screen_account":{
-  "title": "Account",
+    "title": "Account",
     "profile": "Profile",
     "recommend": "Recommend A Store",
     "about": "About",
@@ -170,6 +170,20 @@
     "submit": "Submit",
     "type_hint": "Type in your text",
     "select_issue_error": "Please select an issue."
+  },
+
+  "new_changes": {
+    "offline": "You are offline. Please check your internet connection",
+    "add_more": "Add more",
+    "add": "Add",
+    "shop_closed": "The Shop is Closed",
+    "choose_one": "please select Delivery / Pickup",
+    "clear_info": "Items from other store will be cleared. Would you like to continue.",
+    "continue": "Continue",
+    "order_id": "Order Id",
+    "call": "Call Shop",
+    "no_contact": "No contact details available."
+
   }
 
 

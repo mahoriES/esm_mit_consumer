@@ -904,7 +904,9 @@ class _OrdersListViewState extends State<OrdersListView>
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: Text("Order Id : " + widget.orderId ?? "",
+                    child: Text(
+                        "${tr('new_changes.order_id')} : " + widget.orderId ??
+                            "",
                         style: const TextStyle(
                             color: const Color(0xff7c7c7c),
                             fontWeight: FontWeight.w400,

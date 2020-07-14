@@ -31,12 +31,14 @@ class GetUserDetailAction extends ReduxAction<AppState> {
         await UserManager.saveToken(token: authResponse.cUSTOMER.token);
 
         Data user = authResponse.cUSTOMER.data;
+
         await UserManager.saveUser(user).then((onValue) {
           store.dispatch(GetUserFromLocalStorageAction());
         });
-        dispatch(AddFCMTokenAction());
+
         dispatch(CheckTokenAction());
         store.dispatch(GetUserFromLocalStorageAction());
+
         dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
         return state.copyWith(authState: state.authState.copyWith(user: user));
       }
@@ -69,12 +71,16 @@ class AddUserDetailAction extends ReduxAction<AppState> {
       await UserManager.saveToken(token: authResponse.token);
 
       Data user = authResponse.data;
+
       await UserManager.saveUser(user).then((onValue) {
         store.dispatch(GetUserFromLocalStorageAction());
       });
+
       dispatch(CheckTokenAction());
       store.dispatch(GetUserFromLocalStorageAction());
+      dispatch(AddFCMTokenAction());
       dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+      return state.copyWith(authState: state.authState.copyWith(user: user));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
       //throw UserException(response.data['status']);

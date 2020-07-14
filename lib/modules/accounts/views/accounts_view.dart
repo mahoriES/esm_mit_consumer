@@ -120,17 +120,40 @@ class _AccountsViewState extends State<AccountsView> {
                         context: context,
                         child: AlertDialog(
                           title: Text("E-samudaay"),
-                          content: Text('screen_account.alert_data').tr(),
+                          content: Text(
+                            'screen_account.alert_data',
+                            style: const TextStyle(
+                                color: const Color(0xff6f6d6d),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Avenir",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0),
+                          ).tr(),
                           actions: <Widget>[
                             FlatButton(
-                              child: Text(tr('screen_account.cancel')),
+                              child: Text(
+                                tr('screen_account.cancel'),
+                                style: const TextStyle(
+                                    color: const Color(0xff6f6d6d),
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.0),
+                              ),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                             ),
                             FlatButton(
                               child: Text(
-                                  tr('screen_account.logout'.toLowerCase())),
+                                tr('screen_account.logout'.toLowerCase()),
+                                style: const TextStyle(
+                                    color: const Color(0xff6f6d6d),
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.0),
+                              ),
                               onPressed: () async {
                                 snapshot.logout();
                               },
@@ -144,7 +167,7 @@ class _AccountsViewState extends State<AccountsView> {
                   ),
                   title: Text('screen_account.logout',
                           style: const TextStyle(
-                              color: const Color(0xff3c3c3c),
+                              color: const Color(0xff6f6d6d),
                               fontWeight: FontWeight.w400,
                               fontFamily: "CircularStd-Book",
                               fontStyle: FontStyle.normal,

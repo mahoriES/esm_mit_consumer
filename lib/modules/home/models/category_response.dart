@@ -25,7 +25,7 @@ class CategoriesNew {
   int categoryId;
   String categoryName;
   String categoryDescription;
-  Null parentCategoryId;
+  int parentCategoryId;
   bool isActive;
   List<Images> images;
 
@@ -45,9 +45,11 @@ class CategoriesNew {
     isActive = json['is_active'];
     if (json['images'] != null) {
       images = new List<Images>();
-      json['images'].forEach((v) {
-        images.add(new Images.fromJson(v));
-      });
+      if (images.length > 0) {
+        json['images'].forEach((v) {
+          images.add(new Images.fromJson(v));
+        });
+      }
     }
   }
 

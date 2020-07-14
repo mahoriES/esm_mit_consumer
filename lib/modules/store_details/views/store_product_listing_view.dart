@@ -44,6 +44,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    controller = null;
+    _controller = null;
     super.dispose();
   }
 
@@ -91,34 +93,30 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
   @override
   void initState() {
-    store.state.productState.categories.asMap().forEach((index, a) {
-      if (a.categoryId ==
-          store.state.productState.selectedCategory.categoryId) {
-        _currentPosition = index;
-      }
-    });
+    super.initState();
+  }
+
+  initController(Store<AppState> stores) {
     controller = TabController(
-      length: store.state.productState.categories.length,
+      length: stores.state.productState.subCategories.length,
       vsync: this,
       initialIndex: _currentPosition,
     );
     controller.addListener(() {
       if (!controller.indexIsChanging) {
         if (controller.index != 0) {
-          store.dispatch(UpdateSelectedCategoryAction(
-              selectedCategory:
-                  store.state.productState.categories[controller.index]));
-          store.dispatch(UpdateProductListingDataAction(listingData: []));
-          store.dispatch(GetCatalogDetailsAction());
+          stores.dispatch(UpdateSelectedSubCategoryAction(
+              selectedSubCategory:
+                  stores.state.productState.subCategories[controller.index]));
+          stores.dispatch(UpdateProductListingDataAction(listingData: []));
+          stores.dispatch(GetCatalogDetailsAction());
         } else {
-          store.dispatch(UpdateSelectedCategoryAction(
-              selectedCategory:
-                  store.state.productState.categories[controller.index]));
-          store.dispatch(GetCatalogDetailsAction());
+          stores.dispatch(UpdateSelectedSubCategoryAction(
+              selectedSubCategory: stores.state.productState.subCategories[0]));
+          stores.dispatch(GetCatalogDetailsAction());
         }
       }
     });
-    super.initState();
   }
 
   @override
@@ -152,7 +150,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
       ),
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
+          onInit: (store) {
+            initController(store);
+            store.dispatch(GetCatalogDetailsAction());
+          },
           builder: (context, snapshot) {
+            var count = snapshot.subCategories.length;
             return Container(
               child: Column(
                 children: <Widget>[
@@ -168,7 +171,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                             Icons.search,
                             color: AppColors.icColors,
                           ),
-                          hintText: "Search for item",
+                          hintText: tr('product_list.search_placeholder'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: new BorderSide(
@@ -225,12 +228,13 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         }
                       },
                       tabs: List.generate(
-                        snapshot.categories.length,
+                        count,
                         (index) => // All
                             Container(
                           height: 50,
                           child: Center(
-                            child: Text(snapshot.categories[index].categoryName,
+                            child: Text(
+                                snapshot.subCategories[index].categoryName,
                                 textAlign: TextAlign.left),
                           ),
                         ),
@@ -253,7 +257,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         controller: controller,
 //                        physics: NeverScrollableScrollPhysics(),
                         children: List.generate(
-                          snapshot.categories.length,
+                          count,
                           (index) => snapshot.products.isEmpty
                               ? snapshot.loadingStatus == LoadingStatus.loading
                                   ? Container()
@@ -317,8 +321,16 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                                         (BuildContext context, int index) {
                                       return ProductListingItemView(
                                         index: index,
-                                        imageLink: snapshot.selectedCategory
-                                            .images.first.photoUrl,
+                                        imageLink:
+                                            snapshot.selectedCategory.images !=
+                                                    null
+                                                ? snapshot.selectedCategory
+                                                            .images.length >
+                                                        0
+                                                    ? snapshot.selectedCategory
+                                                        .images.first.photoUrl
+                                                    : ""
+                                                : "",
                                         item: snapshot.products[index],
                                       );
                                     },
@@ -334,7 +346,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     child: BottomView(
                       storeName: snapshot.selectedMerchant?.shopName ?? "",
                       height: snapshot.localCartListing.isEmpty ? 0 : 86,
-                      buttonTitle: "VIEW ITEMS",
+                      buttonTitle: tr('cart.view_cart'),
                       didPressButton: () {
                         snapshot.navigateToCart();
                       },
@@ -428,8 +440,9 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> localCartListing;
   List<Product> productTempListing;
   Merchants selectedMerchant;
-  List<CategoriesNew> categories;
+  List<CategoriesNew> subCategories;
   CategoriesNew selectedCategory;
+  CategoriesNew selectedSubCategory;
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
   Function(String, String, String) getProducts;
@@ -448,13 +461,14 @@ class _ViewModel extends BaseModel<AppState> {
       this.products,
       this.addToCart,
       this.removeFromCart,
-      this.categories,
+      this.subCategories,
       this.localCartListing,
       this.getProducts,
       this.productTempListing,
       this.updateTempProductList,
       this.updateProductList,
-      this.selectedMerchant})
+      this.selectedMerchant,
+      this.selectedSubCategory})
       : super(equals: [
           products,
           localCartListing,
@@ -462,8 +476,9 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatus,
           productTempListing,
           selectedCategory,
-          categories,
-          productResponse
+          subCategories,
+          productResponse,
+          selectedSubCategory
         ]);
   @override
   BaseModel fromStore() {
@@ -483,7 +498,8 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(GetCatalogDetailsAction(url: url));
         },
         updateSelectedCategory: (category) {
-          dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+          dispatch(
+              UpdateSelectedSubCategoryAction(selectedSubCategory: category));
         },
         updateTempProductList: (list) {
           dispatch(UpdateProductListingTempDataAction(listingData: list));
@@ -491,12 +507,11 @@ class _ViewModel extends BaseModel<AppState> {
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
         },
-        categories: state.productState.categories,
+        subCategories: state.productState.subCategories,
         productTempListing: state.productState.productListingTempDataSource,
         loadingStatus: state.authState.loadingStatus,
         selectedCategory: state.productState.selectedCategory,
-
-//        selectedMerchant: state.productState.selectedMerchand,
+        selectedSubCategory: state.productState.selectedSubCategory,
         products: state.productState.productListingDataSource,
         localCartListing: state.productState.localCartItems,
         productResponse: state.productState.productResponse);
@@ -556,23 +571,38 @@ class ProductListingItemView extends StatelessWidget {
                                           child: Icon(Icons.error),
                                         )),
                               )
-                            : Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CachedNetworkImage(
-                                    height: 500.0,
-                                    fit: BoxFit.cover,
-                                    imageUrl:
-                                        item?.images?.first?.photoUrl ?? "",
-                                    placeholder: (context, url) =>
-                                        CupertinoActivityIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Padding(
-                                          padding: const EdgeInsets.all(25.0),
-                                          child: Image.network(
-                                            imageLink,
-                                          ),
-                                        )),
-                              ),
+                            : item.images.length > 0
+                                ? Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: CachedNetworkImage(
+                                        height: 500.0,
+                                        fit: BoxFit.cover,
+                                        imageUrl:
+                                            item?.images?.first?.photoUrl ?? "",
+                                        placeholder: (context, url) =>
+                                            CupertinoActivityIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(25.0),
+                                              child: Image.network(
+                                                imageLink,
+                                              ),
+                                            )),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(25.0),
+                                    child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+//                                                  height: 80,
+                                        imageUrl: imageLink,
+                                        placeholder: (context, url) =>
+                                            CupertinoActivityIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Center(
+                                              child: Icon(Icons.error),
+                                            )),
+                                  ),
                         colorFilter: ColorFilter.mode(
                             !isOutOfStock ? Colors.grey : Colors.transparent,
                             BlendMode.saturation),
@@ -617,7 +647,7 @@ class ProductListingItemView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${item.skus.isEmpty ? 0 : item.skus.first.basePrice.toString()}",
+                                    "₹ ${item.skus.isEmpty ? 0 : item.skus.first.basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
@@ -630,15 +660,7 @@ class ProductListingItemView extends StatelessWidget {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text(
-                                    item.skus.isEmpty
-                                        ? "NA"
-                                        : item.skus.first.variationOptions
-                                                    .size !=
-                                                null
-                                            ? item.skus.first.variationOptions
-                                                .size
-                                            : "NA",
+                                Text(item.unitName,
                                     style: TextStyle(
                                         color: Color(0xffa7a7a7),
                                         fontWeight: FontWeight.w500,
@@ -663,7 +685,7 @@ class ProductListingItemView extends StatelessWidget {
                                 snapshot.removeFromCart(item);
                               },
                               value: item.count == 0
-                                  ? "Add "
+                                  ? tr("new_changes.add")
                                   : item.count.toString(),
                             ),
                           ],
@@ -703,7 +725,7 @@ class CSStepper extends StatelessWidget {
         color: this.backgroundColor ?? AppColors.icColors,
         borderRadius: BorderRadius.circular(100),
       ),
-      child: value.contains("Add")
+      child: value.contains(tr("new_changes.add"))
           ? InkWell(
               onTap: () {
                 didPressAdd();
