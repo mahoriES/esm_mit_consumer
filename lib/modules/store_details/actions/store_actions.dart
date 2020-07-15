@@ -79,6 +79,7 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
       List<Product> allCartItems = await CartDataSource.getListOfCartWith();
 
       products.forEach((item) {
+        item.selectedVariant = 0;
         allCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
             item.count = localCartItem.count;

@@ -251,7 +251,7 @@ class Product {
       this.selectedVariant});
 
   Product.fromJson(Map<String, dynamic> json) {
-    selectedVariant = 0;
+    selectedVariant = json['selectedVariant'];
     count = json['count'];
     productId = json['product_id'];
     productName = json['product_name'];
@@ -281,6 +281,7 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['selectedVariant'] = this.selectedVariant;
     data['count'] = this.count;
     data['product_id'] = this.productId;
     data['product_name'] = this.productName;
