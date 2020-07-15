@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -191,7 +193,7 @@ class _CartViewState extends State<CartView> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                            "₹ ${snapshot.localCart[index].skus.first.basePrice / 100}",
+                                                            "₹ ${snapshot.localCart[index].skus[snapshot.localCart[index].selectedVariant].basePrice / 100}",
                                                             style: const TextStyle(
                                                                 color: const Color(
                                                                     0xff5091cd),
@@ -219,7 +221,7 @@ class _CartViewState extends State<CartView> {
                                                         .skus
                                                         .first
                                                         .variationOptions
-                                                        .size ??
+                                                        .weight ??
                                                     "",
                                                 style: const TextStyle(
                                                     color:
@@ -890,7 +892,8 @@ class _CartViewState extends State<CartView> {
                                       : "SELF_PICK_UP";
                                   request.orderItems = cart
                                       .map((e) => OrderItems(
-                                          skuId: e.skus.first.skuId,
+                                          skuId:
+                                              e.skus[e.selectedVariant].skuId,
                                           quantity: e.count))
                                       .toList();
 
@@ -1065,15 +1068,17 @@ class _ViewModel extends BaseModel<AppState> {
         loadingStatus: state.authState.loadingStatus,
         getCartTotal: () {
           if (state.productState.localCartItems.isNotEmpty) {
-            var total = state.productState.localCartItems.fold(0,
-                    (previous, current) {
-                  double price =
-                      double.parse(current.skus.first.basePrice.toString()) *
+            var total =
+                state.productState.localCartItems.fold(0, (previous, current) {
+                      double price = double.parse(
+                              (current.skus[current.selectedVariant].basePrice /
+                                      100)
+                                  .toString()) *
                           current.count;
 
-                  return (double.parse(previous.toString()) + price) / 100;
-                }) ??
-                0.0;
+                      return (double.parse(previous.toString()) + price);
+                    }) ??
+                    0.0;
 
             return total.toDouble(); //formatCurrency.format(total.toDouble());
           } else {
@@ -1100,21 +1105,23 @@ class _ViewModel extends BaseModel<AppState> {
         },
         getOrderTax: (value) {
           if (state.productState.localCartItems.isNotEmpty) {
-            var total = state.productState.localCartItems.fold(0,
-                    (previous, current) {
-                  double price =
-                      double.parse(current.skus.first.basePrice.toString()) *
+            var total =
+                state.productState.localCartItems.fold(0, (previous, current) {
+                      double price = double.parse(
+                              (current.skus[current.selectedVariant].basePrice /
+                                      100)
+                                  .toString()) *
                           current.count;
 
-                  return (double.parse(previous.toString()) + price) / 100;
-                }) ??
-                0.0;
+                      return (double.parse(previous.toString()) + price);
+                    }) ??
+                    0.0;
 
             num sum = 0;
             state.productState.charges.forEach((e) {
               sum += e.chargeName.contains("DELIVERY") && value == 2
                   ? 0
-                  : e.chargeValue;
+                  : e.chargeValue / 100;
             });
             print(sum);
 
@@ -1124,5 +1131,12 @@ class _ViewModel extends BaseModel<AppState> {
             return 0.0;
           }
         });
+  }
+}
+
+extension Precision on double {
+  double toPrecision(int fractionDigits) {
+    double mod = pow(10, fractionDigits.toDouble());
+    return ((this * mod).round().toDouble() / mod);
   }
 }

@@ -167,7 +167,7 @@ class _AccountsViewState extends State<AccountsView> {
                   ),
                   title: Text('screen_account.logout',
                           style: const TextStyle(
-                              color: const Color(0xff6f6d6d),
+                              color: const Color(0xff3c3c3c),
                               fontWeight: FontWeight.w400,
                               fontFamily: "CircularStd-Book",
                               fontStyle: FontStyle.normal,

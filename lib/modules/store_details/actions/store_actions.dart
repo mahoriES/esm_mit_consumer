@@ -165,3 +165,13 @@ class UpdateProductListingDataAction extends ReduxAction<AppState> {
             state.productState.copyWith(productListingDataSource: listingData));
   }
 }
+
+class UpdateProductVariantAction extends ReduxAction<AppState> {
+  final int index;
+
+  UpdateProductVariantAction({this.index});
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(productState: state.productState.copyWith());
+  }
+}

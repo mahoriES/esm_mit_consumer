@@ -50,11 +50,13 @@ class _ViewModel extends BaseModel<AppState> {
           );
           var total =
               state.productState.localCartItems.fold(0, (previous, current) {
-                    double price =
-                        double.parse(current.skus.first.basePrice.toString()) *
-                            current.count;
+                    double price = double.parse(
+                            (current.skus[current.selectedVariant].basePrice /
+                                    100)
+                                .toString()) *
+                        current.count;
 
-                    return (double.parse(previous.toString()) + price) / 100;
+                    return (double.parse(previous.toString()) + price);
                   }) ??
                   0.0;
 

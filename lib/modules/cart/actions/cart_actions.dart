@@ -95,22 +95,6 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                   onPressed: () async {
                     await CartDataSource.deleteAllMerchants();
                     await CartDataSource.deleteAll();
-//                    var merchant = MerchantLocal(
-//                        merchantID:
-//                            state.productState.selectedMerchand.merchantID,
-//                        cardViewLine2:
-//                            state.productState.selectedMerchand.cardViewLine2,
-//                        displayPicture:
-//                            state.productState.selectedMerchand.displayPicture,
-//                        address1: state
-//                            .productState.selectedMerchand.address.addressLine1,
-//                        address2: state
-//                            .productState.selectedMerchand.address.addressLine2,
-//                        shopName: state.productState.selectedMerchand.shopName);
-//                    merchant.flag = state.productState.selectedMerchand.flags
-//                            .contains('DELIVERY')
-//                        ? 'DELIVERY'
-//                        : "";
                     await CartDataSource.insertToMerchants(
                         business: state.productState.selectedMerchand);
                     bool isInCart = await CartDataSource.isAvailableInCart(

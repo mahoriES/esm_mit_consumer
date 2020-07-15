@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:eSamudaay/main.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
@@ -518,19 +519,23 @@ class _ViewModel extends BaseModel<AppState> {
   }
 }
 
-class ProductListingItemView extends StatelessWidget {
+class ProductListingItemView extends StatefulWidget {
   final int index;
   final Product item;
   final String imageLink;
   const ProductListingItemView({Key key, this.index, this.item, this.imageLink})
       : super(key: key);
+  @override
+  _ProductListingItemViewState createState() => _ProductListingItemViewState();
+}
 
+class _ProductListingItemViewState extends State<ProductListingItemView> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          bool isOutOfStock = item.inStock;
+          bool isOutOfStock = widget.item.inStock;
           return IgnorePointer(
             ignoring: !isOutOfStock,
             child: Row(
@@ -557,13 +562,13 @@ class ProductListingItemView extends StatelessWidget {
                     alignment: Alignment.center,
                     children: <Widget>[
                       ColorFiltered(
-                        child: item.images == null
+                        child: widget.item.images == null
                             ? Padding(
                                 padding: const EdgeInsets.all(25.0),
                                 child: CachedNetworkImage(
                                     fit: BoxFit.cover,
 //                                                  height: 80,
-                                    imageUrl: imageLink,
+                                    imageUrl: widget.imageLink,
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -571,14 +576,15 @@ class ProductListingItemView extends StatelessWidget {
                                           child: Icon(Icons.error),
                                         )),
                               )
-                            : item.images.length > 0
+                            : widget.item.images.length > 0
                                 ? Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: CachedNetworkImage(
                                         height: 500.0,
                                         fit: BoxFit.cover,
-                                        imageUrl:
-                                            item?.images?.first?.photoUrl ?? "",
+                                        imageUrl: widget.item?.images?.first
+                                                ?.photoUrl ??
+                                            "",
                                         placeholder: (context, url) =>
                                             CupertinoActivityIndicator(),
                                         errorWidget: (context, url, error) =>
@@ -586,7 +592,7 @@ class ProductListingItemView extends StatelessWidget {
                                               padding:
                                                   const EdgeInsets.all(25.0),
                                               child: Image.network(
-                                                imageLink,
+                                                widget.imageLink,
                                               ),
                                             )),
                                   )
@@ -595,7 +601,7 @@ class ProductListingItemView extends StatelessWidget {
                                     child: CachedNetworkImage(
                                         fit: BoxFit.cover,
 //                                                  height: 80,
-                                        imageUrl: imageLink,
+                                        imageUrl: widget.imageLink,
                                         placeholder: (context, url) =>
                                             CupertinoActivityIndicator(),
                                         errorWidget: (context, url, error) =>
@@ -630,7 +636,7 @@ class ProductListingItemView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Text(item.productName,
+                        Text(widget.item.productName,
                             style: const TextStyle(
                                 color: const Color(0xff515c6f),
                                 fontWeight: FontWeight.w500,
@@ -647,7 +653,7 @@ class ProductListingItemView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${item.skus.isEmpty ? 0 : item.skus.first.basePrice / 100}",
+                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus[widget.item.selectedVariant].basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
@@ -658,16 +664,31 @@ class ProductListingItemView extends StatelessWidget {
                                         fontSize: 18.0),
                                     textAlign: TextAlign.left),
                                 SizedBox(
-                                  height: 10,
+                                  height: 3,
                                 ),
-                                Text(item.unitName,
-                                    style: TextStyle(
-                                        color: Color(0xffa7a7a7),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Avenir",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 14.0),
-                                    textAlign: TextAlign.left)
+                                DropdownButton<String>(
+                                  items: widget.item.skus.map((e) {
+                                    return new DropdownMenuItem<String>(
+                                      value: e.variationOptions.weight,
+                                      child:
+                                          new Text(e.variationOptions.weight),
+                                    );
+                                  }).toList(),
+                                  onChanged: (index) {
+                                    setState(() {
+                                      widget.item.selectedVariant = widget
+                                          .item.skus
+                                          .map((e) => e.variationOptions.weight)
+                                          .toList()
+                                          .indexOf(index);
+                                    });
+                                  },
+                                  value: widget
+                                      .item
+                                      .skus[widget.item.selectedVariant]
+                                      .variationOptions
+                                      .weight,
+                                )
                               ],
                             ),
                             CSStepper(
@@ -675,18 +696,20 @@ class ProductListingItemView extends StatelessWidget {
                                   ? Color(0xffb1b1b1)
                                   : AppColors.icColors,
                               didPressAdd: () {
-                                item.count = ((item?.count ?? 0) + 1)
-                                    .clamp(0, double.nan);
-                                snapshot.addToCart(item, context);
+                                widget.item.count =
+                                    ((widget.item?.count ?? 0) + 1)
+                                        .clamp(0, double.nan);
+                                snapshot.addToCart(widget.item, context);
                               },
                               didPressRemove: () {
-                                item.count = ((item?.count ?? 0) - 1)
-                                    .clamp(0, double.nan);
-                                snapshot.removeFromCart(item);
+                                widget.item.count =
+                                    ((widget.item?.count ?? 0) - 1)
+                                        .clamp(0, double.nan);
+                                snapshot.removeFromCart(widget.item);
                               },
-                              value: item.count == 0
+                              value: widget.item.count == 0
                                   ? tr("new_changes.add")
-                                  : item.count.toString(),
+                                  : widget.item.count.toString(),
                             ),
                           ],
                         ),

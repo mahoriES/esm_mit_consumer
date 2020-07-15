@@ -433,14 +433,14 @@ class OrderItemBottomView extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                'Call shop',
+                                'new_changes.call',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontFamily: 'Avenir',
                                   fontWeight: FontWeight.w800,
                                 ),
-                              ),
+                              ).tr(),
                             ),
                             // Support
                           ],
@@ -486,14 +486,14 @@ class OrderItemBottomView extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.all(5),
                           child: Text(
-                            'Call shop',
+                            'new_changes.call',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 12,
                               fontFamily: 'Avenir',
                               fontWeight: FontWeight.w800,
                             ),
-                          ),
+                          ).tr(),
                         ),
                         // Support
                       ],
