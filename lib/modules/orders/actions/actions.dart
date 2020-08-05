@@ -44,9 +44,10 @@ class GetOrderListAPIAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
@@ -83,9 +84,10 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class AddRatingAPIAction extends ReduxAction<AppState> {
@@ -103,16 +105,18 @@ class AddRatingAPIAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+  void after() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
 }
 
 class CancelOrderAPIAction extends ReduxAction<AppState> {
@@ -132,16 +136,18 @@ class CancelOrderAPIAction extends ReduxAction<AppState> {
       state.productState.getOrderListResponse.results[index].orderStatus =
           "CUSTOMER_CANCELLED";
 
-      dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
     return state.copyWith(productState: state.productState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+  void after() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
 }
 
 class AcceptOrderAPIAction extends ReduxAction<AppState> {
@@ -163,16 +169,18 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
 //      dispatch(GetOrderListAPIAction());
       state.productState.getOrderListResponse.results[index].orderStatus =
           "MERCHANT_ACCEPTED";
-      dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
     return state.copyWith(productState: state.productState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+  void after() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
 }
 
 class CompleteOrderAPIAction extends ReduxAction<AppState> {
@@ -192,16 +200,18 @@ class CompleteOrderAPIAction extends ReduxAction<AppState> {
       state.productState.getOrderListResponse.results[index].orderStatus =
           "COMPLETED";
 
-      dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
     return state.copyWith(productState: state.productState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+  void after() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
 }
 
 class SupportAPIAction extends ReduxAction<AppState> {
@@ -220,7 +230,7 @@ class SupportAPIAction extends ReduxAction<AppState> {
           msg:
               'Successfully raised an issue. Our support team will contact you shortly.');
 
-      dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
       dispatch(NavigateAction.pop());
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
@@ -228,9 +238,11 @@ class SupportAPIAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.submitted));
+  void after() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
 }
 
 class UpdateOrderAction extends ReduxAction<AppState> {
@@ -258,9 +270,10 @@ class UpdateOrderAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class OrderSupportAction extends ReduxAction<AppState> {

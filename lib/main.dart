@@ -32,6 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'modules/About/view/about_view.dart';
 import 'modules/language/view/language_view.dart';
 import 'modules/otp/view/otp_view.dart';
+import 'dart:ui';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -232,8 +233,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child:
-            Hero(tag: "#image", child: Image.asset('assets/images/splash.png')),
+        child: Image.asset('assets/images/splash.png'),
       )),
     );
   }

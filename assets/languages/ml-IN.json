@@ -170,16 +170,16 @@
   },
 
   "new_changes": {
-    "offline": "You are offline. Please check your internet connection",
-    "add_more": "Add more",
-    "add": "Add",
-    "shop_closed": "The Shop is Closed",
-    "choose_one": "please select Delivery / Pickup",
-    "clear_info": "Items from other store will be cleared. Would you like to continue.",
-    "continue": "Continue",
-    "order_id": "Order Id",
-    "call": "Call Support",
-    "no_contact": "No contact details available."
+    "offline": "നിങ്ങൾ ഓഫ്‌ലൈനിലാണ്. ദയവായി നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക",
+    "add_more": "കൂടുതൽ ചേർക്കുക",
+    "add": "ചേർക്കുക",
+    "shop_closed": "ഷോപ്പ് അടച്ചിരിക്കുന്നു",
+    "choose_one": "ദയവായി ഡെലിവറി / പിക്കപ്പ് തിരഞ്ഞെടുക്കുക",
+    "clear_info": "മറ്റ് സ്റ്റോറിൽ നിന്നുള്ള ഇനങ്ങൾ മായ്‌ക്കപ്പെടും. തുടരാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നുണ്ടോ?",
+    "continue": "തുടരുക",
+    "order_id": "ഓർഡർ ഐഡി",
+    "call": "കോൾ പിന്തുണ",
+    "no_contact": "കോൺ‌ടാക്റ്റ് വിശദാംശങ്ങളൊന്നും ലഭ്യമല്ല."
 
   }
 

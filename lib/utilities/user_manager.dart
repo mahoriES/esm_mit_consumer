@@ -20,8 +20,8 @@ class UserManager {
 
   static UserManager shared = UserManager();
 
-  Future<bool> isLoggedIn() async => await getToken().then((token) {
-        return token != null;
+  Future<bool> isLoggedIn() async => await userDetails().then((user) {
+        return user != null;
       });
 
   Future<bool> isAddressEntered() async =>

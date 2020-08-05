@@ -4,7 +4,7 @@ class ApiURL {
   static const developmentURL = "http://13.127.43.195/api/ChangePay/";
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
   static const liveURL = "https://api.esamudaay.com/";
-  static const baseURL = eSamudayDevelopmentURL;
+  static const baseURL = liveURL;
   static const generateOTPUrl = "api/v1/auth/token/";
   static const generateOtpRegisterUrl = "api/v1/auth/user/";
   static const updateCustomerDetails = "api/v1/auth/profiles";

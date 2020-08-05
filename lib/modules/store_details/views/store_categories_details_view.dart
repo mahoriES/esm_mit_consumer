@@ -63,7 +63,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                 store.dispatch(GetCategoriesDetailsAction());
               },
               builder: (context, snapshot) {
-                return snapshot.loadingStatus == LoadingStatus.loading
+                return snapshot.loadingStatus == LoadingStatusApp.loading
                     ? Container(
                         child: Center(
                           child: Image.asset(
@@ -427,7 +427,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(CategoriesNew) updateSelectedCategory;
   Business selectedMerchant;
   List<CategoriesNew> categories;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   _ViewModel();
   _ViewModel.build(
       {this.navigateToProductDetails,

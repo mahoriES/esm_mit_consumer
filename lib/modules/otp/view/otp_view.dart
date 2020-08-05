@@ -66,7 +66,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   width: 75,
                 ),
               ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Scaffold(
                   appBar: AppBar(
                       elevation: 0,
@@ -269,7 +269,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function() resendOtpRequest;
   String phoneNumber;
   bool otpEntered;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(bool) updateOtpEnterStatus;
   _ViewModel.build(
       {this.verifyOTP,

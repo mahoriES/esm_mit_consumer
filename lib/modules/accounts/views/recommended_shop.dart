@@ -49,7 +49,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: Scaffold(
                   appBar: AppBar(
                     elevation: 0,
@@ -431,7 +431,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(RecommendedShopRequest request) recommendedShop;
   Function navigateToHomePage;
   bool isPhoneNumberValid;

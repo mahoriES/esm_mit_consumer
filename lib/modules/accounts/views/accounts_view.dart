@@ -207,7 +207,7 @@ class _AccountsViewState extends State<AccountsView> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function navigateToRecommendedShop;
   Function navigateToProfile;
   Function navigateLanguage;

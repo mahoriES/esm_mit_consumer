@@ -88,10 +88,10 @@ class _CartViewState extends State<CartView> {
                   width: 75,
                 ),
               ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Container(
                 child: snapshot.localCart.isEmpty
-                    ? snapshot.loadingStatus != LoadingStatus.loading
+                    ? snapshot.loadingStatus != LoadingStatusApp.loading
                         ? EmptyView()
                         : Container()
                     : Column(
@@ -1028,7 +1028,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(PlaceOrderRequest) placeOrder;
   Function(PlaceOrderRequest) getTaxOfOrder;
   Function(int) getOrderTax;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(Business) updateSelectedMerchant;
   Address address;
   Data user;

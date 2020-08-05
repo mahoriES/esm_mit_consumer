@@ -38,14 +38,14 @@ class GetSubCatalogAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
   }
 }
@@ -103,14 +103,14 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
   }
 }

@@ -75,9 +75,10 @@ class GetOtpAction extends ReduxAction<AppState> {
         authState: state.authState.copyWith(getOtpRequest: request));
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class UpdateIsSignUpAction extends ReduxAction<AppState> {

@@ -81,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
                   width: 75,
                 ),
               ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Scaffold(
                   body: Padding(
                 padding: const EdgeInsets.only(left: 25.0, right: 25.0),
@@ -327,7 +327,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   Function navigateToOTPPage;
   Function updatePushToken;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(GenerateOTPRequest request) getOtpAction;
   bool isPhoneNumberValid;
 

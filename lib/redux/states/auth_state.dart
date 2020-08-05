@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart';
 
 class AuthState {
   final String deviceToken;
-  final LoadingStatus loadingStatus;
+  final LoadingStatusApp loadingStatus;
   final GenerateOTPRequest getOtpRequest;
   final ValidateOTPRequest validateOTPRequest;
   final CustomerDetailsRequest updateCustomerDetailsRequest;
@@ -47,7 +47,7 @@ class AuthState {
       cluster: null,
       token: "",
       isLoggedIn: false,
-      loadingStatus: LoadingStatus.success,
+      loadingStatus: LoadingStatusApp.success,
       isLoginSkipped: false,
       user: null,
       isPhoneNumberValid: true,
@@ -63,7 +63,7 @@ class AuthState {
   AuthState copyWith(
       {Data user,
       Address address,
-      LoadingStatus loadingStatus,
+      LoadingStatusApp loadingStatus,
       String mobileNumber,
       bool emailError,
       Cluster cluster,

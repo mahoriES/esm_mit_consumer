@@ -40,17 +40,15 @@ class CategoriesNew {
   CategoriesNew.fromJson(Map<String, dynamic> json) {
     categoryId = json['category_id'];
     categoryName = json['category_name'];
-    categoryDescription = json['category_description'];
-    parentCategoryId = json['parent_category_id'];
     isActive = json['is_active'];
     if (json['images'] != null) {
       images = new List<Images>();
-      if (images.length > 0) {
-        json['images'].forEach((v) {
-          images.add(new Images.fromJson(v));
-        });
-      }
+      json['images'].forEach((v) {
+        images.add(new Images.fromJson(v));
+      });
     }
+    categoryDescription = json['category_description'];
+    parentCategoryId = json['parent_category_id'];
   }
 
   Map<String, dynamic> toJson() {

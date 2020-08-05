@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
@@ -10,6 +12,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/keys.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -51,13 +54,8 @@ class _RegistrationState extends State<Registration> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: Scaffold(
-                  appBar: AppBar(
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    brightness: Brightness.light,
-                  ),
                   body: Padding(
                     padding: const EdgeInsets.only(left: 25.0, right: 25.0),
                     child: SingleChildScrollView(
@@ -299,7 +297,6 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
 
-
       //location
       //Register_but
       // Rectangle 10
@@ -311,7 +308,7 @@ class _RegistrationState extends State<Registration> {
                 addressController.text.isNotEmpty &&
                 pinCodeController.text.isNotEmpty) {
               if ((nameController.text.length < 3 ||
-                  !nameController.text.contains(new RegExp(r'[a-z]')))) {
+                  !nameController.text.contains(new RegExp(r'[a-zA-Z ]')))) {
                 Fluttertoast.showToast(
                     msg: tr('screen_register.name.empty_error'));
               } else if (pinCodeController.text.isEmpty
@@ -421,12 +418,20 @@ class _RegistrationState extends State<Registration> {
     pinCodeController.dispose();
     super.dispose();
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    window.physicalSize;
+    SystemChrome.setEnabledSystemUIOverlays([]);
+  }
 }
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(CustomerDetailsRequest request, AddressRequest)
       updateCustomerDetails;
   Function(AddressRequest) addAddress;

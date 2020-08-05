@@ -491,7 +491,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             children: <Widget>[
                                                               // Rate our service
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Container(
                                                                       child:
@@ -507,7 +507,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                   : Container(),
                                                               Text(
                                                                   snapshot.loadingStatus ==
-                                                                          LoadingStatus
+                                                                          LoadingStatusApp
                                                                               .submitted
                                                                       ? tr(
                                                                           'screen_order.rate_ok')
@@ -530,7 +530,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                       TextAlign
                                                                           .left),
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Container()
                                                                   : Padding(
@@ -542,7 +542,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               15),
                                                                       child:
                                                                           IgnorePointer(
-                                                                        ignoring: snapshot.loadingStatus == LoadingStatus.loading || widget != null
+                                                                        ignoring: snapshot.loadingStatus == LoadingStatusApp.loading || widget != null
                                                                             ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating ==
                                                                                 null
                                                                             : false,
@@ -578,7 +578,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                       ),
                                                                     ),
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Container()
                                                                   : Padding(
@@ -597,7 +597,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                           child:
                                                                               IgnorePointer(
                                                                             ignoring:
-                                                                                snapshot.loadingStatus == LoadingStatus.loading,
+                                                                                snapshot.loadingStatus == LoadingStatusApp.loading,
                                                                             child:
                                                                                 TextFormField(
 //                                                            expands: true,
@@ -619,7 +619,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                     ),
                                                               // Rectangle 2088
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Padding(
                                                                       padding:
@@ -629,16 +629,16 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                               IgnorePointer(
                                                                 ignoring: snapshot
                                                                         .loadingStatus ==
-                                                                    LoadingStatus
+                                                                    LoadingStatusApp
                                                                         .loading,
                                                                 child: InkWell(
                                                                   onTap: () {
                                                                     if (snapshot
                                                                             .loadingStatus ==
-                                                                        LoadingStatus
+                                                                        LoadingStatusApp
                                                                             .submitted) {
                                                                       snapshot.updateLoadingStatus(
-                                                                          LoadingStatus
+                                                                          LoadingStatusApp
                                                                               .success);
                                                                       Navigator.pop(
                                                                           context);
@@ -666,7 +666,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                         milliseconds:
                                                                             200),
                                                                     width: snapshot.loadingStatus ==
-                                                                            LoadingStatus.loading
+                                                                            LoadingStatusApp.loading
                                                                         ? 40
                                                                         : 141,
                                                                     height: 38,
@@ -679,7 +679,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                     child: // Submit
                                                                         Center(
                                                                       child: snapshot.loadingStatus ==
-                                                                              LoadingStatus
+                                                                              LoadingStatusApp
                                                                                   .loading
                                                                           ? Container(
                                                                               height: 75,
@@ -691,7 +691,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               ),
                                                                             )
                                                                           : Text(
-                                                                              snapshot.loadingStatus == LoadingStatus.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
+                                                                              snapshot.loadingStatus == LoadingStatusApp.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
                                                                               style: const TextStyle(color: const Color(0xffffffff), fontWeight: FontWeight.w400, fontFamily: "Avenir", fontStyle: FontStyle.normal, fontSize: 16.0),
                                                                               textAlign: TextAlign.left),
                                                                     ),
@@ -883,8 +883,8 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String orderId) updateOrderId;
   GetOrderListResponse getOrderListResponse;
   Function(AddReviewRequest, String) rateOrder;
-  Function(LoadingStatus) updateLoadingStatus;
-  LoadingStatus loadingStatus;
+  Function(LoadingStatusApp) updateLoadingStatus;
+  LoadingStatusApp loadingStatus;
   _ViewModel();
   _ViewModel.build(
       {this.getOrderListResponse,

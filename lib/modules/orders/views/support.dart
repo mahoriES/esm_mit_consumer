@@ -58,7 +58,7 @@ class _SupportState extends State<Support> {
           model: _ViewModel(),
           onInit: (store) {},
           builder: (context, snapshot) {
-            return snapshot.loadingStatus == LoadingStatus.loading
+            return snapshot.loadingStatus == LoadingStatusApp.loading
                 ? Container(
                     child: Center(
                       child: CircularProgressIndicator(),
@@ -281,7 +281,7 @@ class _SupportState extends State<Support> {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   String orderId;
   String userName;
   String userEmail;

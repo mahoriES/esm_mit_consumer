@@ -98,11 +98,11 @@ class _OrdersViewState extends State<OrdersView> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: (snapshot.getOrderListResponse == null ||
                         snapshot.getOrderListResponse.results == null ||
                         snapshot.getOrderListResponse.results.isEmpty)
-                    ? snapshot.loadingStatus != LoadingStatus.loading
+                    ? snapshot.loadingStatus != LoadingStatusApp.loading
                         ? buildEmptyView(context, snapshot)
                         : Container()
                     : Container(
@@ -1002,7 +1002,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String, int) acceptOrder;
   Function(String, int) cancelOrder;
   Function(String, int) completeOrder;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(String) getOrderList;
 
   _ViewModel();

@@ -46,12 +46,12 @@ class UpdateProfileAction extends ReduxAction<AppState> {
     return state.copyWith(authState: state.authState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
-class GetProfileAction extends ReduxAction<AppState> {
+class GetProfileActions extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared
@@ -60,7 +60,7 @@ class GetProfileAction extends ReduxAction<AppState> {
     if (response.data['statusCode'] == 200) {
       GetProfile profile = GetProfile.fromJson(response.data);
 
-      dispatch(NavigateAction.pop());
+//      dispatch(NavigateAction.pop());
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
       //throw UserException(response.data['status']);
@@ -68,9 +68,9 @@ class GetProfileAction extends ReduxAction<AppState> {
     return state.copyWith(authState: state.authState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class UploadImageAction extends ReduxAction<AppState> {
@@ -120,13 +120,13 @@ class UploadImageAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
   }
 }

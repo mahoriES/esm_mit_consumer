@@ -126,8 +126,9 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading &&
-                    snapshot.merchants.isEmpty,
+                inAsyncCall:
+                    snapshot.loadingStatus == LoadingStatusApp.loading &&
+                        snapshot.merchants.isEmpty,
                 child: SmartRefresher(
                   enablePullDown: true,
                   enablePullUp: true,
@@ -173,7 +174,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   },
                   child: (snapshot.merchants == null ||
                           snapshot.merchants.isEmpty)
-                      ? snapshot.loadingStatus != LoadingStatus.loading
+                      ? snapshot.loadingStatus != LoadingStatusApp.loading
                           ? buildEmptyView(context, snapshot)
                           : Container()
                       : ListView(
@@ -529,7 +530,7 @@ class _ViewModel extends BaseModel<AppState> {
   int currentIndex;
   List<Business> merchants;
   List<Photo> banners;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Cluster cluster;
   GetBusinessesResponse response;
   _ViewModel.build(

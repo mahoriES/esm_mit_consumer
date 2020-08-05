@@ -252,7 +252,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         ),
                       ),
                       inAsyncCall:
-                          snapshot.loadingStatus == LoadingStatus.loading,
+                          snapshot.loadingStatus == LoadingStatusApp.loading,
                       opacity: 0,
                       child: TabBarView(
                         controller: controller,
@@ -260,7 +260,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         children: List.generate(
                           count,
                           (index) => snapshot.products.isEmpty
-                              ? snapshot.loadingStatus == LoadingStatus.loading
+                              ? snapshot.loadingStatus ==
+                                      LoadingStatusApp.loading
                                   ? Container()
                                   : EmptyViewProduct()
                               : SmartRefresher(
@@ -437,7 +438,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToCart;
   CatalogSearchResponse productResponse;
   List<Product> products;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   List<Product> localCartListing;
   List<Product> productTempListing;
   Merchants selectedMerchant;
