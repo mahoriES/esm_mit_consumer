@@ -90,6 +90,43 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
+class PaymentAPIAction extends ReduxAction<AppState> {
+  final String orderId;
+
+  PaymentAPIAction({this.orderId});
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+        url: ApiURL.placeOrderUrl + orderId + '/payment',
+        params: {"": ""},
+        requestType: RequestType.post);
+
+    if (response.status == ResponseStatus.success200) {
+      GetOrderListResponse orderResponse = new GetOrderListResponse();
+      orderResponse.results = state.productState.getOrderListResponse.results;
+      orderResponse.results.forEach((e) {
+        if (e.orderId == orderId) {
+          e.paymentInfo = PaymentInfo(
+              dt: e.paymentInfo.dt,
+              status: "INITIATED",
+              upi: e.paymentInfo.upi);
+        }
+      });
+      return state.copyWith(
+          productState:
+              state.productState.copyWith(getOrderListResponse: orderResponse));
+    } else {
+      Fluttertoast.showToast(msg: response.data['message']);
+    }
+    return null;
+  }
+
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+}
+
 class AddRatingAPIAction extends ReduxAction<AppState> {
   final AddReviewRequest request;
   final String orderId;

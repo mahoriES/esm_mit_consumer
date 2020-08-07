@@ -63,6 +63,7 @@ dependencies:
   flutter_staggered_animations: ^0.1.2
   status_alert: ^0.1.2
   dropdown_formfield: ^0.1.2
+  flutter_upi: ^0.0.2
 
 
 
@@ -131,6 +132,11 @@ flutter:
     - assets/images/group236.png
     - assets/images/indicator.gif
     - assets/images/splash.png
+    - assets/images/upi.png
+    - assets/images/phonePe.png
+    - assets/images/gpay.png
+    - assets/images/paytmLogo.png
+    - assets/images/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
@@ -11,6 +10,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +30,7 @@ class _RegistrationState extends State<Registration> {
   TextEditingController addressController = TextEditingController();
   TextEditingController pinCodeController = TextEditingController();
   String latitude, longitude;
-
+  String selectedCircle = 'UDUPI01';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -251,42 +251,67 @@ class _RegistrationState extends State<Registration> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Flexible(
-                  child: TextFormField(
-                      validator: (value) {
-                        if (value.length == 0) return null;
-
-                        if (value.isEmpty
-//                                                ||
-//                                                !pinCodeController.text
-//                                                    .contains(new RegExp(
-//                                                        r'^[1-9][0-9]{5}$'))
-
-                            ) {
-                          return tr('screen_register.pin_code.title');
-                          return null;
-                        }
-                        return null;
-                      },
-                      autovalidate: true,
-                      controller: pinCodeController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: tr('screen_register.pin_code.title'),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      style: const TextStyle(
-                          color: const Color(0xff1a1a1a),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 13.0),
-                      textAlign: TextAlign.center),
-                ),
+                Expanded(
+                    child: Center(
+                  child: DropdownButton<String>(
+                    items: <String>['UDUPI01'].map((String value) {
+                      return new DropdownMenuItem<String>(
+                        value: selectedCircle,
+                        child: new Text(selectedCircle,
+                            style: TextStyle(
+                                color: const Color(0xff1a1a1a),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Avenir",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 13.0),
+                            textAlign: TextAlign.center),
+                      );
+                    }).toList(),
+                    value: selectedCircle,
+                    isDense: false,
+                    underline: Container(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCircle = value;
+                      });
+                    },
+                  ),
+                )
+//                  TextFormField(
+//                      validator: (value) {
+//                        if (value.length == 0) return null;
+//
+//                        if (value.isEmpty
+////                                                ||
+////                                                !pinCodeController.text
+////                                                    .contains(new RegExp(
+////                                                        r'^[1-9][0-9]{5}$'))
+//
+//                            ) {
+//                          return tr('screen_register.pin_code.title');
+//                          return null;
+//                        }
+//                        return null;
+//                      },
+//                      autovalidate: true,
+//                      controller: pinCodeController,
+//                      keyboardType: TextInputType.text,
+//                      decoration: InputDecoration(
+//                        hintText: tr('screen_register.pin_code.title'),
+//                        border: InputBorder.none,
+//                        focusedBorder: InputBorder.none,
+//                        enabledBorder: InputBorder.none,
+//                        errorBorder: InputBorder.none,
+//                        disabledBorder: InputBorder.none,
+//                      ),
+//                      style: const TextStyle(
+//                          color: const Color(0xff1a1a1a),
+//                          fontWeight: FontWeight.w400,
+//                          fontFamily: "Avenir",
+//                          fontStyle: FontStyle.normal,
+//                          fontSize: 13.0),
+//                      textAlign: TextAlign.center),
+                    ),
                 Icon(
                   Icons.local_post_office,
                   color: AppColors.icColors,
@@ -305,25 +330,26 @@ class _RegistrationState extends State<Registration> {
         child: InkWell(
           onTap: () {
             if (nameController.text.isNotEmpty &&
-                addressController.text.isNotEmpty &&
-                pinCodeController.text.isNotEmpty) {
+                addressController.text.isNotEmpty) {
               if ((nameController.text.length < 3 ||
                   !nameController.text.contains(new RegExp(r'[a-zA-Z ]')))) {
                 Fluttertoast.showToast(
                     msg: tr('screen_register.name.empty_error'));
-              } else if (pinCodeController.text.isEmpty
-//                                      ||
-//                                      !pinCodeController.text
-//                                          .contains(new RegExp(r'^\d{6}$'))
-
-                  ) {
-                Fluttertoast.showToast(
-                    msg: tr('screen_register.pin_code.title'));
-              } else {
+              }
+//              else if (pinCodeController.text.isEmpty
+////                                      ||
+////                                      !pinCodeController.text
+////                                          .contains(new RegExp(r'^\d{6}$'))
+//
+//                  ) {
+//                Fluttertoast.showToast(
+//                    msg: tr('screen_register.pin_code.title'));
+//              }
+              else {
                 snapshot.updateCustomerDetails(
                     CustomerDetailsRequest(
                         profileName: nameController.text,
-                        clusterCode: pinCodeController.text,
+                        clusterCode: selectedCircle,
                         role: "CUSTOMER"),
                     AddressRequest(
                         addressName: nameController.text,

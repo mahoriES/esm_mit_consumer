@@ -1,3 +1,4 @@
+import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 
@@ -94,10 +95,10 @@ class PlaceOrderResponse {
   String businessId;
   String deliveryType;
   String orderStatus;
-  int itemTotal;
-  int otherCharges;
-  int deliveryCharges;
-  int orderTotal;
+  double itemTotal;
+  double otherCharges;
+  double deliveryCharges;
+  double orderTotal;
   List<BusinessImages> businessImages;
   String businessName;
   String clusterName;
@@ -111,10 +112,11 @@ class PlaceOrderResponse {
   String created;
   String modified;
   Rating rating;
-
+  PaymentInfo paymentInfo;
   PlaceOrderResponse(
       {this.deliveryCharges,
       this.orderId,
+      this.paymentInfo,
       this.orderShortNumber,
       this.deliveryType,
       this.orderStatus,
@@ -142,19 +144,30 @@ class PlaceOrderResponse {
     orderShortNumber = json['order_short_number'];
     deliveryType = json['delivery_type'];
     orderStatus = json['order_status'];
-    itemTotal = json['item_total'];
-    otherCharges = json['other_charges'];
-    deliveryCharges = json['delivery_charges'];
-    orderTotal = json['order_total'];
+    itemTotal = json['item_total'] != null
+        ? double.parse(json['item_total'].toString())
+        : json['item_total'];
+    otherCharges = json['other_charges'] != null
+        ? double.parse(json['other_charges'].toString())
+        : json['other_charges'];
+    deliveryCharges = json['delivery_charges'] != null
+        ? double.parse(json['delivery_charges'].toString())
+        : json['delivery_charges'];
+    orderTotal = json['order_total'] != null
+        ? double.parse(json['order_total'].toString())
+        : json['order_total'];
     if (json['business_images'] != null) {
       businessImages = new List<BusinessImages>();
       json['business_images'].forEach((v) {
-        businessImages.add(new BusinessImages.fromJson(v));
+        businessImages.add(BusinessImages.fromJson(v));
       });
     }
     businessName = json['business_name'];
     clusterName = json['cluster_name'];
     customerName = json['customer_name'];
+    paymentInfo = json['payment_info'] != null
+        ? new PaymentInfo.fromJson(json['payment_info'])
+        : null;
     pickupAddress = json['pickup_address'] != null
         ? new PickupAddress.fromJson(json['pickup_address'])
         : null;
@@ -226,6 +239,9 @@ class PlaceOrderResponse {
     data['modified'] = this.modified;
     if (this.rating != null) {
       data['rating'] = this.rating.toJson();
+    }
+    if (this.paymentInfo != null) {
+      data['payment_info'] = this.paymentInfo.toJson();
     }
     return data;
   }

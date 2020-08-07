@@ -1,5 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
@@ -9,12 +8,11 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/customAlert.dart';
-import 'package:eSamudaay/utilities/extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ExpandableListView extends StatefulWidget {
   final int merchantIndex;
@@ -77,7 +75,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                     .results[widget.merchantIndex].created)
                                 .toLocal()), //"20 -April, 07.45 PM ",
                         price:
-                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal / 100}",
+                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal / 100.0}",
                       ),
                     ),
                     AnimatedContainer(

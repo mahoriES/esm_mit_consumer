@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
@@ -14,8 +13,10 @@ import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_upi/flutter_upi.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -396,7 +397,14 @@ class OrderItemBottomView extends StatelessWidget {
                   ? StoreConnector<AppState, _ViewModel>(
                       model: _ViewModel(),
                       builder: (context, snapshot) {
-                        return buildCustomButton(snapshot);
+                        return Row(
+                          children: [
+                            orderStatus == 'MERCHANT_ACCEPTED'
+                                ? Image.asset('assets/images/upi.png')
+                                : Container(),
+                            buildCustomButton(snapshot, context),
+                          ],
+                        );
                       })
                   : Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -509,7 +517,8 @@ class OrderItemBottomView extends StatelessWidget {
   bool isButtonShow() {
     if (orderStatus == "CREATED" ||
         orderStatus == "COMPLETED" ||
-        orderStatus == "MERCHANT_UPDATED") {
+        orderStatus == "MERCHANT_UPDATED" ||
+        orderStatus == 'MERCHANT_ACCEPTED') {
       return true;
     } else if (orderStatus == "READY_FOR_PICKUP") {
       if (deliveryStatus == "SELF_PICK_UP")
@@ -521,7 +530,22 @@ class OrderItemBottomView extends StatelessWidget {
     }
   }
 
-  CustomButton buildCustomButton(_ViewModel snapshot) {
+  Future<String> initTransaction(String app, PlaceOrderResponse order) async {
+    String response = await FlutterUpi.initiateTransaction(
+        app: app,
+        pa: order.paymentInfo.upi,
+        pn: order.businessName,
+        tr: order.orderId,
+        tn: "Order payment",
+        am: order.orderTotal.toString(),
+        cu: "INR",
+        url: "");
+    print(response);
+
+    return response;
+  }
+
+  CustomButton buildCustomButton(_ViewModel snapshot, BuildContext context) {
     return CustomButton(
       title: title(),
       backgroundColor: orderStatus == "COMPLETED"
@@ -554,6 +578,161 @@ class OrderItemBottomView extends StatelessWidget {
             deliveryStatus == "SELF_PICK_UP") {
           snapshot.completeOrder(
               snapshot.getOrderListResponse.results[index].orderId, index);
+        } else if (orderStatus == 'MERCHANT_ACCEPTED') {
+          showModalBottomSheet(
+              context: context,
+              builder: (c) {
+                return Container(
+                  height: 150,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        // Select app to Pay
+                        Text("Select app to Pay",
+                            style: const TextStyle(
+                                color: const Color(0xff6f6f6f),
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Avenir",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0),
+                            textAlign: TextAlign.left),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                var response = await initTransaction(
+                                    FlutterUpiApps.PayTM,
+                                    snapshot
+                                        .getOrderListResponse.results[index]);
+                                switch (response) {
+                                  case 'app_not_installed':
+                                    Fluttertoast.showToast(
+                                        msg: 'Application not installed.');
+
+                                    break;
+                                  case 'invalid_params':
+                                    Fluttertoast.showToast(
+                                        msg: "Request parameters are wrong");
+                                    break;
+                                  case 'user_canceled':
+                                    Fluttertoast.showToast(
+                                        msg: "User canceled");
+                                    break;
+                                  case 'null_response':
+                                    Fluttertoast.showToast(
+                                        msg: "No data received");
+                                    break;
+                                  default:
+                                    {
+                                      snapshot.notifyPayment(snapshot
+                                          .getOrderListResponse
+                                          .results[index]
+                                          .orderId);
+                                    }
+                                }
+                              },
+                              child: Container(
+                                child:
+                                    Image.asset('assets/images/paytmLogo.png'),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                var response = await initTransaction(
+                                    FlutterUpiApps.PhonePe,
+                                    snapshot
+                                        .getOrderListResponse.results[index]);
+                                switch (response) {
+                                  case 'app_not_installed':
+                                    Fluttertoast.showToast(
+                                        msg: 'Application not installed.');
+
+                                    break;
+                                  case 'invalid_params':
+                                    Fluttertoast.showToast(
+                                        msg: "Request parameters are wrong");
+                                    break;
+                                  case 'user_canceled':
+                                    Fluttertoast.showToast(
+                                        msg: "User canceled");
+                                    break;
+                                  case 'null_response':
+                                    Fluttertoast.showToast(
+                                        msg: "No data received");
+                                    break;
+                                  default:
+                                    {
+                                      snapshot.notifyPayment(snapshot
+                                          .getOrderListResponse
+                                          .results[index]
+                                          .orderId);
+                                    }
+                                }
+                              },
+                              child: Container(
+                                child: Image.asset('assets/images/phonePe.png'),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                var response = await initTransaction(
+                                    FlutterUpiApps.GooglePay,
+                                    snapshot
+                                        .getOrderListResponse.results[index]);
+                                switch (response) {
+                                  case 'app_not_installed':
+                                    Fluttertoast.showToast(
+                                        msg: 'Application not installed.');
+
+                                    break;
+                                  case 'invalid_params':
+                                    Fluttertoast.showToast(
+                                        msg: "Request parameters are wrong");
+                                    break;
+                                  case 'user_canceled':
+                                    Fluttertoast.showToast(
+                                        msg: "User canceled");
+                                    break;
+                                  case 'null_response':
+                                    Fluttertoast.showToast(
+                                        msg: "No data received");
+                                    break;
+                                  default:
+                                    {
+                                      snapshot.notifyPayment(snapshot
+                                          .getOrderListResponse
+                                          .results[index]
+                                          .orderId);
+                                    }
+                                }
+                              },
+                              child: Container(
+                                child: Image.asset('assets/images/gpay.png'),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              });
+//          String response = await FlutterUpi.initiateTransaction(
+//            app: FlutterUpiApps.PayTM,
+//            pa: "receiver@upi",
+//            pn: "Receiver Name",
+//            tr: "UniqueTransactionId",
+//            tn: "This is a transaction Note",
+//            am: "5.01",
+//            mc: "YourMerchantId", // optional
+//            cu: "INR",
+//            url: "https://www.google.com",
+//          );
         } else {
           //cancel order api
           snapshot.cancelOrder(
@@ -569,6 +748,8 @@ class OrderItemBottomView extends StatelessWidget {
     } else if (orderStatus == "MERCHANT_ACCEPTED") {
       if (deliveryStatus == "SELF_PICK_UP")
         return tr('screen_order.pickup');
+      else if (orderStatus == 'MERCHANT_ACCEPTED')
+        return 'Pay via UPI';
       else
         return "";
     } else if (orderStatus == "CUSTOMER_CANCELLED") {
@@ -997,6 +1178,7 @@ class _OrdersListViewState extends State<OrdersListView>
 class _ViewModel extends BaseModel<AppState> {
   GetOrderListResponse getOrderListResponse;
   Function(String orderId) updateOrderId;
+  Function(String orderId) notifyPayment;
   Function viewStore;
   Function(PlaceOrderRequest) placeOrder;
   Function(String, int) acceptOrder;
@@ -1010,6 +1192,7 @@ class _ViewModel extends BaseModel<AppState> {
       {this.getOrderListResponse,
       this.placeOrder,
       this.updateOrderId,
+      this.notifyPayment,
       this.cancelOrder,
       this.acceptOrder,
       this.loadingStatus,
@@ -1021,6 +1204,9 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        notifyPayment: (orderId) {
+          dispatch(PaymentAPIAction(orderId: orderId));
+        },
         updateOrderId: (value) {
           dispatch(OrderSupportAction(orderId: value));
         },
