@@ -350,6 +350,7 @@ class OrderItemBottomView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var order = snapshot.getOrderListResponse.results[index];
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
       child: Column(
@@ -508,7 +509,48 @@ class OrderItemBottomView extends StatelessWidget {
                     ),
                   ),
                 )
-              : Container()
+              : Container(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: InkWell(
+              onTap: () {
+                if (order.paymentInfo.status == 'PENDING' ||
+                    order.paymentInfo.status == 'REJECTED') {
+                  snapshot.notifyPayment(order.orderId);
+                }
+              },
+              child: Row(
+                children: [
+                  Spacer(),
+                  Container(
+                    child: // I’ve made my payment
+                        Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Icon(
+                            Icons.check_circle_outline,
+                            color: order.paymentInfo.status == 'INITIATED'
+                                ? AppColors.mainColor
+                                : Colors.grey,
+                            size: 15,
+                          ),
+                        ),
+                        Text("I’ve made my payment",
+                            style: const TextStyle(
+                                color: const Color(0xff504e4e),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "HelveticaNeue",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 12.0),
+                            textAlign: TextAlign.left),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -579,160 +621,154 @@ class OrderItemBottomView extends StatelessWidget {
           snapshot.completeOrder(
               snapshot.getOrderListResponse.results[index].orderId, index);
         } else if (orderStatus == 'MERCHANT_ACCEPTED') {
-          showModalBottomSheet(
-              context: context,
-              builder: (c) {
-                return Container(
-                  height: 150,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        // Select app to Pay
-                        Text("Select app to Pay",
-                            style: const TextStyle(
-                                color: const Color(0xff6f6f6f),
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 16.0),
-                            textAlign: TextAlign.left),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                var response = await initTransaction(
-                                    FlutterUpiApps.PayTM,
-                                    snapshot
-                                        .getOrderListResponse.results[index]);
-                                switch (response) {
-                                  case 'app_not_installed':
-                                    Fluttertoast.showToast(
-                                        msg: 'Application not installed.');
+          var order = snapshot.getOrderListResponse.results[index];
+          if (order.paymentInfo.status == 'PENDING' ||
+              order.paymentInfo.status == 'REJECTED') {
+            showModalBottomSheet(
+                context: context,
+                builder: (c) {
+                  return Container(
+                    height: 150,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          // Select app to Pay
+                          Text("Select app to Pay",
+                              style: const TextStyle(
+                                  color: const Color(0xff6f6f6f),
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Avenir",
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 16.0),
+                              textAlign: TextAlign.left),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  var response = await initTransaction(
+                                      FlutterUpiApps.PayTM,
+                                      snapshot
+                                          .getOrderListResponse.results[index]);
+                                  switch (response) {
+                                    case 'app_not_installed':
+                                      Fluttertoast.showToast(
+                                          msg: 'Application not installed.');
 
-                                    break;
-                                  case 'invalid_params':
-                                    Fluttertoast.showToast(
-                                        msg: "Request parameters are wrong");
-                                    break;
-                                  case 'user_canceled':
-                                    Fluttertoast.showToast(
-                                        msg: "User canceled");
-                                    break;
-                                  case 'null_response':
-                                    Fluttertoast.showToast(
-                                        msg: "No data received");
-                                    break;
-                                  default:
-                                    {
-                                      snapshot.notifyPayment(snapshot
-                                          .getOrderListResponse
-                                          .results[index]
-                                          .orderId);
-                                    }
-                                }
-                              },
-                              child: Container(
-                                child:
-                                    Image.asset('assets/images/paytmLogo.png'),
+                                      break;
+                                    case 'invalid_params':
+                                      Fluttertoast.showToast(
+                                          msg: "Request parameters are wrong");
+                                      break;
+                                    case 'user_canceled':
+                                      Fluttertoast.showToast(
+                                          msg: "User canceled");
+                                      break;
+                                    case 'null_response':
+                                      Fluttertoast.showToast(
+                                          msg: "No data received");
+                                      break;
+                                    default:
+                                      {
+                                        snapshot.notifyPayment(snapshot
+                                            .getOrderListResponse
+                                            .results[index]
+                                            .orderId);
+                                      }
+                                  }
+                                },
+                                child: Container(
+                                  child: Image.asset(
+                                      'assets/images/paytmLogo.png'),
+                                ),
                               ),
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                var response = await initTransaction(
-                                    FlutterUpiApps.PhonePe,
-                                    snapshot
-                                        .getOrderListResponse.results[index]);
-                                switch (response) {
-                                  case 'app_not_installed':
-                                    Fluttertoast.showToast(
-                                        msg: 'Application not installed.');
+                              InkWell(
+                                onTap: () async {
+                                  var response = await initTransaction(
+                                      FlutterUpiApps.PhonePe,
+                                      snapshot
+                                          .getOrderListResponse.results[index]);
+                                  switch (response) {
+                                    case 'app_not_installed':
+                                      Fluttertoast.showToast(
+                                          msg: 'Application not installed.');
 
-                                    break;
-                                  case 'invalid_params':
-                                    Fluttertoast.showToast(
-                                        msg: "Request parameters are wrong");
-                                    break;
-                                  case 'user_canceled':
-                                    Fluttertoast.showToast(
-                                        msg: "User canceled");
-                                    break;
-                                  case 'null_response':
-                                    Fluttertoast.showToast(
-                                        msg: "No data received");
-                                    break;
-                                  default:
-                                    {
-                                      snapshot.notifyPayment(snapshot
-                                          .getOrderListResponse
-                                          .results[index]
-                                          .orderId);
-                                    }
-                                }
-                              },
-                              child: Container(
-                                child: Image.asset('assets/images/phonePe.png'),
+                                      break;
+                                    case 'invalid_params':
+                                      Fluttertoast.showToast(
+                                          msg: "Request parameters are wrong");
+                                      break;
+                                    case 'user_canceled':
+                                      Fluttertoast.showToast(
+                                          msg: "User canceled");
+                                      break;
+                                    case 'null_response':
+                                      Fluttertoast.showToast(
+                                          msg: "No data received");
+                                      break;
+                                    default:
+                                      {
+                                        snapshot.notifyPayment(snapshot
+                                            .getOrderListResponse
+                                            .results[index]
+                                            .orderId);
+                                      }
+                                  }
+                                },
+                                child: Container(
+                                  child:
+                                      Image.asset('assets/images/phonePe.png'),
+                                ),
                               ),
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                var response = await initTransaction(
-                                    FlutterUpiApps.GooglePay,
-                                    snapshot
-                                        .getOrderListResponse.results[index]);
-                                switch (response) {
-                                  case 'app_not_installed':
-                                    Fluttertoast.showToast(
-                                        msg: 'Application not installed.');
+                              InkWell(
+                                onTap: () async {
+                                  var response = await initTransaction(
+                                      FlutterUpiApps.GooglePay,
+                                      snapshot
+                                          .getOrderListResponse.results[index]);
+                                  switch (response) {
+                                    case 'app_not_installed':
+                                      Fluttertoast.showToast(
+                                          msg: 'Application not installed.');
 
-                                    break;
-                                  case 'invalid_params':
-                                    Fluttertoast.showToast(
-                                        msg: "Request parameters are wrong");
-                                    break;
-                                  case 'user_canceled':
-                                    Fluttertoast.showToast(
-                                        msg: "User canceled");
-                                    break;
-                                  case 'null_response':
-                                    Fluttertoast.showToast(
-                                        msg: "No data received");
-                                    break;
-                                  default:
-                                    {
-                                      snapshot.notifyPayment(snapshot
-                                          .getOrderListResponse
-                                          .results[index]
-                                          .orderId);
-                                    }
-                                }
-                              },
-                              child: Container(
-                                child: Image.asset('assets/images/gpay.png'),
+                                      break;
+                                    case 'invalid_params':
+                                      Fluttertoast.showToast(
+                                          msg: "Request parameters are wrong");
+                                      break;
+                                    case 'user_canceled':
+                                      Fluttertoast.showToast(
+                                          msg: "User canceled");
+                                      break;
+                                    case 'null_response':
+                                      Fluttertoast.showToast(
+                                          msg: "No data received");
+                                      break;
+                                    default:
+                                      {
+                                        snapshot.notifyPayment(snapshot
+                                            .getOrderListResponse
+                                            .results[index]
+                                            .orderId);
+                                      }
+                                  }
+                                },
+                                child: Container(
+                                  child: Image.asset('assets/images/gpay.png'),
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      ],
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              });
-//          String response = await FlutterUpi.initiateTransaction(
-//            app: FlutterUpiApps.PayTM,
-//            pa: "receiver@upi",
-//            pn: "Receiver Name",
-//            tr: "UniqueTransactionId",
-//            tn: "This is a transaction Note",
-//            am: "5.01",
-//            mc: "YourMerchantId", // optional
-//            cu: "INR",
-//            url: "https://www.google.com",
-//          );
+                  );
+                });
+          }
         } else {
           //cancel order api
           snapshot.cancelOrder(
