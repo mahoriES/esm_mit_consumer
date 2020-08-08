@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
-
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
@@ -20,8 +18,8 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
-import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -978,39 +976,43 @@ class EmptyView extends StatelessWidget {
           SizedBox(
             height: 30,
           ),
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                height: 46,
-                width: 160,
-                decoration: BoxDecoration(
-                  color: Color(0xff5091cd),
-                  borderRadius: BorderRadius.circular(23),
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'common.view_store',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontFamily: 'Avenir',
-                          fontWeight: FontWeight.w900,
+          StoreConnector<AppState, _ViewModel>(
+              model: _ViewModel(),
+              builder: (context, snapshot) {
+                return InkWell(
+                  onTap: () {
+                    snapshot.navigateToStore();
+                  },
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Container(
+                      height: 46,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: Color(0xff5091cd),
+                        borderRadius: BorderRadius.circular(23),
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'common.view_store',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontFamily: 'Avenir',
+                                fontWeight: FontWeight.w900,
+                              ),
+                              textAlign: TextAlign.center,
+                            ).tr(),
+                          ],
                         ),
-                        textAlign: TextAlign.center,
-                      ).tr(),
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ),
+                );
+              }),
         ],
       ),
     );
@@ -1030,11 +1032,13 @@ class _ViewModel extends BaseModel<AppState> {
   Function(int) getOrderTax;
   LoadingStatusApp loadingStatus;
   Function(Business) updateSelectedMerchant;
+  VoidCallback navigateToStore;
   Address address;
   Data user;
   _ViewModel();
   _ViewModel.build(
       {this.localCart,
+      this.navigateToStore,
       this.charges,
       this.updateSelectedMerchant,
       this.placeOrder,
@@ -1066,6 +1070,9 @@ class _ViewModel extends BaseModel<AppState> {
         localCart: state.productState.localCartItems,
         user: state.authState.user,
         loadingStatus: state.authState.loadingStatus,
+        navigateToStore: () {
+          dispatch(UpdateSelectedTabAction(0));
+        },
         getCartTotal: () {
           if (state.productState.localCartItems.isNotEmpty) {
             var total =

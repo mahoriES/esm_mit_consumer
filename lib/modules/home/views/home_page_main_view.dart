@@ -1,19 +1,18 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
-import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -60,64 +59,94 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   Widget build(BuildContext context) {
     return UserExceptionDialog<AppState>(
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          brightness: Brightness.light,
-          automaticallyImplyLeading: false,
-          titleSpacing: 0.0,
-          centerTitle: false,
-          title: StoreConnector<AppState, _ViewModel>(
-              model: _ViewModel(),
-              onInit: (store) {
-                store.dispatch(GetCartFromLocal());
-                store.dispatch(GetUserFromLocalStorageAction());
-              },
-              builder: (context, snapshot) {
-                return Text(snapshot?.cluster?.clusterName ?? "",
-                    style: TextStyle(
-                      fontFamily: 'JTLeonor',
-                      color: Colors.black,
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                    ));
-              }),
-          leading: ImageIcon(
-            AssetImage('assets/images/location2.png'),
-            color: AppColors.mainColor,
-          ),
-          actions: <Widget>[
-            StoreConnector<AppState, _ViewModel>(
-                model: _ViewModel(),
-                builder: (context, snapshot) {
-                  address = snapshot.userAddress;
-                  return InkWell(
-                    onTap: () {
-                      snapshot.navigateToCart();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: NavigationCartItem(
-                        icon: ImageIcon(
-                          AssetImage('assets/images/bag2.png'),
-                          color: Colors.grey,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(129.0), // here the desired height
+          child: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            brightness: Brightness.light,
+            automaticallyImplyLeading: false,
+            titleSpacing: 0.0,
+            centerTitle: false,
+            flexibleSpace: // Rectangle 2102
+                Container(
+              height: 129,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment(0.5, 0),
+                      end: Alignment(0.5, 1),
+                      colors: [
+                    const Color(0xff5f3a9f),
+                    const Color(0xffe1517d)
+                  ])),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          'assets/images/splash.png',
+                          width: 200,
+                          color: Colors.white,
                         ),
-                      ),
+                        StoreConnector<AppState, _ViewModel>(
+                            model: _ViewModel(),
+                            onInit: (store) {
+                              store.dispatch(GetCartFromLocal());
+                              store.dispatch(GetUserFromLocalStorageAction());
+                            },
+                            builder: (context, snapshot) {
+                              return Row(
+                                children: [
+                                  SizedBox(
+                                    width: 45,
+                                  ),
+                                  ImageIcon(
+                                    AssetImage('assets/images/location2.png'),
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(snapshot?.cluster?.clusterName ?? "",
+                                      style: TextStyle(
+                                        fontFamily: 'JTLeonor',
+                                        color: Colors.white,
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                      )),
+                                ],
+                              );
+                            })
+                      ],
                     ),
-                  );
-                }),
-//            NavigationNotificationItem(
-//              icon: Icon(
-//                Icons.notifications_none,
-//                color: Colors.grey,
-//              ),
-//            ),
-          ],
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
+              List<Business> firstList = List<Business>();
+              List<Business> secondList = List<Business>();
+              snapshot.merchants.asMap().forEach((index, element) {
+                if (index <= 2) {
+                  firstList.add(element);
+                } else {
+                  secondList.add(element);
+                }
+              });
+
               return ModalProgressHUD(
                 progressIndicator: Card(
                   child: Image.asset(
@@ -178,8 +207,73 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                           ? buildEmptyView(context, snapshot)
                           : Container()
                       : ListView(
-                          padding: EdgeInsets.all(15.0),
+                          padding: EdgeInsets.only(
+                              top: 2, left: 15, right: 15, bottom: 15),
                           children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 20, bottom: 10),
+                              child: Text('screen_home.store_near_you',
+                                      style: const TextStyle(
+                                          color: const Color(0xff2c2c2c),
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Avenir",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 16.0),
+                                      textAlign: TextAlign.left)
+                                  .tr(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AnimationLimiter(
+                                child: ListView.separated(
+                                  itemBuilder: (context, index) {
+                                    var business = firstList[index];
+                                    return InkWell(
+                                        onTap: () {
+                                          snapshot
+                                              .updateSelectedMerchant(business);
+                                          snapshot.navigateToStoreDetailsPage();
+                                        },
+                                        child: AnimationConfiguration
+                                            .staggeredList(
+                                          position: index,
+                                          duration:
+                                              const Duration(milliseconds: 375),
+                                          child: SlideAnimation(
+                                            horizontalOffset: 5.0,
+                                            child: FadeInAnimation(
+                                              child: StoresListView(
+                                                items:
+                                                    business?.description ?? "",
+                                                shopImage: business.images ==
+                                                            null ||
+                                                        business.images.isEmpty
+                                                    ? null
+                                                    : business
+                                                        .images.first.photoUrl,
+                                                name: business.businessName,
+                                                deliveryStatus:
+                                                    business.hasDelivery,
+                                                shopClosed: !business.isOpen,
+                                              ),
+                                            ),
+                                          ),
+                                        ));
+                                  },
+                                  itemCount: firstList.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      height: 10,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
                             snapshot.banners.isEmpty
                                 ? Container()
                                 : CarouselSlider(
@@ -234,28 +328,17 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                     scrollDirection: Axis.horizontal,
                                   ),
                             // Stores near you
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 20, bottom: 10),
-                              child: Text('screen_home.store_near_you',
-                                      style: const TextStyle(
-                                          color: const Color(0xff2c2c2c),
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 16.0),
-                                      textAlign: TextAlign.left)
-                                  .tr(),
-                            ),
+
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: AnimationLimiter(
                                 child: ListView.separated(
                                   itemBuilder: (context, index) {
+                                    var business = secondList[index];
                                     return InkWell(
                                         onTap: () {
-                                          snapshot.updateSelectedMerchant(
-                                              snapshot.merchants[index]);
+                                          snapshot
+                                              .updateSelectedMerchant(business);
                                           snapshot.navigateToStoreDetailsPage();
                                         },
                                         child: AnimationConfiguration
@@ -267,34 +350,24 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                             horizontalOffset: 5.0,
                                             child: FadeInAnimation(
                                               child: StoresListView(
-                                                items: snapshot.merchants[index]
-                                                        ?.description ??
-                                                    "",
-                                                shopImage: snapshot
-                                                                .merchants[
-                                                                    index]
-                                                                .images ==
+                                                items:
+                                                    business?.description ?? "",
+                                                shopImage: business.images ==
                                                             null ||
-                                                        snapshot
-                                                            .merchants[index]
-                                                            .images
-                                                            .isEmpty
+                                                        business.images.isEmpty
                                                     ? null
-                                                    : snapshot.merchants[index]
+                                                    : business
                                                         .images.first.photoUrl,
-                                                name: snapshot.merchants[index]
-                                                    .businessName,
-                                                deliveryStatus: snapshot
-                                                    .merchants[index]
-                                                    .hasDelivery,
-                                                shopClosed: !snapshot
-                                                    .merchants[index].isOpen,
+                                                name: business.businessName,
+                                                deliveryStatus:
+                                                    business.hasDelivery,
+                                                shopClosed: !business.isOpen,
                                               ),
                                             ),
                                           ),
                                         ));
                                   },
-                                  itemCount: snapshot.merchants.length,
+                                  itemCount: secondList.length,
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   separatorBuilder:
@@ -397,123 +470,265 @@ class StoresListView extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            width: 79,
-            height: 79,
-            margin: new EdgeInsets.all(10.0),
-            decoration: new BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                      shopClosed ? Colors.grey : Colors.transparent,
-                      BlendMode.saturation),
-                  child: shopImage == null
-                      ? Image.asset(
-                          'assets/images/shop1.png',
-                          fit: BoxFit.cover,
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: CachedNetworkImage(
-                              height: 100.0,
-                              fit: BoxFit.cover,
-                              imageUrl: shopImage,
-                              placeholder: (context, url) => Icon(
-                                    Icons.image,
-                                    size: 30,
+    return true
+        ? // Rectangle 2104
+        Container(
+            width: 334,
+            height: 162,
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(9)),
+                boxShadow: [
+                  BoxShadow(
+                      color: const Color(0x29000000),
+                      offset: Offset(0, 3),
+                      blurRadius: 6,
+                      spreadRadius: 0)
+                ],
+                color: const Color(0xffffffff)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // logo
+                Row(
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                                shopClosed ? Colors.grey : Colors.transparent,
+                                BlendMode.saturation),
+                            child: shopImage == null
+                                ? Image.asset(
+                                    'assets/images/shop1.png',
+                                    fit: BoxFit.cover,
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: CachedNetworkImage(
+                                        height: 100.0,
+                                        fit: BoxFit.cover,
+                                        imageUrl: shopImage,
+                                        placeholder: (context, url) => Icon(
+                                              Icons.image,
+                                              size: 30,
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            Center(
+                                              child: Icon(Icons.error),
+                                            )),
                                   ),
-                              errorWidget: (context, url, error) => Center(
-                                    child: Icon(Icons.error),
-                                  )),
-                        ),
-                ),
-                shopClosed
-                    ? Positioned(
-                        bottom: 5,
-                        child: // Out of stock
-                            Text('common.closed',
-                                    style: const TextStyle(
-                                        color: const Color(0xfff51818),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Avenir",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 12.0),
-                                    textAlign: TextAlign.left)
-                                .tr())
-                    : Container()
-              ],
-            ),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(name,
-                      style: const TextStyle(
-                          color: const Color(0xff2c2c2c),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16.0),
-                      textAlign: TextAlign.left),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                    child: Text(items,
-                        style: const TextStyle(
-                            color: const Color(0xff7c7c7c),
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "Avenir",
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14.0),
-                        textAlign: TextAlign.left),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: deliveryStatus
-                            ? ImageIcon(
-                                AssetImage('assets/images/delivery.png'),
-                                color: shopClosed
-                                    ? Colors.grey.shade400
-                                    : Colors.black,
-                              )
-                            : shopClosed
-                                ? Image.asset('assets/images/group236.png')
-                                : Image.asset('assets/images/no_delivery.png'),
+                          ),
+                          shopClosed
+                              ? Positioned(
+                                  bottom: 5,
+                                  child: // Out of stock
+                                      Text('common.closed',
+                                              style: const TextStyle(
+                                                  color:
+                                                      const Color(0xfff51818),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "Avenir",
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 12.0),
+                                              textAlign: TextAlign.left)
+                                          .tr())
+                              : Container()
+                        ],
                       ),
-                      Text(
-                          deliveryStatus
-                              ? tr("shop.delivery_ok")
-                              : tr("shop.delivery_no"),
+                    ), // Astore Groceries
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(name,
                           style: const TextStyle(
-                              color: const Color(0xff7c7c7c),
-                              fontWeight: FontWeight.w400,
+                              color: const Color(0xffd5133a),
+                              fontWeight: FontWeight.w500,
                               fontFamily: "Avenir",
                               fontStyle: FontStyle.normal,
-                              fontSize: 14.0),
+                              fontSize: 16.0),
                           textAlign: TextAlign.left),
-                    ],
-                  )
-                ],
-              ),
+                    )
+                  ],
+                ),
+                Text(items,
+                    style: const TextStyle(
+                        color: const Color(0xff939393),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Helvetica",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 12.0),
+                    textAlign: TextAlign.left),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: deliveryStatus
+                              ? ImageIcon(
+                                  AssetImage('assets/images/delivery.png'),
+                                  color: shopClosed
+                                      ? Colors.grey.shade400
+                                      : Colors.black,
+                                )
+                              : shopClosed
+                                  ? Image.asset('assets/images/group236.png')
+                                  : Image.asset(
+                                      'assets/images/no_delivery.png'),
+                        ),
+                        Text(
+                            deliveryStatus
+                                ? tr("shop.delivery_ok")
+                                : tr("shop.delivery_no"),
+                            style: const TextStyle(
+                                color: const Color(0xff7c7c7c),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Avenir",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14.0),
+                            textAlign: TextAlign.left),
+                      ],
+                    ),
+                    // 1000+ Products available
+                    Text("1000+ Products available",
+                        style: const TextStyle(
+                            color: const Color(0xff141414),
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Avenir",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12.0),
+                        textAlign: TextAlign.left)
+                  ],
+                )
+              ],
             ),
           )
-        ],
-      ),
-    );
+        : Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 79,
+                  height: 79,
+                  margin: new EdgeInsets.all(10.0),
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                            shopClosed ? Colors.grey : Colors.transparent,
+                            BlendMode.saturation),
+                        child: shopImage == null
+                            ? Image.asset(
+                                'assets/images/shop1.png',
+                                fit: BoxFit.cover,
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: CachedNetworkImage(
+                                    height: 100.0,
+                                    fit: BoxFit.cover,
+                                    imageUrl: shopImage,
+                                    placeholder: (context, url) => Icon(
+                                          Icons.image,
+                                          size: 30,
+                                        ),
+                                    errorWidget: (context, url, error) =>
+                                        Center(
+                                          child: Icon(Icons.error),
+                                        )),
+                              ),
+                      ),
+                      shopClosed
+                          ? Positioned(
+                              bottom: 5,
+                              child: // Out of stock
+                                  Text('common.closed',
+                                          style: const TextStyle(
+                                              color: const Color(0xfff51818),
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: "Avenir",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 12.0),
+                                          textAlign: TextAlign.left)
+                                      .tr())
+                          : Container()
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(name,
+                            style: const TextStyle(
+                                color: const Color(0xff2c2c2c),
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Avenir",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0),
+                            textAlign: TextAlign.left),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                          child: Text(items,
+                              style: const TextStyle(
+                                  color: const Color(0xff7c7c7c),
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: "Avenir",
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 14.0),
+                              textAlign: TextAlign.left),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: deliveryStatus
+                                  ? ImageIcon(
+                                      AssetImage('assets/images/delivery.png'),
+                                      color: shopClosed
+                                          ? Colors.grey.shade400
+                                          : Colors.black,
+                                    )
+                                  : shopClosed
+                                      ? Image.asset(
+                                          'assets/images/group236.png')
+                                      : Image.asset(
+                                          'assets/images/no_delivery.png'),
+                            ),
+                            Text(
+                                deliveryStatus
+                                    ? tr("shop.delivery_ok")
+                                    : tr("shop.delivery_no"),
+                                style: const TextStyle(
+                                    color: const Color(0xff7c7c7c),
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: "Avenir",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 14.0),
+                                textAlign: TextAlign.left),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
   }
 }
 

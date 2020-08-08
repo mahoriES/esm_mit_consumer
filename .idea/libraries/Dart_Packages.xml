@@ -183,7 +183,6 @@
           <value>
             <list>
               <option value="$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/equatable-1.2.2/lib" />
-              <option value="$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/equatable-1.2.0/lib" />
             </list>
           </value>
         </entry>
@@ -429,7 +428,6 @@
           <value>
             <list>
               <option value="$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/location_permissions-3.0.0+1/lib" />
-              <option value="$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/location_permissions-2.0.5/lib" />
             </list>
           </value>
         </entry>
@@ -753,6 +751,13 @@
             </list>
           </value>
         </entry>
+        <entry key="upi_flutter">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/upi_flutter-0.0.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="url_launcher">
           <value>
             <list>
@@ -853,7 +858,6 @@
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/dropdown_formfield-0.1.2/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/easy_alert-0.0.8/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/easy_localization-2.3.2/lib" />
-      <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/equatable-1.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/equatable-1.2.2/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/expandable-4.1.4/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.1.0/lib" />
@@ -885,7 +889,6 @@
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+4/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_platform_interface-1.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.16.1/lib" />
-      <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/location_permissions-2.0.5/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/location_permissions-3.0.0+1/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/logging-0.11.4/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.6/lib" />
@@ -936,6 +939,7 @@
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/tuple-1.0.3/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.2.0/lib" />
+      <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/upi_flutter-0.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.5.0/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-0.0.1+1/lib" />
       <root url="file://$PROJECT_DIR$/../flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+7/lib" />

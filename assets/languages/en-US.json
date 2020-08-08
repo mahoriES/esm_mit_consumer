@@ -60,6 +60,7 @@
       "store": "STORES",
       "search": "SEARCH",
       "orders": "ORDERS",
+      "cart": "CART",
       "account": "ACCOUNT"
     },
     "store_near_you": "Stores in your circle"
