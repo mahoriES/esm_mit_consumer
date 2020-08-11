@@ -21,19 +21,19 @@ class CheckUser extends StatelessWidget {
   }
 }
 
-class CheckUserLoginSkipped extends StatelessWidget {
+class CheckOnBoardingStatus extends StatelessWidget {
   final Function(BuildContext context, bool isLoggedIn) builder;
 
-  CheckUserLoginSkipped({Key key, @required this.builder}) : super(key: key);
+  CheckOnBoardingStatus({Key key, @required this.builder}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, bool>(
       onInit: (store) {
-//        store.dispatch(CheckLoginSkippedAction());
+        store.dispatch(CheckOnBoardingStatusAction());
       },
       converter: (Store<AppState> store) =>
-          store.state.authState.isLoginSkipped,
+          store.state.authState.isOnboardingCompleted,
       builder: builder,
     );
   }

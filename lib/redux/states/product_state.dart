@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:upi_pay/upi_pay.dart';
 
 class ProductState {
 //  final LoadingStatus loadingStatus;
@@ -26,10 +27,12 @@ class ProductState {
   final List<CategoriesNew> subCategories;
   final Cluster selectedCluster;
   final CatalogSearchResponse productResponse;
+  final List<ApplicationMeta> upiApps;
 
   ProductState(
       {@required this.localCartItems,
       @required this.charges,
+      @required this.upiApps,
       @required this.selectedCluster,
       @required this.placeOrderResponse,
       @required this.getOrderListResponse,
@@ -47,6 +50,7 @@ class ProductState {
 
   factory ProductState.initial() {
     return new ProductState(
+        upiApps: [],
         productResponse: CatalogSearchResponse(),
         selectedCluster: null,
         charges: [],
@@ -73,6 +77,7 @@ class ProductState {
       List<CategoriesNew> subCategories,
       List<Merchants> searchResults,
       List<Charge> charges,
+      List<ApplicationMeta> upiApps,
       Business selectedMerchant,
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
@@ -83,6 +88,7 @@ class ProductState {
       CatalogSearchResponse productResponse,
       Cluster selectedCluster}) {
     return ProductState(
+        upiApps: upiApps ?? this.upiApps,
         productResponse: productResponse ?? this.productResponse,
         charges: charges ?? this.charges,
         selectedCluster: selectedCluster ?? this.selectedCluster,

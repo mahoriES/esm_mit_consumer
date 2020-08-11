@@ -64,6 +64,9 @@ dependencies:
   status_alert: ^0.1.2
   dropdown_formfield: ^0.1.2
   flutter_upi: ^0.0.2
+  upi_pay: ^0.2.2
+  smooth_page_indicator: ^0.2.0
+
 
 
 
@@ -138,6 +141,12 @@ flutter:
     - assets/images/gpay.png
     - assets/images/paytmLogo.png
     - assets/images/
+    - assets/images/dialog.png
+    - assets/images/first.png
+    - assets/images/holdingMobile.png
+    - assets/images/esamudayDelivery.png
+    - assets/images/family.png
+    - assets/images/allHands.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

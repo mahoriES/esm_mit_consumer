@@ -15,7 +15,6 @@ import 'package:eSamudaay/modules/store_details/views/store_categories_details_v
 import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
-import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
@@ -40,16 +39,16 @@ class _CartViewState extends State<CartView> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         centerTitle: false,
-        titleSpacing: 0.0,
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              store.dispatch(GetCartFromLocal());
-              Navigator.pop(context);
-            }),
+//        titleSpacing: 0.0,
+//        leading: IconButton(
+//            icon: Icon(
+//              Icons.arrow_back,
+//              color: Colors.black,
+//            ),
+//            onPressed: () {
+//              store.dispatch(GetCartFromLocal());
+//              Navigator.pop(context);
+//            }),
         title: // Cart
             Text('cart.title',
                     style: const TextStyle(

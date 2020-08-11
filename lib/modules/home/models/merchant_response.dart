@@ -35,18 +35,21 @@ class GetBusinessesResponse {
 class Business {
   String businessId;
   String businessName;
+  String itemsCount;
   bool isOpen;
   AddressNew address;
   String description;
 //  Timing timing;
   List<Photo> images;
   List<String> phones;
+
   bool hasDelivery;
 
   Business(
       {this.businessId,
       this.businessName,
       this.isOpen,
+      this.itemsCount,
       this.address,
       this.description,
 //      this.timing,
@@ -55,6 +58,7 @@ class Business {
       this.hasDelivery});
 
   Business.fromJson(Map<String, dynamic> json) {
+    itemsCount = json['items_count'];
     businessId = json['business_id'];
     businessName = json['business_name'];
     description = json['description'];
@@ -80,6 +84,7 @@ class Business {
     data['business_name'] = this.businessName;
     data['description'] = this.description;
     data['is_open'] = this.isOpen;
+    data['items_count'] = this.itemsCount;
     if (this.address != null) {
       data['address'] = this.address.toJson();
     }

@@ -60,7 +60,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     return UserExceptionDialog<AppState>(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(129.0), // here the desired height
+          preferredSize: Size.fromHeight(100.0), // here the desired height
           child: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
@@ -68,6 +68,8 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             automaticallyImplyLeading: false,
             titleSpacing: 0.0,
             centerTitle: false,
+            bottom: PreferredSize(
+                child: Container(), preferredSize: Size.fromHeight(0.0)),
             flexibleSpace: // Rectangle 2102
                 Container(
               height: 129,
@@ -207,12 +209,11 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                           ? buildEmptyView(context, snapshot)
                           : Container()
                       : ListView(
-                          padding: EdgeInsets.only(
-                              top: 2, left: 15, right: 15, bottom: 15),
+                          padding: EdgeInsets.only(top: 2, bottom: 15),
                           children: <Widget>[
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 20, bottom: 10),
+                              padding: const EdgeInsets.only(
+                                  left: 10, top: 20, bottom: 10),
                               child: Text('screen_home.store_near_you',
                                       style: const TextStyle(
                                           color: const Color(0xff2c2c2c),
@@ -224,7 +225,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                   .tr(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: AnimationLimiter(
                                 child: ListView.separated(
                                   itemBuilder: (context, index) {
@@ -281,34 +282,27 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                     items: snapshot.banners.isEmpty
                                         ? [Container()]
                                         : snapshot.banners
-                                            .map((banner) => Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 2.0,
-                                                          right: 2.0),
-                                                  child: InkWell(
-                                                    onTap: () {},
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  15.0)),
-                                                      child: CachedNetworkImage(
-                                                          height: 400.0,
-                                                          fit: BoxFit.contain,
-                                                          imageUrl:
-                                                              banner.photoUrl,
-                                                          placeholder: (context,
-                                                                  url) =>
-                                                              CupertinoActivityIndicator(),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Center(
-                                                                child: Icon(
-                                                                    Icons
-                                                                        .error),
-                                                              )),
-                                                    ),
+                                            .map((banner) => InkWell(
+                                                  onTap: () {},
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                15.0)),
+                                                    child: CachedNetworkImage(
+                                                        height: 400.0,
+                                                        fit: BoxFit.contain,
+                                                        imageUrl:
+                                                            banner.photoUrl,
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            CupertinoActivityIndicator(),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Center(
+                                                              child: Icon(
+                                                                  Icons.error),
+                                                            )),
                                                   ),
                                                 ))
                                             .toList(),
@@ -362,6 +356,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                                 deliveryStatus:
                                                     business.hasDelivery,
                                                 shopClosed: !business.isOpen,
+                                                itemsCount: business.itemsCount,
                                               ),
                                             ),
                                           ),
@@ -457,6 +452,7 @@ class StoresListView extends StatelessWidget {
   final String shopImage;
   final String name;
   final String items;
+  final String itemsCount;
   final bool deliveryStatus;
   final bool shopClosed;
 
@@ -464,6 +460,7 @@ class StoresListView extends StatelessWidget {
       {Key key,
       this.shopImage,
       this.name,
+      this.itemsCount,
       this.deliveryStatus,
       this.items,
       this.shopClosed})
@@ -596,7 +593,7 @@ class StoresListView extends StatelessWidget {
                       ],
                     ),
                     // 1000+ Products available
-                    Text("1000+ Products available",
+                    Text(itemsCount ?? "",
                         style: const TextStyle(
                             color: const Color(0xff141414),
                             fontWeight: FontWeight.w500,

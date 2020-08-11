@@ -12,6 +12,7 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:upi_pay/upi_pay.dart';
 
 class GetOrderListAPIAction extends ReduxAction<AppState> {
   final String orderRequestApi;
@@ -323,5 +324,14 @@ class OrderSupportAction extends ReduxAction<AppState> {
     // TODO: implement reduce
     return state.copyWith(
         productState: state.productState.copyWith(supportOrder: orderId));
+  }
+}
+
+class GetUPIAppsAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    List<ApplicationMeta> apps = await UpiPay.getInstalledUpiApplications();
+    return state.copyWith(
+        productState: state.productState.copyWith(upiApps: apps));
   }
 }
