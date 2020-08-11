@@ -552,56 +552,77 @@ class StoresListView extends StatelessWidget {
                     )
                   ],
                 ),
-                Text(items,
-                    style: const TextStyle(
-                        color: const Color(0xff939393),
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Helvetica",
-                        fontStyle: FontStyle.normal,
-                        fontSize: 12.0),
-                    textAlign: TextAlign.left),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: deliveryStatus
-                              ? ImageIcon(
-                                  AssetImage('assets/images/delivery.png'),
-                                  color: shopClosed
-                                      ? Colors.grey.shade400
-                                      : Colors.black,
-                                )
-                              : shopClosed
-                                  ? Image.asset('assets/images/group236.png')
-                                  : Image.asset(
-                                      'assets/images/no_delivery.png'),
-                        ),
-                        Text(
-                            deliveryStatus
-                                ? tr("shop.delivery_ok")
-                                : tr("shop.delivery_no"),
-                            style: const TextStyle(
-                                color: const Color(0xff7c7c7c),
-                                fontWeight: FontWeight.w400,
-                                fontFamily: "Avenir",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14.0),
-                            textAlign: TextAlign.left),
-                      ],
+                SizedBox(
+                  height: 5,
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(7)),
+                        color: const Color(0xfffafafa)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(items,
+                              style: const TextStyle(
+                                  color: const Color(0xff939393),
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: "Helvetica",
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 12.0),
+                              textAlign: TextAlign.left),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: deliveryStatus
+                                        ? ImageIcon(
+                                            AssetImage(
+                                                'assets/images/delivery.png'),
+                                            color: shopClosed
+                                                ? Colors.grey.shade400
+                                                : Colors.black,
+                                          )
+                                        : shopClosed
+                                            ? Image.asset(
+                                                'assets/images/group236.png')
+                                            : Image.asset(
+                                                'assets/images/no_delivery.png'),
+                                  ),
+                                  Text(
+                                      deliveryStatus
+                                          ? tr("shop.delivery_ok")
+                                          : tr("shop.delivery_no"),
+                                      style: const TextStyle(
+                                          color: const Color(0xff7c7c7c),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Avenir",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 14.0),
+                                      textAlign: TextAlign.left),
+                                ],
+                              ),
+                              // 1000+ Products available
+                              Text(itemsCount ?? "",
+                                  style: const TextStyle(
+                                      color: const Color(0xff141414),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Avenir",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 12.0),
+                                  textAlign: TextAlign.left)
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                    // 1000+ Products available
-                    Text(itemsCount ?? "",
-                        style: const TextStyle(
-                            color: const Color(0xff141414),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Avenir",
-                            fontStyle: FontStyle.normal,
-                            fontSize: 12.0),
-                        textAlign: TextAlign.left)
-                  ],
+                  ),
                 )
               ],
             ),

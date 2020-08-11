@@ -31,6 +31,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'modules/About/view/about_view.dart';
 import 'modules/language/view/language_view.dart';
+import 'modules/orders/views/payments.dart';
 import 'modules/otp/view/otp_view.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -95,13 +96,7 @@ class _MyAppState extends State<MyApp> {
             loadingSplash: null,
             seconds: 0,
             home: CheckUser(builder: (context, snapshot) {
-              return snapshot
-                  ? MyHomeView()
-                  : CheckOnBoardingStatus(builder: (context, onBoardingStatus) {
-                      return onBoardingStatus
-                          ? LoginView()
-                          : OnboardingWidget();
-                    });
+              return snapshot ? MyHomeView() : SplashScreen();
             }),
           );
         });
@@ -179,6 +174,8 @@ class MyAppBase extends StatelessWidget {
           "/RecommendShop": (BuildContext context) => RecommendedShop(),
           "/profile": (BuildContext context) => ProfileView(),
           "/about": (BuildContext context) => AboutView(),
+          "/onBoarding": (BuildContext context) => OnboardingWidget(),
+          "/payment": (BuildContext context) => Payments(),
 
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
@@ -245,6 +242,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPageWel() {
-    Navigator.of(context).pushReplacementNamed('/language');
+    Navigator.of(context).pushReplacementNamed('/onBoarding');
   }
 }

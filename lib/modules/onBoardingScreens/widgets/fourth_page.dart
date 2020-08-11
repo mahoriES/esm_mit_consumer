@@ -56,7 +56,7 @@ class FourthPageWidget extends StatelessWidget {
               onTap: () async {
                 await UserManager.saveSkipStatus(status: true);
                 store.dispatch(
-                    NavigateAction.pushNamedAndRemoveAll('/loginView'));
+                    NavigateAction.pushNamedAndRemoveAll('/language'));
               },
               child: Container(
                 width: 234.0,

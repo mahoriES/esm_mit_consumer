@@ -46,7 +46,7 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                   leading: Image.asset(
                     "assets/images/AI_user.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.profile',
                           style: const TextStyle(
@@ -79,7 +79,7 @@ class _AccountsViewState extends State<AccountsView> {
                 ListTile(
                   leading: Image.asset(
                     "assets/images/question_cr.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.about',
                           style: const TextStyle(
@@ -101,7 +101,7 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                   leading: Image.asset(
                     "assets/images/Group_240.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.language',
                           style: const TextStyle(
@@ -163,7 +163,7 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                   leading: Image.asset(
                     "assets/images/power.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.logout',
                           style: const TextStyle(

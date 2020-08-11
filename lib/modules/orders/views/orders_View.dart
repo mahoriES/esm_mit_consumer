@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/views/expandable_view.dart';
+
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
@@ -21,6 +22,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:upi_pay/upi_pay.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:upi_india/upi_india.dart';
 
 class OrdersView extends StatefulWidget {
   @override
@@ -28,6 +30,9 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
+  Future<UpiResponse> _transaction;
+  UpiIndia _upiIndia = UpiIndia();
+  List<UpiApp> apps;
   ScrollController _scrollController = new ScrollController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -158,6 +163,9 @@ class _OrdersViewState extends State<OrdersView> {
                             itemBuilder:
                                 (BuildContext context, int merchantIndex) {
                               return NewWidget(
+                                apps: apps,
+                                transaction: _transaction,
+                                upiIndia: _upiIndia,
                                 orderId: snapshot.getOrderListResponse
                                     .results[merchantIndex].orderId,
                                 snapshot: snapshot,
@@ -288,13 +296,19 @@ class NewWidget extends StatefulWidget {
   final merchantIndex;
   final String orderStatus;
   final String deliveryStatus;
+  final Future<UpiResponse> transaction;
+  final UpiIndia upiIndia;
+  final List<UpiApp> apps;
   const NewWidget(
       {Key key,
       this.deliveryStatus,
       this.merchantIndex,
       this.orderStatus,
       this.orderId,
-      this.snapshot})
+      this.snapshot,
+      this.transaction,
+      this.upiIndia,
+      this.apps})
       : super(key: key);
 
   @override
@@ -319,6 +333,9 @@ class _NewWidgetState extends State<NewWidget> {
             },
           ),
           OrderItemBottomView(
+            apps: widget.apps,
+            transaction: widget.transaction,
+            upiIndia: widget.upiIndia,
             snapshot: widget.snapshot,
             orderId: widget.orderId,
             index: widget.merchantIndex,
@@ -339,6 +356,10 @@ class OrderItemBottomView extends StatelessWidget {
   final String orderStatus;
   final String deliveryStatus;
   final bool expanded;
+  final Future<UpiResponse> transaction;
+  final UpiIndia upiIndia;
+  final List<UpiApp> apps;
+
   const OrderItemBottomView(
       {Key key,
       this.index,
@@ -346,7 +367,10 @@ class OrderItemBottomView extends StatelessWidget {
       this.expanded,
       this.orderId,
       this.snapshot,
-      this.deliveryStatus})
+      this.deliveryStatus,
+      this.transaction,
+      this.upiIndia,
+      this.apps})
       : super(key: key);
 
   @override
@@ -573,18 +597,6 @@ class OrderItemBottomView extends StatelessWidget {
     }
   }
 
-  Future<UpiTransactionResponse> initTransaction(
-      ApplicationMeta app, PlaceOrderResponse order) async {
-    return await UpiPay.initiateTransaction(
-      amount: order.orderTotal.toString(),
-      app: app.upiApplication,
-      receiverName: order.businessName,
-      receiverUpiAddress: order.paymentInfo.upi,
-      transactionRef: order.orderId,
-      merchantCode: order.businessId,
-    );
-  }
-
   CustomButton buildCustomButton(_ViewModel snapshot, BuildContext context) {
     return CustomButton(
       title: title(),
@@ -622,84 +634,97 @@ class OrderItemBottomView extends StatelessWidget {
           var order = snapshot.getOrderListResponse.results[index];
           if (order.paymentInfo.status == 'PENDING' ||
               order.paymentInfo.status == 'REJECTED') {
-            showModalBottomSheet(
-                context: context,
-                builder: (c) {
-                  return Container(
-                    height: 150,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          // Select app to Pay
-                          Text("Select app to Pay",
-                              style: const TextStyle(
-                                  color: const Color(0xff6f6f6f),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: "Avenir",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 16.0),
-                              textAlign: TextAlign.left),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          ListView.separated(
-                            shrinkWrap: true,
-                            itemCount: snapshot.upiApps.length,
-                            itemBuilder: (context, index) {
-                              ApplicationMeta app = snapshot.upiApps[index];
-                              return InkWell(
-                                onTap: () async {
-                                  var response = await initTransaction(
-                                      app,
-                                      snapshot
-                                          .getOrderListResponse.results[index]);
-                                  if (response.status ==
-                                      UpiTransactionStatus.success) {
-                                    snapshot.notifyPayment(snapshot
-                                        .getOrderListResponse
-                                        .results[index]
-                                        .orderId);
-                                  } else if (response.status ==
-                                      UpiTransactionStatus.failure) {
-                                    Fluttertoast.showToast(
-                                        msg: "Something went wrong");
-                                  } else if (response.status ==
-                                      UpiTransactionStatus.submitted) {
-                                    Fluttertoast.showToast(
-                                        msg: "Payment submitted");
-                                  }
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.memory(
-                                      app.icon,
-                                      width: 64,
-                                      height: 64,
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        app.upiApplication.getAppName(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return Container(
-                                width: 10,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                });
+            if (order.paymentInfo.upi == null) {
+              Fluttertoast.showToast(msg: "The UPI is not provided");
+              return;
+            }
+            Navigator.pushNamed(context, "/payment",
+                    arguments: snapshot.getOrderListResponse.results[index])
+                .then((value) {
+              if (value) {
+                snapshot.notifyPayment(
+                    snapshot.getOrderListResponse.results[index].orderId);
+              }
+            });
+//            showModalBottomSheet(
+//                context: context,
+//                builder: (c) {
+//                  return Container(
+//                    child: Padding(
+//                      padding: const EdgeInsets.all(10.0),
+//                      child: Column(
+//                        children: [
+//                          // Select app to Pay
+//                          Text("Select app to Pay",
+//                              style: const TextStyle(
+//                                  color: const Color(0xff6f6f6f),
+//                                  fontWeight: FontWeight.w500,
+//                                  fontFamily: "Avenir",
+//                                  fontStyle: FontStyle.normal,
+//                                  fontSize: 16.0),
+//                              textAlign: TextAlign.left),
+//                          SizedBox(
+//                            height: 10,
+//                          ),
+//                          Payments()
+//
+////                          ListView.separated(
+////                            shrinkWrap: true,
+////                            itemCount: snapshot.upiApps.length,
+////                            itemBuilder: (context, index) {
+////                              ApplicationMeta app = snapshot.upiApps[index];
+////                              return InkWell(
+////                                onTap: () async {
+////                                  var response = await initTransaction(
+////                                      app,
+////                                      snapshot
+////                                          .getOrderListResponse.results[index]);
+////                                  if (response.status ==
+////                                      UpiTransactionStatus.success) {
+////                                    snapshot.notifyPayment(snapshot
+////                                        .getOrderListResponse
+////                                        .results[index]
+////                                        .orderId);
+////                                  } else if (response.status ==
+////                                      UpiTransactionStatus.failure) {
+////                                    Fluttertoast.showToast(
+////                                        msg: "Something went wrong");
+////                                  } else if (response.status ==
+////                                      UpiTransactionStatus.submitted) {
+////                                    Fluttertoast.showToast(
+////                                        msg: "Payment submitted");
+////                                  }
+////                                },
+////                                child: Column(
+////                                  mainAxisSize: MainAxisSize.min,
+////                                  mainAxisAlignment: MainAxisAlignment.center,
+////                                  children: <Widget>[
+////                                    Image.memory(
+////                                      app.icon,
+////                                      width: 64,
+////                                      height: 64,
+////                                    ),
+////                                    Container(
+////                                      margin: EdgeInsets.only(top: 4),
+////                                      child: Text(
+////                                        app.upiApplication.getAppName(),
+////                                      ),
+////                                    ),
+////                                  ],
+////                                ),
+////                              );
+////                            },
+////                            separatorBuilder: (context, index) {
+////                              return Container(
+////                                width: 10,
+////                              );
+////                            },
+////                          ),
+//                        ],
+//                      ),
+//                    ),
+//                  );
+//                });
           }
         } else {
           //cancel order api

@@ -88,7 +88,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           },
           builder: (context, snapshot) {
             return BottomNavigationBar(
-              selectedItemColor: AppColors.icColors,
+              selectedItemColor: AppColors.iconColors,
               currentIndex: snapshot.currentIndex,
               type: BottomNavigationBarType.fixed,
               items: [
@@ -99,7 +99,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                   ),
                   activeIcon: ImageIcon(
                     AssetImage('assets/images/path330.png'),
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: new Text(
                     tr('screen_home.tab_bar.store'),
@@ -125,7 +125,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path338.png'),
-                      color: AppColors.icColors,
+                      color: AppColors.iconColors,
                     ),
                     title: Text(
                       tr('screen_home.tab_bar.orders'),
@@ -142,7 +142,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     activeIcon: NavigationCartItem(
                       icon: ImageIcon(
                         AssetImage('assets/images/bag2.png'),
-                        color: AppColors.icColors,
+                        color: AppColors.iconColors,
                       ),
                     ),
                     title: Text(
@@ -155,7 +155,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path5.png'),
-                      color: AppColors.icColors,
+                      color: AppColors.iconColors,
                     ),
                     title: Text(
                       'screen_home.tab_bar.account',
