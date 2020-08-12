@@ -218,7 +218,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                       style: const TextStyle(
                                           color: const Color(0xff2c2c2c),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Book",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 16.0),
                                       textAlign: TextAlign.left)
@@ -418,7 +418,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   style: const TextStyle(
                       color: const Color(0xff1f1f1f),
                       fontWeight: FontWeight.w400,
-                      fontFamily: "Avenir",
+                      fontFamily: "Avenir-Book",
                       fontStyle: FontStyle.normal,
                       fontSize: 20.0),
                   textAlign: TextAlign.left)
@@ -433,7 +433,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Book",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                     textAlign: TextAlign.center)
@@ -530,7 +530,7 @@ class StoresListView extends StatelessWidget {
                                                   color:
                                                       const Color(0xfff51818),
                                                   fontWeight: FontWeight.w500,
-                                                  fontFamily: "Avenir",
+                                                  fontFamily: "Avenir-Book",
                                                   fontStyle: FontStyle.normal,
                                                   fontSize: 12.0),
                                               textAlign: TextAlign.left)
@@ -545,7 +545,7 @@ class StoresListView extends StatelessWidget {
                           style: const TextStyle(
                               color: const Color(0xffd5133a),
                               fontWeight: FontWeight.w500,
-                              fontFamily: "Avenir",
+                              fontFamily: "Avenir-Book",
                               fontStyle: FontStyle.normal,
                               fontSize: 16.0),
                           textAlign: TextAlign.left),
@@ -602,7 +602,7 @@ class StoresListView extends StatelessWidget {
                                       style: const TextStyle(
                                           color: const Color(0xff7c7c7c),
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Book",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left),
@@ -613,7 +613,7 @@ class StoresListView extends StatelessWidget {
                                   style: const TextStyle(
                                       color: const Color(0xff141414),
                                       fontWeight: FontWeight.w500,
-                                      fontFamily: "Avenir",
+                                      fontFamily: "Avenir-Book",
                                       fontStyle: FontStyle.normal,
                                       fontSize: 12.0),
                                   textAlign: TextAlign.left)
@@ -675,7 +675,7 @@ class StoresListView extends StatelessWidget {
                                           style: const TextStyle(
                                               color: const Color(0xfff51818),
                                               fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir",
+                                              fontFamily: "Avenir-Book",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 12.0),
                                           textAlign: TextAlign.left)
@@ -695,7 +695,7 @@ class StoresListView extends StatelessWidget {
                             style: const TextStyle(
                                 color: const Color(0xff2c2c2c),
                                 fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir",
+                                fontFamily: "Avenir-Book",
                                 fontStyle: FontStyle.normal,
                                 fontSize: 16.0),
                             textAlign: TextAlign.left),
@@ -705,7 +705,7 @@ class StoresListView extends StatelessWidget {
                               style: const TextStyle(
                                   color: const Color(0xff7c7c7c),
                                   fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir",
+                                  fontFamily: "Avenir-Book",
                                   fontStyle: FontStyle.normal,
                                   fontSize: 14.0),
                               textAlign: TextAlign.left),
@@ -734,7 +734,7 @@ class StoresListView extends StatelessWidget {
                                 style: const TextStyle(
                                     color: const Color(0xff7c7c7c),
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: "Avenir",
+                                    fontFamily: "Avenir-Book",
                                     fontStyle: FontStyle.normal,
                                     fontSize: 14.0),
                                 textAlign: TextAlign.left),

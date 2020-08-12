@@ -63,7 +63,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                 style: const TextStyle(
                     color: const Color(0xff6f6d6d),
                     fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir",
+                    fontFamily: "Avenir-Book",
                     fontStyle: FontStyle.normal,
                     fontSize: 16.0),
               ).tr(),
@@ -74,7 +74,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Book",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                   ).tr(),
@@ -88,7 +88,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Book",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                   ).tr(),
@@ -259,7 +259,8 @@ class PlaceOrderAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
@@ -288,7 +289,8 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
     }
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }

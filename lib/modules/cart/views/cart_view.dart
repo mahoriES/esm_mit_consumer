@@ -58,7 +58,7 @@ class _CartViewState extends State<CartView> {
                     style: const TextStyle(
                         color: const Color(0xff000000),
                         fontWeight: FontWeight.w500,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Book",
                         fontStyle: FontStyle.normal,
                         fontSize: 20.0),
                     textAlign: TextAlign.left)
@@ -134,7 +134,8 @@ class _CartViewState extends State<CartView> {
                                                               0xff515c6f),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontFamily: "Avenir",
+                                                          fontFamily:
+                                                              "Avenir-Book",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 15.0),
@@ -202,7 +203,7 @@ class _CartViewState extends State<CartView> {
                                                                     FontWeight
                                                                         .w500,
                                                                 fontFamily:
-                                                                    "Avenir",
+                                                                    "Avenir-Book",
                                                                 fontStyle:
                                                                     FontStyle
                                                                         .normal,
@@ -228,7 +229,7 @@ class _CartViewState extends State<CartView> {
                                                     color:
                                                         const Color(0xffa7a7a7),
                                                     fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Book",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -271,7 +272,7 @@ class _CartViewState extends State<CartView> {
                                                           0xff6f6f6f),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir",
+                                                      fontFamily: "Avenir-Book",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -301,7 +302,7 @@ class _CartViewState extends State<CartView> {
                                                                     FontWeight
                                                                         .w900,
                                                                 fontFamily:
-                                                                    "Avenir",
+                                                                    "Avenir-Book",
                                                                 fontStyle:
                                                                     FontStyle
                                                                         .normal,
@@ -329,7 +330,7 @@ class _CartViewState extends State<CartView> {
                                       style: const TextStyle(
                                           color: const Color(0xff796c6c),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Book",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       decoration: const InputDecoration(
@@ -367,7 +368,7 @@ class _CartViewState extends State<CartView> {
                                                           0xff000000),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir",
+                                                      fontFamily: "Avenir-Book",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -403,7 +404,7 @@ class _CartViewState extends State<CartView> {
                                                                             FontWeight
                                                                                 .w500,
                                                                         fontFamily:
-                                                                            "Avenir",
+                                                                            "Avenir-Book",
                                                                         fontStyle:
                                                                             FontStyle
                                                                                 .normal,
@@ -422,7 +423,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Book",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -452,7 +453,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Book",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -478,7 +479,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Book",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -524,7 +525,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Book",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -546,7 +547,7 @@ class _CartViewState extends State<CartView> {
                                                                     FontWeight
                                                                         .w500,
                                                                 fontFamily:
-                                                                    "Avenir",
+                                                                    "Avenir-Book",
                                                                 fontStyle:
                                                                     FontStyle
                                                                         .normal,
@@ -592,7 +593,7 @@ class _CartViewState extends State<CartView> {
                                                     color:
                                                         const Color(0xff2f2e2e),
                                                     fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Book",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -612,7 +613,7 @@ class _CartViewState extends State<CartView> {
                                                     color:
                                                         const Color(0xff2f2e2e),
                                                     fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Book",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -659,7 +660,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Book",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -670,16 +671,17 @@ class _CartViewState extends State<CartView> {
                                                                       .center),
                                                           // NJRA135, Second cross road,  Indiranagar- 6987452
                                                           Text(
-                                                              snapshot
-                                                                  .address.prettyAddress,
+                                                              snapshot.address
+                                                                  .prettyAddress,
                                                               style: const TextStyle(
-                                                                  color: const Color(
-                                                                      0xff4b4b4b),
+                                                                  color:
+                                                                      const Color(
+                                                                          0xff4b4b4b),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Book",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -731,7 +733,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Book",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -750,7 +752,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Book",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -807,7 +809,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Book",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -831,7 +833,7 @@ class _CartViewState extends State<CartView> {
                                                                   FontWeight
                                                                       .w500,
                                                               fontFamily:
-                                                                  "Avenir",
+                                                                  "Avenir-Book",
                                                               fontStyle:
                                                                   FontStyle
                                                                       .normal,
@@ -871,7 +873,8 @@ class _CartViewState extends State<CartView> {
                                                               0xff000000),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontFamily: "Avenir",
+                                                          fontFamily:
+                                                              "Avenir-Book",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 14.0),
@@ -980,7 +983,7 @@ class EmptyView extends StatelessWidget {
                   style: const TextStyle(
                       color: const Color(0xff1f1f1f),
                       fontWeight: FontWeight.w400,
-                      fontFamily: "Avenir",
+                      fontFamily: "Avenir-Book",
                       fontStyle: FontStyle.normal,
                       fontSize: 20.0),
                   textAlign: TextAlign.left)
@@ -994,7 +997,7 @@ class EmptyView extends StatelessWidget {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Book",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                     textAlign: TextAlign.center)
@@ -1028,7 +1031,7 @@ class EmptyView extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
-                                fontFamily: 'Avenir',
+                                fontFamily: 'Avenir-Book',
                                 fontWeight: FontWeight.w900,
                               ),
                               textAlign: TextAlign.center,
