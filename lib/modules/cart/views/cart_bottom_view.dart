@@ -2,9 +2,9 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class CartCount extends StatelessWidget {
   final Function(BuildContext context, _ViewModel count) builder;
@@ -117,10 +117,13 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
               children: <Widget>[
                 Expanded(
                   child: CartCount(builder: (context, snapshot) {
-                    return Container(
-                      child: ListView(
-                        shrinkWrap: true,
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
+                          Spacer(),
                           // TOTAL
                           Text("cart.total",
                                   style: const TextStyle(
@@ -131,7 +134,9 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                                       fontSize: 10.0),
                                   textAlign: TextAlign.left)
                               .tr(),
-
+                          SizedBox(
+                            height: 3,
+                          ),
                           // ₹ 55.00
                           Text(snapshot.getCartTotalPrice(),
                               style: const TextStyle(
@@ -141,15 +146,22 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                                   fontStyle: FontStyle.normal,
                                   fontSize: 20.0),
                               textAlign: TextAlign.left),
+                          SizedBox(
+                            height: 3,
+                          ),
+
                           // Organic Store
                           Text(widget.storeName ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                   color: const Color(0xff727c8e),
                                   fontWeight: FontWeight.w400,
                                   fontFamily: "Avenir-Book",
                                   fontStyle: FontStyle.normal,
                                   fontSize: 12.0),
-                              textAlign: TextAlign.left)
+                              textAlign: TextAlign.left),
+                          Spacer(),
                         ],
                       ),
                     );

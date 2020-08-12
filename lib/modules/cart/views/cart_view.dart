@@ -334,7 +334,8 @@ class _CartViewState extends State<CartView> {
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       decoration: const InputDecoration(
-                                        prefixIcon: Icon(Icons.note_add),
+                                        prefixIcon: ImageIcon(AssetImage(
+                                            'assets/images/notepad.png')),
                                         hintText:
                                             'Any Request to the Merchant?',
                                         labelText:
@@ -1019,7 +1020,7 @@ class EmptyView extends StatelessWidget {
                       height: 46,
                       width: 160,
                       decoration: BoxDecoration(
-                        color: Color(0xff5091cd),
+                        color: AppColors.icColors,
                         borderRadius: BorderRadius.circular(23),
                       ),
                       child: Center(

@@ -1,18 +1,20 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 
 class FourthPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Column(
       children: <Widget>[
         Spacer(),
         Image.asset(
           'assets/images/allHands.png',
-          height: 380,
-          width: 264,
+          height: SizeConfig.safeBlockVertical * 50,
+          width: SizeConfig.safeBlockHorizontal * 70,
         ),
         Spacer(),
         Padding(padding: EdgeInsets.all(10)),

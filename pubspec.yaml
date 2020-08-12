@@ -149,6 +149,8 @@ flutter:
     - assets/images/esamudayDelivery.png
     - assets/images/family.png
     - assets/images/allHands.png
+    - assets/images/notepad.png
+    - assets/images/refresh_1.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

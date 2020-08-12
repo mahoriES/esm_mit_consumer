@@ -7,7 +7,6 @@ import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/views/expandable_view.dart';
-
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
@@ -20,9 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:upi_india/upi_india.dart';
 import 'package:upi_pay/upi_pay.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:upi_india/upi_india.dart';
 
 class OrdersView extends StatefulWidget {
   @override
@@ -261,7 +260,7 @@ class _OrdersViewState extends State<OrdersView> {
                 height: 46,
                 width: 160,
                 decoration: BoxDecoration(
-                  color: Color(0xff5091cd),
+                  color: AppColors.icColors,
                   borderRadius: BorderRadius.circular(23),
                 ),
                 child: Center(
@@ -837,12 +836,16 @@ class OrderItemBottomView extends StatelessWidget {
     }
   }
 
-  Icon buildIcon() {
+  Widget buildIcon() {
     if (orderStatus == "CREATED") {
-      return Icon(
-        Icons.autorenew,
+      return ImageIcon(
+        AssetImage('assets/images/refresh_1.png'),
         color: Color(0xffeb730c),
       );
+//      Icon(
+//        Icons.autorenew,
+//        color: Color(0xffeb730c),
+//      );
     } else if (orderStatus == "MERCHANT_ACCEPTED") {
       return Icon(
         Icons.check_circle_outline,
