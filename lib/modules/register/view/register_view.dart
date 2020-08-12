@@ -28,9 +28,10 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController pinCodeController = TextEditingController();
+  TextEditingController pinCodeController =
+      TextEditingController(text: 'UDUPI01');
   String latitude, longitude;
-  String selectedCircle = 'UDUPI01';
+  String selectedCircle = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,70 +253,69 @@ class _RegistrationState extends State<Registration> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                    child: Center(
-                  child: DropdownButton<String>(
-                    items: <String>['UDUPI01'].map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: selectedCircle,
-                        child: new Text(selectedCircle,
-                            style: TextStyle(
-                                color: const Color(0xff1a1a1a),
-                                fontWeight: FontWeight.w400,
-                                fontFamily: "Avenir",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 13.0),
-                            textAlign: TextAlign.center),
-                      );
-                    }).toList(),
-                    value: selectedCircle,
-                    isDense: false,
-                    underline: Container(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCircle = value;
-                      });
-                    },
-                  ),
-                )
-//                  TextFormField(
-//                      validator: (value) {
-//                        if (value.length == 0) return null;
-//
-//                        if (value.isEmpty
-////                                                ||
-////                                                !pinCodeController.text
-////                                                    .contains(new RegExp(
-////                                                        r'^[1-9][0-9]{5}$'))
-//
-//                            ) {
-//                          return tr('screen_register.pin_code.title');
-//                          return null;
-//                        }
-//                        return null;
-//                      },
-//                      autovalidate: true,
-//                      controller: pinCodeController,
-//                      keyboardType: TextInputType.text,
-//                      decoration: InputDecoration(
-//                        hintText: tr('screen_register.pin_code.title'),
-//                        border: InputBorder.none,
-//                        focusedBorder: InputBorder.none,
-//                        enabledBorder: InputBorder.none,
-//                        errorBorder: InputBorder.none,
-//                        disabledBorder: InputBorder.none,
-//                      ),
-//                      style: const TextStyle(
-//                          color: const Color(0xff1a1a1a),
-//                          fontWeight: FontWeight.w400,
-//                          fontFamily: "Avenir",
-//                          fontStyle: FontStyle.normal,
-//                          fontSize: 13.0),
-//                      textAlign: TextAlign.center),
+                  child: TextFormField(
+                      validator: (value) {
+                        if (value.length == 0) return null;
+
+                        if (value.isEmpty
+//                                                ||
+//                                                !pinCodeController.text
+//                                                    .contains(new RegExp(
+//                                                        r'^[1-9][0-9]{5}$'))
+
+                            ) {
+                          return tr('screen_register.pin_code.title');
+                          return null;
+                        }
+                        return null;
+                      },
+                      autovalidate: true,
+                      controller: pinCodeController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: tr('screen_register.pin_code.title'),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                      ),
+                      style: const TextStyle(
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Avenir",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 13.0),
+                      textAlign: TextAlign.center),
+                ),
+                Container(
+//                  color: Colors.red,
+                  width: 40,
+                  child: Center(
+                    child: PopupMenuButton<String>(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.icColors,
+                        size: 30,
+                      ),
+                      onSelected: (value) {
+                        pinCodeController.text = value;
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return ['UDUPI01'].map((String value) {
+                          return PopupMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList();
+                      },
                     ),
-                Icon(
-                  Icons.local_post_office,
-                  color: AppColors.icColors,
-                )
+                  ),
+                ),
+//                Icon(
+//                  Icons.local_post_office,
+//                  color: AppColors.icColors,
+//                )
               ],
             ),
           ),
@@ -477,7 +477,7 @@ class _ViewModel extends BaseModel<AppState> {
     // TODO: implement fromStore
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
-        phoneNumber: state.authState.getOtpRequest.phone,
+        phoneNumber: "", // state.authState.getOtpRequest.phone,
         navigateToHomePage: () {
           dispatch(NavigateAction.pushNamed('/myHomeView'));
         },

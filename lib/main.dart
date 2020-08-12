@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> {
             loadingSplash: null,
             seconds: 0,
             home: CheckUser(builder: (context, snapshot) {
-              return snapshot ? MyHomeView() : SplashScreen();
+              return snapshot ? MyHomeView() : Registration();
             }),
           );
         });
