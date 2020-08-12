@@ -60,7 +60,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     return UserExceptionDialog<AppState>(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0), // here the desired height
+          preferredSize: Size.fromHeight(120.0), // here the desired height
           child: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
