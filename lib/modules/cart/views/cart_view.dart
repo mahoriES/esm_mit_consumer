@@ -30,6 +30,7 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
+  TextEditingController requestController = TextEditingController();
   String deliveryCharge = "0";
   double totalValue = 0.0;
 
@@ -38,6 +39,9 @@ class _CartViewState extends State<CartView> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: AppColors.icColors, //change your color here
+        ),
         centerTitle: false,
 //        titleSpacing: 0.0,
 //        leading: IconButton(
@@ -319,6 +323,28 @@ class _CartViewState extends State<CartView> {
                                             blurRadius: 6,
                                             spreadRadius: 0)
                                       ], color: const Color(0xffffffff))),
+                                  Padding(
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: TextField(
+                                      style: const TextStyle(
+                                          color: const Color(0xff796c6c),
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Avenir",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 14.0),
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.note_add),
+                                        hintText:
+                                            'Any Request to the Merchant?',
+                                        labelText:
+                                            'Any Request to the Merchant?',
+                                      ),
+                                      autofocus: false,
+                                      maxLines: null,
+                                      controller: requestController,
+                                      keyboardType: TextInputType.text,
+                                    ),
+                                  ),
                                   Container(
                                     margin: EdgeInsets.only(top: 20),
                                     padding: EdgeInsets.only(
@@ -893,6 +919,8 @@ class _CartViewState extends State<CartView> {
                                               e.skus[e.selectedVariant].skuId,
                                           quantity: e.count))
                                       .toList();
+                                  request.customerNote =
+                                      requestController.text ?? "";
 
                                   snapshot.placeOrder(request);
                                 } else {

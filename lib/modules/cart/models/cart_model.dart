@@ -58,12 +58,14 @@ class PlaceOrderRequest {
   String deliveryType;
   List<OrderItems> orderItems;
   String deliveryAddressId;
+  String customerNote;
 
   PlaceOrderRequest(
       {this.businessId,
       this.deliveryType,
       this.orderItems,
-      this.deliveryAddressId});
+      this.deliveryAddressId,
+      this.customerNote});
 
   PlaceOrderRequest.fromJson(Map<String, dynamic> json) {
     businessId = json['business_id'];
@@ -75,6 +77,7 @@ class PlaceOrderRequest {
       });
     }
     deliveryAddressId = json['delivery_address_id'];
+    customerNote = json['customer_note'];
   }
 
   Map<String, dynamic> toJson() {
@@ -85,6 +88,8 @@ class PlaceOrderRequest {
       data['order_items'] = this.orderItems.map((v) => v.toJson()).toList();
     }
     data['delivery_address_id'] = this.deliveryAddressId;
+    data['customer_note'] = this.customerNote;
+
     return data;
   }
 }
