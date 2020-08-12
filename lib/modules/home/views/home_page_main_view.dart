@@ -72,7 +72,8 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 child: Container(), preferredSize: Size.fromHeight(0.0)),
             flexibleSpace: // Rectangle 2102
                 Container(
-              height: 129,
+              height: 140,
+              padding: EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                       begin: Alignment(0.5, 0),
@@ -81,57 +82,57 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     const Color(0xff5f3a9f),
                     const Color(0xffe1517d)
                   ])),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'assets/images/splash.png',
-                          width: 200,
-                          color: Colors.white,
-                        ),
-                        StoreConnector<AppState, _ViewModel>(
-                            model: _ViewModel(),
-                            onInit: (store) {
-                              store.dispatch(GetCartFromLocal());
-                              store.dispatch(GetUserFromLocalStorageAction());
-                            },
-                            builder: (context, snapshot) {
-                              return Row(
-                                children: [
-                                  SizedBox(
-                                    width: 45,
-                                  ),
-                                  ImageIcon(
-                                    AssetImage('assets/images/location2.png'),
-                                    color: Colors.white,
-                                    size: 14,
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Text(snapshot?.cluster?.clusterName ?? "",
-                                      style: TextStyle(
-                                        fontFamily: 'JTLeonor',
-                                        color: Colors.white,
-                                        fontSize: 13.5,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                      )),
-                                ],
-                              );
-                            })
-                      ],
-                    ),
-                  )
-                ],
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            'assets/images/splash.png',
+                            width: 200,
+                            color: Colors.white,
+                          ),
+                          StoreConnector<AppState, _ViewModel>(
+                              model: _ViewModel(),
+                              onInit: (store) {
+                                store.dispatch(GetCartFromLocal());
+                                store.dispatch(GetUserFromLocalStorageAction());
+                              },
+                              builder: (context, snapshot) {
+                                return Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 45,
+                                    ),
+                                    ImageIcon(
+                                      AssetImage('assets/images/location2.png'),
+                                      color: Colors.white,
+                                      size: 14,
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(snapshot?.cluster?.clusterName ?? "",
+                                        style: TextStyle(
+                                          fontFamily: 'JTLeonor',
+                                          color: Colors.white,
+                                          fontSize: 13.5,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                        )),
+                                  ],
+                                );
+                              })
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -203,11 +204,10 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   onLoading: () {
                     _onLoading(snapshot);
                   },
-                  child: (snapshot.merchants == null ||
-                          snapshot.merchants.isEmpty)
-                      ? snapshot.loadingStatus != LoadingStatusApp.loading
-                          ? buildEmptyView(context, snapshot)
-                          : Container()
+                  child: (snapshot.merchants != null &&
+                              snapshot.merchants.isEmpty) &&
+                          snapshot.loadingStatus != LoadingStatusApp.loading
+                      ? buildEmptyView(context, snapshot)
                       : ListView(
                           padding: EdgeInsets.only(top: 2, bottom: 15),
                           children: <Widget>[
@@ -215,12 +215,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                               padding: const EdgeInsets.only(
                                   left: 10, top: 20, bottom: 10),
                               child: Text('screen_home.store_near_you',
-                                      style: const TextStyle(
-                                          color: const Color(0xff2c2c2c),
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 16.0),
+                                      style: TextStyle(
+                                        fontFamily: 'Avenir',
+                                        color: Color(0xff4d4043),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        fontStyle: FontStyle.normal,
+                                      ),
                                       textAlign: TextAlign.left)
                                   .tr(),
                             ),
@@ -544,7 +545,7 @@ class StoresListView extends StatelessWidget {
                       child: Text(name,
                           style: const TextStyle(
                               color: const Color(0xffd5133a),
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               fontFamily: "Avenir",
                               fontStyle: FontStyle.normal,
                               fontSize: 16.0),
@@ -599,12 +600,13 @@ class StoresListView extends StatelessWidget {
                                       deliveryStatus
                                           ? tr("shop.delivery_ok")
                                           : tr("shop.delivery_no"),
-                                      style: const TextStyle(
-                                          color: const Color(0xff7c7c7c),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 14.0),
+                                      style: TextStyle(
+                                        fontFamily: 'Avenir',
+                                        color: Color(0xff141414),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FontStyle.normal,
+                                      ),
                                       textAlign: TextAlign.left),
                                 ],
                               ),

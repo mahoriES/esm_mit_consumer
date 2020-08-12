@@ -1,13 +1,20 @@
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:flutter/material.dart';
 
 class SecondPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Column(
       children: <Widget>[
         buildDialogeWidget(),
         Spacer(),
-        Image.asset('assets/images/esamudayDelivery.png'),
+        Image.asset(
+          'assets/images/esamudayDelivery.png',
+          height: SizeConfig.safeBlockVertical * 40,
+          width: SizeConfig.safeBlockHorizontal * 60,
+        ),
         Spacer(),
         Padding(padding: EdgeInsets.all(10)),
         Column(
@@ -60,8 +67,8 @@ Row buildDialogeWidget() {
       ),
       Image.asset(
         'assets/images/holdingMobile.png',
-        height: 166,
-        width: 178,
+        height: SizeConfig.safeBlockVertical * 20,
+        width: SizeConfig.safeBlockHorizontal * 40,
       ),
       Expanded(
         child: Padding(

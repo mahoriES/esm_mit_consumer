@@ -1,24 +1,29 @@
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:flutter/material.dart';
 
 class FirstPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Column(
       children: <Widget>[
         buildDialogeWidget(),
         Spacer(),
-        Image.asset('assets/images/first.png'),
+        Image.asset(
+          'assets/images/first.png',
+          height: SizeConfig.safeBlockVertical * 40,
+          width: SizeConfig.safeBlockHorizontal * 60,
+        ),
         Spacer(),
         Padding(padding: EdgeInsets.all(10)),
         Column(
           children: [
             SizedBox(
-              width: 248.0,
               child: Text(
                 'Welcome \nto eSamudaay!',
                 style: TextStyle(
                   fontFamily: 'Archivo',
-                  fontSize: 31,
+                  fontSize: 25,
                   color: const Color(0xff5f3a9f),
                   fontWeight: FontWeight.w600,
                 ),
@@ -37,7 +42,7 @@ class FirstPageWidget extends StatelessWidget {
                 'ಈ ಸಮುದಾಯ್ ಗೆ ಸ್ವಾಗತ',
                 style: TextStyle(
                   fontFamily: 'Archivo',
-                  fontSize: 24,
+                  fontSize: 20,
                   color: const Color(0xffe1517d),
                   fontWeight: FontWeight.w600,
                 ),

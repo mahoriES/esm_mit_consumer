@@ -1,27 +1,30 @@
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:flutter/material.dart';
 
 class ThirdPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Column(
       children: <Widget>[
         Spacer(),
-        Image.asset('assets/images/family.png'),
+        Image.asset(
+          'assets/images/family.png',
+          height: SizeConfig.safeBlockVertical * 50,
+          width: SizeConfig.safeBlockHorizontal * 70,
+        ),
         Spacer(),
         Padding(padding: EdgeInsets.all(10)),
         Column(
           children: [
-            SizedBox(
-              width: 326.0,
-              child: Text(
-                'Spend quality time with your loved ones, \nwhile we take care of the rest',
-                style: TextStyle(
-                  fontFamily: 'Archivo',
-                  fontSize: 15,
-                  color: const Color(0xff5f3a9f),
-                ),
-                textAlign: TextAlign.center,
+            Text(
+              'Spend quality time with your loved ones, \nwhile we take care of the rest',
+              style: TextStyle(
+                fontFamily: 'Archivo',
+                fontSize: 15,
+                color: const Color(0xff5f3a9f),
               ),
+              textAlign: TextAlign.center,
             ),
             Container(
               margin: EdgeInsets.only(top: 8, bottom: 8),

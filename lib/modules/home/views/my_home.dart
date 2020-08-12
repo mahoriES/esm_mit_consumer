@@ -79,9 +79,13 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
               } else {
                 store.dispatch(GetAddressFromLocal());
               }
-              store.dispatch(
-                  GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-              store.dispatch(GetBannerDetailsAction());
+
+              store
+                  .dispatchFuture(
+                      GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl))
+                  .whenComplete(() {
+                store.dispatch(GetBannerDetailsAction());
+              });
               store.dispatch(GetCartFromLocal());
             });
             store.dispatch(GetUserFromLocalStorageAction());

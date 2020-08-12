@@ -1,11 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:eSamudaay/main.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
-import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
@@ -14,11 +12,11 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StoreProductListingView extends StatefulWidget {
@@ -346,7 +344,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     height: snapshot.localCartListing.isEmpty ? 0 : 86,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
-                      storeName: snapshot.selectedMerchant?.shopName ?? "",
+                      storeName: snapshot.selectedMerchant?.businessName ?? "",
                       height: snapshot.localCartListing.isEmpty ? 0 : 86,
                       buttonTitle: tr('cart.view_cart'),
                       didPressButton: () {
@@ -441,7 +439,7 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   List<Product> localCartListing;
   List<Product> productTempListing;
-  Merchants selectedMerchant;
+  Business selectedMerchant;
   List<CategoriesNew> subCategories;
   CategoriesNew selectedCategory;
   CategoriesNew selectedSubCategory;
@@ -516,6 +514,7 @@ class _ViewModel extends BaseModel<AppState> {
         selectedSubCategory: state.productState.selectedSubCategory,
         products: state.productState.productListingDataSource,
         localCartListing: state.productState.localCartItems,
+        selectedMerchant: state.productState.selectedMerchand,
         productResponse: state.productState.productResponse);
   }
 }
