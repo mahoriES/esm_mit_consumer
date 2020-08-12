@@ -31,7 +31,7 @@ class _RegistrationState extends State<Registration> {
   TextEditingController pinCodeController =
       TextEditingController(text: 'UDUPI01');
   String latitude, longitude;
-  String selectedCircle = '';
+  String selectedCircle = 'UDUPI01';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -299,6 +299,7 @@ class _RegistrationState extends State<Registration> {
                         size: 30,
                       ),
                       onSelected: (value) {
+                        selectedCircle = value;
                         pinCodeController.text = value;
                       },
                       itemBuilder: (BuildContext context) {
@@ -349,14 +350,14 @@ class _RegistrationState extends State<Registration> {
                 snapshot.updateCustomerDetails(
                     CustomerDetailsRequest(
                         profileName: nameController.text,
-                        clusterCode: selectedCircle,
+                        clusterCode: pinCodeController.text,
                         role: "CUSTOMER"),
                     AddressRequest(
                         addressName: nameController.text,
                         lat: double.parse(latitude ?? "0"),
                         lon: double.parse(longitude ?? "0"),
                         prettyAddress: addressController.text,
-                        geoAddr: GeoAddr(pincode: pinCodeController.text)));
+                        geoAddr: GeoAddr(pincode: "")));
               }
             } else {
               Fluttertoast.showToast(msg: "all fields required");
@@ -477,7 +478,7 @@ class _ViewModel extends BaseModel<AppState> {
     // TODO: implement fromStore
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
-        phoneNumber: "", // state.authState.getOtpRequest.phone,
+        phoneNumber: state.authState.getOtpRequest.phone,
         navigateToHomePage: () {
           dispatch(NavigateAction.pushNamed('/myHomeView'));
         },

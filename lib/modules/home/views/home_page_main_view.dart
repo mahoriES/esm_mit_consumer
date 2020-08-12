@@ -85,7 +85,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 50,
+                    height: 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 25),
