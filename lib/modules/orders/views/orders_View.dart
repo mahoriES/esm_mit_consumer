@@ -535,10 +535,10 @@ class OrderItemBottomView extends StatelessWidget {
                   ),
                 )
               : Container(),
-          Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: showPayment()
-                  ? InkWell(
+          showPayment()
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: InkWell(
                       onTap: () {
                         if (order.paymentInfo.status == 'PENDING' ||
                             order.paymentInfo.status == 'REJECTED') {
@@ -641,8 +641,8 @@ class OrderItemBottomView extends StatelessWidget {
                             ],
                           ),
                         ),
-                      ]))
-                  : Container()),
+                      ])))
+              : Container(),
         ]));
   }
 
@@ -1140,7 +1140,10 @@ class _OrdersListViewState extends State<OrdersListView>
                               size: 30,
                             ),
                         errorWidget: (context, url, error) => Center(
-                              child: Icon(Icons.error),
+                              child: Icon(
+                                Icons.image,
+                                size: 30,
+                              ),
                             )),
                   ),
           ),

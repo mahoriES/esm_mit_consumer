@@ -136,13 +136,17 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
         title: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
-              return Text(
-                snapshot.selectedCategory.categoryName,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontFamily: 'Avenir',
-                  fontWeight: FontWeight.w500,
+              return Hero(
+                tag: snapshot.selectedCategory.categoryName,
+                child: Text(
+                  snapshot.selectedCategory.categoryName,
+                  style: const TextStyle(
+                      decoration: TextDecoration.none,
+                      color: const Color(0xff000000),
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "Avenir-Medium",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 20.0),
                 ),
               );
             }),
@@ -221,11 +225,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                           ),
                         ),
                       ),
-                      onTap: (index) {
-                        if (index != 0) {
-                          snapshot.updateProductList([]);
-                        }
-                      },
+                      onTap: (index) {},
                       tabs: List.generate(
                         count,
                         (index) => // All
@@ -573,7 +573,10 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
                                         Center(
-                                          child: Icon(Icons.error),
+                                          child: Icon(
+                                            Icons.image,
+                                            size: 30,
+                                          ),
                                         )),
                               )
                             : widget.item.images.length > 0
@@ -606,7 +609,10 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                             CupertinoActivityIndicator(),
                                         errorWidget: (context, url, error) =>
                                             Center(
-                                              child: Icon(Icons.error),
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 30,
+                                              ),
                                             )),
                                   ),
                         colorFilter: ColorFilter.mode(

@@ -46,6 +46,17 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
   }
 }
 
+class RemoveCategoryAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() {
+    // TODO: implement reduce
+    return state.copyWith(
+        productState: state.productState.copyWith(
+      categories: [],
+    ));
+  }
+}
+
 class GetCategoriesAction extends ReduxAction<AppState> {
   final String merchantId;
 

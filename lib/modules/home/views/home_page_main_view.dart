@@ -8,6 +8,7 @@ import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -72,7 +73,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 child: Container(), preferredSize: Size.fromHeight(0.0)),
             flexibleSpace: // Rectangle 2102
                 Container(
-              height: 140,
+              height: 160,
               padding: EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -498,8 +499,8 @@ class StoresListView extends StatelessWidget {
                         children: <Widget>[
                           ColorFiltered(
                             colorFilter: ColorFilter.mode(
-                                shopClosed ? Colors.grey : Colors.transparent,
-                                BlendMode.saturation),
+                                shopClosed ? Colors.grey : Colors.white,
+                                BlendMode.modulate),
                             child: shopImage == null
                                 ? Image.asset(
                                     'assets/images/shop1.png',
@@ -508,7 +509,8 @@ class StoresListView extends StatelessWidget {
                                 : ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),
                                     child: CachedNetworkImage(
-                                        height: 100.0,
+                                        height: 46,
+                                        width: 46,
                                         fit: BoxFit.cover,
                                         imageUrl: shopImage,
                                         placeholder: (context, url) => Icon(
@@ -517,7 +519,10 @@ class StoresListView extends StatelessWidget {
                                             ),
                                         errorWidget: (context, url, error) =>
                                             Center(
-                                              child: Icon(Icons.error),
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 30,
+                                              ),
                                             )),
                                   ),
                           ),
@@ -526,14 +531,18 @@ class StoresListView extends StatelessWidget {
                     ), // Astore Groceries
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
-                      child: Text(name,
-                          style: const TextStyle(
-                              color: const Color(0xffd5133a),
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Avenir-Medium",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                          textAlign: TextAlign.left),
+                      child: Hero(
+                        tag: name,
+                        child: Text(name,
+                            style: const TextStyle(
+                                decoration: TextDecoration.none,
+                                color: const Color(0xffd5133a),
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Avenir-Medium",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0),
+                            textAlign: TextAlign.left),
+                      ),
                     ),
                     Spacer(),
                     shopClosed
@@ -549,7 +558,7 @@ class StoresListView extends StatelessWidget {
                             child: // Out of stock
                                 Padding(
                               padding:
-                                  const EdgeInsets.only(left: 3.0, right: 3.0),
+                                  const EdgeInsets.only(left: 4.0, right: 4.0),
                               child: Text('common.closed',
                                       style: const TextStyle(
                                           color: Colors.white,
@@ -674,7 +683,10 @@ class StoresListView extends StatelessWidget {
                                         ),
                                     errorWidget: (context, url, error) =>
                                         Center(
-                                          child: Icon(Icons.error),
+                                          child: Icon(
+                                            Icons.image,
+                                            size: 30,
+                                          ),
                                         )),
                               ),
                       ),
@@ -819,6 +831,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
         },
         navigateToStoreDetailsPage: () {
+          dispatch(RemoveCategoryAction());
           dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
         },
         navigateToAddAddressPage: () {

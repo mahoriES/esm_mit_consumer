@@ -3,6 +3,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FourthPageWidget extends StatelessWidget {
   @override
@@ -57,6 +58,8 @@ class FourthPageWidget extends StatelessWidget {
             InkWell(
               onTap: () async {
                 await UserManager.saveSkipStatus(status: true);
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool('first_time', false);
                 store.dispatch(
                     NavigateAction.pushNamedAndRemoveAll('/language'));
               },
