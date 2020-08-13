@@ -1,6 +1,8 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -151,16 +153,24 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                           ),
 
                           // Organic Store
-                          Text(widget.storeName ?? "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  color: const Color(0xff727c8e),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 12.0),
-                              textAlign: TextAlign.left),
+                          FutureBuilder(
+                            future: CartDataSource.getListOfMerchants(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<List<Business>> snapshot) {
+                              return snapshot.data.isEmpty
+                                  ? Container()
+                                  : Text(snapshot.data.first.businessName ?? "",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          color: const Color(0xff727c8e),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Avenir",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 12.0),
+                                      textAlign: TextAlign.left);
+                            },
+                          ),
                           Spacer(),
                         ],
                       ),
