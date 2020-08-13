@@ -120,6 +120,7 @@
   },
 
   "screen_order": {
+    "made_payment": "मैंने अपना भुगतान कर दिया है",
     "title": "आदेश",
     "payment_details": "भुगतान विवरण",
     "item_total": "कुल वस्तुएँ",

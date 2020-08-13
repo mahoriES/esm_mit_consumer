@@ -36,7 +36,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               style: const TextStyle(
                                   color: const Color(0xffffffff),
                                   fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir-Book",
+                                  fontFamily: "Avenir-Medium",
                                   fontStyle: FontStyle.normal,
                                   fontSize: 24.0),
                               textAlign: TextAlign.left)

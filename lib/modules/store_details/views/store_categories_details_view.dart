@@ -108,7 +108,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                           style: const TextStyle(
                                               color: const Color(0xff000000),
                                               fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir-Book",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 22.0),
                                           textAlign: TextAlign.left),
@@ -131,7 +131,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           0xff797979),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir-Book",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 14.0),
@@ -160,7 +161,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           0xff6f6f6f),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir-Book",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -207,7 +209,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                   color:
                                                       const Color(0xff6f6f6f),
                                                   fontWeight: FontWeight.w500,
-                                                  fontFamily: "Avenir-Book",
+                                                  fontFamily: "Avenir-Medium",
                                                   fontStyle: FontStyle.normal,
                                                   fontSize: 14.0),
                                               textAlign: TextAlign.left),
@@ -242,7 +244,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                       style: TextStyle(
                                         color: Color(0xff151515),
                                         fontSize: 18,
-                                        fontFamily: 'Avenir-Book',
+                                        fontFamily: 'Avenir-Medium',
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ).tr(),
@@ -357,7 +359,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                                   FontWeight
                                                                       .w600,
                                                               fontFamily:
-                                                                  "Avenir-Book",
+                                                                  "Avenir-Medium",
                                                               fontStyle:
                                                                   FontStyle
                                                                       .normal,

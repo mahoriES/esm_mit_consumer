@@ -26,7 +26,7 @@ class _AccountsViewState extends State<AccountsView> {
                 style: const TextStyle(
                     color: const Color(0xff000000),
                     fontWeight: FontWeight.w500,
-                    fontFamily: "Avenir-Book",
+                    fontFamily: "Avenir-Medium",
                     fontStyle: FontStyle.normal,
                     fontSize: 20.0),
                 textAlign: TextAlign.left),
@@ -125,7 +125,7 @@ class _AccountsViewState extends State<AccountsView> {
                             style: const TextStyle(
                                 color: const Color(0xff6f6d6d),
                                 fontWeight: FontWeight.w400,
-                                fontFamily: "Avenir-Book",
+                                fontFamily: "Avenir-Medium",
                                 fontStyle: FontStyle.normal,
                                 fontSize: 16.0),
                           ).tr(),
@@ -136,7 +136,7 @@ class _AccountsViewState extends State<AccountsView> {
                                 style: const TextStyle(
                                     color: const Color(0xff6f6d6d),
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: "Avenir-Book",
+                                    fontFamily: "Avenir-Medium",
                                     fontStyle: FontStyle.normal,
                                     fontSize: 16.0),
                               ),
@@ -150,7 +150,7 @@ class _AccountsViewState extends State<AccountsView> {
                                 style: const TextStyle(
                                     color: const Color(0xff6f6d6d),
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: "Avenir-Book",
+                                    fontFamily: "Avenir-Medium",
                                     fontStyle: FontStyle.normal,
                                     fontSize: 16.0),
                               ),

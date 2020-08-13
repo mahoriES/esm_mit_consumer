@@ -82,7 +82,7 @@ class _OrdersViewState extends State<OrdersView> {
                       style: const TextStyle(
                           color: const Color(0xff000000),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 20.0),
                       textAlign: TextAlign.left)
@@ -226,7 +226,7 @@ class _OrdersViewState extends State<OrdersView> {
                   style: const TextStyle(
                       color: const Color(0xff1f1f1f),
                       fontWeight: FontWeight.w400,
-                      fontFamily: "Avenir-Book",
+                      fontFamily: "Avenir-Medium",
                       fontStyle: FontStyle.normal,
                       fontSize: 20.0),
                   textAlign: TextAlign.left)
@@ -241,7 +241,7 @@ class _OrdersViewState extends State<OrdersView> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir-Book",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                     textAlign: TextAlign.center)
@@ -272,7 +272,7 @@ class _OrdersViewState extends State<OrdersView> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
-                          fontFamily: 'Avenir-Book',
+                          fontFamily: 'Avenir-Medium',
                           fontWeight: FontWeight.w900,
                         ),
                         textAlign: TextAlign.center,
@@ -374,6 +374,7 @@ class OrderItemBottomView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(orderStatus);
     var order = snapshot.getOrderListResponse.results[index];
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
@@ -396,7 +397,7 @@ class OrderItemBottomView extends StatelessWidget {
                                 style: const TextStyle(
                                     color: const Color(0xffe33a3a),
                                     fontWeight: FontWeight.w900,
-                                    fontFamily: "Avenir-Book",
+                                    fontFamily: "Avenir-Medium",
                                     fontStyle: FontStyle.normal,
                                     fontSize: 14.0),
                                 textAlign: TextAlign.left),
@@ -460,7 +461,7 @@ class OrderItemBottomView extends StatelessWidget {
                           children: <Widget>[
                             Icon(
                               Icons.phone,
-                              size: 35,
+                              size: 20,
                               color: AppColors.icColors,
                             ),
                             Padding(
@@ -470,7 +471,7 @@ class OrderItemBottomView extends StatelessWidget {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
-                                  fontFamily: 'Avenir-Book',
+                                  fontFamily: 'Avenir-Medium',
                                   fontWeight: FontWeight.w800,
                                 ),
                               ).tr(),
@@ -513,7 +514,7 @@ class OrderItemBottomView extends StatelessWidget {
                       children: <Widget>[
                         Icon(
                           Icons.phone,
-                          size: 35,
+                          size: 20,
                           color: AppColors.icColors,
                         ),
                         Padding(
@@ -523,7 +524,7 @@ class OrderItemBottomView extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 12,
-                              fontFamily: 'Avenir-Book',
+                              fontFamily: 'Avenir-Medium',
                               fontWeight: FontWeight.w800,
                             ),
                           ).tr(),
@@ -534,50 +535,63 @@ class OrderItemBottomView extends StatelessWidget {
                   ),
                 )
               : Container(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: InkWell(
-              onTap: () {
-                if (order.paymentInfo.status == 'PENDING' ||
-                    order.paymentInfo.status == 'REJECTED') {
-                  snapshot.notifyPayment(order.orderId);
-                }
-              },
-              child: Row(
-                children: [
-                  Spacer(),
-                  Container(
-                    child: // I’ve made my payment
-                        Row(
+          showPayment()
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: InkWell(
+                    onTap: () {
+                      if (order.paymentInfo.status == 'PENDING' ||
+                          order.paymentInfo.status == 'REJECTED') {
+                        snapshot.notifyPayment(order.orderId);
+                      }
+                    },
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Icon(
-                            Icons.check_circle_outline,
-                            color: order.paymentInfo.status == 'INITIATED'
-                                ? AppColors.mainColor
-                                : Colors.grey,
-                            size: 15,
+                        Spacer(),
+                        Container(
+                          child: // I’ve made my payment
+                              Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Icon(
+                                  Icons.check_circle_outline,
+                                  color: order.paymentInfo.status == 'INITIATED'
+                                      ? AppColors.mainColor
+                                      : Colors.grey,
+                                  size: 15,
+                                ),
+                              ),
+                              Text("screen_order.made_payment",
+                                      style: const TextStyle(
+                                          color: const Color(0xff504e4e),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "HelveticaNeue",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 12.0),
+                                      textAlign: TextAlign.left)
+                                  .tr(),
+                            ],
                           ),
                         ),
-                        Text("I’ve made my payment",
-                            style: const TextStyle(
-                                color: const Color(0xff504e4e),
-                                fontWeight: FontWeight.w400,
-                                fontFamily: "HelveticaNeue",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 12.0),
-                            textAlign: TextAlign.left),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          )
+                )
+              : Container()
         ],
       ),
     );
+  }
+
+  bool showPayment() {
+    if (orderStatus == "CREATED" ||
+        orderStatus == "CUSTOMER_CANCELLED" ||
+        orderStatus == "MERCHANT_CANCELLED") {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   bool isButtonShow() {
@@ -658,7 +672,7 @@ class OrderItemBottomView extends StatelessWidget {
 //                              style: const TextStyle(
 //                                  color: const Color(0xff6f6f6f),
 //                                  fontWeight: FontWeight.w500,
-//                                  fontFamily: "Avenir-Book",
+//                                  fontFamily: "Avenir-Medium",
 //                                  fontStyle: FontStyle.normal,
 //                                  fontSize: 16.0),
 //                              textAlign: TextAlign.left),
@@ -770,10 +784,11 @@ class OrderItemBottomView extends StatelessWidget {
 
   Text buildText() {
     TextStyle newStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 12,
-      fontFamily: 'Avenir-Book',
-      fontWeight: FontWeight.w800,
+      fontFamily: 'Avenir-Medium',
+      color: Color(0xff958d8d),
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      fontStyle: FontStyle.normal,
     );
     if (orderStatus == "CREATED") {
       return Text(
@@ -949,7 +964,7 @@ class CustomButton extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
-                      fontFamily: 'Avenir-Book',
+                      fontFamily: 'Avenir-Medium',
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -1064,7 +1079,7 @@ class _OrdersListViewState extends State<OrdersListView>
                       style: const TextStyle(
                           color: const Color(0xff2c2c2c),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 16.0),
                       textAlign: TextAlign.left),
@@ -1074,7 +1089,7 @@ class _OrdersListViewState extends State<OrdersListView>
                         style: const TextStyle(
                             color: const Color(0xff7c7c7c),
                             fontWeight: FontWeight.w400,
-                            fontFamily: "Avenir-Book",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.left),
@@ -1087,7 +1102,7 @@ class _OrdersListViewState extends State<OrdersListView>
                         style: const TextStyle(
                             color: const Color(0xff7c7c7c),
                             fontWeight: FontWeight.w400,
-                            fontFamily: "Avenir-Book",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.left),
@@ -1106,7 +1121,7 @@ class _OrdersListViewState extends State<OrdersListView>
                                     style: const TextStyle(
                                         color: const Color(0xff7c7c7c),
                                         fontWeight: FontWeight.w400,
-                                        fontFamily: "Avenir-Book",
+                                        fontFamily: "Avenir-Medium",
                                         fontStyle: FontStyle.normal,
                                         fontSize: 14.0),
                                     textAlign: TextAlign.left),
@@ -1130,7 +1145,7 @@ class _OrdersListViewState extends State<OrdersListView>
                             style: const TextStyle(
                                 color: const Color(0xff7c7c7c),
                                 fontWeight: FontWeight.w400,
-                                fontFamily: "Avenir-Book",
+                                fontFamily: "Avenir-Medium",
                                 fontStyle: FontStyle.normal,
                                 fontSize: 14.0),
                             textAlign: TextAlign.left),
@@ -1159,7 +1174,7 @@ class _OrdersListViewState extends State<OrdersListView>
                   style: const TextStyle(
                       color: const Color(0xff5091cd),
                       fontWeight: FontWeight.w500,
-                      fontFamily: "Avenir-Book",
+                      fontFamily: "Avenir-Medium",
                       fontStyle: FontStyle.normal,
                       fontSize: 18.0),
                   textAlign: TextAlign.left)

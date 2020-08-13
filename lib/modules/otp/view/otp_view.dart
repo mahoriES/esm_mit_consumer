@@ -106,7 +106,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                           style: const TextStyle(
                                               color: const Color(0xff868b8e),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Book",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 14.0),
                                           textAlign: TextAlign.center)
@@ -157,7 +157,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                                     color:
                                                         const Color(0xff3795d1),
                                                     fontWeight: FontWeight.w400,
-                                                    fontFamily: "Avenir-Book",
+                                                    fontFamily: "Avenir-Medium",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -171,7 +171,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                           style: const TextStyle(
                                               color: const Color(0xff3795d1),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Book",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 14.0),
                                           textAlign: TextAlign.left)
@@ -237,7 +237,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir-Book",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),

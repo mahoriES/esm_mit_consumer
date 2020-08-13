@@ -84,7 +84,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
                                         style: const TextStyle(
                                             color: const Color(0xff797979),
                                             fontWeight: FontWeight.w500,
-                                            fontFamily: "Avenir-Book",
+                                            fontFamily: "Avenir-Medium",
                                             fontStyle: FontStyle.normal,
                                             fontSize: 18.0),
                                         textAlign: TextAlign.left)
@@ -129,7 +129,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
                                           style: const TextStyle(
                                               color: const Color(0xff1a1a1a),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Book",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 13.0),
                                           textAlign: TextAlign.center),
@@ -183,7 +183,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
                                           style: const TextStyle(
                                               color: const Color(0xff1a1a1a),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Book",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 13.0),
                                           textAlign: TextAlign.center),
@@ -285,7 +285,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
                                           style: const TextStyle(
                                               color: const Color(0xff1a1a1a),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Book",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 13.0),
                                           textAlign: TextAlign.center),
@@ -394,7 +394,7 @@ class _RecommendedShopState extends State<RecommendedShop> {
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           fontFamily:
-                                                              "Avenir-Book",
+                                                              "Avenir-Medium",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 16.0),

@@ -120,6 +120,7 @@
   },
 
   "screen_order": {
+    "made_payment": "ನಾನು ನನ್ನ ಪಾವತಿಯನ್ನು ಮಾಡಿದ್ದೇನೆ",
     "title": "ಆದೇಶಗಳು",
     "payment_details": "ಪಾವತಿ ವಿವರಗಳು",
     "item_total": "ಐಟಂ ಒಟ್ಟು",

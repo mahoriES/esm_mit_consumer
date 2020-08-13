@@ -120,6 +120,7 @@
   },
 
   "screen_order": {
+    "made_payment": "I’ve made my payment",
     "title": "Orders",
     "payment_details": "Payment Details",
     "item_total": "Item Total",

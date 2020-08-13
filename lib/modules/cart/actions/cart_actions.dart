@@ -63,7 +63,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                 style: const TextStyle(
                     color: const Color(0xff6f6d6d),
                     fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir-Book",
+                    fontFamily: "Avenir-Medium",
                     fontStyle: FontStyle.normal,
                     fontSize: 16.0),
               ).tr(),
@@ -74,7 +74,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir-Book",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                   ).tr(),
@@ -88,7 +88,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir-Book",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                   ).tr(),

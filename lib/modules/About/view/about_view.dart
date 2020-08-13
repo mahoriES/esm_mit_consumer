@@ -45,7 +45,7 @@ class _AboutViewState extends State<AboutView> {
                   style: TextStyle(
                     color: Color(0xff797979),
                     fontSize: 18,
-                    fontFamily: 'Avenir-Book',
+                    fontFamily: 'Avenir',
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,

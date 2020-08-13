@@ -179,7 +179,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -226,7 +226,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -276,7 +276,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -397,7 +397,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   style: const TextStyle(
                                       color: const Color(0xffffffff),
                                       fontWeight: FontWeight.w500,
-                                      fontFamily: "Avenir-Book",
+                                      fontFamily: "Avenir-Medium",
                                       fontStyle: FontStyle.normal,
                                       fontSize: 16.0),
                                   textAlign: TextAlign.center)

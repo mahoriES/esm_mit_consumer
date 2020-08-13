@@ -157,7 +157,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                               style: const TextStyle(
                                   color: const Color(0xff727c8e),
                                   fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir-Book",
+                                  fontFamily: "Avenir-Medium",
                                   fontStyle: FontStyle.normal,
                                   fontSize: 12.0),
                               textAlign: TextAlign.left),
@@ -191,7 +191,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
-                                fontFamily: 'Avenir-Book',
+                                fontFamily: 'Avenir',
                                 fontWeight: FontWeight.w900,
                               ),
                               textAlign: TextAlign.center,

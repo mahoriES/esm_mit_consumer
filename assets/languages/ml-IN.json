@@ -120,6 +120,7 @@
   },
 
   "screen_order": {
+    "made_payment": "ഞാൻ എന്റെ പേയ്‌മെന്റ് നടത്തി",
     "title": "ഓർഡറുകൾ",
     "payment_details": "പേയ്‌മെന്റ് വിശദാംശങ്ങൾ",
     "item_total": "ആകെ മൊത്തം ",

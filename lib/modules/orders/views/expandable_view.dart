@@ -169,7 +169,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                       style: const TextStyle(
                                           color: const Color(0xff7c7c7c),
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir-Book",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left),
@@ -178,7 +178,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                       style: const TextStyle(
                                           color: const Color(0xff6f6f6f),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir-Book",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left)
@@ -198,7 +198,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                       style: const TextStyle(
                                           color: const Color(0xff000000),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir-Book",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 16.0),
                                       textAlign: TextAlign.center)
@@ -233,7 +233,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir-Book",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -243,16 +243,18 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                 Text(
                                                     "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal / 100}" ??
                                                         "0.0",
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff696666),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily:
-                                                            "Avenir-Book",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 16.0),
+                                                    style:
+                                                        const TextStyle(
+                                                            color:
+                                                                const Color(
+                                                                    0xff696666),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir-Medium",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 16.0),
                                                     textAlign: TextAlign.left)
                                               ],
                                             )
@@ -270,21 +272,21 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir-Book",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
                                                         textAlign: TextAlign
                                                             .left), // ₹ 175.00
                                                     Text(
-                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges}",
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges / 100}",
                                                         style: const TextStyle(
                                                             color: const Color(
                                                                 0xff696666),
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir-Book",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -305,21 +307,21 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir-Book",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
                                                         textAlign: TextAlign
                                                             .left), // ₹ 175.00
                                                     Text(
-                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges}",
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges / 100}",
                                                         style: const TextStyle(
                                                             color: const Color(
                                                                 0xff696666),
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir-Book",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -362,7 +364,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           fontFamily:
-                                                              "Avenir-Book",
+                                                              "Avenir-Medium",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 16.0),
@@ -377,7 +379,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                           0xff5091cd),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir-Book",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -413,7 +416,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                   color:
                                                       const Color(0xff4b4b4b),
                                                   fontWeight: FontWeight.w500,
-                                                  fontFamily: "Avenir-Book",
+                                                  fontFamily: "Avenir-Medium",
                                                   fontStyle: FontStyle.normal,
                                                   fontSize: 14.0),
                                               textAlign: TextAlign.left)
@@ -442,7 +445,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                           0xff6c6c6c),
                                                       fontWeight:
                                                           FontWeight.w400,
-                                                      fontFamily: "Avenir-Book",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 18.0),
@@ -517,7 +521,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                           FontWeight
                                                                               .w400,
                                                                       fontFamily:
-                                                                          "Avenir-Book",
+                                                                          "Avenir-Medium",
                                                                       fontStyle:
                                                                           FontStyle
                                                                               .normal,
@@ -607,7 +611,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                                   border: OutlineInputBorder(
                                                                                     borderRadius: BorderRadius.circular(10),
                                                                                   ),
-                                                                                  hintStyle: TextStyle(color: const Color(0xffb7b7b7), fontWeight: FontWeight.w400, fontFamily: "Avenir-Book", fontStyle: FontStyle.normal, fontSize: 14.0),
+                                                                                  hintStyle: TextStyle(color: const Color(0xffb7b7b7), fontWeight: FontWeight.w400, fontFamily: "Avenir-Medium", fontStyle: FontStyle.normal, fontSize: 14.0),
                                                                                   hintText: tr('screen_order.write_feedback')),
                                                                             ),
                                                                           ),
@@ -689,7 +693,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                             )
                                                                           : Text(
                                                                               snapshot.loadingStatus == LoadingStatusApp.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
-                                                                              style: const TextStyle(color: const Color(0xffffffff), fontWeight: FontWeight.w400, fontFamily: "Avenir-Book", fontStyle: FontStyle.normal, fontSize: 16.0),
+                                                                              style: const TextStyle(color: const Color(0xffffffff), fontWeight: FontWeight.w400, fontFamily: "Avenir-Medium", fontStyle: FontStyle.normal, fontSize: 16.0),
                                                                               textAlign: TextAlign.left),
                                                                     ),
                                                                   ),
@@ -797,7 +801,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         children: <Widget>[
                                           Icon(
                                             Icons.phone,
-                                            size: 30,
+                                            size: 15,
                                             color: AppColors.icColors,
                                           ),
                                           Padding(
@@ -807,7 +811,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 12,
-                                                fontFamily: 'Avenir-Book',
+                                                fontFamily: 'Avenir-Medium',
                                                 fontWeight: FontWeight.w800,
                                               ),
                                             ).tr(),

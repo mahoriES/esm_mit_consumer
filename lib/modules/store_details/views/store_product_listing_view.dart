@@ -141,7 +141,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
-                  fontFamily: 'Avenir-Book',
+                  fontFamily: 'Avenir',
                   fontWeight: FontWeight.w500,
                 ),
               );
@@ -202,13 +202,13 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       labelStyle: TextStyle(
                           color: const Color(0xff000000),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 14.0),
                       unselectedLabelStyle: TextStyle(
                           color: const Color(0xff9f9f9f),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 14.0),
                       labelColor: Color(0xff000000),
@@ -402,7 +402,7 @@ class EmptyViewProduct extends StatelessWidget {
                     style: const TextStyle(
                         color: const Color(0xff1f1f1f),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir-Book",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 20.0),
                     textAlign: TextAlign.left)
@@ -416,7 +416,7 @@ class EmptyViewProduct extends StatelessWidget {
                       style: const TextStyle(
                           color: const Color(0xff6f6d6d),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 16.0),
                       textAlign: TextAlign.center)
@@ -621,7 +621,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                       style: const TextStyle(
                                           color: const Color(0xfff51818),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir-Book",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 12.0),
                                       textAlign: TextAlign.left))
@@ -640,7 +640,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                             style: const TextStyle(
                                 color: const Color(0xff515c6f),
                                 fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir-Book",
+                                fontFamily: "Avenir-Medium",
                                 fontStyle: FontStyle.normal,
                                 fontSize: 15.0),
                             textAlign: TextAlign.left),
@@ -659,7 +659,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                             ? Color(0xffc1c1c1)
                                             : Color(0xff5091cd)),
                                         fontWeight: FontWeight.w500,
-                                        fontFamily: "Avenir-Book",
+                                        fontFamily: "Avenir-Medium",
                                         fontStyle: FontStyle.normal,
                                         fontSize: 18.0),
                                     textAlign: TextAlign.left),
@@ -768,7 +768,7 @@ class CSStepper extends StatelessWidget {
                         style: const TextStyle(
                             color: const Color(0xffffffff),
                             fontWeight: FontWeight.w500,
-                            fontFamily: "Avenir-Book",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.center),
@@ -802,7 +802,7 @@ class CSStepper extends StatelessWidget {
                       style: const TextStyle(
                           color: const Color(0xffffffff),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Book",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 14.0),
                       textAlign: TextAlign.center),
