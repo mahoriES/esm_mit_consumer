@@ -157,7 +157,8 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                             future: CartDataSource.getListOfMerchants(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<List<Business>> snapshot) {
-                              return snapshot.data.isEmpty
+                              return (snapshot.data == null ||
+                                      snapshot.data.isEmpty)
                                   ? Container()
                                   : Text(snapshot.data.first.businessName ?? "",
                                       maxLines: 1,
