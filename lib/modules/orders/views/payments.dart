@@ -30,10 +30,10 @@ class _PaymentsState extends State<Payments> {
   Future<UpiResponse> initiateTransaction(String app) async {
     return _upiIndia.startTransaction(
       app: app,
-      receiverUpiId: "8113970370@ybl",
+      receiverUpiId: orderResponse.paymentInfo.upi,
       receiverName: orderResponse.businessName,
       transactionRefId: 'TestingUpiIndiaPlugin',
-      transactionNote: '',
+      transactionNote: "Order# ${orderResponse.orderShortNumber}",
       amount: orderResponse.orderTotal / 100,
     );
   }
