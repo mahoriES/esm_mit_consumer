@@ -376,10 +376,10 @@ class OrderItemBottomView extends StatelessWidget {
   Widget build(BuildContext context) {
     print(orderStatus);
     var order = snapshot.getOrderListResponse.results[index];
+
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
-      child: Column(
-        children: <Widget>[
+        margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
+        child: Column(children: <Widget>[
           orderStatus == "MERCHANT_UPDATED"
               ? Align(
                   alignment: Alignment.centerRight,
@@ -535,53 +535,115 @@ class OrderItemBottomView extends StatelessWidget {
                   ),
                 )
               : Container(),
-          showPayment()
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: InkWell(
-                    onTap: () {
-                      if (order.paymentInfo.status == 'PENDING' ||
-                          order.paymentInfo.status == 'REJECTED') {
-                        snapshot.notifyPayment(order.orderId);
-                      }
-                    },
-                    child: Row(
-                      children: [
+          Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: showPayment()
+                  ? InkWell(
+                      onTap: () {
+                        if (order.paymentInfo.status == 'PENDING' ||
+                            order.paymentInfo.status == 'REJECTED') {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title:
+                                    Text('screen_order.Confirm_Payment').tr(),
+                                content:
+                                    Text('screen_order.merchant_notify_text')
+                                        .tr(),
+                                actions: [
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('screen_order.Cancel').tr(),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      snapshot.notifyPayment(order.orderId);
+                                    },
+                                    child: Text('screen_order.Confirm').tr(),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Row(children: [
                         Spacer(),
                         Container(
                           child: // I’ve made my payment
                               Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Icon(
-                                  Icons.check_circle_outline,
-                                  color: order.paymentInfo.status == 'INITIATED'
-                                      ? AppColors.mainColor
-                                      : Colors.grey,
-                                  size: 15,
+                              Spacer(),
+                              Container(
+                                child: // I’ve made my payment
+                                    Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        Icons.check_circle_outline,
+                                        color: order.paymentInfo.status ==
+                                                'INITIATED'
+                                            ? AppColors.mainColor
+                                            : Colors.grey,
+                                        size: 15,
+                                      ),
+                                    ),
+                                    Text("screen_order.made_payment",
+                                            style: const TextStyle(
+                                                color: const Color(0xff504e4e),
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: "HelveticaNeue",
+                                                fontStyle: FontStyle.normal,
+                                                fontSize: 12.0),
+                                            textAlign: TextAlign.left)
+                                        .tr(),
+                                  ],
                                 ),
                               ),
-                              Text("screen_order.made_payment",
-                                      style: const TextStyle(
-                                          color: const Color(0xff504e4e),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "HelveticaNeue",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 12.0),
-                                      textAlign: TextAlign.left)
-                                  .tr(),
+                              Row(
+                                children: [
+                                  Text(
+                                          order.paymentInfo.status == 'APPROVED'
+                                              ? "screen_order.Paid_at"
+                                              : "screen_order.made_my_payment",
+                                          style: const TextStyle(
+                                              color: const Color(0xff504e4e),
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: "HelveticaNeue",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 12.0),
+                                          textAlign: TextAlign.left)
+                                      .tr(),
+                                  (order.paymentInfo.status != "APPROVED")
+                                      ? Container()
+                                      : Text(
+                                              " " +
+                                                  DateFormat('HH:mm:a').format(
+                                                      DateTime.parse(order
+                                                              .paymentInfo.dt)
+                                                          .toLocal()),
+                                              style: const TextStyle(
+                                                  color:
+                                                      const Color(0xff504e4e),
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: "HelveticaNeue",
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 12.0),
+                                              textAlign: TextAlign.left)
+                                          .tr(),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container()
-        ],
-      ),
-    );
+                      ]))
+                  : Container()),
+        ]));
   }
 
   bool showPayment() {
@@ -610,12 +672,26 @@ class OrderItemBottomView extends StatelessWidget {
     }
   }
 
+  Color buttonBkColor(PaymentInfo paymentInfo) {
+    if (orderStatus == 'MERCHANT_ACCEPTED') {
+      if (paymentInfo.status == "INITIATED" ||
+          paymentInfo.status == "APPROVED") {
+        return Colors.grey.shade300;
+      } else {
+        return AppColors.icColors;
+      }
+    } else if (orderStatus == "COMPLETED") {
+      return AppColors.icColors;
+    } else if (orderStatus == "CREATED") {
+      return AppColors.orange;
+    }
+  }
+
   CustomButton buildCustomButton(_ViewModel snapshot, BuildContext context) {
     return CustomButton(
       title: title(),
-      backgroundColor: orderStatus == "COMPLETED"
-          ? AppColors.icColors
-          : orderStatus == "CREATED" ? AppColors.orange : AppColors.icColors,
+      backgroundColor: buttonBkColor(
+          snapshot.getOrderListResponse.results[index].paymentInfo),
       didPresButton: () async {
         if (orderStatus == "COMPLETED") {
           //reorder api
@@ -755,7 +831,7 @@ class OrderItemBottomView extends StatelessWidget {
       if (deliveryStatus == "SELF_PICK_UP")
         return tr('screen_order.pickup');
       else if (orderStatus == 'MERCHANT_ACCEPTED')
-        return 'Pay via UPI';
+        return tr('screen_order.Pay_via_upi');
       else
         return "";
     } else if (orderStatus == "CUSTOMER_CANCELLED") {

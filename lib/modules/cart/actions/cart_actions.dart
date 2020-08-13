@@ -12,10 +12,10 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class GetCartFromLocal extends ReduxAction<AppState> {
   @override
@@ -283,6 +283,35 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
       });
       return state.copyWith(
           productState: state.productState.copyWith(charges: charge));
+    } else {
+      Fluttertoast.showToast(msg: response.data['message']);
+      return null;
+    }
+  }
+
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+}
+
+class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
+  final PlaceOrderRequest request;
+
+  GetMerchantStatusAndPlaceOrderAction({this.request});
+  @override
+  FutureOr<AppState> reduce() async {
+    var merchant = await CartDataSource.getListOfMerchants();
+    var response = await APIManager.shared.request(
+        url: ApiURL.getBusinessesUrl + "${merchant.first.businessId}" + "/open",
+        params: {"": ""},
+        requestType: RequestType.get);
+    if (response.status == ResponseStatus.success200) {
+      if (response.data['is_open']) {
+        dispatch(PlaceOrderAction(request: request));
+      } else {
+        Fluttertoast.showToast(msg: tr('new_changes.shop_closed'));
+      }
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
       return null;

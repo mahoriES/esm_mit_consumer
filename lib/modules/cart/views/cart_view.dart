@@ -903,36 +903,29 @@ class _CartViewState extends State<CartView> {
                                     msg: tr("new_changes.choose_one"));
 //                                return;
                               } else {
-                                if (snapshot.selectedMerchant.isOpen) {
-                                  var address = await UserManager.getAddress();
-                                  List<Product> cart =
-                                      await CartDataSource.getListOfCartWith();
+                                var address = await UserManager.getAddress();
+                                List<Product> cart =
+                                    await CartDataSource.getListOfCartWith();
 
-                                  PlaceOrderRequest request =
-                                      PlaceOrderRequest();
-                                  request.businessId =
-                                      snapshot.selectedMerchant.businessId;
-                                  request.deliveryAddressId =
-                                      widget.radioValue == 1
-                                          ? address.addressId
-                                          : null;
-                                  request.deliveryType = widget.radioValue == 1
-                                      ? "DA_DELIVERY"
-                                      : "SELF_PICK_UP";
-                                  request.orderItems = cart
-                                      .map((e) => OrderItems(
-                                          skuId:
-                                              e.skus[e.selectedVariant].skuId,
-                                          quantity: e.count))
-                                      .toList();
-                                  request.customerNote =
-                                      requestController.text ?? "";
+                                PlaceOrderRequest request = PlaceOrderRequest();
+                                request.businessId =
+                                    snapshot.selectedMerchant.businessId;
+                                request.deliveryAddressId =
+                                    widget.radioValue == 1
+                                        ? address.addressId
+                                        : null;
+                                request.deliveryType = widget.radioValue == 1
+                                    ? "DA_DELIVERY"
+                                    : "SELF_PICK_UP";
+                                request.orderItems = cart
+                                    .map((e) => OrderItems(
+                                        skuId: e.skus[e.selectedVariant].skuId,
+                                        quantity: e.count))
+                                    .toList();
+                                request.customerNote =
+                                    requestController.text ?? "";
 
-                                  snapshot.placeOrder(request);
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: tr('new_changes.shop_closed'));
-                                }
+                                snapshot.placeOrder(request);
                               }
                             },
                           )
@@ -1129,7 +1122,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
         },
         placeOrder: (request) {
-          dispatch(PlaceOrderAction(request: request));
+          dispatch(GetMerchantStatusAndPlaceOrderAction(request: request));
         },
         getTaxOfOrder: (request) {
           dispatch(GetOrderTaxAction());
