@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/accounts/action/account_action.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 class AccountsView extends StatefulWidget {
   @override
@@ -13,6 +14,15 @@ class AccountsView extends StatefulWidget {
 }
 
 class _AccountsViewState extends State<AccountsView> {
+  String versionString = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getVersion();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,7 +189,7 @@ class _AccountsViewState extends State<AccountsView> {
                 Container(
                   height: 100,
                   child: Center(
-                    child: Text("Version 1.0 Build 1",
+                    child: Text(versionString,
                         style: const TextStyle(
                             color: const Color(0xff848282),
                             fontWeight: FontWeight.w400,
@@ -194,6 +204,22 @@ class _AccountsViewState extends State<AccountsView> {
           }),
     );
   }
+
+  getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+
+    print("Veresion $version Build $buildNumber");
+
+    setState(() {
+      versionString = "Veresion $version Build $buildNumber";
+    });
+  }
+
 //  @override
 //  Widget build(BuildContext context) {
 //    return Scaffold(
