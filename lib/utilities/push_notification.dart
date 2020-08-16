@@ -89,6 +89,7 @@ class PushNotificationsManager {
   }
 
   signOut() {
+    _firebaseMessaging.setAutoInitEnabled(false);
     _firebaseMessaging.deleteInstanceID();
     _initialized = false;
   }

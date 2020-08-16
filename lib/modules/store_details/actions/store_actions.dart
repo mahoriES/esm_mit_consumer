@@ -139,7 +139,8 @@ class UpdateSelectedSubCategoryAction extends ReduxAction<AppState> {
     return state.copyWith(
         productState: state.productState.copyWith(
             selectedSubCategory: selectedSubCategory,
-            productListingTempDataSource: []));
+            productListingTempDataSource: [],
+            productListingDataSource: []));
   }
 }
 

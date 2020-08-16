@@ -104,12 +104,14 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
     controller.addListener(() {
       if (!controller.indexIsChanging) {
         if (controller.index != 0) {
+          store.dispatch(UpdateProductListingDataAction(listingData: []));
           stores.dispatch(UpdateSelectedSubCategoryAction(
               selectedSubCategory:
                   stores.state.productState.subCategories[controller.index]));
-          stores.dispatch(UpdateProductListingDataAction(listingData: []));
+
           stores.dispatch(GetCatalogDetailsAction());
         } else {
+          store.dispatch(UpdateProductListingDataAction(listingData: []));
           stores.dispatch(UpdateSelectedSubCategoryAction(
               selectedSubCategory: stores.state.productState.subCategories[0]));
           stores.dispatch(GetCatalogDetailsAction());
@@ -494,7 +496,6 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
         getProducts: (categoryId, merchantId, url) {
-          dispatch(UpdateProductListingDataAction(listingData: []));
           dispatch(GetCatalogDetailsAction(url: url));
         },
         updateSelectedCategory: (category) {
@@ -568,7 +569,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 child: CachedNetworkImage(
                                     fit: BoxFit.cover,
 //                                                  height: 80,
-                                    imageUrl: widget.imageLink,
+                                    imageUrl: "",
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -591,11 +592,10 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                         placeholder: (context, url) =>
                                             CupertinoActivityIndicator(),
                                         errorWidget: (context, url, error) =>
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(25.0),
-                                              child: Image.network(
-                                                widget.imageLink,
+                                            Center(
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 30,
                                               ),
                                             )),
                                   )
@@ -604,7 +604,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                     child: CachedNetworkImage(
                                         fit: BoxFit.cover,
 //                                                  height: 80,
-                                        imageUrl: widget.imageLink,
+                                        imageUrl: "",
                                         placeholder: (context, url) =>
                                             CupertinoActivityIndicator(),
                                         errorWidget: (context, url, error) =>

@@ -49,10 +49,10 @@ class GetUserDetailAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+//  void before() =>
+//      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+//
+//  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class AddUserDetailAction extends ReduxAction<AppState> {

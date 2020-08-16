@@ -76,13 +76,9 @@ class _HomePageMainViewState extends State<HomePageMainView> {
               height: 160,
               padding: EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment(0.5, 0),
-                      end: Alignment(0.5, 1),
-                      colors: [
-                    const Color(0xff5f3a9f),
-                    const Color(0xffe1517d)
-                  ])),
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/HeaderImage.png"),
+                      fit: BoxFit.fill)),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,6 +254,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                                 deliveryStatus:
                                                     business.hasDelivery,
                                                 shopClosed: !business.isOpen,
+                                                itemsCount: business.itemsCount,
                                               ),
                                             ),
                                           ),

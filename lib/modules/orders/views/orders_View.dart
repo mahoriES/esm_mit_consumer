@@ -425,7 +425,7 @@ class OrderItemBottomView extends StatelessWidget {
                       builder: (context, snapshot) {
                         return Row(
                           children: [
-                            orderStatus == 'MERCHANT_ACCEPTED'
+                            showUpiIcon()
                                 ? Image.asset('assets/images/upi.png')
                                 : Container(),
                             buildCustomButton(snapshot, context),
@@ -573,77 +573,87 @@ class OrderItemBottomView extends StatelessWidget {
                       },
                       child: Row(children: [
                         Spacer(),
-                        Container(
-                          child: // I’ve made my payment
-                              Row(
-                            children: [
-                              Spacer(),
-                              Container(
-                                child: // I’ve made my payment
-                                    Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 5),
-                                      child: Icon(
-                                        Icons.check_circle_outline,
-                                        color: order.paymentInfo.status ==
-                                                'INITIATED'
-                                            ? AppColors.mainColor
-                                            : Colors.grey,
-                                        size: 15,
-                                      ),
-                                    ),
-                                    Text("screen_order.made_payment",
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.check_circle_outline,
+                                    color: order.paymentInfo.status ==
+                                                'INITIATED' ||
+                                            order.paymentInfo.status ==
+                                                'APPROVED'
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    size: 15,
+                                  ),
+                                ),
+                                Text(
+                                  order.paymentInfo.status == 'APPROVED'
+                                      ? "${order.businessName} " +
+                                          tr("screen_order.Paid_at")
+                                      : "screen_order.made_my_payment",
+                                  style: TextStyle(
+                                      decoration: (order.paymentInfo.status ==
+                                                  'APPROVED' ||
+                                              order.paymentInfo.status ==
+                                                  'INITIATED')
+                                          ? TextDecoration.none
+                                          : TextDecoration.underline,
+                                      color: (order.paymentInfo.status ==
+                                                  'APPROVED') ||
+                                              order.paymentInfo.status ==
+                                                  'INITIATED'
+                                          ? Colors.green
+                                          : Color(0xff504e4e),
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: "HelveticaNeue",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 12.0),
+                                  textAlign: TextAlign.left,
+                                ).tr(),
+                                (order.paymentInfo.status != "APPROVED")
+                                    ? Container()
+                                    : Text(
+                                            " " +
+                                                DateFormat('HH:mm a').format(
+                                                    DateTime.parse(order
+                                                            .paymentInfo.dt)
+                                                        .toLocal()),
                                             style: const TextStyle(
-                                                color: const Color(0xff504e4e),
+                                                color: Colors.green,
                                                 fontWeight: FontWeight.w400,
                                                 fontFamily: "HelveticaNeue",
                                                 fontStyle: FontStyle.normal,
                                                 fontSize: 12.0),
                                             textAlign: TextAlign.left)
                                         .tr(),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                          order.paymentInfo.status == 'APPROVED'
-                                              ? "screen_order.Paid_at"
-                                              : "screen_order.made_my_payment",
-                                          style: const TextStyle(
-                                              color: const Color(0xff504e4e),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "HelveticaNeue",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 12.0),
-                                          textAlign: TextAlign.left)
-                                      .tr(),
-                                  (order.paymentInfo.status != "APPROVED")
-                                      ? Container()
-                                      : Text(
-                                              " " +
-                                                  DateFormat('HH:mm:a').format(
-                                                      DateTime.parse(order
-                                                              .paymentInfo.dt)
-                                                          .toLocal()),
-                                              style: const TextStyle(
-                                                  color:
-                                                      const Color(0xff504e4e),
-                                                  fontWeight: FontWeight.w400,
-                                                  fontFamily: "HelveticaNeue",
-                                                  fontStyle: FontStyle.normal,
-                                                  fontSize: 12.0),
-                                              textAlign: TextAlign.left)
-                                          .tr(),
-                                ],
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
                       ])))
-              : Container(),
+              : Container()
         ]));
+  }
+
+  bool showUpiIcon() {
+    var order = snapshot.getOrderListResponse.results[index];
+    print("data for checking");
+    print(orderStatus);
+    print(deliveryStatus);
+    if (orderStatus == 'MERCHANT_ACCEPTED' ||
+        orderStatus == 'READY_FOR_PICKUP') {
+      if (deliveryStatus == "SELF_PICK_UP") {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
   }
 
   bool showPayment() {
@@ -666,24 +676,27 @@ class OrderItemBottomView extends StatelessWidget {
       if (deliveryStatus == "SELF_PICK_UP")
         return true;
       else
-        return false;
+        return true;
     } else {
       return false;
     }
   }
 
   Color buttonBkColor(PaymentInfo paymentInfo) {
-    if (orderStatus == 'MERCHANT_ACCEPTED') {
+    if (orderStatus == "COMPLETED") {
+      return AppColors.icColors;
+    } else if (orderStatus == "CREATED") {
+      return AppColors.orange;
+    } else {
+      if (paymentInfo.upi == null) {
+        return Colors.grey.shade300;
+      }
       if (paymentInfo.status == "INITIATED" ||
           paymentInfo.status == "APPROVED") {
         return Colors.grey.shade300;
       } else {
         return AppColors.icColors;
       }
-    } else if (orderStatus == "COMPLETED") {
-      return AppColors.icColors;
-    } else if (orderStatus == "CREATED") {
-      return AppColors.orange;
     }
   }
 
@@ -719,12 +732,12 @@ class OrderItemBottomView extends StatelessWidget {
             deliveryStatus == "SELF_PICK_UP") {
           snapshot.completeOrder(
               snapshot.getOrderListResponse.results[index].orderId, index);
-        } else if (orderStatus == 'MERCHANT_ACCEPTED') {
+        } else if (orderStatus == "READY_FOR_PICKUP" &&
+            deliveryStatus != "SELF_PICK_UP") {
           var order = snapshot.getOrderListResponse.results[index];
           if (order.paymentInfo.status == 'PENDING' ||
               order.paymentInfo.status == 'REJECTED') {
             if (order.paymentInfo.upi == null) {
-              Fluttertoast.showToast(msg: "The UPI is not provided");
               return;
             }
             Navigator.pushNamed(context, "/payment",
@@ -735,85 +748,22 @@ class OrderItemBottomView extends StatelessWidget {
                     snapshot.getOrderListResponse.results[index].orderId);
               }
             });
-//            showModalBottomSheet(
-//                context: context,
-//                builder: (c) {
-//                  return Container(
-//                    child: Padding(
-//                      padding: const EdgeInsets.all(10.0),
-//                      child: Column(
-//                        children: [
-//                          // Select app to Pay
-//                          Text("Select app to Pay",
-//                              style: const TextStyle(
-//                                  color: const Color(0xff6f6f6f),
-//                                  fontWeight: FontWeight.w500,
-//                                  fontFamily: "Avenir-Medium",
-//                                  fontStyle: FontStyle.normal,
-//                                  fontSize: 16.0),
-//                              textAlign: TextAlign.left),
-//                          SizedBox(
-//                            height: 10,
-//                          ),
-//                          Payments()
-//
-////                          ListView.separated(
-////                            shrinkWrap: true,
-////                            itemCount: snapshot.upiApps.length,
-////                            itemBuilder: (context, index) {
-////                              ApplicationMeta app = snapshot.upiApps[index];
-////                              return InkWell(
-////                                onTap: () async {
-////                                  var response = await initTransaction(
-////                                      app,
-////                                      snapshot
-////                                          .getOrderListResponse.results[index]);
-////                                  if (response.status ==
-////                                      UpiTransactionStatus.success) {
-////                                    snapshot.notifyPayment(snapshot
-////                                        .getOrderListResponse
-////                                        .results[index]
-////                                        .orderId);
-////                                  } else if (response.status ==
-////                                      UpiTransactionStatus.failure) {
-////                                    Fluttertoast.showToast(
-////                                        msg: "Something went wrong");
-////                                  } else if (response.status ==
-////                                      UpiTransactionStatus.submitted) {
-////                                    Fluttertoast.showToast(
-////                                        msg: "Payment submitted");
-////                                  }
-////                                },
-////                                child: Column(
-////                                  mainAxisSize: MainAxisSize.min,
-////                                  mainAxisAlignment: MainAxisAlignment.center,
-////                                  children: <Widget>[
-////                                    Image.memory(
-////                                      app.icon,
-////                                      width: 64,
-////                                      height: 64,
-////                                    ),
-////                                    Container(
-////                                      margin: EdgeInsets.only(top: 4),
-////                                      child: Text(
-////                                        app.upiApplication.getAppName(),
-////                                      ),
-////                                    ),
-////                                  ],
-////                                ),
-////                              );
-////                            },
-////                            separatorBuilder: (context, index) {
-////                              return Container(
-////                                width: 10,
-////                              );
-////                            },
-////                          ),
-//                        ],
-//                      ),
-//                    ),
-//                  );
-//                });
+          }
+        } else if (orderStatus == 'MERCHANT_ACCEPTED') {
+          var order = snapshot.getOrderListResponse.results[index];
+          if (order.paymentInfo.status == 'PENDING' ||
+              order.paymentInfo.status == 'REJECTED') {
+            if (order.paymentInfo.upi == null) {
+              return;
+            }
+            Navigator.pushNamed(context, "/payment",
+                    arguments: snapshot.getOrderListResponse.results[index])
+                .then((value) {
+              if (value) {
+                snapshot.notifyPayment(
+                    snapshot.getOrderListResponse.results[index].orderId);
+              }
+            });
           }
         } else {
           //cancel order api
@@ -825,15 +775,11 @@ class OrderItemBottomView extends StatelessWidget {
   }
 
   String title() {
+    var order = snapshot.getOrderListResponse.results[index];
     if (orderStatus == "CREATED") {
       return tr('screen_order.cancel_order');
     } else if (orderStatus == "MERCHANT_ACCEPTED") {
-      if (deliveryStatus == "SELF_PICK_UP")
-        return tr('screen_order.pickup');
-      else if (orderStatus == 'MERCHANT_ACCEPTED')
-        return tr('screen_order.Pay_via_upi');
-      else
-        return "";
+      return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "CUSTOMER_CANCELLED") {
       return tr('screen_order.cancelled_customer');
     } else if (orderStatus == "MERCHANT_CANCELLED") {
@@ -848,13 +794,15 @@ class OrderItemBottomView extends StatelessWidget {
       if (deliveryStatus == "SELF_PICK_UP")
         return tr('screen_order.pickup');
       else
-        return tr('screen_order.on_the_way');
+        return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "REQUESTING_TO_DA") {
-      return tr('screen_order.on_the_way');
+      return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "ASSIGNED_TO_DA") {
-      return tr('screen_order.on_the_way');
+      return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "PICKED_UP_BY_DA") {
-      return tr('screen_order.on_the_way');
+      return tr('screen_order.Pay_via_upi');
+    } else {
+      return "";
     }
   }
 

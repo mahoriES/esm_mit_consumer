@@ -50,7 +50,8 @@ class ValidateOtpAction extends ReduxAction<AppState> {
       if (state.authState.isSignUp) {
         dispatch(NavigateAction.pushNamed("/registration"));
       } else {
-        dispatch(AddFCMTokenAction());
+        dispatchFuture(GetUserDetailAction())
+            .whenComplete(() => dispatch(AddFCMTokenAction()));
       }
     } else {
       if (response.data['message'] != null) {
@@ -80,9 +81,7 @@ class AddFCMTokenAction extends ReduxAction<AppState> {
             .toJson(),
         requestType: RequestType.post);
     if (response.status == ResponseStatus.success200) {
-    } else {
-      // Fluttertoast.showToast(msg: response.data['message']);
-    }
+    } else {}
     dispatch(GetUserDetailAction());
 
     return state.copyWith(authState: state.authState.copyWith());

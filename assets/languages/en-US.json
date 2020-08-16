@@ -161,7 +161,8 @@
     "Cancel": "Cancel",
     "Confirm": "Confirm",
     "made_my_payment" : "I’ve made my payment",
-    "Pay_via_upi" : "Pay via UPI","Paid_at" : "Paid at"
+    "Pay_via_upi" : "Pay via UPI",
+    "Paid_at" : "approved payment at"
   },
 
   "screen_support": {

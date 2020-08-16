@@ -906,10 +906,10 @@ class _CartViewState extends State<CartView> {
                                 var address = await UserManager.getAddress();
                                 List<Product> cart =
                                     await CartDataSource.getListOfCartWith();
-
+                                var merchats =
+                                    await CartDataSource.getListOfMerchants();
                                 PlaceOrderRequest request = PlaceOrderRequest();
-                                request.businessId =
-                                    snapshot.selectedMerchant.businessId;
+                                request.businessId = merchats.first.businessId;
                                 request.deliveryAddressId =
                                     widget.radioValue == 1
                                         ? address.addressId
