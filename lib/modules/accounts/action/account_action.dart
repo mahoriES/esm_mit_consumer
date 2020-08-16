@@ -11,6 +11,7 @@ import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,7 @@ class LogoutAction extends ReduxAction<AppState> {
     await CartDataSource.deleteAllMerchants();
     await CartDataSource.deleteAll();
     await UserManager.deleteUser();
+    PushNotificationsManager().signOut();
     dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
 
     return state.copyWith(
@@ -45,9 +47,9 @@ class LogoutAction extends ReduxAction<AppState> {
         homePageState: HomePageState.initial());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class RecommendAction extends ReduxAction<AppState> {
@@ -74,7 +76,7 @@ class RecommendAction extends ReduxAction<AppState> {
     return state.copyWith(authState: state.authState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }

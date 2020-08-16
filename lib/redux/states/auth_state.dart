@@ -1,4 +1,3 @@
-import 'package:eSamudaay/models/User.dart';
 import 'package:eSamudaay/models/api_response_handler.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
@@ -11,14 +10,14 @@ import 'package:flutter/foundation.dart';
 
 class AuthState {
   final String deviceToken;
-  final LoadingStatus loadingStatus;
+  final LoadingStatusApp loadingStatus;
   final GenerateOTPRequest getOtpRequest;
   final ValidateOTPRequest validateOTPRequest;
   final CustomerDetailsRequest updateCustomerDetailsRequest;
   final Cluster cluster;
   final String token;
   final bool isLoggedIn;
-  final bool isLoginSkipped;
+  final bool isOnboardingCompleted;
   final Address address;
   final Data user;
   final bool isPhoneNumberValid;
@@ -31,7 +30,7 @@ class AuthState {
       @required this.isOtpEntered,
       @required this.isPhoneNumberValid,
       @required this.user,
-      @required this.isLoginSkipped,
+      @required this.isOnboardingCompleted,
       @required this.loadingStatus,
       @required this.token,
       @required this.isLoggedIn,
@@ -47,8 +46,8 @@ class AuthState {
       cluster: null,
       token: "",
       isLoggedIn: false,
-      loadingStatus: LoadingStatus.success,
-      isLoginSkipped: false,
+      loadingStatus: LoadingStatusApp.success,
+      isOnboardingCompleted: false,
       user: null,
       isPhoneNumberValid: true,
       isOtpEntered: false,
@@ -63,7 +62,7 @@ class AuthState {
   AuthState copyWith(
       {Data user,
       Address address,
-      LoadingStatus loadingStatus,
+      LoadingStatusApp loadingStatus,
       String mobileNumber,
       bool emailError,
       Cluster cluster,
@@ -73,7 +72,7 @@ class AuthState {
       String token,
       bool isLoggedIn,
       bool showAlert,
-      bool isLoginSkipped,
+      bool isOnboardingCompleted,
       String apiErrorMessage,
       APIResponseHandlerModel apiResponseHandler,
       bool isFirstNameValid,
@@ -90,7 +89,8 @@ class AuthState {
         deviceToken: token,
         cluster: cluster ?? this.cluster,
         user: user ?? this.user,
-        isLoginSkipped: isLoginSkipped ?? this.isLoginSkipped,
+        isOnboardingCompleted:
+            isOnboardingCompleted ?? this.isOnboardingCompleted,
         loadingStatus: loadingStatus ?? this.loadingStatus,
         token: token ?? this.token,
         isLoggedIn: isLoggedIn ?? this.isLoggedIn,

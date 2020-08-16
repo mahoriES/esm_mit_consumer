@@ -98,3 +98,25 @@ class UpdateOrderRequest {
     return data;
   }
 }
+
+class PaymentInfo {
+  String upi;
+  String status;
+  String dt;
+
+  PaymentInfo({this.upi, this.status, this.dt});
+
+  PaymentInfo.fromJson(Map<String, dynamic> json) {
+    upi = json['upi'];
+    status = json['status'];
+    dt = json['dt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['upi'] = this.upi;
+    data['status'] = this.status;
+    data['dt'] = this.dt;
+    return data;
+  }
+}

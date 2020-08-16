@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
@@ -40,8 +41,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
+    _timer.cancel();
   }
 
   @override
@@ -50,7 +51,7 @@ class _OtpScreenState extends State<OtpScreen> {
       body: StoreConnector<AppState, _ViewModel>(
           onInit: (store) {
             FocusScope.of(context).requestFocus(FocusNode());
-
+            PushNotificationsManager().init();
             startTimer();
 //                store.dispatch(GetLocationAction());
 //                store.dispatch(GetCartFromLocal());
@@ -65,7 +66,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   width: 75,
                 ),
               ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Scaffold(
                   appBar: AppBar(
                       elevation: 0,
@@ -105,7 +106,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                           style: const TextStyle(
                                               color: const Color(0xff868b8e),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 14.0),
                                           textAlign: TextAlign.center)
@@ -156,7 +157,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                                     color:
                                                         const Color(0xff3795d1),
                                                     fontWeight: FontWeight.w400,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Medium",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -170,7 +171,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                           style: const TextStyle(
                                               color: const Color(0xff3795d1),
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir",
+                                              fontFamily: "Avenir-Medium",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 14.0),
                                           textAlign: TextAlign.left)
@@ -236,7 +237,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -268,7 +269,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function() resendOtpRequest;
   String phoneNumber;
   bool otpEntered;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(bool) updateOtpEnterStatus;
   _ViewModel.build(
       {this.verifyOTP,

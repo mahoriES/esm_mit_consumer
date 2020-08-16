@@ -1,6 +1,6 @@
-import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'dart:math';
 
+import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
@@ -15,11 +15,10 @@ import 'package:eSamudaay/modules/store_details/views/store_categories_details_v
 import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
-import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
-import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -31,6 +30,7 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
+  TextEditingController requestController = TextEditingController();
   String deliveryCharge = "0";
   double totalValue = 0.0;
 
@@ -39,23 +39,26 @@ class _CartViewState extends State<CartView> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: AppColors.icColors, //change your color here
+        ),
         centerTitle: false,
-        titleSpacing: 0.0,
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              store.dispatch(GetCartFromLocal());
-              Navigator.pop(context);
-            }),
+//        titleSpacing: 0.0,
+//        leading: IconButton(
+//            icon: Icon(
+//              Icons.arrow_back,
+//              color: Colors.black,
+//            ),
+//            onPressed: () {
+//              store.dispatch(GetCartFromLocal());
+//              Navigator.pop(context);
+//            }),
         title: // Cart
             Text('cart.title',
                     style: const TextStyle(
                         color: const Color(0xff000000),
                         fontWeight: FontWeight.w500,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 20.0),
                     textAlign: TextAlign.left)
@@ -86,10 +89,10 @@ class _CartViewState extends State<CartView> {
                   width: 75,
                 ),
               ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Container(
                 child: snapshot.localCart.isEmpty
-                    ? snapshot.loadingStatus != LoadingStatus.loading
+                    ? snapshot.loadingStatus != LoadingStatusApp.loading
                         ? EmptyView()
                         : Container()
                     : Column(
@@ -131,7 +134,8 @@ class _CartViewState extends State<CartView> {
                                                               0xff515c6f),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontFamily: "Avenir",
+                                                          fontFamily:
+                                                              "Avenir-Medium",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 15.0),
@@ -191,7 +195,7 @@ class _CartViewState extends State<CartView> {
                                                             const EdgeInsets
                                                                 .all(8.0),
                                                         child: Text(
-                                                            "₹ ${snapshot.localCart[index].skus.first.basePrice}",
+                                                            "₹ ${snapshot.localCart[index].skus[snapshot.localCart[index].selectedVariant].basePrice / 100}",
                                                             style: const TextStyle(
                                                                 color: const Color(
                                                                     0xff5091cd),
@@ -199,7 +203,7 @@ class _CartViewState extends State<CartView> {
                                                                     FontWeight
                                                                         .w500,
                                                                 fontFamily:
-                                                                    "Avenir",
+                                                                    "Avenir-Medium",
                                                                 fontStyle:
                                                                     FontStyle
                                                                         .normal,
@@ -219,13 +223,13 @@ class _CartViewState extends State<CartView> {
                                                         .skus
                                                         .first
                                                         .variationOptions
-                                                        .size ??
+                                                        .weight ??
                                                     "",
                                                 style: const TextStyle(
                                                     color:
                                                         const Color(0xffa7a7a7),
                                                     fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Medium",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -268,7 +272,8 @@ class _CartViewState extends State<CartView> {
                                                           0xff6f6f6f),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -290,19 +295,22 @@ class _CartViewState extends State<CartView> {
                                                       size: 12.0,
                                                       color: Color(0xff5091cd),
                                                     ),
-                                                    Text("Add more",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff5091cd),
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            fontFamily:
-                                                                "Avenir",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 12.0),
-                                                        textAlign:
-                                                            TextAlign.center),
+                                                    Text("new_changes.add_more",
+                                                            style: const TextStyle(
+                                                                color: const Color(
+                                                                    0xff5091cd),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900,
+                                                                fontFamily:
+                                                                    "Avenir-Medium",
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 12.0),
+                                                            textAlign: TextAlign
+                                                                .center)
+                                                        .tr(),
                                                   ],
                                                 ),
                                               ),
@@ -317,6 +325,29 @@ class _CartViewState extends State<CartView> {
                                             blurRadius: 6,
                                             spreadRadius: 0)
                                       ], color: const Color(0xffffffff))),
+                                  Padding(
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: TextField(
+                                      style: const TextStyle(
+                                          color: const Color(0xff796c6c),
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: "Avenir-Medium",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 14.0),
+                                      decoration: const InputDecoration(
+                                        prefixIcon: ImageIcon(AssetImage(
+                                            'assets/images/notepad.png')),
+                                        hintText:
+                                            'Any Request to the Merchant?',
+                                        labelText:
+                                            'Any Request to the Merchant?',
+                                      ),
+                                      autofocus: false,
+                                      maxLines: null,
+                                      controller: requestController,
+                                      keyboardType: TextInputType.text,
+                                    ),
+                                  ),
                                   Container(
                                     margin: EdgeInsets.only(top: 20),
                                     padding: EdgeInsets.only(
@@ -339,7 +370,8 @@ class _CartViewState extends State<CartView> {
                                                           0xff000000),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -375,7 +407,7 @@ class _CartViewState extends State<CartView> {
                                                                             FontWeight
                                                                                 .w500,
                                                                         fontFamily:
-                                                                            "Avenir",
+                                                                            "Avenir-Medium",
                                                                         fontStyle:
                                                                             FontStyle
                                                                                 .normal,
@@ -394,7 +426,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Medium",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -424,7 +456,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Medium",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -442,7 +474,7 @@ class _CartViewState extends State<CartView> {
                                                                         widget.radioValue ==
                                                                             2
                                                                     ? "0"
-                                                                    : "₹ ${snapshot.charges[index - 1].chargeValue.toString()}",
+                                                                    : "₹ ${snapshot.charges[index - 1].chargeValue / 100}",
                                                                 style: const TextStyle(
                                                                     color: const Color(
                                                                         0xff696666),
@@ -450,7 +482,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Medium",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -496,7 +528,7 @@ class _CartViewState extends State<CartView> {
                                                                         FontWeight
                                                                             .w500,
                                                                     fontFamily:
-                                                                        "Avenir",
+                                                                        "Avenir-Medium",
                                                                     fontStyle:
                                                                         FontStyle
                                                                             .normal,
@@ -518,7 +550,7 @@ class _CartViewState extends State<CartView> {
                                                                     FontWeight
                                                                         .w500,
                                                                 fontFamily:
-                                                                    "Avenir",
+                                                                    "Avenir-Medium",
                                                                 fontStyle:
                                                                     FontStyle
                                                                         .normal,
@@ -564,7 +596,7 @@ class _CartViewState extends State<CartView> {
                                                     color:
                                                         const Color(0xff2f2e2e),
                                                     fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Medium",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -584,7 +616,7 @@ class _CartViewState extends State<CartView> {
                                                     color:
                                                         const Color(0xff2f2e2e),
                                                     fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir",
+                                                    fontFamily: "Avenir-Medium",
                                                     fontStyle: FontStyle.normal,
                                                     fontSize: 14.0),
                                                 textAlign: TextAlign.left)
@@ -631,7 +663,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Medium",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -642,16 +674,17 @@ class _CartViewState extends State<CartView> {
                                                                       .center),
                                                           // NJRA135, Second cross road,  Indiranagar- 6987452
                                                           Text(
-                                                              snapshot
-                                                                  .address.prettyAddress,
+                                                              snapshot.address
+                                                                  .prettyAddress,
                                                               style: const TextStyle(
-                                                                  color: const Color(
-                                                                      0xff4b4b4b),
+                                                                  color:
+                                                                      const Color(
+                                                                          0xff4b4b4b),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Medium",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -703,7 +736,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Medium",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -722,7 +755,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Medium",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -779,7 +812,7 @@ class _CartViewState extends State<CartView> {
                                                                       FontWeight
                                                                           .w500,
                                                                   fontFamily:
-                                                                      "Avenir",
+                                                                      "Avenir-Medium",
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
@@ -803,7 +836,7 @@ class _CartViewState extends State<CartView> {
                                                                   FontWeight
                                                                       .w500,
                                                               fontFamily:
-                                                                  "Avenir",
+                                                                  "Avenir-Medium",
                                                               fontStyle:
                                                                   FontStyle
                                                                       .normal,
@@ -843,7 +876,8 @@ class _CartViewState extends State<CartView> {
                                                               0xff000000),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontFamily: "Avenir",
+                                                          fontFamily:
+                                                              "Avenir-Medium",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 14.0),
@@ -866,36 +900,32 @@ class _CartViewState extends State<CartView> {
                             didPressButton: () async {
                               if (widget.radioValue == 0) {
                                 Fluttertoast.showToast(
-                                    msg: "please select Delivery / Pickup");
+                                    msg: tr("new_changes.choose_one"));
 //                                return;
                               } else {
-                                if (snapshot.selectedMerchant.isOpen) {
-                                  var address = await UserManager.getAddress();
-                                  List<Product> cart =
-                                      await CartDataSource.getListOfCartWith();
+                                var address = await UserManager.getAddress();
+                                List<Product> cart =
+                                    await CartDataSource.getListOfCartWith();
+                                var merchats =
+                                    await CartDataSource.getListOfMerchants();
+                                PlaceOrderRequest request = PlaceOrderRequest();
+                                request.businessId = merchats.first.businessId;
+                                request.deliveryAddressId =
+                                    widget.radioValue == 1
+                                        ? address.addressId
+                                        : null;
+                                request.deliveryType = widget.radioValue == 1
+                                    ? "DA_DELIVERY"
+                                    : "SELF_PICK_UP";
+                                request.orderItems = cart
+                                    .map((e) => OrderItems(
+                                        skuId: e.skus[e.selectedVariant].skuId,
+                                        quantity: e.count))
+                                    .toList();
+                                request.customerNote =
+                                    requestController.text ?? "";
 
-                                  PlaceOrderRequest request =
-                                      PlaceOrderRequest();
-                                  request.businessId =
-                                      snapshot.selectedMerchant.businessId;
-                                  request.deliveryAddressId =
-                                      widget.radioValue == 1
-                                          ? address.addressId
-                                          : null;
-                                  request.deliveryType = widget.radioValue == 1
-                                      ? "DA_DELIVERY"
-                                      : "SELF_PICK_UP";
-                                  request.orderItems = cart
-                                      .map((e) => OrderItems(
-                                          skuId: e.skus.first.skuId,
-                                          quantity: e.count))
-                                      .toList();
-
-                                  snapshot.placeOrder(request);
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "The shop is closed");
-                                }
+                                snapshot.placeOrder(request);
                               }
                             },
                           )
@@ -949,7 +979,7 @@ class EmptyView extends StatelessWidget {
                   style: const TextStyle(
                       color: const Color(0xff1f1f1f),
                       fontWeight: FontWeight.w400,
-                      fontFamily: "Avenir",
+                      fontFamily: "Avenir-Medium",
                       fontStyle: FontStyle.normal,
                       fontSize: 20.0),
                   textAlign: TextAlign.left)
@@ -963,7 +993,7 @@ class EmptyView extends StatelessWidget {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                     textAlign: TextAlign.center)
@@ -972,39 +1002,43 @@ class EmptyView extends StatelessWidget {
           SizedBox(
             height: 30,
           ),
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                height: 46,
-                width: 160,
-                decoration: BoxDecoration(
-                  color: Color(0xff5091cd),
-                  borderRadius: BorderRadius.circular(23),
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'common.view_store',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontFamily: 'Avenir',
-                          fontWeight: FontWeight.w900,
+          StoreConnector<AppState, _ViewModel>(
+              model: _ViewModel(),
+              builder: (context, snapshot) {
+                return InkWell(
+                  onTap: () {
+                    snapshot.navigateToStore();
+                  },
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Container(
+                      height: 46,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        color: AppColors.icColors,
+                        borderRadius: BorderRadius.circular(23),
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'common.view_store',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontFamily: 'Avenir-Medium-Medium',
+                                fontWeight: FontWeight.w900,
+                              ),
+                              textAlign: TextAlign.center,
+                            ).tr(),
+                          ],
                         ),
-                        textAlign: TextAlign.center,
-                      ).tr(),
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ),
+                );
+              }),
         ],
       ),
     );
@@ -1022,13 +1056,15 @@ class _ViewModel extends BaseModel<AppState> {
   Function(PlaceOrderRequest) placeOrder;
   Function(PlaceOrderRequest) getTaxOfOrder;
   Function(int) getOrderTax;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(Business) updateSelectedMerchant;
+  VoidCallback navigateToStore;
   Address address;
   Data user;
   _ViewModel();
   _ViewModel.build(
       {this.localCart,
+      this.navigateToStore,
       this.charges,
       this.updateSelectedMerchant,
       this.placeOrder,
@@ -1060,17 +1096,22 @@ class _ViewModel extends BaseModel<AppState> {
         localCart: state.productState.localCartItems,
         user: state.authState.user,
         loadingStatus: state.authState.loadingStatus,
+        navigateToStore: () {
+          dispatch(UpdateSelectedTabAction(0));
+        },
         getCartTotal: () {
           if (state.productState.localCartItems.isNotEmpty) {
-            var total = state.productState.localCartItems.fold(0,
-                    (previous, current) {
-                  double price =
-                      double.parse(current.skus.first.basePrice.toString()) *
+            var total =
+                state.productState.localCartItems.fold(0, (previous, current) {
+                      double price = double.parse(
+                              (current.skus[current.selectedVariant].basePrice /
+                                      100)
+                                  .toString()) *
                           current.count;
 
-                  return double.parse(previous.toString()) + price;
-                }) ??
-                0.0;
+                      return (double.parse(previous.toString()) + price);
+                    }) ??
+                    0.0;
 
             return total.toDouble(); //formatCurrency.format(total.toDouble());
           } else {
@@ -1081,7 +1122,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
         },
         placeOrder: (request) {
-          dispatch(PlaceOrderAction(request: request));
+          dispatch(GetMerchantStatusAndPlaceOrderAction(request: request));
         },
         getTaxOfOrder: (request) {
           dispatch(GetOrderTaxAction());
@@ -1097,21 +1138,23 @@ class _ViewModel extends BaseModel<AppState> {
         },
         getOrderTax: (value) {
           if (state.productState.localCartItems.isNotEmpty) {
-            var total = state.productState.localCartItems.fold(0,
-                    (previous, current) {
-                  double price =
-                      double.parse(current.skus.first.basePrice.toString()) *
+            var total =
+                state.productState.localCartItems.fold(0, (previous, current) {
+                      double price = double.parse(
+                              (current.skus[current.selectedVariant].basePrice /
+                                      100)
+                                  .toString()) *
                           current.count;
 
-                  return double.parse(previous.toString()) + price;
-                }) ??
-                0.0;
+                      return (double.parse(previous.toString()) + price);
+                    }) ??
+                    0.0;
 
             num sum = 0;
             state.productState.charges.forEach((e) {
               sum += e.chargeName.contains("DELIVERY") && value == 2
                   ? 0
-                  : e.chargeValue;
+                  : e.chargeValue / 100;
             });
             print(sum);
 
@@ -1121,5 +1164,12 @@ class _ViewModel extends BaseModel<AppState> {
             return 0.0;
           }
         });
+  }
+}
+
+extension Precision on double {
+  double toPrecision(int fractionDigits) {
+    double mod = pow(10, fractionDigits.toDouble());
+    return ((this * mod).round().toDouble() / mod);
   }
 }

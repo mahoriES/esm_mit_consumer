@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+4
+version: 1.0.3+31
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -43,7 +43,7 @@ dependencies:
   flutter_country_picker: ^0.1.6
   redux_persist_flutter: ^0.8.2
   cached_network_image: ^2.0.0
-    #  cached_network_image: ^1.1.3
+
   equatable: ^1.1.0
   async_redux: ^2.5.4
   flutter_slidable: ^0.5.4
@@ -53,15 +53,23 @@ dependencies:
   expandable: ^4.1.3
   dio_cookie_manager: ^1.0.0
   cookie_jar: ^1.0.1
-  google_maps_place_picker:
+  google_maps_place_picker: ^0.9.4
   flutter_rating_bar: ^3.0.1+1
-  firebase_messaging: ^6.0.15
+  firebase_messaging: ^6.0.16
   url_launcher: ^5.4.11
   image_picker: ^0.6.7+2
   pull_to_refresh: ^1.6.0
   firebase_crashlytics: ^0.1.3+3
   flutter_staggered_animations: ^0.1.2
   status_alert: ^0.1.2
+  dropdown_formfield: ^0.1.2
+  flutter_upi: ^0.0.2
+  upi_pay: ^0.2.2
+  smooth_page_indicator: ^0.2.0
+  upi_india: ^2.1.2
+  package_info: ^0.4.0+16
+
+
 
 
 
@@ -83,6 +91,7 @@ flutter:
     - family: Avenir
       fonts:
         - asset: assets/font/Avenir-Book.ttf
+        - asset: assets/font/Avenir-Medium.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -94,6 +103,7 @@ flutter:
     - assets/languages/en-US.json
     - assets/languages/ka-IN.json
     - assets/languages/ml-IN.json
+    - assets/languages/hi-Deva-IN.json
     - assets/images/Component 6 – 1.png
     - assets/images/app_main_icon.png
     - assets/images/location_1_add.png
@@ -129,6 +139,20 @@ flutter:
     - assets/images/group236.png
     - assets/images/indicator.gif
     - assets/images/splash.png
+    - assets/images/upi.png
+    - assets/images/phonePe.png
+    - assets/images/gpay.png
+    - assets/images/paytmLogo.png
+    - assets/images/
+    - assets/images/dialog.png
+    - assets/images/first.png
+    - assets/images/holdingMobile.png
+    - assets/images/esamudayDelivery.png
+    - assets/images/family.png
+    - assets/images/allHands.png
+    - assets/images/notepad.png
+    - assets/images/refresh_1.png
+    - assets/images/HeaderImage.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -156,3 +180,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+
+
+

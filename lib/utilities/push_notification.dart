@@ -24,10 +24,18 @@ class PushNotificationsManager {
         context: navigatorKey.currentState.overlay.context,
         child: AlertDialog(
           title: Text("eSamudaay"),
-          content: Text("message['text']"),
+          content: Text(msg),
           actions: <Widget>[
             FlatButton(
-              child: Text(tr('screen_account.cancel')),
+              child: Text(
+                tr('screen_account.cancel'),
+                style: const TextStyle(
+                    color: const Color(0xff6f6d6d),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Avenir-Medium",
+                    fontStyle: FontStyle.normal,
+                    fontSize: 16.0),
+              ),
               onPressed: () {},
             ),
             FlatButton(
@@ -46,11 +54,16 @@ class PushNotificationsManager {
     if (!_initialized) {
       _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          print("onMessage: $message");
-          showMessage(message['text']);
+          final dynamic data = message['data'] ?? message;
+
+          print("onMessage: $data");
+          print("onMessage: ${data["text"]}");
+          showMessage(data["text"]);
         },
         onLaunch: (Map<String, dynamic> message) async {
           print("onLaunch: $message");
+          store.dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+          store.dispatch(UpdateSelectedTabAction(1));
         },
         onResume: (Map<String, dynamic> message) async {
           print("onResume: $message");
@@ -73,5 +86,11 @@ class PushNotificationsManager {
 
       _initialized = true;
     }
+  }
+
+  signOut() {
+    _firebaseMessaging.setAutoInitEnabled(false);
+    _firebaseMessaging.deleteInstanceID();
+    _initialized = false;
   }
 }

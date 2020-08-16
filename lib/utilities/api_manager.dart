@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class APIManager {
   static var shared = APIManager();
@@ -58,6 +61,18 @@ class APIManager {
       requestType: RequestType,
       beginCallback: Function}) async {
     emptyParams[''] = '';
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      // I am connected to a mobile network.
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a wifi network.
+    } else if (connectivityResult == ConnectivityResult.none) {
+      Fluttertoast.showToast(msg: tr("new_changes.offline"));
+//      store.dispatch(UserExceptionAction(
+//        "No internet connection",
+//      ));
+    }
 
     String token = await UserManager.getToken();
     var dio = new Dio(new BaseOptions(

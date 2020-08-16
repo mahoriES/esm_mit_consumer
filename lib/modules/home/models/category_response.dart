@@ -25,7 +25,7 @@ class CategoriesNew {
   int categoryId;
   String categoryName;
   String categoryDescription;
-  Null parentCategoryId;
+  int parentCategoryId;
   bool isActive;
   List<Images> images;
 
@@ -40,8 +40,6 @@ class CategoriesNew {
   CategoriesNew.fromJson(Map<String, dynamic> json) {
     categoryId = json['category_id'];
     categoryName = json['category_name'];
-    categoryDescription = json['category_description'];
-    parentCategoryId = json['parent_category_id'];
     isActive = json['is_active'];
     if (json['images'] != null) {
       images = new List<Images>();
@@ -49,6 +47,8 @@ class CategoriesNew {
         images.add(new Images.fromJson(v));
       });
     }
+    categoryDescription = json['category_description'];
+    parentCategoryId = json['parent_category_id'];
   }
 
   Map<String, dynamic> toJson() {

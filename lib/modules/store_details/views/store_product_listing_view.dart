@@ -4,7 +4,6 @@ import 'package:eSamudaay/main.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
-import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
@@ -13,11 +12,11 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StoreProductListingView extends StatefulWidget {
@@ -44,6 +43,8 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    controller = null;
+    _controller = null;
     super.dispose();
   }
 
@@ -91,34 +92,32 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
 
   @override
   void initState() {
-    store.state.productState.categories.asMap().forEach((index, a) {
-      if (a.categoryId ==
-          store.state.productState.selectedCategory.categoryId) {
-        _currentPosition = index;
-      }
-    });
+    super.initState();
+  }
+
+  initController(Store<AppState> stores) {
     controller = TabController(
-      length: store.state.productState.categories.length,
+      length: stores.state.productState.subCategories.length,
       vsync: this,
       initialIndex: _currentPosition,
     );
     controller.addListener(() {
       if (!controller.indexIsChanging) {
         if (controller.index != 0) {
-          store.dispatch(UpdateSelectedCategoryAction(
-              selectedCategory:
-                  store.state.productState.categories[controller.index]));
           store.dispatch(UpdateProductListingDataAction(listingData: []));
-          store.dispatch(GetCatalogDetailsAction());
+          stores.dispatch(UpdateSelectedSubCategoryAction(
+              selectedSubCategory:
+                  stores.state.productState.subCategories[controller.index]));
+
+          stores.dispatch(GetCatalogDetailsAction());
         } else {
-          store.dispatch(UpdateSelectedCategoryAction(
-              selectedCategory:
-                  store.state.productState.categories[controller.index]));
-          store.dispatch(GetCatalogDetailsAction());
+          store.dispatch(UpdateProductListingDataAction(listingData: []));
+          stores.dispatch(UpdateSelectedSubCategoryAction(
+              selectedSubCategory: stores.state.productState.subCategories[0]));
+          stores.dispatch(GetCatalogDetailsAction());
         }
       }
     });
-    super.initState();
   }
 
   @override
@@ -139,20 +138,29 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
         title: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
-              return Text(
-                snapshot.selectedCategory.categoryName,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontFamily: 'Avenir',
-                  fontWeight: FontWeight.w500,
+              return Hero(
+                tag: snapshot.selectedCategory.categoryName,
+                child: Text(
+                  snapshot.selectedCategory.categoryName,
+                  style: const TextStyle(
+                      decoration: TextDecoration.none,
+                      color: const Color(0xff000000),
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "Avenir-Medium",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 20.0),
                 ),
               );
             }),
       ),
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
+          onInit: (store) {
+            initController(store);
+            store.dispatch(GetCatalogDetailsAction());
+          },
           builder: (context, snapshot) {
+            var count = snapshot.subCategories.length;
             return Container(
               child: Column(
                 children: <Widget>[
@@ -168,7 +176,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                             Icons.search,
                             color: AppColors.icColors,
                           ),
-                          hintText: "Search for item",
+                          hintText: tr('product_list.search_placeholder'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: new BorderSide(
@@ -200,13 +208,13 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       labelStyle: TextStyle(
                           color: const Color(0xff000000),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 14.0),
                       unselectedLabelStyle: TextStyle(
                           color: const Color(0xff9f9f9f),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 14.0),
                       labelColor: Color(0xff000000),
@@ -219,18 +227,15 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                           ),
                         ),
                       ),
-                      onTap: (index) {
-                        if (index != 0) {
-                          snapshot.updateProductList([]);
-                        }
-                      },
+                      onTap: (index) {},
                       tabs: List.generate(
-                        snapshot.categories.length,
+                        count,
                         (index) => // All
                             Container(
                           height: 50,
                           child: Center(
-                            child: Text(snapshot.categories[index].categoryName,
+                            child: Text(
+                                snapshot.subCategories[index].categoryName,
                                 textAlign: TextAlign.left),
                           ),
                         ),
@@ -247,15 +252,16 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         ),
                       ),
                       inAsyncCall:
-                          snapshot.loadingStatus == LoadingStatus.loading,
+                          snapshot.loadingStatus == LoadingStatusApp.loading,
                       opacity: 0,
                       child: TabBarView(
                         controller: controller,
 //                        physics: NeverScrollableScrollPhysics(),
                         children: List.generate(
-                          snapshot.categories.length,
+                          count,
                           (index) => snapshot.products.isEmpty
-                              ? snapshot.loadingStatus == LoadingStatus.loading
+                              ? snapshot.loadingStatus ==
+                                      LoadingStatusApp.loading
                                   ? Container()
                                   : EmptyViewProduct()
                               : SmartRefresher(
@@ -317,8 +323,16 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                                         (BuildContext context, int index) {
                                       return ProductListingItemView(
                                         index: index,
-                                        imageLink: snapshot.selectedCategory
-                                            .images.first.photoUrl,
+                                        imageLink:
+                                            snapshot.selectedCategory.images !=
+                                                    null
+                                                ? snapshot.selectedCategory
+                                                            .images.length >
+                                                        0
+                                                    ? snapshot.selectedCategory
+                                                        .images.first.photoUrl
+                                                    : ""
+                                                : "",
                                         item: snapshot.products[index],
                                       );
                                     },
@@ -332,9 +346,9 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     height: snapshot.localCartListing.isEmpty ? 0 : 86,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
-                      storeName: snapshot.selectedMerchant?.shopName ?? "",
+                      storeName: snapshot.selectedMerchant?.businessName ?? "",
                       height: snapshot.localCartListing.isEmpty ? 0 : 86,
-                      buttonTitle: "VIEW ITEMS",
+                      buttonTitle: tr('cart.view_cart'),
                       didPressButton: () {
                         snapshot.navigateToCart();
                       },
@@ -390,7 +404,7 @@ class EmptyViewProduct extends StatelessWidget {
                     style: const TextStyle(
                         color: const Color(0xff1f1f1f),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 20.0),
                     textAlign: TextAlign.left)
@@ -404,7 +418,7 @@ class EmptyViewProduct extends StatelessWidget {
                       style: const TextStyle(
                           color: const Color(0xff6f6d6d),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 16.0),
                       textAlign: TextAlign.center)
@@ -424,12 +438,13 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToCart;
   CatalogSearchResponse productResponse;
   List<Product> products;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   List<Product> localCartListing;
   List<Product> productTempListing;
-  Merchants selectedMerchant;
-  List<CategoriesNew> categories;
+  Business selectedMerchant;
+  List<CategoriesNew> subCategories;
   CategoriesNew selectedCategory;
+  CategoriesNew selectedSubCategory;
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
   Function(String, String, String) getProducts;
@@ -448,13 +463,14 @@ class _ViewModel extends BaseModel<AppState> {
       this.products,
       this.addToCart,
       this.removeFromCart,
-      this.categories,
+      this.subCategories,
       this.localCartListing,
       this.getProducts,
       this.productTempListing,
       this.updateTempProductList,
       this.updateProductList,
-      this.selectedMerchant})
+      this.selectedMerchant,
+      this.selectedSubCategory})
       : super(equals: [
           products,
           localCartListing,
@@ -462,8 +478,9 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatus,
           productTempListing,
           selectedCategory,
-          categories,
-          productResponse
+          subCategories,
+          productResponse,
+          selectedSubCategory
         ]);
   @override
   BaseModel fromStore() {
@@ -479,11 +496,11 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
         getProducts: (categoryId, merchantId, url) {
-          dispatch(UpdateProductListingDataAction(listingData: []));
           dispatch(GetCatalogDetailsAction(url: url));
         },
         updateSelectedCategory: (category) {
-          dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+          dispatch(
+              UpdateSelectedSubCategoryAction(selectedSubCategory: category));
         },
         updateTempProductList: (list) {
           dispatch(UpdateProductListingTempDataAction(listingData: list));
@@ -491,31 +508,35 @@ class _ViewModel extends BaseModel<AppState> {
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
         },
-        categories: state.productState.categories,
+        subCategories: state.productState.subCategories,
         productTempListing: state.productState.productListingTempDataSource,
         loadingStatus: state.authState.loadingStatus,
         selectedCategory: state.productState.selectedCategory,
-
-//        selectedMerchant: state.productState.selectedMerchand,
+        selectedSubCategory: state.productState.selectedSubCategory,
         products: state.productState.productListingDataSource,
         localCartListing: state.productState.localCartItems,
+        selectedMerchant: state.productState.selectedMerchand,
         productResponse: state.productState.productResponse);
   }
 }
 
-class ProductListingItemView extends StatelessWidget {
+class ProductListingItemView extends StatefulWidget {
   final int index;
   final Product item;
   final String imageLink;
   const ProductListingItemView({Key key, this.index, this.item, this.imageLink})
       : super(key: key);
+  @override
+  _ProductListingItemViewState createState() => _ProductListingItemViewState();
+}
 
+class _ProductListingItemViewState extends State<ProductListingItemView> {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          bool isOutOfStock = item.inStock;
+          bool isOutOfStock = widget.item.inStock;
           return IgnorePointer(
             ignoring: !isOutOfStock,
             child: Row(
@@ -542,37 +563,58 @@ class ProductListingItemView extends StatelessWidget {
                     alignment: Alignment.center,
                     children: <Widget>[
                       ColorFiltered(
-                        child: item.images == null
+                        child: widget.item.images == null
                             ? Padding(
                                 padding: const EdgeInsets.all(25.0),
                                 child: CachedNetworkImage(
                                     fit: BoxFit.cover,
 //                                                  height: 80,
-                                    imageUrl: imageLink,
+                                    imageUrl: "",
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
                                         Center(
-                                          child: Icon(Icons.error),
-                                        )),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CachedNetworkImage(
-                                    height: 500.0,
-                                    fit: BoxFit.cover,
-                                    imageUrl:
-                                        item?.images?.first?.photoUrl ?? "",
-                                    placeholder: (context, url) =>
-                                        CupertinoActivityIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Padding(
-                                          padding: const EdgeInsets.all(25.0),
-                                          child: Image.network(
-                                            imageLink,
+                                          child: Icon(
+                                            Icons.image,
+                                            size: 30,
                                           ),
                                         )),
-                              ),
+                              )
+                            : widget.item.images.length > 0
+                                ? Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: CachedNetworkImage(
+                                        height: 500.0,
+                                        fit: BoxFit.cover,
+                                        imageUrl: widget.item?.images?.first
+                                                ?.photoUrl ??
+                                            "",
+                                        placeholder: (context, url) =>
+                                            CupertinoActivityIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Center(
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 30,
+                                              ),
+                                            )),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(25.0),
+                                    child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+//                                                  height: 80,
+                                        imageUrl: "",
+                                        placeholder: (context, url) =>
+                                            CupertinoActivityIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Center(
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 30,
+                                              ),
+                                            )),
+                                  ),
                         colorFilter: ColorFilter.mode(
                             !isOutOfStock ? Colors.grey : Colors.transparent,
                             BlendMode.saturation),
@@ -585,7 +627,7 @@ class ProductListingItemView extends StatelessWidget {
                                       style: const TextStyle(
                                           color: const Color(0xfff51818),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 12.0),
                                       textAlign: TextAlign.left))
@@ -600,11 +642,11 @@ class ProductListingItemView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Text(item.productName,
+                        Text(widget.item.productName,
                             style: const TextStyle(
                                 color: const Color(0xff515c6f),
                                 fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir",
+                                fontFamily: "Avenir-Medium",
                                 fontStyle: FontStyle.normal,
                                 fontSize: 15.0),
                             textAlign: TextAlign.left),
@@ -617,35 +659,42 @@ class ProductListingItemView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${item.skus.isEmpty ? 0 : item.skus.first.basePrice.toString()}",
+                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus[widget.item.selectedVariant].basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
                                             : Color(0xff5091cd)),
                                         fontWeight: FontWeight.w500,
-                                        fontFamily: "Avenir",
+                                        fontFamily: "Avenir-Medium",
                                         fontStyle: FontStyle.normal,
                                         fontSize: 18.0),
                                     textAlign: TextAlign.left),
                                 SizedBox(
-                                  height: 10,
+                                  height: 3,
                                 ),
-                                Text(
-                                    item.skus.isEmpty
-                                        ? "NA"
-                                        : item.skus.first.variationOptions
-                                                    .size !=
-                                                null
-                                            ? item.skus.first.variationOptions
-                                                .size
-                                            : "NA",
-                                    style: TextStyle(
-                                        color: Color(0xffa7a7a7),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Avenir",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 14.0),
-                                    textAlign: TextAlign.left)
+                                DropdownButton<String>(
+                                  items: widget.item.skus.map((e) {
+                                    return new DropdownMenuItem<String>(
+                                      value: e.variationOptions.weight,
+                                      child:
+                                          new Text(e.variationOptions.weight),
+                                    );
+                                  }).toList(),
+                                  onChanged: (index) {
+                                    setState(() {
+                                      widget.item.selectedVariant = widget
+                                          .item.skus
+                                          .map((e) => e.variationOptions.weight)
+                                          .toList()
+                                          .indexOf(index);
+                                    });
+                                  },
+                                  value: widget
+                                      .item
+                                      .skus[widget.item.selectedVariant]
+                                      .variationOptions
+                                      .weight,
+                                )
                               ],
                             ),
                             CSStepper(
@@ -653,18 +702,20 @@ class ProductListingItemView extends StatelessWidget {
                                   ? Color(0xffb1b1b1)
                                   : AppColors.icColors,
                               didPressAdd: () {
-                                item.count = ((item?.count ?? 0) + 1)
-                                    .clamp(0, double.nan);
-                                snapshot.addToCart(item, context);
+                                widget.item.count =
+                                    ((widget.item?.count ?? 0) + 1)
+                                        .clamp(0, double.nan);
+                                snapshot.addToCart(widget.item, context);
                               },
                               didPressRemove: () {
-                                item.count = ((item?.count ?? 0) - 1)
-                                    .clamp(0, double.nan);
-                                snapshot.removeFromCart(item);
+                                widget.item.count =
+                                    ((widget.item?.count ?? 0) - 1)
+                                        .clamp(0, double.nan);
+                                snapshot.removeFromCart(widget.item);
                               },
-                              value: item.count == 0
-                                  ? "Add "
-                                  : item.count.toString(),
+                              value: widget.item.count == 0
+                                  ? tr("new_changes.add")
+                                  : widget.item.count.toString(),
                             ),
                           ],
                         ),
@@ -703,7 +754,7 @@ class CSStepper extends StatelessWidget {
         color: this.backgroundColor ?? AppColors.icColors,
         borderRadius: BorderRadius.circular(100),
       ),
-      child: value.contains("Add")
+      child: value.contains(tr("new_changes.add"))
           ? InkWell(
               onTap: () {
                 didPressAdd();
@@ -723,7 +774,7 @@ class CSStepper extends StatelessWidget {
                         style: const TextStyle(
                             color: const Color(0xffffffff),
                             fontWeight: FontWeight.w500,
-                            fontFamily: "Avenir",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.center),
@@ -757,7 +808,7 @@ class CSStepper extends StatelessWidget {
                       style: const TextStyle(
                           color: const Color(0xffffffff),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 14.0),
                       textAlign: TextAlign.center),

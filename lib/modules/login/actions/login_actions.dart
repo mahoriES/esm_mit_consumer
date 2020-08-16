@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/models/User.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
 import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
@@ -22,6 +21,20 @@ class CheckTokenAction extends ReduxAction<AppState> {
     } else {
       return state.copyWith(
           authState: state.authState.copyWith(isLoggedIn: false));
+    }
+  }
+}
+
+class CheckOnBoardingStatusAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    bool status = await UserManager.shared.isSkipPressed();
+    if (status) {
+      return state.copyWith(
+          authState: state.authState.copyWith(isOnboardingCompleted: true));
+    } else {
+      return state.copyWith(
+          authState: state.authState.copyWith(isOnboardingCompleted: false));
     }
   }
 }
@@ -75,9 +88,10 @@ class GetOtpAction extends ReduxAction<AppState> {
         authState: state.authState.copyWith(getOtpRequest: request));
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class UpdateIsSignUpAction extends ReduxAction<AppState> {

@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/accounts/action/account_action.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 class AccountsView extends StatefulWidget {
   @override
@@ -13,6 +14,15 @@ class AccountsView extends StatefulWidget {
 }
 
 class _AccountsViewState extends State<AccountsView> {
+  String versionString = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getVersion();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +36,7 @@ class _AccountsViewState extends State<AccountsView> {
                 style: const TextStyle(
                     color: const Color(0xff000000),
                     fontWeight: FontWeight.w500,
-                    fontFamily: "Avenir",
+                    fontFamily: "Avenir-Medium",
                     fontStyle: FontStyle.normal,
                     fontSize: 20.0),
                 textAlign: TextAlign.left),
@@ -46,7 +56,7 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                   leading: Image.asset(
                     "assets/images/AI_user.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.profile',
                           style: const TextStyle(
@@ -79,7 +89,7 @@ class _AccountsViewState extends State<AccountsView> {
                 ListTile(
                   leading: Image.asset(
                     "assets/images/question_cr.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.about',
                           style: const TextStyle(
@@ -101,7 +111,7 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                   leading: Image.asset(
                     "assets/images/Group_240.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.language',
                           style: const TextStyle(
@@ -120,17 +130,40 @@ class _AccountsViewState extends State<AccountsView> {
                         context: context,
                         child: AlertDialog(
                           title: Text("E-samudaay"),
-                          content: Text('screen_account.alert_data').tr(),
+                          content: Text(
+                            'screen_account.alert_data',
+                            style: const TextStyle(
+                                color: const Color(0xff6f6d6d),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Avenir-Medium",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0),
+                          ).tr(),
                           actions: <Widget>[
                             FlatButton(
-                              child: Text(tr('screen_account.cancel')),
+                              child: Text(
+                                tr('screen_account.cancel'),
+                                style: const TextStyle(
+                                    color: const Color(0xff6f6d6d),
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: "Avenir-Medium",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.0),
+                              ),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                             ),
                             FlatButton(
                               child: Text(
-                                  tr('screen_account.logout'.toLowerCase())),
+                                tr('screen_account.logout'.toLowerCase()),
+                                style: const TextStyle(
+                                    color: const Color(0xff6f6d6d),
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: "Avenir-Medium",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.0),
+                              ),
                               onPressed: () async {
                                 snapshot.logout();
                               },
@@ -140,7 +173,7 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                   leading: Image.asset(
                     "assets/images/power.png",
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: Text('screen_account.logout',
                           style: const TextStyle(
@@ -156,7 +189,7 @@ class _AccountsViewState extends State<AccountsView> {
                 Container(
                   height: 100,
                   child: Center(
-                    child: Text("Version 1.0 Build 1",
+                    child: Text(versionString,
                         style: const TextStyle(
                             color: const Color(0xff848282),
                             fontWeight: FontWeight.w400,
@@ -171,6 +204,22 @@ class _AccountsViewState extends State<AccountsView> {
           }),
     );
   }
+
+  getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+
+    print("Veresion $version Build $buildNumber");
+
+    setState(() {
+      versionString = "Veresion $version Build $buildNumber";
+    });
+  }
+
 //  @override
 //  Widget build(BuildContext context) {
 //    return Scaffold(
@@ -184,7 +233,7 @@ class _AccountsViewState extends State<AccountsView> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function navigateToRecommendedShop;
   Function navigateToProfile;
   Function navigateLanguage;

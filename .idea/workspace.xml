@@ -1,80 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="debug" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1761d354-6566-4d7f-b1fd-946d15ae3bc9" name="Default Changelist" comment="">
+<<<<<<< HEAD
+      <change afterPath="$PROJECT_DIR$/assets/languages/hi-Deva-IN.json" afterDir="false" />
+=======
 
       <change afterPath="$PROJECT_DIR$/assets/images/1.0x/splash.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/assets/images/2.0x/splash.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/assets/images/3.0x/splash.png" afterDir="false" />
+>>>>>>> e109187d2fa63458d169f8a69dca03818c7fefb5
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/1.0x/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/1.0x/splash.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/2.0x/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/2.0x/splash.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/3.0x/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/3.0x/splash.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/languages/en-US.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/en-US.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/languages/ka-IN.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/languages/ka-IN.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/About/view/about_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/About/view/about_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/model/profile_update_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/model/profile_update_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/accounts/action/account_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/action/account_action.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/accounts/views/accounts_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/views/accounts_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/accounts/views/recommended_shop.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/accounts/views/recommended_shop.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/cart/actions/cart_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/actions/cart_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/models/cart_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_bottom_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_bottom_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/cart/views/cart_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/actions/home_page_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/actions/home_page_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/models/merchant_response.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/models/merchant_response.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/cart_bottom_navigation_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/cart_bottom_navigation_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/home_page_main_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/location_selector_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/location_selector_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/home/views/my_home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/views/my_home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modules/home/models/category_response.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/home/models/category_response.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/language/view/language_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/language/view/language_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/login/actions/login_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/actions/login_actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/login/views/login_View.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/material_search/material_search.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/material_search/material_search.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/actions/actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/orders/models/order_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/models/order_models.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/expandable_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/orders_View.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/orders/views/support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/orders/views/support.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/otp/action/otp_action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/otp/action/otp_action.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/otp/view/otp_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/otp/view/otp_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/register/action/register_Action.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/action/register_Action.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/register/model/register_request_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/model/register_request_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/register/view/register_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/search/actions/search_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/search/actions/search_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/search/views/Search_View.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/search/views/Search_View.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/actions/categories_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/actions/categories_actions.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/modules/store_details/models/categories_models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/models/categories_models.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_categories_details_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentations/check_user_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentations/check_user_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentations/popup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentations/popup.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/redux/actions/general_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/actions/general_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/redux/states/app_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/app_state.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/redux/states/auth_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/auth_state.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/redux/states/home_page_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/home_page_state.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/redux/states/product_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/redux/states/product_state.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/repository/cart_datasourse.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repository/cart_datasourse.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/repository/database_manage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repository/database_manage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/store.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/store.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/utilities/api_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/api_manager.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/utilities/push_notification.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/push_notification.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utilities/user_manager.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/user_manager.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/validators/mobile_number_validator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/validators/mobile_number_validator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+<<<<<<< HEAD
+=======
       <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/widget_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/web/manifest.json" afterDir="false" />
 
+>>>>>>> e109187d2fa63458d169f8a69dca03818c7fefb5
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -130,8 +107,12 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
+<<<<<<< HEAD
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assets/images/3.0x" />
+=======
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
 
+>>>>>>> e109187d2fa63458d169f8a69dca03818c7fefb5
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -140,11 +121,15 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/languages" />
+      <recent name="$PROJECT_DIR$/assets/images/1.0x" />
       <recent name="$PROJECT_DIR$/assets/images/3.0x" />
       <recent name="$PROJECT_DIR$/assets/images/2.0x" />
-      <recent name="$PROJECT_DIR$/assets/images/1.0x" />
       <recent name="$PROJECT_DIR$/assets/images" />
-      <recent name="$PROJECT_DIR$/android" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images/3.0x" />
+      <recent name="$PROJECT_DIR$/assets/images/2.0x" />
     </key>
   </component>
 
@@ -314,109 +299,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>34</line>
-          <option name="timeStamp" value="28" />
+          <url>file://$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart</url>
+          <line>260</line>
+          <option name="timeStamp" value="130" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/store_details/models/catalog_search_models.dart</url>
-          <line>10</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
-          <line>517</line>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>112</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>111</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/address/actions/address_actions.dart</url>
-          <line>29</line>
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>37</line>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>41</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>35</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>40</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/action/profile_update_action.dart</url>
-          <line>38</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/Profile/views/profile_view.dart</url>
-          <line>520</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
-          <line>28</line>
-          <option name="timeStamp" value="64" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
-          <line>37</line>
-          <option name="timeStamp" value="67" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
-          <line>31</line>
-          <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/orders/actions/actions.dart</url>
-          <line>34</line>
-          <option name="timeStamp" value="71" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart</url>
-          <line>51</line>
-          <option name="timeStamp" value="72" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/modules/store_details/actions/store_actions.dart</url>
-          <line>47</line>
-          <option name="timeStamp" value="73" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/main.dart</url>
-          <line>234</line>
-          <option name="timeStamp" value="74" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/main.dart</url>
-          <line>119</line>
-          <option name="timeStamp" value="75" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/android/app/build.gradle</url>
-          <line>49</line>
-          <option name="timeStamp" value="65" />
+          <url>file://$PROJECT_DIR$/lib/modules/store_details/views/store_product_listing_view.dart</url>
+          <line>231</line>
+          <option name="timeStamp" value="131" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

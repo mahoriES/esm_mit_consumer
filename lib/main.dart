@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/modules/Profile/views/profile_view.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
+import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
+import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
-import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/orders/views/support.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
@@ -22,8 +23,8 @@ import 'package:eSamudaay/presentations/splash_screen.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -31,6 +32,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'modules/About/view/about_view.dart';
 import 'modules/language/view/language_view.dart';
+import 'modules/orders/views/payments.dart';
 import 'modules/otp/view/otp_view.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -49,6 +51,7 @@ void main() {
       Locale('en', 'US'),
       Locale('ka', 'IN'),
       Locale('ml', 'IN'),
+      Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
     ],
     path: 'assets/languages',
   ));
@@ -82,6 +85,7 @@ class _MyAppState extends State<MyApp> {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
+          store.dispatch(CheckOnBoardingStatusAction());
           store.dispatch(CheckTokenAction());
           store.dispatch(GetCartFromLocal());
           store.dispatch(GetUserFromLocalStorageAction());
@@ -93,11 +97,7 @@ class _MyAppState extends State<MyApp> {
             loadingSplash: null,
             seconds: 0,
             home: CheckUser(builder: (context, snapshot) {
-              return snapshot
-                  ? MyHomeView()
-                  : CheckUserLoginSkipped(builder: (context, isLoginSkipped) {
-                      return isLoginSkipped ? MyHomeView() : SplashScreen();
-                    });
+              return snapshot ? MyHomeView() : SplashScreen();
             }),
           );
         });
@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
     return Container(
       child: Center(
           child: Padding(
-        padding: const EdgeInsets.all(100.0),
+        padding: const EdgeInsets.all(20.0),
         child: Image.asset('assets/images/splash.png'),
       )),
     );
@@ -175,6 +175,8 @@ class MyAppBase extends StatelessWidget {
           "/RecommendShop": (BuildContext context) => RecommendedShop(),
           "/profile": (BuildContext context) => ProfileView(),
           "/about": (BuildContext context) => AboutView(),
+          "/onBoarding": (BuildContext context) => OnboardingWidget(),
+          "/payment": (BuildContext context) => Payments(),
 
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
@@ -213,7 +215,7 @@ class _SplashScreenState extends State<SplashScreen> {
       return new Timer(_duration, navigationPageHome);
     } else {
       // First time
-      prefs.setBool('first_time', false);
+
       return new Timer(_duration, navigationPageWel);
     }
   }
@@ -231,8 +233,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child:
-            Hero(tag: "#image", child: Image.asset('assets/images/splash.png')),
+        child: Image.asset('assets/images/splash.png'),
       )),
     );
   }
@@ -242,6 +243,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPageWel() {
-    Navigator.of(context).pushReplacementNamed('/language');
+    Navigator.of(context).pushReplacementNamed('/onBoarding');
   }
 }

@@ -34,15 +34,26 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
+  }
+}
+
+class RemoveCategoryAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() {
+    // TODO: implement reduce
+    return state.copyWith(
+        productState: state.productState.copyWith(
+      categories: [],
+    ));
   }
 }
 
@@ -73,7 +84,8 @@ class GetCategoriesAction extends ReduxAction<AppState> {
     return state.copyWith(authState: state.authState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }

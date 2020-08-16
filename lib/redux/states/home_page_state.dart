@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 
 class HomePageState {
   final GetBusinessesResponse response;
-  final LoadingStatus loadingStatus;
+  final LoadingStatusApp loadingStatus;
   final List<Business> merchants;
   final String homePageLoadedDate;
   final int currentIndex;
@@ -30,7 +30,7 @@ class HomePageState {
 
   factory HomePageState.initial() {
     return new HomePageState(
-        loadingStatus: LoadingStatus.success,
+        loadingStatus: LoadingStatusApp.success,
         merchants: [],
         homePageLoadedDate: "0",
         currentIndex: 0,
@@ -39,7 +39,7 @@ class HomePageState {
   }
 
   HomePageState copyWith(
-      {LoadingStatus loadingStatus,
+      {LoadingStatusApp loadingStatus,
       List<Business> merchants,
       List<Photo> banners,
       int currentIndex,

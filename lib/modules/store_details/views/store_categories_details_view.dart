@@ -13,6 +13,7 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -63,328 +64,324 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                 store.dispatch(GetCategoriesDetailsAction());
               },
               builder: (context, snapshot) {
-                return snapshot.loadingStatus == LoadingStatus.loading
-                    ? Container(
-                        child: Center(
-                          child: Image.asset(
-                            'assets/images/indicator.gif',
-                            height: 75,
-                            width: 75,
-                          ),
-                        ),
-                      )
-                    : ListView(
-                        children: <Widget>[
-                          Container(
+                return ModalProgressHUD(
+                  progressIndicator: Card(
+                    child: Image.asset(
+                      'assets/images/indicator.gif',
+                      height: 75,
+                      width: 75,
+                    ),
+                  ),
+                  inAsyncCall:
+                      snapshot.loadingStatus == LoadingStatusApp.loading,
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
 //                    height: 130,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x29000000),
-                                  offset: Offset(0, 3),
-                                  blurRadius: 6,
-                                  spreadRadius: 0,
-                                ),
-                              ],
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x29000000),
+                              offset: Offset(0, 3),
+                              blurRadius: 6,
+                              spreadRadius: 0,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 20, left: 20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      // Organic Store
-                                      Text(
-                                          snapshot.selectedMerchant
-                                                  ?.businessName ??
-                                              "",
-                                          style: const TextStyle(
-                                              color: const Color(0xff000000),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 22.0),
-                                          textAlign: TextAlign.left),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      // Milk, Egg, Bread, etc..
-                                      Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 5),
-                                              child: Text(
-                                                  snapshot.selectedMerchant
-                                                          ?.description ??
-                                                      "",
-                                                  style: const TextStyle(
-                                                      color: const Color(
-                                                          0xff797979),
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Avenir",
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      fontSize: 14.0),
-                                                  textAlign: TextAlign.left),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 8),
-                                                child: snapshot.selectedMerchant
-                                                        .hasDelivery
-                                                    ? Image.asset(
-                                                        'assets/images/delivery.png')
-                                                    : Image.asset(
-                                                        'assets/images/no_delivery.png'),
-                                              ),
-                                              Text(
-                                                  snapshot.selectedMerchant
-                                                          .hasDelivery
-                                                      ? tr("shop.delivery_ok")
-                                                      : tr("shop.delivery_no"),
-                                                  style: const TextStyle(
-                                                      color: const Color(
-                                                          0xff6f6f6f),
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontFamily: "Avenir",
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      fontSize: 16.0),
-                                                  textAlign: TextAlign.left),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 20, left: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  // Organic Store
+                                  Hero(
+                                    tag:
+                                        snapshot.selectedMerchant?.businessName,
+                                    child: Text(
+                                        snapshot.selectedMerchant
+                                                ?.businessName ??
+                                            "",
+                                        style: const TextStyle(
+                                            decoration: TextDecoration.none,
+                                            color: const Color(0xff000000),
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 22.0),
+                                        textAlign: TextAlign.left),
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 20, bottom: 10),
-                                  child: MySeparator(
-                                    color: AppColors.darkGrey,
-                                    height: 0.5,
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20, right: 10, top: 15, bottom: 20),
-                                  child: Row(
+                                  // Milk, Egg, Bread, etc..
+                                  Row(
                                     children: <Widget>[
-                                      ImageIcon(
-                                        AssetImage(
-                                          'assets/images/path330.png',
-                                        ),
-                                        color: AppColors.darkGrey,
-                                      ),
                                       Expanded(
                                         child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8, right: 8),
+                                          padding:
+                                              const EdgeInsets.only(top: 5),
                                           child: Text(
-                                              snapshot.selectedMerchant?.address
-                                                      ?.prettyAddress ??
+                                              snapshot.selectedMerchant
+                                                      ?.description ??
                                                   "",
-//                                              snapshot.selectedMerchant.address
-//                                                      .addressLine1 +
-//                                                  ", " +
-//                                                  snapshot.selectedMerchant
-//                                                      .address.addressLine2,
                                               style: const TextStyle(
                                                   color:
-                                                      const Color(0xff6f6f6f),
+                                                      const Color(0xff797979),
                                                   fontWeight: FontWeight.w500,
-                                                  fontFamily: "Avenir",
+                                                  fontFamily: "Avenir-Medium",
                                                   fontStyle: FontStyle.normal,
                                                   fontSize: 14.0),
                                               textAlign: TextAlign.left),
                                         ),
                                       ),
-                                      ImageIcon(
-                                        AssetImage(
-                                          'assets/images/location2.png',
-                                        ),
-                                        color: AppColors.darkGrey,
-                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 8),
+                                            child: snapshot.selectedMerchant
+                                                    .hasDelivery
+                                                ? Image.asset(
+                                                    'assets/images/delivery.png')
+                                                : Image.asset(
+                                                    'assets/images/no_delivery.png'),
+                                          ),
+                                          Text(
+                                              snapshot.selectedMerchant
+                                                      .hasDelivery
+                                                  ? tr("shop.delivery_ok")
+                                                  : tr("shop.delivery_no"),
+                                              style: const TextStyle(
+                                                  color:
+                                                      const Color(0xff6f6f6f),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "Avenir-Medium",
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 16.0),
+                                              textAlign: TextAlign.left),
+                                        ],
+                                      )
                                     ],
                                   ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 30, bottom: 20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Text(
-                                      "shop.item_category",
-                                      style: TextStyle(
-                                        color: Color(0xff151515),
-                                        fontSize: 18,
-                                        fontFamily: 'Avenir',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ).tr(),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 20),
-                                    child: GridView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              crossAxisSpacing: 20.0,
-                                              mainAxisSpacing: 20.0,
-                                              childAspectRatio: 100 / 160),
-                                      itemBuilder: (context, index) {
-                                        return Container(
-//                                  color: Colors.red,
-                                          child: InkWell(
-                                            onTap: () {
-                                              snapshot.updateSelectedCategory(
-                                                  snapshot.categories[index]);
-                                              snapshot
-                                                  .navigateToProductDetails();
-                                            },
-                                            child: Column(
-                                              children: <Widget>[
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                      color: Color(0xffe0e0e0),
-                                                      width: 1,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10)),
-                                                    child: Container(
-                                                      width: double.infinity,
-//                                              padding: EdgeInsets.all(10),
-                                                      child:
-//                                            Image.asset(imageList[index])
-
-                                                          Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(15.0),
-                                                        child:
-                                                            CachedNetworkImage(
-                                                                height: 75,
-                                                                fit: BoxFit
-                                                                    .cover,
-//                                                  height: 80,
-                                                                imageUrl: snapshot
-                                                                        .categories[
-                                                                            index]
-                                                                        .images
-                                                                        .isEmpty
-                                                                    ? ""
-                                                                    : snapshot
-                                                                        .categories[
-                                                                            index]
-                                                                        .images
-                                                                        .first
-                                                                        .photoUrl,
-                                                                placeholder: (context,
-                                                                        url) =>
-                                                                    Container(
-//                                                              height: 170,
-                                                                        child: Icon(Icons
-                                                                            .image)),
-                                                                errorWidget:
-                                                                    (context,
-                                                                            url,
-                                                                            error) =>
-                                                                        Container(
-                                                                          height:
-                                                                              75,
-                                                                          child:
-                                                                              Center(
-                                                                            child:
-                                                                                Icon(Icons.error),
-                                                                          ),
-                                                                        )),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      EdgeInsets.only(top: 10),
-//                                      height: 30,
-                                                  child: Center(
-                                                    child: Wrap(
-                                                      direction:
-                                                          Axis.horizontal,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          snapshot
-                                                              .categories[index]
-                                                              .categoryName,
-                                                          style: const TextStyle(
-                                                              color: const Color(
-                                                                  0xff747474),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontFamily:
-                                                                  "Avenir",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 14.0),
-                                                          maxLines: 2,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Spacer()
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      itemCount: snapshot.categories.length,
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                    ),
-                                  )
                                 ],
                               ),
                             ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 20, bottom: 10),
+                              child: MySeparator(
+                                color: AppColors.darkGrey,
+                                height: 0.5,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 20, right: 10, top: 15, bottom: 20),
+                              child: Row(
+                                children: <Widget>[
+                                  ImageIcon(
+                                    AssetImage(
+                                      'assets/images/path330.png',
+                                    ),
+                                    color: AppColors.darkGrey,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8, right: 8),
+                                      child: Text(
+                                          snapshot.selectedMerchant?.address
+                                                  ?.prettyAddress ??
+                                              "",
+//                                              snapshot.selectedMerchant.address
+//                                                      .addressLine1 +
+//                                                  ", " +
+//                                                  snapshot.selectedMerchant
+//                                                      .address.addressLine2,
+                                          style: const TextStyle(
+                                              color: const Color(0xff6f6f6f),
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: "Avenir-Medium",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 14.0),
+                                          textAlign: TextAlign.left),
+                                    ),
+                                  ),
+                                  ImageIcon(
+                                    AssetImage(
+                                      'assets/images/location2.png',
+                                    ),
+                                    color: AppColors.darkGrey,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 30, bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  "shop.item_category",
+                                  style: TextStyle(
+                                    color: Color(0xff151515),
+                                    fontSize: 18,
+                                    fontFamily: 'Avenir-Medium',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ).tr(),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 20),
+                                child: GridView.builder(
+                                  padding: EdgeInsets.zero,
+                                  primary: false,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 20.0,
+                                          mainAxisSpacing: 20.0,
+                                          childAspectRatio: 100 / 160),
+                                  itemBuilder: (context, index) {
+                                    return Container(
+//                                  color: Colors.red,
+                                      child: InkWell(
+                                        onTap: () {
+                                          snapshot.updateSelectedCategory(
+                                              snapshot.categories[index]);
+                                          snapshot.navigateToProductDetails();
+                                        },
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                  color: Color(0xffe0e0e0),
+                                                  width: 1,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10)),
+                                                child: Container(
+                                                  width: double.infinity,
+//                                              padding: EdgeInsets.all(10),
+                                                  child:
+//                                            Image.asset(imageList[index])
+
+                                                      Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            15.0),
+                                                    child: CachedNetworkImage(
+                                                        height: 75,
+                                                        fit: BoxFit.cover,
+//                                                  height: 80,
+                                                        imageUrl: snapshot
+                                                                .categories[
+                                                                    index]
+                                                                .images
+                                                                .isEmpty
+                                                            ? ""
+                                                            : snapshot
+                                                                .categories[
+                                                                    index]
+                                                                .images
+                                                                .first
+                                                                .photoUrl,
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            Container(
+//                                                              height: 170,
+                                                                child: Icon(Icons
+                                                                    .image)),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Container(
+                                                              height: 75,
+                                                              child: Center(
+                                                                child: Icon(
+                                                                  Icons.image,
+                                                                  size: 30,
+                                                                ),
+                                                              ),
+                                                            )),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.only(top: 10),
+//                                      height: 30,
+                                              child: Center(
+                                                child: Wrap(
+                                                  direction: Axis.horizontal,
+                                                  children: <Widget>[
+                                                    Hero(
+                                                      tag: snapshot
+                                                          .categories[index]
+                                                          .categoryName,
+                                                      child: Text(
+                                                        snapshot
+                                                            .categories[index]
+                                                            .categoryName,
+                                                        style: const TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                            color: const Color(
+                                                                0xff747474),
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontFamily:
+                                                                "Avenir-Medium",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 14.0),
+                                                        maxLines: 2,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Spacer()
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  itemCount: snapshot.categories.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                ),
+                              )
+                            ],
                           ),
-                        ],
-                      );
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               })),
     );
   }
@@ -427,7 +424,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(CategoriesNew) updateSelectedCategory;
   Business selectedMerchant;
   List<CategoriesNew> categories;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   _ViewModel();
   _ViewModel.build(
       {this.navigateToProductDetails,
@@ -445,10 +442,12 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
         },
         navigateToProductDetails: () {
-          dispatch(GetCatalogDetailsAction());
-          dispatch(
-            NavigateAction.pushNamed('/StoreProductListingView'),
-          );
+          store.dispatchFuture(GetSubCatalogAction()).whenComplete(() {
+            dispatch(UpdateProductListingDataAction(listingData: []));
+            dispatch(
+              NavigateAction.pushNamed('/StoreProductListingView'),
+            );
+          });
         },
         loadingStatus: state.authState.loadingStatus,
         selectedMerchant: state.productState.selectedMerchand);

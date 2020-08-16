@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
@@ -62,7 +63,6 @@ class _LoginViewState extends State<LoginView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fcm();
   }
 
   @override
@@ -81,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
                   width: 75,
                 ),
               ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Scaffold(
                   body: Padding(
                 padding: const EdgeInsets.only(left: 25.0, right: 25.0),
@@ -145,7 +145,7 @@ class _LoginViewState extends State<LoginView> {
                           style: const TextStyle(
                               color: const Color(0xff797979),
                               fontWeight: FontWeight.w500,
-                              fontFamily: "Avenir",
+                              fontFamily: "Avenir-Medium",
                               fontStyle: FontStyle.normal,
                               fontSize: 18.0),
                           textAlign: TextAlign.left)
@@ -155,7 +155,7 @@ class _LoginViewState extends State<LoginView> {
                           style: const TextStyle(
                               color: const Color(0xff797979),
                               fontWeight: FontWeight.w500,
-                              fontFamily: "Avenir",
+                              fontFamily: "Avenir-Medium",
                               fontStyle: FontStyle.normal,
                               fontSize: 18.0),
                           textAlign: TextAlign.left)
@@ -201,7 +201,7 @@ class _LoginViewState extends State<LoginView> {
                         style: const TextStyle(
                             color: const Color(0xff1a1a1a),
                             fontWeight: FontWeight.w400,
-                            fontFamily: "Avenir",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.center),
@@ -262,7 +262,7 @@ class _LoginViewState extends State<LoginView> {
                                 style: const TextStyle(
                                     color: const Color(0xffffffff),
                                     fontWeight: FontWeight.w500,
-                                    fontFamily: "Avenir",
+                                    fontFamily: "Avenir-Medium",
                                     fontStyle: FontStyle.normal,
                                     fontSize: 16.0),
                                 textAlign: TextAlign.center)
@@ -292,7 +292,7 @@ class _LoginViewState extends State<LoginView> {
                 style: const TextStyle(
                     color: const Color(0xff1a1a1a),
                     fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir",
+                    fontFamily: "Avenir-Medium",
                     fontStyle: FontStyle.normal,
                     fontSize: 14.0),
                 text: snapshot.isSignUp
@@ -302,7 +302,7 @@ class _LoginViewState extends State<LoginView> {
                 style: const TextStyle(
                     color: const Color(0xff5091cd),
                     fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir",
+                    fontFamily: "Avenir-Medium",
                     fontStyle: FontStyle.normal,
                     fontSize: 14.0),
                 text: snapshot.isSignUp
@@ -327,7 +327,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   Function navigateToOTPPage;
   Function updatePushToken;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(GenerateOTPRequest request) getOtpAction;
   bool isPhoneNumberValid;
 

@@ -222,6 +222,7 @@ class CatalogSearchResponse {
 
 class Product {
   int productId;
+  int selectedVariant;
   String productName;
   String productDescription;
   bool isActive;
@@ -246,9 +247,11 @@ class Product {
       this.displayLine1,
       this.unitName,
       this.possibleVariations,
-      this.skus});
+      this.skus,
+      this.selectedVariant});
 
   Product.fromJson(Map<String, dynamic> json) {
+    selectedVariant = json['selectedVariant'];
     count = json['count'];
     productId = json['product_id'];
     productName = json['product_name'];
@@ -278,6 +281,7 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['selectedVariant'] = this.selectedVariant;
     data['count'] = this.count;
     data['product_id'] = this.productId;
     data['product_name'] = this.productName;
@@ -310,6 +314,25 @@ class PossibleVariations {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['Size'] = this.size;
+    return data;
+  }
+}
+
+class Charges {
+  int packing;
+  int service;
+
+  Charges({this.packing, this.service});
+
+  Charges.fromJson(Map<String, dynamic> json) {
+    packing = json['Packing'];
+    service = json['Service'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Packing'] = this.packing;
+    data['Service'] = this.service;
     return data;
   }
 }
@@ -362,37 +385,18 @@ class Skus {
   }
 }
 
-class Charges {
-  int packing;
-  int service;
-
-  Charges({this.packing, this.service});
-
-  Charges.fromJson(Map<String, dynamic> json) {
-    packing = json['Packing'];
-    service = json['Service'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Packing'] = this.packing;
-    data['Service'] = this.service;
-    return data;
-  }
-}
-
 class VariationOptions {
-  String size;
+  String weight;
 
-  VariationOptions({this.size});
+  VariationOptions({this.weight});
 
   VariationOptions.fromJson(Map<String, dynamic> json) {
-    size = json['Size'];
+    weight = json['Weight'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Size'] = this.size;
+    data['Weight'] = this.weight;
     return data;
   }
 }

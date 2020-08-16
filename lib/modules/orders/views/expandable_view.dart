@@ -1,5 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
@@ -9,7 +8,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/customAlert.dart';
-import 'package:eSamudaay/utilities/extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -76,7 +75,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                     .results[widget.merchantIndex].created)
                                 .toLocal()), //"20 -April, 07.45 PM ",
                         price:
-                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal}",
+                            "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal / 100.0}",
                       ),
                     ),
                     AnimatedContainer(
@@ -170,16 +169,16 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                       style: const TextStyle(
                                           color: const Color(0xff7c7c7c),
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left),
                                   // ₹ 55.00
-                                  Text("₹ $price",
+                                  Text("₹ ${price / 100}",
                                       style: const TextStyle(
                                           color: const Color(0xff6f6f6f),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 14.0),
                                       textAlign: TextAlign.left)
@@ -199,7 +198,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                       style: const TextStyle(
                                           color: const Color(0xff000000),
                                           fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir",
+                                          fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
                                           fontSize: 16.0),
                                       textAlign: TextAlign.center)
@@ -234,7 +233,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -242,7 +241,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal}" ??
+                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal / 100}" ??
                                                         "0.0",
                                                     style:
                                                         const TextStyle(
@@ -252,7 +251,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -273,21 +272,21 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
                                                         textAlign: TextAlign
                                                             .left), // ₹ 175.00
                                                     Text(
-                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges}",
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges / 100}",
                                                         style: const TextStyle(
                                                             color: const Color(
                                                                 0xff696666),
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -308,21 +307,21 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
                                                         textAlign: TextAlign
                                                             .left), // ₹ 175.00
                                                     Text(
-                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges}",
+                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges / 100}",
                                                         style: const TextStyle(
                                                             color: const Color(
                                                                 0xff696666),
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             fontFamily:
-                                                                "Avenir",
+                                                                "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
                                                             fontSize: 16.0),
@@ -364,7 +363,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                               0xff696666),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontFamily: "Avenir",
+                                                          fontFamily:
+                                                              "Avenir-Medium",
                                                           fontStyle:
                                                               FontStyle.normal,
                                                           fontSize: 16.0),
@@ -373,13 +373,14 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                               // ₹ 195.00
                                               // ₹ 195.00
                                               Text(
-                                                  "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal}",
+                                                  "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal / 100}",
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xff5091cd),
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      fontFamily: "Avenir",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 16.0),
@@ -415,7 +416,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                   color:
                                                       const Color(0xff4b4b4b),
                                                   fontWeight: FontWeight.w500,
-                                                  fontFamily: "Avenir",
+                                                  fontFamily: "Avenir-Medium",
                                                   fontStyle: FontStyle.normal,
                                                   fontSize: 14.0),
                                               textAlign: TextAlign.left)
@@ -444,7 +445,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                           0xff6c6c6c),
                                                       fontWeight:
                                                           FontWeight.w400,
-                                                      fontFamily: "Avenir",
+                                                      fontFamily:
+                                                          "Avenir-Medium",
                                                       fontStyle:
                                                           FontStyle.normal,
                                                       fontSize: 18.0),
@@ -490,7 +492,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             children: <Widget>[
                                                               // Rate our service
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Container(
                                                                       child:
@@ -506,7 +508,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                   : Container(),
                                                               Text(
                                                                   snapshot.loadingStatus ==
-                                                                          LoadingStatus
+                                                                          LoadingStatusApp
                                                                               .submitted
                                                                       ? tr(
                                                                           'screen_order.rate_ok')
@@ -519,7 +521,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                           FontWeight
                                                                               .w400,
                                                                       fontFamily:
-                                                                          "Avenir",
+                                                                          "Avenir-Medium",
                                                                       fontStyle:
                                                                           FontStyle
                                                                               .normal,
@@ -529,7 +531,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                       TextAlign
                                                                           .left),
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Container()
                                                                   : Padding(
@@ -541,7 +543,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               15),
                                                                       child:
                                                                           IgnorePointer(
-                                                                        ignoring: snapshot.loadingStatus == LoadingStatus.loading || widget != null
+                                                                        ignoring: snapshot.loadingStatus == LoadingStatusApp.loading || widget != null
                                                                             ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating ==
                                                                                 null
                                                                             : false,
@@ -577,7 +579,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                       ),
                                                                     ),
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Container()
                                                                   : Padding(
@@ -596,7 +598,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                           child:
                                                                               IgnorePointer(
                                                                             ignoring:
-                                                                                snapshot.loadingStatus == LoadingStatus.loading,
+                                                                                snapshot.loadingStatus == LoadingStatusApp.loading,
                                                                             child:
                                                                                 TextFormField(
 //                                                            expands: true,
@@ -609,7 +611,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                                   border: OutlineInputBorder(
                                                                                     borderRadius: BorderRadius.circular(10),
                                                                                   ),
-                                                                                  hintStyle: TextStyle(color: const Color(0xffb7b7b7), fontWeight: FontWeight.w400, fontFamily: "Avenir", fontStyle: FontStyle.normal, fontSize: 14.0),
+                                                                                  hintStyle: TextStyle(color: const Color(0xffb7b7b7), fontWeight: FontWeight.w400, fontFamily: "Avenir-Medium", fontStyle: FontStyle.normal, fontSize: 14.0),
                                                                                   hintText: tr('screen_order.write_feedback')),
                                                                             ),
                                                                           ),
@@ -618,7 +620,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                     ),
                                                               // Rectangle 2088
                                                               snapshot.loadingStatus ==
-                                                                      LoadingStatus
+                                                                      LoadingStatusApp
                                                                           .submitted
                                                                   ? Padding(
                                                                       padding:
@@ -628,16 +630,16 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                               IgnorePointer(
                                                                 ignoring: snapshot
                                                                         .loadingStatus ==
-                                                                    LoadingStatus
+                                                                    LoadingStatusApp
                                                                         .loading,
                                                                 child: InkWell(
                                                                   onTap: () {
                                                                     if (snapshot
                                                                             .loadingStatus ==
-                                                                        LoadingStatus
+                                                                        LoadingStatusApp
                                                                             .submitted) {
                                                                       snapshot.updateLoadingStatus(
-                                                                          LoadingStatus
+                                                                          LoadingStatusApp
                                                                               .success);
                                                                       Navigator.pop(
                                                                           context);
@@ -665,7 +667,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                         milliseconds:
                                                                             200),
                                                                     width: snapshot.loadingStatus ==
-                                                                            LoadingStatus.loading
+                                                                            LoadingStatusApp.loading
                                                                         ? 40
                                                                         : 141,
                                                                     height: 38,
@@ -678,7 +680,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                     child: // Submit
                                                                         Center(
                                                                       child: snapshot.loadingStatus ==
-                                                                              LoadingStatus
+                                                                              LoadingStatusApp
                                                                                   .loading
                                                                           ? Container(
                                                                               height: 75,
@@ -690,8 +692,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                               ),
                                                                             )
                                                                           : Text(
-                                                                              snapshot.loadingStatus == LoadingStatus.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
-                                                                              style: const TextStyle(color: const Color(0xffffffff), fontWeight: FontWeight.w400, fontFamily: "Avenir", fontStyle: FontStyle.normal, fontSize: 16.0),
+                                                                              snapshot.loadingStatus == LoadingStatusApp.submitted || true ? tr('screen_order.ok') : tr('screen_order.submit'),
+                                                                              style: const TextStyle(color: const Color(0xffffffff), fontWeight: FontWeight.w400, fontFamily: "Avenir-Medium", fontStyle: FontStyle.normal, fontSize: 16.0),
                                                                               textAlign: TextAlign.left),
                                                                     ),
                                                                   ),
@@ -790,7 +792,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         } else {
                                           Fluttertoast.showToast(
                                               msg:
-                                                  "No contact details available.");
+                                                  tr("new_changes.no_contact"));
                                         }
 //                                        Navigator.of(context)
 //                                            .pushNamed('/Support');
@@ -799,20 +801,20 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                         children: <Widget>[
                                           Icon(
                                             Icons.phone,
-                                            size: 30,
+                                            size: 15,
                                             color: AppColors.icColors,
                                           ),
                                           Padding(
                                             padding: EdgeInsets.all(5),
                                             child: Text(
-                                              'Call shop',
+                                              'new_changes.call',
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 12,
-                                                fontFamily: 'Avenir',
+                                                fontFamily: 'Avenir-Medium',
                                                 fontWeight: FontWeight.w800,
                                               ),
-                                            ),
+                                            ).tr(),
                                           ),
                                         ],
                                       ),
@@ -882,8 +884,8 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String orderId) updateOrderId;
   GetOrderListResponse getOrderListResponse;
   Function(AddReviewRequest, String) rateOrder;
-  Function(LoadingStatus) updateLoadingStatus;
-  LoadingStatus loadingStatus;
+  Function(LoadingStatusApp) updateLoadingStatus;
+  LoadingStatusApp loadingStatus;
   _ViewModel();
   _ViewModel.build(
       {this.getOrderListResponse,

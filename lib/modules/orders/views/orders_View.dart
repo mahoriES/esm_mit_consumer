@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
@@ -14,11 +13,14 @@ import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:upi_india/upi_india.dart';
+import 'package:upi_pay/upi_pay.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrdersView extends StatefulWidget {
@@ -27,6 +29,9 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
+  Future<UpiResponse> _transaction;
+  UpiIndia _upiIndia = UpiIndia();
+  List<UpiApp> apps;
   ScrollController _scrollController = new ScrollController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -77,7 +82,7 @@ class _OrdersViewState extends State<OrdersView> {
                       style: const TextStyle(
                           color: const Color(0xff000000),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 20.0),
                       textAlign: TextAlign.left)
@@ -88,6 +93,7 @@ class _OrdersViewState extends State<OrdersView> {
             onInit: (store) {
               store.dispatch(
                   GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
+              store.dispatch(GetUPIAppsAction());
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(
@@ -98,11 +104,11 @@ class _OrdersViewState extends State<OrdersView> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: (snapshot.getOrderListResponse == null ||
                         snapshot.getOrderListResponse.results == null ||
                         snapshot.getOrderListResponse.results.isEmpty)
-                    ? snapshot.loadingStatus != LoadingStatus.loading
+                    ? snapshot.loadingStatus != LoadingStatusApp.loading
                         ? buildEmptyView(context, snapshot)
                         : Container()
                     : Container(
@@ -156,6 +162,9 @@ class _OrdersViewState extends State<OrdersView> {
                             itemBuilder:
                                 (BuildContext context, int merchantIndex) {
                               return NewWidget(
+                                apps: apps,
+                                transaction: _transaction,
+                                upiIndia: _upiIndia,
                                 orderId: snapshot.getOrderListResponse
                                     .results[merchantIndex].orderId,
                                 snapshot: snapshot,
@@ -217,7 +226,7 @@ class _OrdersViewState extends State<OrdersView> {
                   style: const TextStyle(
                       color: const Color(0xff1f1f1f),
                       fontWeight: FontWeight.w400,
-                      fontFamily: "Avenir",
+                      fontFamily: "Avenir-Medium",
                       fontStyle: FontStyle.normal,
                       fontSize: 20.0),
                   textAlign: TextAlign.left)
@@ -232,7 +241,7 @@ class _OrdersViewState extends State<OrdersView> {
                     style: const TextStyle(
                         color: const Color(0xff6f6d6d),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 16.0),
                     textAlign: TextAlign.center)
@@ -251,7 +260,7 @@ class _OrdersViewState extends State<OrdersView> {
                 height: 46,
                 width: 160,
                 decoration: BoxDecoration(
-                  color: Color(0xff5091cd),
+                  color: AppColors.icColors,
                   borderRadius: BorderRadius.circular(23),
                 ),
                 child: Center(
@@ -263,7 +272,7 @@ class _OrdersViewState extends State<OrdersView> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
-                          fontFamily: 'Avenir',
+                          fontFamily: 'Avenir-Medium',
                           fontWeight: FontWeight.w900,
                         ),
                         textAlign: TextAlign.center,
@@ -286,13 +295,19 @@ class NewWidget extends StatefulWidget {
   final merchantIndex;
   final String orderStatus;
   final String deliveryStatus;
+  final Future<UpiResponse> transaction;
+  final UpiIndia upiIndia;
+  final List<UpiApp> apps;
   const NewWidget(
       {Key key,
       this.deliveryStatus,
       this.merchantIndex,
       this.orderStatus,
       this.orderId,
-      this.snapshot})
+      this.snapshot,
+      this.transaction,
+      this.upiIndia,
+      this.apps})
       : super(key: key);
 
   @override
@@ -317,6 +332,9 @@ class _NewWidgetState extends State<NewWidget> {
             },
           ),
           OrderItemBottomView(
+            apps: widget.apps,
+            transaction: widget.transaction,
+            upiIndia: widget.upiIndia,
             snapshot: widget.snapshot,
             orderId: widget.orderId,
             index: widget.merchantIndex,
@@ -337,6 +355,10 @@ class OrderItemBottomView extends StatelessWidget {
   final String orderStatus;
   final String deliveryStatus;
   final bool expanded;
+  final Future<UpiResponse> transaction;
+  final UpiIndia upiIndia;
+  final List<UpiApp> apps;
+
   const OrderItemBottomView(
       {Key key,
       this.index,
@@ -344,15 +366,20 @@ class OrderItemBottomView extends StatelessWidget {
       this.expanded,
       this.orderId,
       this.snapshot,
-      this.deliveryStatus})
+      this.deliveryStatus,
+      this.transaction,
+      this.upiIndia,
+      this.apps})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(orderStatus);
+    var order = snapshot.getOrderListResponse.results[index];
+
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
-      child: Column(
-        children: <Widget>[
+        margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
+        child: Column(children: <Widget>[
           orderStatus == "MERCHANT_UPDATED"
               ? Align(
                   alignment: Alignment.centerRight,
@@ -370,7 +397,7 @@ class OrderItemBottomView extends StatelessWidget {
                                 style: const TextStyle(
                                     color: const Color(0xffe33a3a),
                                     fontWeight: FontWeight.w900,
-                                    fontFamily: "Avenir",
+                                    fontFamily: "Avenir-Medium",
                                     fontStyle: FontStyle.normal,
                                     fontSize: 14.0),
                                 textAlign: TextAlign.left),
@@ -396,7 +423,14 @@ class OrderItemBottomView extends StatelessWidget {
                   ? StoreConnector<AppState, _ViewModel>(
                       model: _ViewModel(),
                       builder: (context, snapshot) {
-                        return buildCustomButton(snapshot);
+                        return Row(
+                          children: [
+                            showUpiIcon()
+                                ? Image.asset('assets/images/upi.png')
+                                : Container(),
+                            buildCustomButton(snapshot, context),
+                          ],
+                        );
                       })
                   : Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -427,20 +461,20 @@ class OrderItemBottomView extends StatelessWidget {
                           children: <Widget>[
                             Icon(
                               Icons.phone,
-                              size: 35,
+                              size: 20,
                               color: AppColors.icColors,
                             ),
                             Padding(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                'Call shop',
+                                'new_changes.call',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
-                                  fontFamily: 'Avenir',
+                                  fontFamily: 'Avenir-Medium',
                                   fontWeight: FontWeight.w800,
                                 ),
-                              ),
+                              ).tr(),
                             ),
                             // Support
                           ],
@@ -480,53 +514,197 @@ class OrderItemBottomView extends StatelessWidget {
                       children: <Widget>[
                         Icon(
                           Icons.phone,
-                          size: 35,
+                          size: 20,
                           color: AppColors.icColors,
                         ),
                         Padding(
                           padding: EdgeInsets.all(5),
                           child: Text(
-                            'Call shop',
+                            'new_changes.call',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 12,
-                              fontFamily: 'Avenir',
+                              fontFamily: 'Avenir-Medium',
                               fontWeight: FontWeight.w800,
                             ),
-                          ),
+                          ).tr(),
                         ),
                         // Support
                       ],
                     ),
                   ),
                 )
+              : Container(),
+          showPayment()
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: InkWell(
+                      onTap: () {
+                        if (order.paymentInfo.status == 'PENDING' ||
+                            order.paymentInfo.status == 'REJECTED') {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title:
+                                    Text('screen_order.Confirm_Payment').tr(),
+                                content:
+                                    Text('screen_order.merchant_notify_text')
+                                        .tr(),
+                                actions: [
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('screen_order.Cancel').tr(),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      snapshot.notifyPayment(order.orderId);
+                                    },
+                                    child: Text('screen_order.Confirm').tr(),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Row(children: [
+                        Spacer(),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.check_circle_outline,
+                                    color: order.paymentInfo.status ==
+                                                'INITIATED' ||
+                                            order.paymentInfo.status ==
+                                                'APPROVED'
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    size: 15,
+                                  ),
+                                ),
+                                Text(
+                                  order.paymentInfo.status == 'APPROVED'
+                                      ? "${order.businessName} " +
+                                          tr("screen_order.Paid_at")
+                                      : "screen_order.made_my_payment",
+                                  style: TextStyle(
+                                      decoration: (order.paymentInfo.status ==
+                                                  'APPROVED' ||
+                                              order.paymentInfo.status ==
+                                                  'INITIATED')
+                                          ? TextDecoration.none
+                                          : TextDecoration.underline,
+                                      color: (order.paymentInfo.status ==
+                                                  'APPROVED') ||
+                                              order.paymentInfo.status ==
+                                                  'INITIATED'
+                                          ? Colors.green
+                                          : Color(0xff504e4e),
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: "HelveticaNeue",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 12.0),
+                                  textAlign: TextAlign.left,
+                                ).tr(),
+                                (order.paymentInfo.status != "APPROVED")
+                                    ? Container()
+                                    : Text(
+                                            " " +
+                                                DateFormat('HH:mm a').format(
+                                                    DateTime.parse(order
+                                                            .paymentInfo.dt)
+                                                        .toLocal()),
+                                            style: const TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: "HelveticaNeue",
+                                                fontStyle: FontStyle.normal,
+                                                fontSize: 12.0),
+                                            textAlign: TextAlign.left)
+                                        .tr(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ])))
               : Container()
-        ],
-      ),
-    );
+        ]));
   }
 
-  bool isButtonShow() {
-    if (orderStatus == "CREATED" ||
-        orderStatus == "COMPLETED" ||
-        orderStatus == "MERCHANT_UPDATED") {
-      return true;
-    } else if (orderStatus == "READY_FOR_PICKUP") {
-      if (deliveryStatus == "SELF_PICK_UP")
-        return true;
-      else
+  bool showUpiIcon() {
+    var order = snapshot.getOrderListResponse.results[index];
+    print("data for checking");
+    print(orderStatus);
+    print(deliveryStatus);
+    if (orderStatus == 'MERCHANT_ACCEPTED' ||
+        orderStatus == 'READY_FOR_PICKUP') {
+      if (deliveryStatus == "SELF_PICK_UP") {
         return false;
+      } else {
+        return true;
+      }
     } else {
       return false;
     }
   }
 
-  CustomButton buildCustomButton(_ViewModel snapshot) {
+  bool showPayment() {
+    if (orderStatus == "CREATED" ||
+        orderStatus == "CUSTOMER_CANCELLED" ||
+        orderStatus == "MERCHANT_CANCELLED") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool isButtonShow() {
+    if (orderStatus == "CREATED" ||
+        orderStatus == "COMPLETED" ||
+        orderStatus == "MERCHANT_UPDATED" ||
+        orderStatus == 'MERCHANT_ACCEPTED') {
+      return true;
+    } else if (orderStatus == "READY_FOR_PICKUP") {
+      if (deliveryStatus == "SELF_PICK_UP")
+        return true;
+      else
+        return true;
+    } else {
+      return false;
+    }
+  }
+
+  Color buttonBkColor(PaymentInfo paymentInfo) {
+    if (orderStatus == "COMPLETED") {
+      return AppColors.icColors;
+    } else if (orderStatus == "CREATED") {
+      return AppColors.orange;
+    } else {
+      if (paymentInfo.upi == null) {
+        return Colors.grey.shade300;
+      }
+      if (paymentInfo.status == "INITIATED" ||
+          paymentInfo.status == "APPROVED") {
+        return Colors.grey.shade300;
+      } else {
+        return AppColors.icColors;
+      }
+    }
+  }
+
+  CustomButton buildCustomButton(_ViewModel snapshot, BuildContext context) {
     return CustomButton(
       title: title(),
-      backgroundColor: orderStatus == "COMPLETED"
-          ? AppColors.icColors
-          : orderStatus == "CREATED" ? AppColors.orange : AppColors.icColors,
+      backgroundColor: buttonBkColor(
+          snapshot.getOrderListResponse.results[index].paymentInfo),
       didPresButton: () async {
         if (orderStatus == "COMPLETED") {
           //reorder api
@@ -554,6 +732,39 @@ class OrderItemBottomView extends StatelessWidget {
             deliveryStatus == "SELF_PICK_UP") {
           snapshot.completeOrder(
               snapshot.getOrderListResponse.results[index].orderId, index);
+        } else if (orderStatus == "READY_FOR_PICKUP" &&
+            deliveryStatus != "SELF_PICK_UP") {
+          var order = snapshot.getOrderListResponse.results[index];
+          if (order.paymentInfo.status == 'PENDING' ||
+              order.paymentInfo.status == 'REJECTED') {
+            if (order.paymentInfo.upi == null) {
+              return;
+            }
+            Navigator.pushNamed(context, "/payment",
+                    arguments: snapshot.getOrderListResponse.results[index])
+                .then((value) {
+              if (value) {
+                snapshot.notifyPayment(
+                    snapshot.getOrderListResponse.results[index].orderId);
+              }
+            });
+          }
+        } else if (orderStatus == 'MERCHANT_ACCEPTED') {
+          var order = snapshot.getOrderListResponse.results[index];
+          if (order.paymentInfo.status == 'PENDING' ||
+              order.paymentInfo.status == 'REJECTED') {
+            if (order.paymentInfo.upi == null) {
+              return;
+            }
+            Navigator.pushNamed(context, "/payment",
+                    arguments: snapshot.getOrderListResponse.results[index])
+                .then((value) {
+              if (value) {
+                snapshot.notifyPayment(
+                    snapshot.getOrderListResponse.results[index].orderId);
+              }
+            });
+          }
         } else {
           //cancel order api
           snapshot.cancelOrder(
@@ -564,13 +775,11 @@ class OrderItemBottomView extends StatelessWidget {
   }
 
   String title() {
+    var order = snapshot.getOrderListResponse.results[index];
     if (orderStatus == "CREATED") {
       return tr('screen_order.cancel_order');
     } else if (orderStatus == "MERCHANT_ACCEPTED") {
-      if (deliveryStatus == "SELF_PICK_UP")
-        return tr('screen_order.pickup');
-      else
-        return "";
+      return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "CUSTOMER_CANCELLED") {
       return tr('screen_order.cancelled_customer');
     } else if (orderStatus == "MERCHANT_CANCELLED") {
@@ -585,22 +794,25 @@ class OrderItemBottomView extends StatelessWidget {
       if (deliveryStatus == "SELF_PICK_UP")
         return tr('screen_order.pickup');
       else
-        return tr('screen_order.on_the_way');
+        return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "REQUESTING_TO_DA") {
-      return tr('screen_order.on_the_way');
+      return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "ASSIGNED_TO_DA") {
-      return tr('screen_order.on_the_way');
+      return tr('screen_order.Pay_via_upi');
     } else if (orderStatus == "PICKED_UP_BY_DA") {
-      return tr('screen_order.on_the_way');
+      return tr('screen_order.Pay_via_upi');
+    } else {
+      return "";
     }
   }
 
   Text buildText() {
     TextStyle newStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 12,
-      fontFamily: 'Avenir',
-      fontWeight: FontWeight.w800,
+      fontFamily: 'Avenir-Medium',
+      color: Color(0xff958d8d),
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      fontStyle: FontStyle.normal,
     );
     if (orderStatus == "CREATED") {
       return Text(
@@ -663,12 +875,16 @@ class OrderItemBottomView extends StatelessWidget {
     }
   }
 
-  Icon buildIcon() {
+  Widget buildIcon() {
     if (orderStatus == "CREATED") {
-      return Icon(
-        Icons.autorenew,
+      return ImageIcon(
+        AssetImage('assets/images/refresh_1.png'),
         color: Color(0xffeb730c),
       );
+//      Icon(
+//        Icons.autorenew,
+//        color: Color(0xffeb730c),
+//      );
     } else if (orderStatus == "MERCHANT_ACCEPTED") {
       return Icon(
         Icons.check_circle_outline,
@@ -772,7 +988,7 @@ class CustomButton extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
-                      fontFamily: 'Avenir',
+                      fontFamily: 'Avenir-Medium',
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -872,7 +1088,10 @@ class _OrdersListViewState extends State<OrdersListView>
                               size: 30,
                             ),
                         errorWidget: (context, url, error) => Center(
-                              child: Icon(Icons.error),
+                              child: Icon(
+                                Icons.image,
+                                size: 30,
+                              ),
                             )),
                   ),
           ),
@@ -887,7 +1106,7 @@ class _OrdersListViewState extends State<OrdersListView>
                       style: const TextStyle(
                           color: const Color(0xff2c2c2c),
                           fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 16.0),
                       textAlign: TextAlign.left),
@@ -897,18 +1116,20 @@ class _OrdersListViewState extends State<OrdersListView>
                         style: const TextStyle(
                             color: const Color(0xff7c7c7c),
                             fontWeight: FontWeight.w400,
-                            fontFamily: "Avenir",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.left),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: Text("Order Id : " + widget.orderId ?? "",
+                    child: Text(
+                        "${tr('new_changes.order_id')} : " + widget.orderId ??
+                            "",
                         style: const TextStyle(
                             color: const Color(0xff7c7c7c),
                             fontWeight: FontWeight.w400,
-                            fontFamily: "Avenir",
+                            fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
                             fontSize: 14.0),
                         textAlign: TextAlign.left),
@@ -927,7 +1148,7 @@ class _OrdersListViewState extends State<OrdersListView>
                                     style: const TextStyle(
                                         color: const Color(0xff7c7c7c),
                                         fontWeight: FontWeight.w400,
-                                        fontFamily: "Avenir",
+                                        fontFamily: "Avenir-Medium",
                                         fontStyle: FontStyle.normal,
                                         fontSize: 14.0),
                                     textAlign: TextAlign.left),
@@ -951,7 +1172,7 @@ class _OrdersListViewState extends State<OrdersListView>
                             style: const TextStyle(
                                 color: const Color(0xff7c7c7c),
                                 fontWeight: FontWeight.w400,
-                                fontFamily: "Avenir",
+                                fontFamily: "Avenir-Medium",
                                 fontStyle: FontStyle.normal,
                                 fontSize: 14.0),
                             textAlign: TextAlign.left),
@@ -980,7 +1201,7 @@ class _OrdersListViewState extends State<OrdersListView>
                   style: const TextStyle(
                       color: const Color(0xff5091cd),
                       fontWeight: FontWeight.w500,
-                      fontFamily: "Avenir",
+                      fontFamily: "Avenir-Medium",
                       fontStyle: FontStyle.normal,
                       fontSize: 18.0),
                   textAlign: TextAlign.left)
@@ -995,30 +1216,38 @@ class _OrdersListViewState extends State<OrdersListView>
 class _ViewModel extends BaseModel<AppState> {
   GetOrderListResponse getOrderListResponse;
   Function(String orderId) updateOrderId;
+  Function(String orderId) notifyPayment;
   Function viewStore;
   Function(PlaceOrderRequest) placeOrder;
   Function(String, int) acceptOrder;
   Function(String, int) cancelOrder;
   Function(String, int) completeOrder;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(String) getOrderList;
+  List<ApplicationMeta> upiApps;
 
   _ViewModel();
   _ViewModel.build(
       {this.getOrderListResponse,
       this.placeOrder,
+      this.upiApps,
       this.updateOrderId,
+      this.notifyPayment,
       this.cancelOrder,
       this.acceptOrder,
       this.loadingStatus,
       this.viewStore,
       this.getOrderList,
       this.completeOrder})
-      : super(equals: [getOrderListResponse, loadingStatus]);
+      : super(equals: [getOrderListResponse, loadingStatus, upiApps]);
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        upiApps: state.productState.upiApps,
+        notifyPayment: (orderId) {
+          dispatch(PaymentAPIAction(orderId: orderId));
+        },
         updateOrderId: (value) {
           dispatch(OrderSupportAction(orderId: value));
         },

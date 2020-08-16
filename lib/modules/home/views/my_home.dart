@@ -1,10 +1,11 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
@@ -12,6 +13,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +53,8 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
 //      return ProfileView(
 //        key: keyThree,
 //      );
+    } else if (index == 2) {
+      return CartView();
     } else {
       return AccountsView();
 //      return ProductDetailsView();
@@ -75,16 +79,20 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
               } else {
                 store.dispatch(GetAddressFromLocal());
               }
-              store.dispatch(
-                  GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-              store.dispatch(GetBannerDetailsAction());
+
+              store
+                  .dispatchFuture(
+                      GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl))
+                  .whenComplete(() {
+                store.dispatch(GetBannerDetailsAction());
+              });
               store.dispatch(GetCartFromLocal());
             });
             store.dispatch(GetUserFromLocalStorageAction());
           },
           builder: (context, snapshot) {
             return BottomNavigationBar(
-              selectedItemColor: AppColors.icColors,
+              selectedItemColor: AppColors.iconColors,
               currentIndex: snapshot.currentIndex,
               type: BottomNavigationBarType.fixed,
               items: [
@@ -95,7 +103,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                   ),
                   activeIcon: ImageIcon(
                     AssetImage('assets/images/path330.png'),
-                    color: AppColors.icColors,
+                    color: AppColors.iconColors,
                   ),
                   title: new Text(
                     tr('screen_home.tab_bar.store'),
@@ -121,10 +129,28 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path338.png'),
-                      color: AppColors.icColors,
+                      color: AppColors.iconColors,
                     ),
                     title: Text(
                       tr('screen_home.tab_bar.orders'),
+                    )),
+                BottomNavigationBarItem(
+                    icon: NavigationCartItem(
+                      icon: ImageIcon(
+                        AssetImage(
+                          'assets/images/bag2.png',
+                        ),
+                        color: Colors.black,
+                      ),
+                    ),
+                    activeIcon: NavigationCartItem(
+                      icon: ImageIcon(
+                        AssetImage('assets/images/bag2.png'),
+                        color: AppColors.iconColors,
+                      ),
+                    ),
+                    title: Text(
+                      tr('screen_home.tab_bar.cart'),
                     )),
                 BottomNavigationBarItem(
                     icon: ImageIcon(
@@ -133,7 +159,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path5.png'),
-                      color: AppColors.icColors,
+                      color: AppColors.iconColors,
                     ),
                     title: Text(
                       'screen_home.tab_bar.account',

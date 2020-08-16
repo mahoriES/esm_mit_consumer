@@ -1,5 +1,6 @@
+import 'dart:ui';
+
 import 'package:async_redux/async_redux.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
@@ -9,7 +10,9 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/keys.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,9 +28,10 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController pinCodeController = TextEditingController();
+  TextEditingController pinCodeController =
+      TextEditingController(text: 'UDUPI01');
   String latitude, longitude;
-
+  String selectedCircle = 'UDUPI01';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,13 +55,8 @@ class _RegistrationState extends State<Registration> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: Scaffold(
-                  appBar: AppBar(
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    brightness: Brightness.light,
-                  ),
                   body: Padding(
                     padding: const EdgeInsets.only(left: 25.0, right: 25.0),
                     child: SingleChildScrollView(
@@ -100,7 +99,7 @@ class _RegistrationState extends State<Registration> {
                     style: const TextStyle(
                         color: const Color(0xff797979),
                         fontWeight: FontWeight.w500,
-                        fontFamily: "Avenir",
+                        fontFamily: "Avenir-Medium",
                         fontStyle: FontStyle.normal,
                         fontSize: 18.0),
                     textAlign: TextAlign.left)
@@ -141,7 +140,7 @@ class _RegistrationState extends State<Registration> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -192,7 +191,7 @@ class _RegistrationState extends State<Registration> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -253,7 +252,7 @@ class _RegistrationState extends State<Registration> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Flexible(
+                Expanded(
                   child: TextFormField(
                       validator: (value) {
                         if (value.length == 0) return null;
@@ -284,21 +283,45 @@ class _RegistrationState extends State<Registration> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
                 ),
-                Icon(
-                  Icons.local_post_office,
-                  color: AppColors.icColors,
-                )
+                Container(
+//                  color: Colors.red,
+                  width: 40,
+                  child: Center(
+                    child: PopupMenuButton<String>(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: AppColors.icColors,
+                        size: 30,
+                      ),
+                      onSelected: (value) {
+                        selectedCircle = value;
+                        pinCodeController.text = value;
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return ['UDUPI01'].map((String value) {
+                          return PopupMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                ),
+//                Icon(
+//                  Icons.local_post_office,
+//                  color: AppColors.icColors,
+//                )
               ],
             ),
           ),
         ),
       ),
-
 
       //location
       //Register_but
@@ -308,21 +331,22 @@ class _RegistrationState extends State<Registration> {
         child: InkWell(
           onTap: () {
             if (nameController.text.isNotEmpty &&
-                addressController.text.isNotEmpty &&
-                pinCodeController.text.isNotEmpty) {
+                addressController.text.isNotEmpty) {
               if ((nameController.text.length < 3 ||
-                  !nameController.text.contains(new RegExp(r'[a-z]')))) {
+                  !nameController.text.contains(new RegExp(r'[a-zA-Z ]')))) {
                 Fluttertoast.showToast(
                     msg: tr('screen_register.name.empty_error'));
-              } else if (pinCodeController.text.isEmpty
-//                                      ||
-//                                      !pinCodeController.text
-//                                          .contains(new RegExp(r'^\d{6}$'))
-
-                  ) {
-                Fluttertoast.showToast(
-                    msg: tr('screen_register.pin_code.title'));
-              } else {
+              }
+//              else if (pinCodeController.text.isEmpty
+////                                      ||
+////                                      !pinCodeController.text
+////                                          .contains(new RegExp(r'^\d{6}$'))
+//
+//                  ) {
+//                Fluttertoast.showToast(
+//                    msg: tr('screen_register.pin_code.title'));
+//              }
+              else {
                 snapshot.updateCustomerDetails(
                     CustomerDetailsRequest(
                         profileName: nameController.text,
@@ -333,7 +357,7 @@ class _RegistrationState extends State<Registration> {
                         lat: double.parse(latitude ?? "0"),
                         lon: double.parse(longitude ?? "0"),
                         prettyAddress: addressController.text,
-                        geoAddr: GeoAddr(pincode: pinCodeController.text)));
+                        geoAddr: GeoAddr(pincode: "")));
               }
             } else {
               Fluttertoast.showToast(msg: "all fields required");
@@ -370,7 +394,7 @@ class _RegistrationState extends State<Registration> {
                                   style: const TextStyle(
                                       color: const Color(0xffffffff),
                                       fontWeight: FontWeight.w500,
-                                      fontFamily: "Avenir",
+                                      fontFamily: "Avenir-Medium",
                                       fontStyle: FontStyle.normal,
                                       fontSize: 16.0),
                                   textAlign: TextAlign.center)
@@ -393,7 +417,7 @@ class _RegistrationState extends State<Registration> {
             style: const TextStyle(
                 color: AppColors.icColors,
                 fontWeight: FontWeight.w500,
-                fontFamily: "Avenir",
+                fontFamily: "Avenir-Medium",
                 fontStyle: FontStyle.normal,
                 fontSize: 16.0),
           ).tr(),
@@ -421,12 +445,20 @@ class _RegistrationState extends State<Registration> {
     pinCodeController.dispose();
     super.dispose();
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    window.physicalSize;
+    SystemChrome.setEnabledSystemUIOverlays([]);
+  }
 }
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(CustomerDetailsRequest request, AddressRequest)
       updateCustomerDetails;
   Function(AddressRequest) addAddress;

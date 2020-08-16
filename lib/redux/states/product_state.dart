@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:upi_pay/upi_pay.dart';
 
 class ProductState {
 //  final LoadingStatus loadingStatus;
@@ -17,17 +18,21 @@ class ProductState {
   final List<Product> localCartItems;
   final List<Charge> charges;
   final CategoriesNew selectedCategory;
+  final CategoriesNew selectedSubCategory;
   final PlaceOrderResponse placeOrderResponse;
   final Business selectedMerchand;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
   final List<CategoriesNew> categories;
+  final List<CategoriesNew> subCategories;
   final Cluster selectedCluster;
   final CatalogSearchResponse productResponse;
+  final List<ApplicationMeta> upiApps;
 
   ProductState(
       {@required this.localCartItems,
       @required this.charges,
+      @required this.upiApps,
       @required this.selectedCluster,
       @required this.placeOrderResponse,
       @required this.getOrderListResponse,
@@ -37,16 +42,20 @@ class ProductState {
       @required this.searchResults,
       @required this.productListingDataSource,
       @required this.supportOrder,
+      @required this.subCategories,
       @required this.categories,
       @required this.currentOrderIsPickUp,
-      @required this.productResponse});
+      @required this.productResponse,
+      @required this.selectedSubCategory});
 
   factory ProductState.initial() {
     return new ProductState(
+        upiApps: [],
         productResponse: CatalogSearchResponse(),
         selectedCluster: null,
         charges: [],
         categories: [],
+        subCategories: [],
         supportOrder: "",
         getOrderListResponse: GetOrderListResponse(results: []),
         localCartItems: [],
@@ -55,6 +64,7 @@ class ProductState {
         productListingTempDataSource: [],
         productListingDataSource: [],
         selectedCategory: null,
+        selectedSubCategory: null,
         placeOrderResponse: null,
         currentOrderIsPickUp: false);
   }
@@ -64,17 +74,21 @@ class ProductState {
       List<Product> productListingTempDataSource,
       List<Product> localCartItems,
       List<CategoriesNew> categories,
+      List<CategoriesNew> subCategories,
       List<Merchants> searchResults,
       List<Charge> charges,
+      List<ApplicationMeta> upiApps,
       Business selectedMerchant,
       PlaceOrderResponse placeOrderResponse,
       GetOrderListResponse getOrderListResponse,
       CategoriesNew selectedCategory,
+      CategoriesNew selectedSubCategory,
       String supportOrder,
       bool currentOrderIsPickUp,
       CatalogSearchResponse productResponse,
       Cluster selectedCluster}) {
     return ProductState(
+        upiApps: upiApps ?? this.upiApps,
         productResponse: productResponse ?? this.productResponse,
         charges: charges ?? this.charges,
         selectedCluster: selectedCluster ?? this.selectedCluster,
@@ -90,6 +104,8 @@ class ProductState {
         selectedCategory: selectedCategory ?? this.selectedCategory,
         supportOrder: supportOrder ?? this.supportOrder,
         categories: categories ?? this.categories,
+        subCategories: subCategories ?? this.subCategories,
+        selectedSubCategory: selectedSubCategory ?? this.selectedSubCategory,
         currentOrderIsPickUp:
             currentOrderIsPickUp ?? this.currentOrderIsPickUp);
   }

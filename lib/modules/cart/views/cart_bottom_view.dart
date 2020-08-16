@@ -1,7 +1,10 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -49,11 +52,13 @@ class _ViewModel extends BaseModel<AppState> {
           );
           var total =
               state.productState.localCartItems.fold(0, (previous, current) {
-                    double price =
-                        double.parse(current.skus.first.basePrice.toString()) *
-                            current.count;
+                    double price = double.parse(
+                            (current.skus[current.selectedVariant].basePrice /
+                                    100)
+                                .toString()) *
+                        current.count;
 
-                    return double.parse(previous.toString()) + price;
+                    return (double.parse(previous.toString()) + price);
                   }) ??
                   0.0;
 
@@ -114,20 +119,26 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
               children: <Widget>[
                 Expanded(
                   child: CartCount(builder: (context, snapshot) {
-                    return Container(
-                      child: ListView(
-                        shrinkWrap: true,
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
+                          Spacer(),
                           // TOTAL
-                          Text("TOTAL",
-                              style: const TextStyle(
-                                  color: const Color(0xff515c6f),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "JosefinSans",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 10.0),
-                              textAlign: TextAlign.left),
-
+                          Text("cart.total",
+                                  style: const TextStyle(
+                                      color: const Color(0xff515c6f),
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: "JosefinSans",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 10.0),
+                                  textAlign: TextAlign.left)
+                              .tr(),
+                          SizedBox(
+                            height: 3,
+                          ),
                           // ₹ 55.00
                           Text(snapshot.getCartTotalPrice(),
                               style: const TextStyle(
@@ -137,15 +148,33 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                                   fontStyle: FontStyle.normal,
                                   fontSize: 20.0),
                               textAlign: TextAlign.left),
+                          SizedBox(
+                            height: 3,
+                          ),
+
                           // Organic Store
-                          Text(widget.storeName ?? "",
-                              style: const TextStyle(
-                                  color: const Color(0xff727c8e),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 12.0),
-                              textAlign: TextAlign.left)
+
+                          FutureBuilder(
+                            future: CartDataSource.getListOfMerchants(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<List<Business>> snapshot) {
+                              return (snapshot.data == null ||
+                                      snapshot.data.isEmpty)
+                                  ? Container()
+                                  : Text(snapshot.data.first.businessName ?? "",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          color: const Color(0xff727c8e),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Avenir-Medium",
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 12.0),
+                                      textAlign: TextAlign.left);
+                            },
+                          ),
+
+                          Spacer(),
                         ],
                       ),
                     );
@@ -159,7 +188,9 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                     type: MaterialType.transparency,
                     child: Container(
                       height: 46,
-                      width: widget.buttonTitle == 'VIEW ITEMS' ? 120 : 160,
+                      width: widget.buttonTitle == tr('cart.view_cart')
+                          ? 120
+                          : 160,
                       decoration: BoxDecoration(
                         color: AppColors.icColors,
                         borderRadius: BorderRadius.circular(23),

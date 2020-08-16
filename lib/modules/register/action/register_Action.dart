@@ -31,12 +31,14 @@ class GetUserDetailAction extends ReduxAction<AppState> {
         await UserManager.saveToken(token: authResponse.cUSTOMER.token);
 
         Data user = authResponse.cUSTOMER.data;
+
         await UserManager.saveUser(user).then((onValue) {
           store.dispatch(GetUserFromLocalStorageAction());
         });
-        dispatch(AddFCMTokenAction());
+
         dispatch(CheckTokenAction());
         store.dispatch(GetUserFromLocalStorageAction());
+
         dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
         return state.copyWith(authState: state.authState.copyWith(user: user));
       }
@@ -47,9 +49,10 @@ class GetUserDetailAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
-
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+//  void before() =>
+//      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+//
+//  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class AddUserDetailAction extends ReduxAction<AppState> {
@@ -69,12 +72,16 @@ class AddUserDetailAction extends ReduxAction<AppState> {
       await UserManager.saveToken(token: authResponse.token);
 
       Data user = authResponse.data;
+
       await UserManager.saveUser(user).then((onValue) {
         store.dispatch(GetUserFromLocalStorageAction());
       });
+
       dispatch(CheckTokenAction());
       store.dispatch(GetUserFromLocalStorageAction());
+      dispatch(AddFCMTokenAction());
       dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+      return state.copyWith(authState: state.authState.copyWith(user: user));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
       //throw UserException(response.data['status']);
@@ -84,7 +91,8 @@ class AddUserDetailAction extends ReduxAction<AppState> {
             state.authState.copyWith(updateCustomerDetailsRequest: request));
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }

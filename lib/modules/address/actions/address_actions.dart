@@ -24,7 +24,7 @@ class AddAddressAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      Fluttertoast.showToast(msg: "Updated");
+      //  Fluttertoast.showToast(msg: "Updated");
 
       Address responseModel = Address.fromJson(response.data);
       await UserManager.saveAddress(
@@ -38,9 +38,10 @@ class AddAddressAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class UpdateAddressAction extends ReduxAction<AppState> {
@@ -74,9 +75,10 @@ class UpdateAddressAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class GetAddressAction extends ReduxAction<AppState> {

@@ -12,6 +12,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,35 +59,42 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
             child: AlertDialog(
               title: Text("E-samudaay"),
               content: Text(
-                  'Items from other store will be cleared. Would you like to continue.'),
+                'new_changes.clear_info',
+                style: const TextStyle(
+                    color: const Color(0xff6f6d6d),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Avenir-Medium",
+                    fontStyle: FontStyle.normal,
+                    fontSize: 16.0),
+              ).tr(),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Cancel'),
+                  child: Text(
+                    'screen_account.cancel',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                  ).tr(),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
                 FlatButton(
-                  child: Text('Continue'),
+                  child: Text(
+                    'new_changes.continue',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                  ).tr(),
                   onPressed: () async {
                     await CartDataSource.deleteAllMerchants();
                     await CartDataSource.deleteAll();
-//                    var merchant = MerchantLocal(
-//                        merchantID:
-//                            state.productState.selectedMerchand.merchantID,
-//                        cardViewLine2:
-//                            state.productState.selectedMerchand.cardViewLine2,
-//                        displayPicture:
-//                            state.productState.selectedMerchand.displayPicture,
-//                        address1: state
-//                            .productState.selectedMerchand.address.addressLine1,
-//                        address2: state
-//                            .productState.selectedMerchand.address.addressLine2,
-//                        shopName: state.productState.selectedMerchand.shopName);
-//                    merchant.flag = state.productState.selectedMerchand.flags
-//                            .contains('DELIVERY')
-//                        ? 'DELIVERY'
-//                        : "";
                     await CartDataSource.insertToMerchants(
                         business: state.productState.selectedMerchand);
                     bool isInCart = await CartDataSource.isAvailableInCart(
@@ -251,9 +259,10 @@ class PlaceOrderAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class GetOrderTaxAction extends ReduxAction<AppState> {
@@ -280,7 +289,37 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
     }
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+}
+
+class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
+  final PlaceOrderRequest request;
+
+  GetMerchantStatusAndPlaceOrderAction({this.request});
+  @override
+  FutureOr<AppState> reduce() async {
+    var merchant = await CartDataSource.getListOfMerchants();
+    var response = await APIManager.shared.request(
+        url: ApiURL.getBusinessesUrl + "${merchant.first.businessId}" + "/open",
+        params: {"": ""},
+        requestType: RequestType.get);
+    if (response.status == ResponseStatus.success200) {
+      if (response.data['is_open']) {
+        dispatch(PlaceOrderAction(request: request));
+      } else {
+        Fluttertoast.showToast(msg: tr('new_changes.shop_closed'));
+      }
+    } else {
+      Fluttertoast.showToast(msg: response.data['message']);
+      return null;
+    }
+  }
+
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }

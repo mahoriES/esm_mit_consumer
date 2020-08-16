@@ -57,12 +57,13 @@
 
   "screen_home": {
     "tab_bar": {
-      "store": "STORE",
+      "store": "STORES",
       "search": "SEARCH",
       "orders": "ORDERS",
+      "cart": "CART",
       "account": "ACCOUNT"
     },
-    "store_near_you": "Stores in your circle"
+    "store_near_you": "Stores Near you"
 
   },
 
@@ -100,7 +101,7 @@
   },
 
   "screen_account":{
-  "title": "Account",
+    "title": "Account",
     "profile": "Profile",
     "recommend": "Recommend A Store",
     "about": "About",
@@ -119,6 +120,7 @@
   },
 
   "screen_order": {
+    "made_payment": "I’ve made my payment",
     "title": "Orders",
     "payment_details": "Payment Details",
     "item_total": "Item Total",
@@ -153,7 +155,14 @@
     "empty_pro": "Empty",
     "ready_pickup": "Ready for pickup",
     "pickup": "Pick Up",
-    "empty_pro_hint": "Look like there is no item to show"
+    "empty_pro_hint": "Look like there is no item to show",
+    "Confirm_Payment": "Confirm Payment",
+    "merchant_notify_text": "This will send a notification to Merchant. Merchant may approve or reject the payment. Are you sure you want to send payment confirmation to merchant?",
+    "Cancel": "Cancel",
+    "Confirm": "Confirm",
+    "made_my_payment" : "I’ve made my payment",
+    "Pay_via_upi" : "Pay via UPI",
+    "Paid_at" : "approved payment at"
   },
 
   "screen_support": {
@@ -170,6 +179,20 @@
     "submit": "Submit",
     "type_hint": "Type in your text",
     "select_issue_error": "Please select an issue."
+  },
+
+  "new_changes": {
+    "offline": "You are offline. Please check your internet connection",
+    "add_more": "Add more",
+    "add": "Add",
+    "shop_closed": "The Shop is Closed",
+    "choose_one": "please select Delivery / Pickup",
+    "clear_info": "Items from other store will be cleared. Would you like to continue.",
+    "continue": "Continue",
+    "order_id": "Order Id",
+    "call": "Call Support",
+    "no_contact": "No contact details available."
+
   }
 
 

@@ -36,7 +36,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               style: const TextStyle(
                                   color: const Color(0xffffffff),
                                   fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir",
+                                  fontFamily: "Avenir-Medium",
                                   fontStyle: FontStyle.normal,
                                   fontSize: 24.0),
                               textAlign: TextAlign.left)
@@ -58,6 +58,24 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
                     EasyLocalization.of(context).locale = Locale('en', 'US');
+                    snapshot.navigateToPhoneNumberPage(
+                        (arguments != null) ? arguments['fromAccount'] : false);
+                  },
+                ),
+
+                ListTile(
+                  title: Text("हिन्दी",
+                      style: const TextStyle(
+                          color: const Color(0xff2e2e2e),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Poppins",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 20.0),
+                      textAlign: TextAlign.left),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    EasyLocalization.of(context).locale = Locale.fromSubtags(
+                        languageCode: 'hi', countryCode: 'Deva-IN');
                     snapshot.navigateToPhoneNumberPage(
                         (arguments != null) ? arguments['fromAccount'] : false);
                   },

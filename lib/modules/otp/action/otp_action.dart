@@ -50,18 +50,8 @@ class ValidateOtpAction extends ReduxAction<AppState> {
       if (state.authState.isSignUp) {
         dispatch(NavigateAction.pushNamed("/registration"));
       } else {
-//        UserManager.saveUser(User(
-//          id: authResponse.customer.customerID,
-//          firstName: authResponse.customer.name,
-//          address: authResponse.customer.addresses.isEmpty
-//              ? ""
-//              : authResponse.customer.addresses.first.addressLine1,
-//          phone: authResponse.customer.phoneNumber,
-//        )).then((onValue) {
-//          store.dispatch(GetUserFromLocalStorageAction());
-//        });
-        dispatch(AddFCMTokenAction());
-        dispatch(GetUserDetailAction());
+        dispatchFuture(GetUserDetailAction())
+            .whenComplete(() => dispatch(AddFCMTokenAction()));
       }
     } else {
       if (response.data['message'] != null) {
@@ -74,9 +64,10 @@ class ValidateOtpAction extends ReduxAction<AppState> {
     return state.copyWith(authState: state.authState.copyWith());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
 class AddFCMTokenAction extends ReduxAction<AppState> {
@@ -90,10 +81,8 @@ class AddFCMTokenAction extends ReduxAction<AppState> {
             .toJson(),
         requestType: RequestType.post);
     if (response.status == ResponseStatus.success200) {
-      dispatch(GetUserDetailAction());
-    } else {
-      // Fluttertoast.showToast(msg: response.data['message']);
-    }
+    } else {}
+    dispatch(GetUserDetailAction());
 
     return state.copyWith(authState: state.authState.copyWith());
   }

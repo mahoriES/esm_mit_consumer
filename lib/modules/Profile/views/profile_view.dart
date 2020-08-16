@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,12 +14,15 @@ import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/keys.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
+
+import 'location_screen.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -48,7 +52,7 @@ class _ProfileViewState extends State<ProfileView> {
           onInit: (store) {},
           model: _ViewModel(),
           builder: (context, snapshot) {
-            if (snapshot.loadingStatus != LoadingStatus.loading) {
+            if (snapshot.loadingStatus != LoadingStatusApp.loading) {
               getAddress(snapshot);
             }
 
@@ -70,7 +74,7 @@ class _ProfileViewState extends State<ProfileView> {
                     width: 75,
                   ),
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatus.loading,
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: Scaffold(
                   appBar: AppBar(
                     elevation: 0,
@@ -175,7 +179,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -222,7 +226,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -272,7 +276,7 @@ class _ProfileViewState extends State<ProfileView> {
                       style: const TextStyle(
                           color: const Color(0xff1a1a1a),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir",
+                          fontFamily: "Avenir-Medium",
                           fontStyle: FontStyle.normal,
                           fontSize: 13.0),
                       textAlign: TextAlign.center),
@@ -283,8 +287,7 @@ class _ProfileViewState extends State<ProfileView> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          fullscreenDialog: false,
+                        MaterialPageRoute<Null>(
                           builder: (context) => PlacePicker(
                             apiKey: Keys.googleAPIkey, // Put YOUR OWN KEY here.
                             onPlacePicked: (result) {
@@ -394,7 +397,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   style: const TextStyle(
                                       color: const Color(0xffffffff),
                                       fontWeight: FontWeight.w500,
-                                      fontFamily: "Avenir",
+                                      fontFamily: "Avenir-Medium",
                                       fontStyle: FontStyle.normal,
                                       fontSize: 16.0),
                                   textAlign: TextAlign.center)
@@ -466,6 +469,14 @@ class _ProfileViewState extends State<ProfileView> {
     phoneNumberController.dispose();
     super.dispose();
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+//    window.physicalSize;
+//    SystemChrome.setEnabledSystemUIOverlays([]);
+  }
 }
 
 class _ViewModel extends BaseModel<AppState> {
@@ -473,7 +484,7 @@ class _ViewModel extends BaseModel<AppState> {
 
   Function() getAddress;
   Data user;
-  LoadingStatus loadingStatus;
+  LoadingStatusApp loadingStatus;
   Function(File image, AddressRequest address, String addressID) profileUpdate;
   Function navigateToHomePage;
   bool isPhoneNumberValid;
