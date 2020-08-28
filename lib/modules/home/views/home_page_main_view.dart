@@ -594,46 +594,53 @@ class StoresListView extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: deliveryStatus
-                                        ? ImageIcon(
-                                            AssetImage(
-                                                'assets/images/delivery.png'),
-                                            color: shopClosed
-                                                ? Colors.grey.shade400
-                                                : Colors.black,
-                                          )
-                                        : shopClosed
-                                            ? Image.asset(
-                                                'assets/images/group236.png')
-                                            : Image.asset(
-                                                'assets/images/no_delivery.png'),
-                                  ),
-                                  Text(
-                                      deliveryStatus
-                                          ? tr("shop.delivery_ok")
-                                          : tr("shop.delivery_no"),
-                                      style: const TextStyle(
-                                          color: const Color(0xff141414),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 14.0),
-                                      textAlign: TextAlign.left),
-                                ],
+                              Expanded(flex: 60,
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: deliveryStatus
+                                          ? ImageIcon(
+                                              AssetImage(
+                                                  'assets/images/delivery.png'),
+                                              color: shopClosed
+                                                  ? Colors.grey.shade400
+                                                  : Colors.black,
+                                            )
+                                          : shopClosed
+                                              ? Image.asset(
+                                                  'assets/images/group236.png')
+                                              : Image.asset(
+                                                  'assets/images/no_delivery.png'),
+                                    ),
+                                    Expanded(flex: 80,
+                                      child: Text(
+                                          deliveryStatus
+                                              ? tr("shop.delivery_ok")
+                                              : tr("shop.delivery_no"),
+                                          style: const TextStyle(
+                                              color: const Color(0xff141414),
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: "Avenir-Medium",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 11.0),
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left),
+                                    ),
+                                  ],
+                                ),
                               ),
                               // 1000+ Products available
-                              Text(itemsCount ?? "",
-                                  style: const TextStyle(
-                                      color: const Color(0xff141414),
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Avenir-Medium",
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 12.0),
-                                  textAlign: TextAlign.left)
+                              Expanded(flex: 40,
+                                child: Text(itemsCount ?? "",
+                                    style: const TextStyle(
+                                        color: const Color(0xff141414),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Avenir-Medium",
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 12.0),
+                                    textAlign: TextAlign.left),
+                              )
                             ],
                           )
                         ],
