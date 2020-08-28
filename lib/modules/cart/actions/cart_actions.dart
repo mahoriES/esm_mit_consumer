@@ -44,6 +44,7 @@ class UpdateCartListAction extends ReduxAction<AppState> {
   }
 }
 
+
 class AddToCartLocalAction extends ReduxAction<AppState> {
   final Product product;
   final BuildContext context;

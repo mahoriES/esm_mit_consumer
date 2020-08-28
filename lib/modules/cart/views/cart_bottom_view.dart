@@ -83,7 +83,7 @@ class BottomView extends StatefulWidget {
     this.didPressButton,
     this.buttonTitle,
     this.height,
-  }) : super(key: key);
+  }) : super(key: key );
 
   @override
   _BottomViewState createState() => _BottomViewState();
@@ -229,4 +229,5 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
           );
         });
   }
+
 }

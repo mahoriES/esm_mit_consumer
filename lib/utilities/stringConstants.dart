@@ -17,9 +17,9 @@ const code_error = "Code is not valid.";
 
 // URL's
 
-const developmentURL = "http://api.freshnet.me";
-const liveURL = "https://sewer-viewer.com";
-const baseURL = developmentURL;
+//const developmentURL = "http://api.freshnet.me";
+//const liveURL = "https://sewer-viewer.com";
+//const baseURL = developmentURL;
 const generateOtp = "";
 
 const countryCode = "+91";

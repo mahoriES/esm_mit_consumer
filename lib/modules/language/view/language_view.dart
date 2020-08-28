@@ -117,6 +117,23 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         (arguments != null) ? arguments['fromAccount'] : false);
                   },
                 ),
+                //தமிழ்
+                ListTile(
+                  title: Text("தமிழ்",
+                      style: const TextStyle(
+                          color: const Color(0xff2e2e2e),
+                          fontWeight: FontWeight.w300,
+                          fontFamily: "Gotham",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 20.0),
+                      textAlign: TextAlign.left),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    EasyLocalization.of(context).locale = Locale('ta', 'IN');
+                    snapshot.navigateToPhoneNumberPage(
+                        (arguments != null) ? arguments['fromAccount'] : false);
+                  },
+                ),
               ]),
             );
           }),
