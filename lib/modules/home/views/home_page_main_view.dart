@@ -71,7 +71,8 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             centerTitle: false,
             bottom: PreferredSize(
                 child: Container(), preferredSize: Size.fromHeight(0.0)),
-            flexibleSpace: // Rectangle 2102
+            flexibleSpace: // Rect
+            // angle 2102
                 Container(
               height: 160,
               padding: EdgeInsets.only(top: 20),
