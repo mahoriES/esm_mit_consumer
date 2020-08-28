@@ -8,6 +8,7 @@ import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -342,6 +343,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       ),
                     ),
                   ),
+
                   AnimatedContainer(
                     height: snapshot.localCartListing.isEmpty ? 0 : 86,
                     duration: Duration(milliseconds: 300),
@@ -659,7 +661,8 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus[widget.item.selectedVariant].basePrice / 100}",
+                                    "₹ ${widget.item.skus.isEmpty ? 0 :
+                                    widget.item.skus[widget.item.selectedVariant].basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
@@ -694,7 +697,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                       .skus[widget.item.selectedVariant]
                                       .variationOptions
                                       .weight,
-                                )
+                                ),
                               ],
                             ),
                             CSStepper(
@@ -702,6 +705,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                   ? Color(0xffb1b1b1)
                                   : AppColors.icColors,
                               didPressAdd: () {
+                                debugPrint('Pressed add');
                                 widget.item.count =
                                     ((widget.item?.count ?? 0) + 1)
                                         .clamp(0, double.nan);
@@ -730,106 +734,12 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
           );
         });
   }
-}
 
-class CSStepper extends StatelessWidget {
-  final String value;
-  final Function didPressAdd;
-  final Function didPressRemove;
-  final Color backgroundColor;
-  const CSStepper(
-      {Key key,
-      this.didPressAdd,
-      this.didPressRemove,
-      this.value,
-      this.backgroundColor})
-      : super(key: key);
+  void handleActionForMultipleSkus() {
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 30,
-      width: 73,
-      decoration: BoxDecoration(
-        color: this.backgroundColor ?? AppColors.icColors,
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: value.contains(tr("new_changes.add"))
-          ? InkWell(
-              onTap: () {
-                didPressAdd();
-              },
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Spacer(),
-                    Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                    Text(value,
-                        style: const TextStyle(
-                            color: const Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Avenir-Medium",
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14.0),
-                        textAlign: TextAlign.center),
-                    Spacer(),
-                  ],
-                ),
-              ),
-            )
-          : Row(
-//      crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      didPressRemove();
-                    },
-                    child: Container(
-                      child: Icon(
-                        Icons.remove,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      width: 24,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 0,
-                  child: Text(value,
-                      style: const TextStyle(
-                          color: const Color(0xffffffff),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14.0),
-                      textAlign: TextAlign.center),
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      didPressAdd();
-                    },
-                    child: Container(
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      width: 24,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-    );
+
+
   }
+
 }
+

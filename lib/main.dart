@@ -51,6 +51,7 @@ void main() {
       Locale('en', 'US'),
       Locale('ka', 'IN'),
       Locale('ml', 'IN'),
+      Locale('ta', 'IN'),
       Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
     ],
     path: 'assets/languages',
@@ -233,7 +234,7 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Image.asset('assets/images/splash.png'),
+            child: Image.asset('assets/images/splash.png'),
       )),
     );
   }
