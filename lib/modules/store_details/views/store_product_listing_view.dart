@@ -9,6 +9,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
+import 'package:eSamudaay/modules/cart/views/cart_sku_bottom_sheet.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -28,7 +29,10 @@ class StoreProductListingView extends StatefulWidget {
 
 class _StoreProductListingViewState extends State<StoreProductListingView>
     with TickerProviderStateMixin, RouteAware {
+
   TextEditingController _controller = TextEditingController();
+
+
 
   TabController controller;
   int _currentPosition = 0;
@@ -356,6 +360,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       },
                     ),
                   ),
+
                 ],
               ),
             );
@@ -706,6 +711,15 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                   : AppColors.icColors,
                               didPressAdd: () {
                                 debugPrint('Pressed add');
+                                if (widget.item.skus.isNotEmpty && widget.item.skus.length>1) {
+                                  handleActionForMultipleSkus(
+                                    product: widget.item,
+                                    storeName: store.state.productState.selectedMerchand.businessName,
+                                    productIndex: widget.index
+                                  );
+                                  return;
+                                }
+
                                 widget.item.count =
                                     ((widget.item?.count ?? 0) + 1)
                                         .clamp(0, double.nan);
@@ -735,9 +749,20 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
         });
   }
 
-  void handleActionForMultipleSkus() {
+  void handleActionForMultipleSkus({Product product,
+    String storeName, int productIndex}) {
 
-
+    Scaffold.of(context).showBottomSheet(
+            (context) => Container(
+              color: Colors.transparent,
+              child: SkuBottomSheet(
+                buttonTitle: 'Add Items',
+                didPressDone: (){},
+                product: product,
+                storeName: storeName,
+                productIndex: productIndex,
+              ),
+            ));
 
   }
 
