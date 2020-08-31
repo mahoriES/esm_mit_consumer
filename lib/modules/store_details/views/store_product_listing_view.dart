@@ -726,14 +726,24 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 snapshot.addToCart(widget.item, context);
                               },
                               didPressRemove: () {
+                                if (widget.item.skus.isNotEmpty && widget.item.skus.length>1) {
+                                  handleActionForMultipleSkus(
+                                      product: widget.item,
+                                      storeName: store.state.productState.selectedMerchand.businessName,
+                                      productIndex: widget.index
+                                  );
+                                  return;
+                                }
                                 widget.item.count =
                                     ((widget.item?.count ?? 0) - 1)
                                         .clamp(0, double.nan);
                                 snapshot.removeFromCart(widget.item);
                               },
-                              value: widget.item.count == 0
+                              value: getTotalItemCount(
+                                  widget.item.productId, snapshot) == 0
                                   ? tr("new_changes.add")
-                                  : widget.item.count.toString(),
+                                  : getTotalItemCount(
+                                  widget.item.productId, snapshot).toString(),
                             ),
                           ],
                         ),
@@ -747,6 +757,17 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
             ),
           );
         });
+  }
+
+  int getTotalItemCount(int productId,
+      _ViewModel snapshot) {
+    int count = 0;
+    snapshot.localCartListing.forEach((element) {
+      if (element.productId == productId)
+        count += element.count;
+    });
+    debugPrint('Total count is $count');
+    return count;
   }
 
   void handleActionForMultipleSkus({Product product,

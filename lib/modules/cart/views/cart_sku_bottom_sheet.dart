@@ -33,7 +33,10 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       builder: (context, snapshot) {
-
+        debugPrint('This was built');
+        if (snapshot.localCartItems.isNotEmpty) {
+          debugPrint(snapshot.localCartItems[0]?.count?.toString() ?? 0);
+        }
         return Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
@@ -94,9 +97,11 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                     price: (widget.product.skus[index].basePrice/100).floor(),
                     quantity: snapshot.getSelectedVariationQuantity(
                       widget.product,
-                      widget.productIndex,
+                      index,
                       widget.product.skus[index].variationOptions.weight
                     ) ?? 0,
+                    snapshot: snapshot,
+                    index: index,
                   ),
                     itemCount: widget.product.skus.length,
                     physics: ClampingScrollPhysics(),
@@ -112,8 +117,8 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
     );
   }
 
-  Widget buildCustomizableItem({
-    String title,int quantity,int price, String specificationName}) {
+  Widget buildCustomizableItem({String title,int quantity,int price,
+    String specificationName, _ViewModel snapshot, int index}) {
 
     return Padding(
       padding: EdgeInsets.only(
@@ -159,8 +164,15 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
               children: [
                 CSStepper(
                   value: quantity.toString(),
-                  didPressAdd: null,
-                  didPressRemove: null,
+                  didPressAdd: () => snapshot.addToCart(
+                    widget.product,
+                    context,
+                    index,
+                  ),
+                  didPressRemove: () => snapshot.removeFromCart(
+                    widget.product,
+                    index,
+                  ),
                 ),
                 SizedBox(height: 3,),
                 Text(
@@ -195,51 +207,85 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
 
 class _ViewModel extends BaseModel<AppState> {
 
-  List<Product> products;
-  VoidCallback didPressDone;
   Function(Product, BuildContext, int) addToCart;
-  Function(Product) removeFromCart;
+  Function(Product, int) removeFromCart;
   int Function(Product, int, String) getSelectedVariationQuantity;
+  List<Product> localCartItems;
 
   _ViewModel();
 
   _ViewModel.build({
-    @required this.products,
-    @required this.didPressDone,
+    this.localCartItems,
     @required this.addToCart,
     @required this.removeFromCart,
     @required this.getSelectedVariationQuantity
-  }) : super(equals: [products]);
+  }) : super(equals: [localCartItems]);
 
   @override
   BaseModel fromStore() => _ViewModel.build(
 
-    products: state.productState.localCartItems,
-
-    didPressDone: () {
-
-    },
+    localCartItems: state.productState.localCartItems,
 
     addToCart: (item, context, index) {
+      //if (item.selectedVariant != index) item.count = 0;
       item.selectedVariant = index;
+      int count = getCountOfExistingItemInCart(item, index);
+      item.count = count + 1;
       dispatch(AddToCartLocalAction(product: item,context: context));
     },
 
-    removeFromCart: (item) {
+    removeFromCart: (item, index) {
+      //if (item.count == 0) return;
+      item.selectedVariant = index;
+      int count = getCountOfExistingItemInCart(item, index);
+      if (count == 0)return;
+      item.count = count - 1;
+      //item.count--;
       dispatch(RemoveFromCartLocalAction(product: item));
     },
 
     getSelectedVariationQuantity: (product, index, variation) {
-      return state.productState.localCartItems.isEmpty ? 0
-          : state.productState.localCartItems.firstWhere(
-              (element) => element.productId==product.productId &&
-              element.skus[index].variationOptions.weight ==
-                  product.skus[index].variationOptions.weight
-      ).count ?? 0;
+
+      if (state.productState.localCartItems.isEmpty)
+        return 0;
+      else {
+        Product prod;
+        try {
+          prod = state.productState.localCartItems.firstWhere(
+                (element) => element.productId==product.productId &&
+                element.skus[element.selectedVariant].variationOptions.weight ==
+                    product.skus[index].variationOptions.weight &&
+                element.selectedVariant == index,
+          );
+        } catch(e){
+          return 0;
+        }
+        if (prod == null) return 0;
+        else return prod.count;
+      }
+
     },
   );
 
-
+  int getCountOfExistingItemInCart(Product product, int index) {
+    if (state.productState.localCartItems.isEmpty)
+      return 0;
+    else {
+      Product prod;
+      try {
+        prod = state.productState.localCartItems.firstWhere(
+              (element) => element.productId==product.productId &&
+              element.skus[element.selectedVariant].variationOptions.weight ==
+                  product.skus[index].variationOptions.weight &&
+              element.selectedVariant == index,
+        );
+      } catch(e) {
+        return 0;
+      }
+      if (prod == null) return 0;
+      else return prod.count;
+    }
+  }
 
 }
 

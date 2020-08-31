@@ -222,7 +222,8 @@ class _CartViewState extends State<CartView> {
                                                 snapshot
                                                         .localCart[index]
                                                         .skus
-                                                        .first
+                                                        [snapshot.localCart[index]
+                                                          .selectedVariant]
                                                         .variationOptions
                                                         .weight ??
                                                     "",

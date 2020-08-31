@@ -8,11 +8,12 @@ final String cartTable = "Cart";
 final String merchantTable = "Merchants";
 
 class CartDataSource {
-  static Future<void> insert({Product product}) async {
+  static Future<void> insert({Product product, String variation}) async {
     var dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
     cart["product"] = jsonEncode(product.toJson());
     cart['id'] = product.productId.toString();
+    cart['variation'] = variation;
     try {
       var id = await dbClient.insert(cartTable, cart);
       print(id);
@@ -53,10 +54,10 @@ class CartDataSource {
     return products;
   }
 
-  static Future<bool> isAvailableInCart({String id}) async {
+  static Future<bool> isAvailableInCart({String id, String variation}) async {
     var dbClient = await DatabaseManager().db;
     List<Map> list =
-        await dbClient.query(cartTable, where: 'id = ?', whereArgs: [id]);
+        await dbClient.query(cartTable, where: 'id = ? AND variation = ?', whereArgs: [id, variation]);
     return list.isNotEmpty;
   }
 
@@ -70,22 +71,23 @@ class CartDataSource {
     return await dbClient.delete(merchantTable);
   }
 
-  static Future<int> deleteCartItemWith(String id) async {
+  static Future<int> deleteCartItemWith(String id, String variation) async {
     var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable, where: "id = ?", whereArgs: [id]);
+    return await dbClient.delete(cartTable, where: "id = ? AND variation = ?", whereArgs: [id,variation]);
   }
 
-  static Future<int> delete(String id) async {
+  static Future<int> delete(String id,variation) async {
     var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable, where: 'id = ?', whereArgs: [id]);
+    return await dbClient.delete(cartTable, where: 'id = ? AND variation = ?', whereArgs: [id,variation]);
   }
 
-  static Future<int> update(Product product) async {
+  static Future<int> update(Product product, String variation) async {
     var dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
     cart["product"] = jsonEncode(product.toJson());
     cart['id'] = product.productId.toString();
+    cart['variation'] = variation;
     return await dbClient.update(cartTable, cart,
-        where: 'id = ?', whereArgs: [product.productId]);
+        where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
   }
 }

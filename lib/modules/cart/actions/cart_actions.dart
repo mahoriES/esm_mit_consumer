@@ -99,11 +99,19 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     await CartDataSource.insertToMerchants(
                         business: state.productState.selectedMerchand);
                     bool isInCart = await CartDataSource.isAvailableInCart(
-                        id: product.productId.toString());
+                        id: product.productId.toString(),
+                        variation: product.skus[product.selectedVariant]
+                            .variationOptions.weight
+                    );
                     if (isInCart) {
-                      await CartDataSource.update(product);
+                      await CartDataSource.update(product,
+                          product.skus[product.selectedVariant].variationOptions.weight);
                     } else {
-                      await CartDataSource.insert(product: product);
+                      await CartDataSource.insert(
+                          product: product,
+                          variation: product.skus[product.selectedVariant]
+                              .variationOptions.weight
+                      );
                     }
                     List<Product> allCartNewList = [];
                     List<Product> allCartItems =
@@ -129,11 +137,19 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
         await CartDataSource.insertToMerchants(
             business: state.productState.selectedMerchand);
         bool isInCart = await CartDataSource.isAvailableInCart(
-            id: product.productId.toString());
+            id: product.productId.toString(),
+            variation: product.skus[product.selectedVariant]
+              .variationOptions.weight
+        );
         if (isInCart) {
-          await CartDataSource.update(product);
+          await CartDataSource.update(product,
+              product.skus[product.selectedVariant].variationOptions.weight);
         } else {
-          await CartDataSource.insert(product: product);
+          await CartDataSource.insert(
+              product: product,
+              variation: product.skus[product.selectedVariant]
+                  .variationOptions.weight
+          );
         }
         List<Product> allCartNewList = [];
         List<Product> allCartItems =
@@ -157,11 +173,19 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       await CartDataSource.insertToMerchants(
           business: state.productState.selectedMerchand);
       bool isInCart = await CartDataSource.isAvailableInCart(
-          id: product.productId.toString());
+          id: product.productId.toString(),
+          variation: product.skus[product.selectedVariant]
+              .variationOptions.weight
+      );
       if (isInCart) {
-        await CartDataSource.update(product);
+        await CartDataSource.update(product,
+            product.skus[product.selectedVariant].variationOptions.weight);
       } else {
-        await CartDataSource.insert(product: product);
+        await CartDataSource.insert(
+            product: product,
+            variation: product.skus[product.selectedVariant]
+                .variationOptions.weight
+        );
       }
       List<Product> allCartNewList = [];
       List<Product> allCartItems = state.productState.productListingDataSource;
@@ -190,12 +214,17 @@ class RemoveFromCartLocalAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     bool isInCart = await CartDataSource.isAvailableInCart(
-        id: product.productId.toString());
+        id: product.productId.toString(),
+        variation: product.skus[product.selectedVariant]
+            .variationOptions.weight
+    );
     if (isInCart) {
       if (product.count == 0.0) {
-        await CartDataSource.delete(product.productId.toString());
+        await CartDataSource.delete(product.productId.toString(),
+            product.skus[product.selectedVariant].variationOptions.weight);
       } else {
-        await CartDataSource.update(product);
+        await CartDataSource.update(product,
+            product.skus[product.selectedVariant].variationOptions.weight);
       }
     }
     List<Product> allItemsNewList = [];
