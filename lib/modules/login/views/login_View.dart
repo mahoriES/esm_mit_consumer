@@ -61,7 +61,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -116,7 +115,6 @@ class _LoginViewState extends State<LoginView> {
                                   children: buildColumnChildren(
                                       snapshot, context),
                                 ),
-                                //   children: buildColumnChildren(snapshot, context)
                               ),
                             ),
                           ),

@@ -154,7 +154,7 @@ class _CartViewState extends State<CartView> {
                                                             .localCart[index]
                                                             .count
                                                             .toString(),
-                                                        didPressAdd: () {
+                                                        addButtonAction: () {
                                                           var item = snapshot
                                                               .localCart[index];
                                                           item.count =
@@ -171,7 +171,7 @@ class _CartViewState extends State<CartView> {
                                                               widget
                                                                   .radioValue);
                                                         },
-                                                        didPressRemove: () {
+                                                        removeButtonAction: () {
                                                           var item = snapshot
                                                               .localCart[index];
                                                           item.count =

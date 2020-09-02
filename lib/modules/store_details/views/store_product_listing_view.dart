@@ -29,10 +29,7 @@ class StoreProductListingView extends StatefulWidget {
 
 class _StoreProductListingViewState extends State<StoreProductListingView>
     with TickerProviderStateMixin, RouteAware {
-
   TextEditingController _controller = TextEditingController();
-
-
 
   TabController controller;
   int _currentPosition = 0;
@@ -261,7 +258,6 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       opacity: 0,
                       child: TabBarView(
                         controller: controller,
-//                        physics: NeverScrollableScrollPhysics(),
                         children: List.generate(
                           count,
                           (index) => snapshot.products.isEmpty
@@ -347,7 +343,6 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       ),
                     ),
                   ),
-
                   AnimatedContainer(
                     height: snapshot.localCartListing.isEmpty ? 0 : 86,
                     duration: Duration(milliseconds: 300),
@@ -360,7 +355,6 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                       },
                     ),
                   ),
-
                 ],
               ),
             );
@@ -489,6 +483,7 @@ class _ViewModel extends BaseModel<AppState> {
           productResponse,
           selectedSubCategory
         ]);
+
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
@@ -531,8 +526,10 @@ class ProductListingItemView extends StatefulWidget {
   final int index;
   final Product item;
   final String imageLink;
+
   const ProductListingItemView({Key key, this.index, this.item, this.imageLink})
       : super(key: key);
+
   @override
   _ProductListingItemViewState createState() => _ProductListingItemViewState();
 }
@@ -575,7 +572,6 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 padding: const EdgeInsets.all(25.0),
                                 child: CachedNetworkImage(
                                     fit: BoxFit.cover,
-//                                                  height: 80,
                                     imageUrl: "",
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
@@ -610,7 +606,6 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                     padding: const EdgeInsets.all(25.0),
                                     child: CachedNetworkImage(
                                         fit: BoxFit.cover,
-//                                                  height: 80,
                                         imageUrl: "",
                                         placeholder: (context, url) =>
                                             CupertinoActivityIndicator(),
@@ -666,8 +661,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${widget.item.skus.isEmpty ? 0 :
-                                    widget.item.skus[widget.item.selectedVariant].basePrice / 100}",
+                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus.first.basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? Color(0xffc1c1c1)
@@ -680,43 +674,44 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 SizedBox(
                                   height: 3,
                                 ),
-                                DropdownButton<String>(
-                                  items: widget.item.skus.map((e) {
-                                    return new DropdownMenuItem<String>(
-                                      value: e.variationOptions.weight,
-                                      child:
-                                          new Text(e.variationOptions.weight),
-                                    );
-                                  }).toList(),
-                                  onChanged: (index) {
-                                    setState(() {
-                                      widget.item.selectedVariant = widget
-                                          .item.skus
-                                          .map((e) => e.variationOptions.weight)
-                                          .toList()
-                                          .indexOf(index);
-                                    });
-                                  },
-                                  value: widget
-                                      .item
-                                      .skus[widget.item.selectedVariant]
-                                      .variationOptions
-                                      .weight,
-                                ),
+
+                                ///To display the appropriate label depending on
+                                ///whether there is only one variation or multiple
+                                ///available
+                                widget.item.skus.length == 1
+                                    ? Text(
+                                        widget.item.skus.first.variationOptions
+                                            .weight,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w300,
+                                          color: AppColors.darkGrey,
+                                          fontFamily: 'Arial',
+                                        ),
+                                      )
+                                    : Text(
+                                        'cart.customize'.tr(),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w300,
+                                          color: AppColors.darkGrey,
+                                          fontFamily: 'Arial',
+                                        ),
+                                      ),
                               ],
                             ),
                             CSStepper(
                               backgroundColor: !isOutOfStock
                                   ? Color(0xffb1b1b1)
                                   : AppColors.icColors,
-                              didPressAdd: () {
-                                debugPrint('Pressed add');
-                                if (widget.item.skus.isNotEmpty && widget.item.skus.length>1) {
+                              addButtonAction: () {
+                                if (widget.item.skus.isNotEmpty &&
+                                    widget.item.skus.length > 1) {
                                   handleActionForMultipleSkus(
-                                    product: widget.item,
-                                    storeName: store.state.productState.selectedMerchand.businessName,
-                                    productIndex: widget.index
-                                  );
+                                      product: widget.item,
+                                      storeName: store.state.productState
+                                          .selectedMerchand.businessName,
+                                      productIndex: widget.index);
                                   return;
                                 }
 
@@ -725,13 +720,14 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                         .clamp(0, double.nan);
                                 snapshot.addToCart(widget.item, context);
                               },
-                              didPressRemove: () {
-                                if (widget.item.skus.isNotEmpty && widget.item.skus.length>1) {
+                              removeButtonAction: () {
+                                if (widget.item.skus.isNotEmpty &&
+                                    widget.item.skus.length > 1) {
                                   handleActionForMultipleSkus(
                                       product: widget.item,
-                                      storeName: store.state.productState.selectedMerchand.businessName,
-                                      productIndex: widget.index
-                                  );
+                                      storeName: store.state.productState
+                                          .selectedMerchand.businessName,
+                                      productIndex: widget.index);
                                   return;
                                 }
                                 widget.item.count =
@@ -740,15 +736,15 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 snapshot.removeFromCart(widget.item);
                               },
                               value: getTotalItemCount(
-                                  widget.item.productId, snapshot) == 0
+                                          widget.item.productId, snapshot) ==
+                                      0
                                   ? tr("new_changes.add")
                                   : getTotalItemCount(
-                                  widget.item.productId, snapshot).toString(),
+                                          widget.item.productId, snapshot)
+                                      .toString(),
                             ),
                           ],
                         ),
-
-                        // 500GMS
                       ],
                     ),
                   ),
@@ -759,33 +755,33 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
         });
   }
 
-  int getTotalItemCount(int productId,
-      _ViewModel snapshot) {
+  ///This method fetches the total quantity(s) of any particular item available
+  ///in cart across all its variations.
+  int getTotalItemCount(int productId, _ViewModel snapshot) {
     int count = 0;
     snapshot.localCartListing.forEach((element) {
-      if (element.productId == productId)
-        count += element.count;
+      if (element.productId == productId) count += element.count;
     });
     debugPrint('Total count is $count');
     return count;
   }
 
-  void handleActionForMultipleSkus({Product product,
-    String storeName, int productIndex}) {
-
-    Scaffold.of(context).showBottomSheet(
-            (context) => Container(
-              color: Colors.transparent,
+  ///A convenience method to wrap the necessary information to the
+  ///[SkuBottomSheet] class and present it modally in a bottom sheet.
+  void handleActionForMultipleSkus(
+      {Product product, String storeName, int productIndex}) {
+    showModalBottomSheet(
+        context: context,
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        builder: (context) => Container(
               child: SkuBottomSheet(
-                buttonTitle: 'Add Items',
-                didPressDone: (){},
                 product: product,
                 storeName: storeName,
                 productIndex: productIndex,
               ),
             ));
-
   }
-
 }
-

@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+///CSStepper class represents the stepper button being used in the app
+///It is used to increment or decrement the selected quantity of any item
 
 class CSStepper extends StatelessWidget {
+
   final String value;
-  final Function didPressAdd;
-  final Function didPressRemove;
+  final Function addButtonAction;
+  final Function removeButtonAction;
   final Color backgroundColor;
   const CSStepper(
       {Key key,
-        this.didPressAdd,
-        this.didPressRemove,
+        this.addButtonAction,
+        this.removeButtonAction,
         this.value,
         this.backgroundColor})
       : super(key: key);
@@ -28,7 +31,7 @@ class CSStepper extends StatelessWidget {
       child: value.contains(tr("new_changes.add"))
           ? InkWell(
         onTap: () {
-          didPressAdd();
+          addButtonAction();
         },
         child: Container(
           child: Row(
@@ -55,13 +58,12 @@ class CSStepper extends StatelessWidget {
         ),
       )
           : Row(
-//      crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
             child: InkWell(
               onTap: () {
-                didPressRemove();
+                removeButtonAction();
               },
               child: Container(
                 child: Icon(
@@ -87,7 +89,7 @@ class CSStepper extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: () {
-                didPressAdd();
+                addButtonAction();
               },
               child: Container(
                 child: Icon(
