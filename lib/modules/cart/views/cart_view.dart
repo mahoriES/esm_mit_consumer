@@ -11,6 +11,7 @@ import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -153,7 +154,7 @@ class _CartViewState extends State<CartView> {
                                                             .localCart[index]
                                                             .count
                                                             .toString(),
-                                                        didPressAdd: () {
+                                                        addButtonAction: () {
                                                           var item = snapshot
                                                               .localCart[index];
                                                           item.count =
@@ -170,7 +171,7 @@ class _CartViewState extends State<CartView> {
                                                               widget
                                                                   .radioValue);
                                                         },
-                                                        didPressRemove: () {
+                                                        removeButtonAction: () {
                                                           var item = snapshot
                                                               .localCart[index];
                                                           item.count =
@@ -221,7 +222,8 @@ class _CartViewState extends State<CartView> {
                                                 snapshot
                                                         .localCart[index]
                                                         .skus
-                                                        .first
+                                                        [snapshot.localCart[index]
+                                                          .selectedVariant]
                                                         .variationOptions
                                                         .weight ??
                                                     "",

@@ -55,6 +55,7 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
   final String url;
 
   GetCatalogDetailsAction({this.query, this.url});
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -148,6 +149,7 @@ class UpdateProductListingTempDataAction extends ReduxAction<AppState> {
   final List<Product> listingData;
 
   UpdateProductListingTempDataAction({this.listingData});
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -160,6 +162,7 @@ class UpdateProductListingDataAction extends ReduxAction<AppState> {
   final List<Product> listingData;
 
   UpdateProductListingDataAction({this.listingData});
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -172,6 +175,7 @@ class UpdateProductVariantAction extends ReduxAction<AppState> {
   final int index;
 
   UpdateProductVariantAction({this.index});
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(productState: state.productState.copyWith());

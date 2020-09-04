@@ -61,7 +61,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -73,45 +72,56 @@ class _LoginViewState extends State<LoginView> {
           builder: (context, snapshot) {
             return // OTP
 
-                ModalProgressHUD(
-              progressIndicator: Card(
-                child: Image.asset(
-                  'assets/images/indicator.gif',
-                  height: 75,
-                  width: 75,
-                ),
-              ),
-              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
-              child: Scaffold(
-                  body: Padding(
-                padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-                child: SingleChildScrollView(
-                  child: AnimationLimiter(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: MediaQuery.of(context).size.width,
-                        minHeight: MediaQuery.of(context).size.height,
-                      ),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 375),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              horizontalOffset:
-                                  MediaQuery.of(context).size.width / 2,
-                              child: FadeInAnimation(child: widget),
-                            ),
-                            children: buildColumnChildren(snapshot, context),
-                          ),
-                          //   children: buildColumnChildren(snapshot, context)
-                        ),
-                      ),
-                    ),
+              ModalProgressHUD(
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
                   ),
                 ),
-              )),
-            );
+                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
+                child: Scaffold(
+                    body: Padding(
+                      padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                      child: SingleChildScrollView(
+                        child: AnimationLimiter(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minWidth: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              minHeight: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height,
+                            ),
+                            child: IntrinsicHeight(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: AnimationConfiguration
+                                    .toStaggeredList(
+                                  duration: const Duration(milliseconds: 375),
+                                  childAnimationBuilder: (widget) =>
+                                      SlideAnimation(
+                                        horizontalOffset:
+                                        MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width / 2,
+                                        child: FadeInAnimation(child: widget),
+                                      ),
+                                  children: buildColumnChildren(
+                                      snapshot, context),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )),
+              );
           }),
     );
   }

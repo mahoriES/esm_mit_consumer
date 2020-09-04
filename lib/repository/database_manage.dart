@@ -36,7 +36,8 @@ class DatabaseManager {
 create table if not exists Cart (
   _id integer primary key autoincrement,
   id text,
-  product text
+  product text,
+  variation text
   )
 ''');
     } catch (e) {
