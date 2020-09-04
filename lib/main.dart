@@ -23,6 +23,7 @@ import 'package:eSamudaay/presentations/splash_screen.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
+import 'package:eSamudaay/utilities/sentry_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -42,20 +43,40 @@ void main() {
   NavigateAction.setNavigatorKey(navigatorKey);
   Crashlytics.instance.enableInDevMode = true;
 
-  // Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Pass all uncaught errors from the framework to Crashlytics.
+    Crashlytics.instance.recordFlutterError(details);
+    if (!SentryHandler().isInProdMode) {
+      // In development mode, simply print to console.
+      FlutterError.dumpErrorToConsole(details);
+    } else {
+      // In production mode, report to the application zone to report to
+      // Sentry.
+      Zone.current.handleUncaughtError(details.exception, details.stack);
+    }
 
-  runApp(EasyLocalization(
-    child: MyAppBase(),
-    supportedLocales: [
-      Locale('en', 'US'),
-      Locale('ka', 'IN'),
-      Locale('ml', 'IN'),
-      Locale('ta', 'IN'),
-      Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
-    ],
-    path: 'assets/languages',
-  ));
+    Future.delayed(Duration(seconds: 10), () {
+      Crashlytics.instance.crash();
+    });
+  };
+
+  runZonedGuarded(() async {
+    runApp(EasyLocalization(
+      child: MyAppBase(),
+      supportedLocales: [
+        Locale('en', 'US'),
+        Locale('ka', 'IN'),
+        Locale('ml', 'IN'),
+        Locale('ta', 'IN'),
+        Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
+      ],
+      path: 'assets/languages',
+    ));
+  }, (Object error, StackTrace stackTrace) {
+    /// Whenever an error occurs, call the `reportError` function. This sends
+    /// Dart errors to the dev env or prod env of Sentry based on current status.
+    SentryHandler().reportError(error, stackTrace);
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -234,16 +255,18 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(20.0),
-            child: Image.asset('assets/images/splash.png'),
+        child: Image.asset('assets/images/splash.png'),
       )),
     );
   }
 
   void navigationPageHome() {
+    if (context == null) return;
     Navigator.of(context).pushReplacementNamed('/loginView');
   }
 
   void navigationPageWel() {
+    if (context == null) return;
     Navigator.of(context).pushReplacementNamed('/onBoarding');
   }
 }

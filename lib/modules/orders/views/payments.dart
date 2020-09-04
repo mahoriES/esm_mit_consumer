@@ -33,7 +33,11 @@ class _PaymentsState extends State<Payments> {
       receiverUpiId: orderResponse.paymentInfo.upi,
       receiverName: orderResponse.businessName,
       transactionRefId: 'TestingUpiIndiaPlugin',
-      transactionNote: "Order# ${orderResponse.orderShortNumber}",
+
+      ///The transactionNote should not contain a # as it may lead to issues
+      ///during the payment and thus has been removed below.
+
+      transactionNote: "Order${orderResponse.orderShortNumber}",
       amount: orderResponse.orderTotal / 100,
     );
   }

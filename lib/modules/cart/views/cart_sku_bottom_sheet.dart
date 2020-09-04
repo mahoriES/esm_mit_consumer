@@ -104,6 +104,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                     if (widget.product.skus[index].inStock)
                       return buildCustomizableItem(
                         title: widget.product.productName,
+           
                         specificationName:
                             widget.product.skus[index].variationOptions.weight,
                         price: (widget.product.skus[index].basePrice / 100)
