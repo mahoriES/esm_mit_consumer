@@ -16,10 +16,12 @@ class FourthPageWidget extends StatelessWidget {
           'assets/images/allHands.png',
           height: SizeConfig.safeBlockVertical * 50,
           width: SizeConfig.safeBlockHorizontal * 70,
+          fit: BoxFit.cover,
         ),
         Spacer(),
-        Padding(padding: EdgeInsets.all(10)),
-        Column(
+        ListView(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
           children: [
             SizedBox(
               width: 314.0,

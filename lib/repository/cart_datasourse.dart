@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/repository/database_manage.dart';
+import 'package:flutter/cupertino.dart';
 
 final String cartTable = "Cart";
 final String merchantTable = "Merchants";
@@ -18,8 +19,31 @@ class CartDataSource {
       var id = await dbClient.insert(cartTable, cart);
       print(id);
     } catch (error) {
+      await CartDataSource.performDatabaseUpdate();
+      var id = await dbClient.insert(cartTable, cart);
+      print(id);
       print(error);
     }
+  }
+  
+  static Future<void> performDatabaseUpdate() async {
+    debugPrint('INVOKED PERFORM UPDATE');
+    await CartDataSource.deleteAll();
+    var dbClient = await DatabaseManager().db;
+
+    await dbClient.execute('''
+    drop table if exists $cartTable
+    ''');
+
+    await dbClient.execute('''
+    create table if not exists $cartTable (
+    _id integer primary key autoincrement,
+    id text,
+    product text,
+    variation text
+    )
+    ''');
+
   }
 
   static Future<void> insertToMerchants({Business business}) async {
@@ -45,6 +69,13 @@ class CartDataSource {
 
   static Future<List<Product>> getListOfCartWith() async {
     var dbClient = await DatabaseManager().db;
+
+    try {
+      await dbClient.query(cartTable,columns: ['variation']);
+    }
+    catch(e){
+      CartDataSource.performDatabaseUpdate();
+    }
     List<Map> list = await dbClient.query(cartTable);
     var products = list.map((item) {
       Map<String, dynamic> user = jsonDecode(item["product"].toString());
@@ -87,7 +118,13 @@ class CartDataSource {
     cart["product"] = jsonEncode(product.toJson());
     cart['id'] = product.productId.toString();
     cart['variation'] = variation;
-    return await dbClient.update(cartTable, cart,
-        where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
+    try {
+      return await dbClient.update(cartTable, cart,
+          where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
+    } catch(e) {
+      await CartDataSource.performDatabaseUpdate();
+      return await dbClient.update(cartTable, cart,
+          where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
+    }
   }
 }
