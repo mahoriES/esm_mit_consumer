@@ -12,15 +12,14 @@ class SentryHandler {
     return isInProdMode;
   }
 
-  final String prodDsnKey = 'https://e5cf4a360e5341f88386280dcbf5614c@o403346.'
-      'ingest.sentry.io/5390760';
-  final String debugDsnKey = 'https://f459e218907a490db433a0af60bd6ea5@o403346.'
-      'ingest.sentry.io/5265848';
+  final String prodDsnKey = 'https://eb30c8ffed534d18877939b1d0810b6e@o403346.'
+      'ingest.sentry.io/5419422';
+
 
   Future<void> reportError(dynamic error, dynamic stackTrace) async {
     debugPrint('Report error invoked');
     final SentryClient _sentryClient =
-        SentryClient(dsn: isInProdMode ? prodDsnKey : debugDsnKey);
+        SentryClient(dsn: prodDsnKey);
     // Print the exception to the console.
     print('Caught error: $error');
     if (!isInProdMode) {

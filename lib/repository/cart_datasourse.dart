@@ -4,6 +4,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/repository/database_manage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sqflite/sqflite.dart';
 
 final String cartTable = "Cart";
 final String merchantTable = "Merchants";
@@ -18,15 +19,20 @@ class CartDataSource {
     try {
       var id = await dbClient.insert(cartTable, cart);
       print(id);
-    } catch (error) {
-      await CartDataSource.performDatabaseUpdate();
+    } on DatabaseException catch (error) {
+      await CartDataSource.reCreateCartTable();
       var id = await dbClient.insert(cartTable, cart);
       print(id);
       print(error);
     }
   }
-  
-  static Future<void> performDatabaseUpdate() async {
+
+  ///This function will drop the cart SQL table and recreate it. It is a fix to
+  ///address FE-65 since it modifies the cart table and thus Cart table ought to
+  ///be recreated for users who are updating the app to the new version.
+  ///Moreover this shall also be useful in future, when the cart table has to be
+  ///modified to incorporate more horizontals.
+  static Future<void> reCreateCartTable() async {
     debugPrint('INVOKED PERFORM UPDATE');
     await CartDataSource.deleteAll();
     var dbClient = await DatabaseManager().db;
@@ -72,9 +78,9 @@ class CartDataSource {
 
     try {
       await dbClient.query(cartTable,columns: ['variation']);
-    }
+    } on DatabaseException
     catch(e){
-      CartDataSource.performDatabaseUpdate();
+      CartDataSource.reCreateCartTable();
     }
     List<Map> list = await dbClient.query(cartTable);
     var products = list.map((item) {
@@ -121,8 +127,8 @@ class CartDataSource {
     try {
       return await dbClient.update(cartTable, cart,
           where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
-    } catch(e) {
-      await CartDataSource.performDatabaseUpdate();
+    } on DatabaseException catch(e) {
+      await CartDataSource.reCreateCartTable();
       return await dbClient.update(cartTable, cart,
           where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
     }
