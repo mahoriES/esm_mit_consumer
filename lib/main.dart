@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
@@ -35,6 +36,7 @@ import 'modules/About/view/about_view.dart';
 import 'modules/language/view/language_view.dart';
 import 'modules/orders/views/payments.dart';
 import 'modules/otp/view/otp_view.dart';
+import 'package:fm_fit/fm_fit.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -100,6 +102,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    fit.init(width: MediaQuery.of(context).size.width);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -199,6 +202,7 @@ class MyAppBase extends StatelessWidget {
           "/about": (BuildContext context) => AboutView(),
           "/onBoarding": (BuildContext context) => OnboardingWidget(),
           "/payment": (BuildContext context) => Payments(),
+          "/circles": (BuildContext context) => CirclePicker(),
 
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
