@@ -121,7 +121,7 @@ class _AccountsViewState extends State<AccountsView> {
                       .tr(),
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: () {
-                    snapshot.navigateToRecommendedShop();
+                    snapshot.navigateToCircles();
                   },
                 ),
                 ListTile(
@@ -288,7 +288,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed("/profile"));
         },
         navigateToCircles: () {
-          dispatch(NavigateAction.pushNamed("circles"));
+          dispatch(NavigateAction.pushNamed("/circles"));
         }
     );
   }

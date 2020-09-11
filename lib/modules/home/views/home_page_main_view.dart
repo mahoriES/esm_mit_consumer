@@ -17,6 +17,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:fm_fit/fm_fit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -123,6 +124,24 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                           fontWeight: FontWeight.w400,
                                           fontStyle: FontStyle.normal,
                                         )),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    GestureDetector(
+                                      child: Text('Change', style: TextStyle(
+                                          fontFamily: 'JTLeonor',
+                                          color: AppColors.offWhitish,
+                                          fontSize: fit.t(11),
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                      ),),
+                                      onTap: (){
+                                        snapshot.changeSelectedCircle(
+                                          ApiURL.getBusinessesUrl,
+                                          context,
+                                        );
+                                      },
+                                    ),
                                   ],
                                 );
                               })
@@ -781,6 +800,7 @@ class StoresListView extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   Function(String) getMerchantList;
+  Function(String, BuildContext) changeSelectedCircle;
   String userAddress;
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
@@ -808,7 +828,8 @@ class _ViewModel extends BaseModel<AppState> {
       this.userAddress,
       this.updateSelectedMerchant,
       this.getMerchantList,
-      this.response})
+      this.response,
+      this.changeSelectedCircle})
       : super(equals: [
           currentIndex,
           merchants,
@@ -846,6 +867,10 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedTabAction(1));
         },
         getMerchantList: (url) {
+          dispatch(GetMerchantDetails(getUrl: url));
+        },
+        changeSelectedCircle: (url, context) async{
+          await dispatchFuture(ChangeSelectedCircleAction(context: context));
           dispatch(GetMerchantDetails(getUrl: url));
         },
         currentIndex: state.homePageState.currentIndex);

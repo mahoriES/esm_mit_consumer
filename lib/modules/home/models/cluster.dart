@@ -7,6 +7,11 @@ class Cluster {
   Cluster(
       {this.clusterId, this.clusterName, this.description, this.clusterCode});
 
+  bool operator ==(o) => o is Cluster && o.clusterId == clusterId &&
+      o.clusterCode == clusterCode;
+
+  int get hashCode => clusterId.hashCode^clusterCode.hashCode;
+
   Cluster.fromJson(Map<String, dynamic> json) {
     clusterId = json['cluster_id'];
     clusterName = json['cluster_name'];

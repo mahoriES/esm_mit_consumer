@@ -15,6 +15,9 @@ class AuthState {
   final ValidateOTPRequest validateOTPRequest;
   final CustomerDetailsRequest updateCustomerDetailsRequest;
   final Cluster cluster;
+  final List<Cluster> myClusters;
+  final List<Cluster> nearbyClusters;
+
   final String token;
   final bool isLoggedIn;
   final bool isOnboardingCompleted;
@@ -24,26 +27,31 @@ class AuthState {
   final bool isOtpEntered;
   final bool isSignUp;
 
-  AuthState(
-      {@required this.getOtpRequest,
-      @required this.cluster,
-      @required this.isOtpEntered,
-      @required this.isPhoneNumberValid,
-      @required this.user,
-      @required this.isOnboardingCompleted,
-      @required this.loadingStatus,
-      @required this.token,
-      @required this.isLoggedIn,
-      @required this.validateOTPRequest,
-      @required this.isSignUp,
-      @required this.updateCustomerDetailsRequest,
-      @required this.deviceToken,
-      @required this.address});
+  AuthState({
+    @required this.getOtpRequest,
+    @required this.cluster,
+    @required this.isOtpEntered,
+    @required this.isPhoneNumberValid,
+    @required this.user,
+    @required this.isOnboardingCompleted,
+    @required this.loadingStatus,
+    @required this.token,
+    @required this.isLoggedIn,
+    @required this.validateOTPRequest,
+    @required this.isSignUp,
+    @required this.updateCustomerDetailsRequest,
+    @required this.deviceToken,
+    @required this.address,
+    @required this.myClusters,
+    @required this.nearbyClusters,
+  });
 
   factory AuthState.initial() {
     return new AuthState(
       address: null,
       cluster: null,
+      myClusters: null,
+      nearbyClusters: null,
       token: "",
       isLoggedIn: false,
       loadingStatus: LoadingStatusApp.success,
@@ -59,35 +67,40 @@ class AuthState {
     );
   }
 
-  AuthState copyWith(
-      {Data user,
-      Address address,
-      LoadingStatusApp loadingStatus,
-      String mobileNumber,
-      bool emailError,
-      Cluster cluster,
-      bool mobileNumberError,
-      String emailErrorMessage,
-      String passwordErrorMessage,
-      String token,
-      bool isLoggedIn,
-      bool showAlert,
-      bool isOnboardingCompleted,
-      String apiErrorMessage,
-      APIResponseHandlerModel apiResponseHandler,
-      bool isFirstNameValid,
-      bool isSecondNameValid,
-      bool isPhoneNumberValid,
-      bool isOtpEntered,
-      GenerateOTPRequest getOtpRequest,
-      ValidateOTPRequest validateOTPRequest,
-      CustomerDetailsRequest updateCustomerDetailsRequest,
-      bool isSignUp,
-      String deviceToken}) {
+  AuthState copyWith({
+    Data user,
+    Address address,
+    LoadingStatusApp loadingStatus,
+    String mobileNumber,
+    bool emailError,
+    Cluster cluster,
+    bool mobileNumberError,
+    String emailErrorMessage,
+    String passwordErrorMessage,
+    String token,
+    bool isLoggedIn,
+    bool showAlert,
+    bool isOnboardingCompleted,
+    String apiErrorMessage,
+    APIResponseHandlerModel apiResponseHandler,
+    bool isFirstNameValid,
+    bool isSecondNameValid,
+    bool isPhoneNumberValid,
+    bool isOtpEntered,
+    GenerateOTPRequest getOtpRequest,
+    ValidateOTPRequest validateOTPRequest,
+    CustomerDetailsRequest updateCustomerDetailsRequest,
+    bool isSignUp,
+    String deviceToken,
+    List<Cluster> myClusters,
+    List<Cluster> nearbyClusters,
+  }) {
     return new AuthState(
         address: address ?? this.address,
         deviceToken: token,
         cluster: cluster ?? this.cluster,
+        myClusters: myClusters ?? this.myClusters,
+        nearbyClusters: nearbyClusters ?? this.nearbyClusters,
         user: user ?? this.user,
         isOnboardingCompleted:
             isOnboardingCompleted ?? this.isOnboardingCompleted,

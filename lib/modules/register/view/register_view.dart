@@ -360,7 +360,7 @@ class _RegistrationState extends State<Registration> {
                         geoAddr: GeoAddr(pincode: "")));
               }
             } else {
-              Fluttertoast.showToast(msg: "all fields required");
+              Fluttertoast.showToast(msg: "All fields are required");
             }
           },
           child: Hero(
@@ -406,32 +406,13 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
 
-      Padding(
-        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-        child: InkWell(
-          onTap: () {
-            launchURL();
-          },
-          child: Text(
-            "screen_register.pin_code.no_circle_code",
-            style: const TextStyle(
-                color: AppColors.icColors,
-                fontWeight: FontWeight.w500,
-                fontFamily: "Avenir-Medium",
-                fontStyle: FontStyle.normal,
-                fontSize: 16.0),
-          ).tr(),
-        ),
-      ),
-      SizedBox(
-        height: 50,
-      ),
     ];
   }
 
   launchURL() async {
     const url =
-        'https://docs.google.com/forms/d/e/1FAIpQLSe479y0f0lIwD8CpqRILJNDS5P6OvZTonooAatQ8ngHLnz5pA/viewform?usp=pp_url';
+        'https://docs.google.com/forms/d/e/1FAIpQLSe479y0f0lIwD8CpqRILJNDS5P6O'
+        'vZTonooAatQ8ngHLnz5pA/viewform?usp=pp_url';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

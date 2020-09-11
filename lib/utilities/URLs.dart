@@ -28,7 +28,6 @@ class ApiURL {
   static const recommendStoreURL = "Customer/v4/recommendAStore";
   static const profileUpdateURL = "/api/v1/auth/profiles";
   static const getClustersUrl = "api/v1/clusters/";
-  static const getNearbyClustersUrl = "api/v1/clusters/nearby";
   static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
   static const imageUpload = "$baseURL" + "api/v1/media/photo/";
 }
