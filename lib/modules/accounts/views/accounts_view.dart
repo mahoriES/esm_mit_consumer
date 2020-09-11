@@ -288,7 +288,9 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed("/profile"));
         },
         navigateToCircles: () {
-          dispatch(NavigateAction.pushNamed("/circles"));
+          dispatch(NavigateAction.pushNamed("/circles", arguments: {
+            "fromAccountScreen":true
+          }));
         }
     );
   }

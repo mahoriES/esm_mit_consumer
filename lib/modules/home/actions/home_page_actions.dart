@@ -81,13 +81,16 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
         builder: (context) => Container( child: MyCirclesBottomView
-          (myCircles: state.authState.myClusters),
+          (myCircles: [
+            ...state.authState.myClusters ?? <Cluster>[],
+            ...state.authState.nearbyClusters ?? <Cluster>[],
+        ].toSet().toList()),
         ));
     if (cluster == null || !(cluster is Cluster)) return null;
     return state.copyWith(
       authState: state.authState.copyWith(
         cluster: cluster,
-      )
+      ),
     );
 
   }
@@ -146,6 +149,11 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
         result.add(Cluster.fromJson(item));
         debugPrint("Cluster++++++++++++++++++"+item.toString());
       });
+//      if ((response.data == null || response.data.isEmpty) &&
+//          (state.authState.myClusters == null || state.authState.myClusters
+//              .isEmpty)) {
+//        dispatch(NavigateAction.pushNamed('/circles'));
+//      }
       return state.copyWith(
           authState: state.authState.copyWith(
               cluster: result.first,

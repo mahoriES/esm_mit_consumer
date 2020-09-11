@@ -51,22 +51,27 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
       params: {
         "lon" : _locationData.longitude.toString(),
         "lat" : _locationData.latitude.toString(),
-        "search_query" : "",
 
        }
     );
-    debugPrint('1++++++++++++++++++ ${response.toString()}');
     if (response.status == ResponseStatus.success200) {
       debugPrint('Success getting nearby circles');
       List<Cluster> nearbyCircles = [];
       response.data.forEach((item) {
-        if (!state.authState.myClusters.contains(Cluster.fromJson(item)))
+        if (state.authState.myClusters == null) {
           nearbyCircles.add(Cluster.fromJson(item));
+        } else {
+          if (!state.authState.myClusters.contains(Cluster.fromJson(item)))
+            nearbyCircles.add(Cluster.fromJson(item));
+        }
       });
 
       return state.copyWith(
         authState: state.authState.copyWith(
           nearbyClusters: nearbyCircles,
+          cluster: state.authState.myClusters == null ?
+            state.authState.cluster == null ? nearbyCircles.first :
+            state.authState.cluster : state.authState.myClusters.first,
         ),
       );
 

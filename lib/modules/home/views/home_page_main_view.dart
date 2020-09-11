@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -125,13 +126,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                           fontStyle: FontStyle.normal,
                                         )),
                                     SizedBox(
-                                      width: 8,
+                                      width: 10,
                                     ),
                                     GestureDetector(
-                                      child: Text('Change', style: TextStyle(
+                                      child: Text('Change Circle', style: TextStyle(
                                           fontFamily: 'JTLeonor',
                                           color: AppColors.offWhitish,
-                                          fontSize: fit.t(11),
+                                          fontSize: fit.t(12),
                                           fontWeight: FontWeight.w400,
                                           fontStyle: FontStyle.normal,
                                       ),),
@@ -156,6 +157,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
+            onInit: (snapshot) async {
+              if (snapshot.state.authState.cluster == null) {
+                await snapshot.dispatchFuture(GetNearbyCirclesAction());
+                snapshot.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+              }
+
+            },
             builder: (context, snapshot) {
               List<Business> firstList = List<Business>();
               List<Business> secondList = List<Business>();
@@ -807,6 +815,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToStoreDetailsPage;
   Function updateCurrentIndex;
   VoidCallback navigateToCart;
+  VoidCallback navigateToCircles;
   Function(Business) updateSelectedMerchant;
   int currentIndex;
   List<Business> merchants;
@@ -829,7 +838,8 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateSelectedMerchant,
       this.getMerchantList,
       this.response,
-      this.changeSelectedCircle})
+      this.changeSelectedCircle,
+      this.navigateToCircles})
       : super(equals: [
           currentIndex,
           merchants,
@@ -872,6 +882,9 @@ class _ViewModel extends BaseModel<AppState> {
         changeSelectedCircle: (url, context) async{
           await dispatchFuture(ChangeSelectedCircleAction(context: context));
           dispatch(GetMerchantDetails(getUrl: url));
+        },
+        navigateToCircles: () {
+          dispatch(NavigateAction.pushNamed("/circles"));
         },
         currentIndex: state.homePageState.currentIndex);
   }
