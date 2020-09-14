@@ -17,6 +17,7 @@ class AuthState {
   final Cluster cluster;
   final List<Cluster> myClusters;
   final List<Cluster> nearbyClusters;
+  final List<Cluster> suggestedClusters;
 
   final String token;
   final bool isLoggedIn;
@@ -44,6 +45,7 @@ class AuthState {
     @required this.address,
     @required this.myClusters,
     @required this.nearbyClusters,
+    @required this.suggestedClusters,
   });
 
   factory AuthState.initial() {
@@ -52,6 +54,7 @@ class AuthState {
       cluster: null,
       myClusters: null,
       nearbyClusters: null,
+      suggestedClusters: null,
       token: "",
       isLoggedIn: false,
       loadingStatus: LoadingStatusApp.success,
@@ -94,6 +97,7 @@ class AuthState {
     String deviceToken,
     List<Cluster> myClusters,
     List<Cluster> nearbyClusters,
+    List<Cluster> suggestedClusters,
   }) {
     return new AuthState(
         address: address ?? this.address,
@@ -101,6 +105,7 @@ class AuthState {
         cluster: cluster ?? this.cluster,
         myClusters: myClusters ?? this.myClusters,
         nearbyClusters: nearbyClusters ?? this.nearbyClusters,
+        suggestedClusters: suggestedClusters ?? this.suggestedClusters,
         user: user ?? this.user,
         isOnboardingCompleted:
             isOnboardingCompleted ?? this.isOnboardingCompleted,

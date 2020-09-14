@@ -272,7 +272,6 @@ class _RegistrationState extends State<Registration> {
                 snapshot.updateCustomerDetails(
                     CustomerDetailsRequest(
                         profileName: nameController.text,
-                        //clusterCode: pinCodeController.text,
                         role: "CUSTOMER"),
                     AddressRequest(
                         addressName: nameController.text,

@@ -110,7 +110,7 @@ class _AccountsViewState extends State<AccountsView> {
                     "assets/images/location2.png",
                     color: AppColors.iconColors,
                   ),
-                  title: Text('My Circles',
+                  title: Text(tr('screen_account.circles'),
                       style: const TextStyle(
                           color: const Color(0xff3c3c3c),
                           fontWeight: FontWeight.w400,

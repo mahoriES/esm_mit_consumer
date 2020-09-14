@@ -6,11 +6,13 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 
 ///This class implements the picker screen to let user add/remove circles to
@@ -28,11 +30,18 @@ class CirclePicker extends StatefulWidget {
 }
 
 class _CirclePickerState extends State<CirclePicker> {
-  TextEditingController _clusterCodeTextEditingController =
-      TextEditingController();
+
+  GlobalKey suggestionsTextfieldKey =
+  new GlobalKey<AutoCompleteTextFieldState<Cluster>>();
+
+  TextEditingController _controller = TextEditingController();
+
+  AutoCompleteTextField<Cluster> textField;
+
 
   @override
   void initState() {
+
     super.initState();
   }
 
@@ -41,6 +50,12 @@ class _CirclePickerState extends State<CirclePicker> {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       onInit: (store) async {
+        _controller..addListener(() async {
+          if (_controller.text.length<3) return;
+          debugPrint('Text changed ${_controller.text}');
+          await store.dispatchFuture(GetSuggestionsForCircleAction(queryText: _controller.text));
+          textField.updateSuggestions(store.state.authState.suggestedClusters);
+        });
         await store.dispatchFuture(GetNearbyCirclesAction());
         if (store.state.authState.cluster != null &&
             (ModalRoute.of(context).settings.arguments
@@ -53,6 +68,8 @@ class _CirclePickerState extends State<CirclePicker> {
         }
       },
       builder: (context, snapshot) {
+        textField = buildSuggestionTextfield(snapshot: snapshot);
+        debugPrint('Rebuilt');
         ///[WillPopScope] will prevent the user from popping by clicking the
         ///back button on Android phones only!
         return WillPopScope(
@@ -62,9 +79,9 @@ class _CirclePickerState extends State<CirclePicker> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                'My Circles',
+                tr('screen_account.circles'),
                 style: TextStyle(
-                  fontFamily: 'Arial',
+                  fontFamily: 'Avenir',
                   fontSize: fit.t(AppSizes.adjustableFontTitleSize),
                   color: AppColors.blackTextColor,
                 ),
@@ -79,7 +96,6 @@ class _CirclePickerState extends State<CirclePicker> {
                     Fluttertoast.showToast(
                         msg: 'Please add at least one circle'
                             ' to your profile, to view merchants in that circle!');
-                    return;
                   }
                   debugPrint('Coming here!');
                   snapshot.closeWindow();
@@ -118,7 +134,7 @@ class _CirclePickerState extends State<CirclePicker> {
                                     'You can manually add more circles to your '
                                     'profile.',
                                     style: TextStyle(
-                                        fontFamily: 'Arial',
+                                        fontFamily: 'Avenir',
                                         fontSize: fit
                                             .t(AppSizes.itemSubtitle2FontSize),
                                         color: AppColors.greyishText),
@@ -131,34 +147,7 @@ class _CirclePickerState extends State<CirclePicker> {
                                     right: AppSizes.adjustableWidgetPadding,
                                     top: AppSizes.separatorPadding,
                                   ),
-                                  child: TextField(
-                                    onSubmitted: (circleCode) {
-                                      if (circleCode.length == 0) return;
-                                      snapshot.addCircleAction(
-                                          circleCode.toUpperCase());
-                                      _clusterCodeTextEditingController.text =
-                                          "";
-                                    },
-                                    controller:
-                                        _clusterCodeTextEditingController,
-                                    decoration: new InputDecoration(
-                                        border: new OutlineInputBorder(
-                                          borderRadius: const BorderRadius.all(
-                                            const Radius.circular(
-                                              AppSizes.separatorPadding,
-                                            ),
-                                          ),
-                                        ),
-                                        filled: true,
-                                        hintStyle: new TextStyle(
-                                            color: AppColors.greyishText,
-                                            fontSize: fit.t(
-                                                AppSizes.itemSubtitle2FontSize),
-                                            fontFamily: 'Arial'),
-                                        hintText:
-                                            "Add circle using circle code...",
-                                        fillColor: Colors.white70),
-                                  ),
+                                  child: textField,
                                 ),
                               ],
                             ),
@@ -202,6 +191,44 @@ class _CirclePickerState extends State<CirclePicker> {
     );
   }
 
+  Widget buildSuggestionTextfield({_ViewModel snapshot}) {
+    debugPrint('The suggestion textfield was built');
+    return AutoCompleteTextField<Cluster>(
+      controller: _controller,
+      suggestions: snapshot.suggestedClusters,
+
+      key: suggestionsTextfieldKey,
+      itemFilter: (suggestion, itemFilter) => true,
+      itemSorter: (_, __) => 1,
+      itemBuilder: (context, suggestedCircle) => Container(
+        child: ListTile(
+          title: Text(suggestedCircle.clusterName),
+          trailing: Text(suggestedCircle.clusterCode),
+        ),
+      ),
+      itemSubmitted: (circle) {
+        snapshot.addCircleAction(circle.clusterCode.toUpperCase());
+      },
+      decoration: InputDecoration(
+          border: new OutlineInputBorder(
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(
+                AppSizes.separatorPadding,
+              ),
+            ),
+          ),
+          filled: true,
+          hintStyle: new TextStyle(
+              color: AppColors.greyishText,
+              fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
+              fontFamily: 'Avenir'),
+          hintText: "Search circles...",
+          suffixIcon: Icon(Icons.search),
+          fillColor: Colors.white70 ),
+    );
+
+  }
+
   Widget getClusterTypeTitle(String title) {
     return Padding(
       padding: EdgeInsets.only(
@@ -215,7 +242,7 @@ class _CirclePickerState extends State<CirclePicker> {
         style: TextStyle(
             color: AppColors.blackTextColor,
             fontSize: fit.t(AppSizes.adjustableFontTitleSize),
-            fontFamily: 'Arial',
+            fontFamily: 'Avenir',
             fontWeight: FontWeight.w300),
       ),
     );
@@ -268,7 +295,7 @@ class _CirclePickerState extends State<CirclePicker> {
                   circleName,
                   style: TextStyle(
                       fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
-                      fontFamily: 'Arial',
+                      fontFamily: 'Avenir',
                       fontWeight: FontWeight.w400,
                       color: AppColors.blackTextColor),
                   overflow: TextOverflow.ellipsis,
@@ -279,7 +306,7 @@ class _CirclePickerState extends State<CirclePicker> {
                 Text('Circle Code: ' + circleCode,
                     style: TextStyle(
                         fontSize: fit.t(AppSizes.itemSubtitle3FontSize),
-                        fontFamily: 'Arial',
+                        fontFamily: 'Avenir',
                         fontWeight: FontWeight.w400,
                         color: AppColors.greyishText),
                     overflow: TextOverflow.ellipsis),
@@ -298,7 +325,7 @@ class _CirclePickerState extends State<CirclePicker> {
                     style: TextStyle(
                         color: AppColors.iconColors,
                         fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
-                        fontFamily: 'Arial'),
+                        fontFamily: 'Avenir'),
                     overflow: TextOverflow.ellipsis),
               ),
             ),
@@ -341,7 +368,7 @@ class _CirclePickerState extends State<CirclePicker> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: fit.t(15),
-                    fontFamily: 'Arial',
+                    fontFamily: 'Avenir',
                     fontWeight: FontWeight.w400,
                     color: AppColors.blackTextColor,
                   ),
@@ -352,7 +379,7 @@ class _CirclePickerState extends State<CirclePicker> {
                 Text("Circle Code: " + circleCode,
                     style: TextStyle(
                         fontSize: fit.t(12),
-                        fontFamily: 'Arial',
+                        fontFamily: 'Avenir',
                         fontWeight: FontWeight.w400,
                         color: AppColors.greyishText),
                     overflow: TextOverflow.ellipsis),
@@ -370,7 +397,7 @@ class _CirclePickerState extends State<CirclePicker> {
                     style: TextStyle(
                         color: AppColors.green,
                         fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
-                        fontFamily: 'Arial'),
+                        fontFamily: 'Avenir'),
                     overflow: TextOverflow.ellipsis),
               ),
             ),
@@ -379,7 +406,8 @@ class _CirclePickerState extends State<CirclePicker> {
       ),
     );
   }
-///This widget shall be displayed when user has neither saved cirlces nor nearby
+
+  ///This widget shall be displayed when user has neither saved cirlces nor nearby
   ///circles.
   Widget get noCirclesNearbyWidget {
     return SliverPadding(
@@ -388,34 +416,37 @@ class _CirclePickerState extends State<CirclePicker> {
         horizontal: AppSizes.sliverPadding,
       ),
       sliver: SliverList(
-          delegate: SliverChildListDelegate(<Widget>[
-        Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.location_on,
-                color: AppColors.green,
-                size: fit.t(AppSizes.adjustableFontTitleSize),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: AppSizes.widgetPadding,
-                  left: AppSizes.widgetPadding,
-                  right: AppSizes.widgetPadding,
-                ),
-                child: Text(
-                  'Sorry we could not find any circles nearby! Please add manually.',
-                  style: TextStyle(
-                    fontFamily: 'Avenir',
-                    fontSize: fit.t(AppSizes.adjustableWidgetPadding),
+        delegate: SliverChildListDelegate(
+          <Widget>[
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: AppColors.green,
+                    size: fit.t(AppSizes.adjustableFontTitleSize),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: AppSizes.widgetPadding,
+                      left: AppSizes.widgetPadding,
+                      right: AppSizes.widgetPadding,
+                    ),
+                    child: Text(
+                      'Sorry we could not find any circles nearby! Please add manually.',
+                      style: TextStyle(
+                        fontFamily: 'Avenir',
+                        fontSize: fit.t(AppSizes.adjustableWidgetPadding),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
-      ],),),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -424,25 +455,30 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatusApp;
   List<Cluster> myClusters;
   List<Cluster> nearbyClusters;
+  List<Cluster> suggestedClusters;
   Function(String circleCode) addCircleAction;
   Function(String circleCode, String circleId) removeCircleAction;
+  Function(String textualQuery) getCircleSuggestionsAction;
   bool hasSelectedCluster;
   VoidCallback closeWindow;
 
   _ViewModel();
 
-  _ViewModel.build(
-      {@required this.loadingStatusApp,
-      @required this.myClusters,
-      @required this.nearbyClusters,
-      @required this.addCircleAction,
-      @required this.removeCircleAction,
-      @required this.hasSelectedCluster,
-      @required this.closeWindow})
-      : super(equals: [
+  _ViewModel.build({
+    @required this.loadingStatusApp,
+    @required this.myClusters,
+    @required this.nearbyClusters,
+    @required this.suggestedClusters,
+    @required this.addCircleAction,
+    @required this.removeCircleAction,
+    @required this.hasSelectedCluster,
+    @required this.closeWindow,
+    @required this.getCircleSuggestionsAction,
+  }) : super(equals: [
           loadingStatusApp,
           myClusters,
           nearbyClusters,
+          //suggestedClusters,
         ]);
 
   @override
@@ -455,17 +491,24 @@ class _ViewModel extends BaseModel<AppState> {
         loadingStatusApp: state.authState.loadingStatus,
         myClusters: state.authState.myClusters,
         nearbyClusters: state.authState.nearbyClusters,
+        suggestedClusters: state.authState.suggestedClusters,
         addCircleAction: (circleCode) async {
           await dispatchFuture(
               AddCircleToProfileAction(circleCode: circleCode));
+
           ///To load the merchants for the new selected circle
           dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
         },
         removeCircleAction: (circleCode, circleId) async {
           await dispatchFuture(RemoveCircleFromProfileAction(
               circleCode: circleCode, circleId: circleId));
+
           ///To load the merchants for the new selected circle
           dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+        },
+        getCircleSuggestionsAction: (textQuery) {
+          if (textQuery.isEmpty) return;
+          dispatch(GetSuggestionsForCircleAction(queryText: textQuery));
         });
   }
 }

@@ -686,7 +686,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                           fontSize: 13,
                                           fontWeight: FontWeight.w300,
                                           color: AppColors.darkGrey,
-                                          fontFamily: 'Arial',
+                                          fontFamily: 'Avenir',
                                         ),
                                       )
                                     : Text(
@@ -695,7 +695,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                           fontSize: 13,
                                           fontWeight: FontWeight.w300,
                                           color: AppColors.darkGrey,
-                                          fontFamily: 'Arial',
+                                          fontFamily: 'Avenir',
                                         ),
                                       ),
                               ],

@@ -83,32 +83,24 @@ class MyCirclesBottomView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.left,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    snapshot.closeBottomSheet();
-                    snapshot.navigateToCircleScreen();
-                  },
-                  child: Text(
-                    'Circle Settings',
-                    style: TextStyle(
-                      fontSize: fit.t(AppSizes.itemSubtitle3FontSize),
-                      fontFamily: 'Avenir',
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                )
               ],
             ),
           ),
           Expanded(
               flex: 30,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => snapshot.closeBottomSheet()),
+              child: GestureDetector(
+                onTap: () {
+                  snapshot.closeBottomSheet();
+                  snapshot.navigateToCircleScreen();
+                },
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.location_on,
+                    color: AppColors.iconColors,
+                    size: AppSizes.itemTitleFontSize,
+                  ),
+                ),
               )),
         ],
       ),
@@ -128,7 +120,7 @@ class MyCirclesBottomView extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: AppColors.pureWhite,
-            borderRadius: BorderRadius.all(Radius.circular(double.maxFinite)),
+            borderRadius: BorderRadius.all(Radius.circular(AppSizes.bottomSheetBorderRadius)),
             boxShadow: [
               BoxShadow(
                   color: Colors.blue.withOpacity(0.2),

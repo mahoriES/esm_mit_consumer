@@ -97,6 +97,46 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
   }
 }
 
+class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
+
+  final String queryText;
+
+  GetSuggestionsForCircleAction({@required this.queryText});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+      requestType: RequestType.get,
+      url: ApiURL.getClustersUrl,
+      params: {
+        "search_query" : queryText,
+      },
+    );
+
+    if (response.status == ResponseStatus.success200) {
+      if (response.data == null || response.data.isEmpty)
+        return null;
+
+      List<Cluster> suggestedCircles = [];
+
+      response.data.forEach((item) {
+        suggestedCircles.add(Cluster.fromJson(item));
+      });
+      return state.copyWith(
+        authState: state.authState.copyWith(
+          suggestedClusters: suggestedCircles,
+        ),
+      );
+    }
+    else {
+      Fluttertoast.showToast(msg: 'Error : '
+          '${response.data['status']}');
+    }
+    return null;
+  }
+
+}
+
 class AddCircleToProfileAction extends ReduxAction<AppState> {
 
   final String circleCode;
