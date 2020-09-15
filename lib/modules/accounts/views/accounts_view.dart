@@ -106,6 +106,25 @@ class _AccountsViewState extends State<AccountsView> {
                   },
                 ),
                 ListTile(
+                  leading: Image.asset(
+                    "assets/images/location2.png",
+                    color: AppColors.iconColors,
+                  ),
+                  title: Text(tr('screen_account.circles'),
+                      style: const TextStyle(
+                          color: const Color(0xff3c3c3c),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "CircularStd-Book",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.left)
+                      .tr(),
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                  onTap: () {
+                    snapshot.navigateToCircles();
+                  },
+                ),
+                ListTile(
                   onTap: () {
                     snapshot.navigateLanguage();
                   },
@@ -237,6 +256,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToRecommendedShop;
   Function navigateToProfile;
   Function navigateLanguage;
+  Function navigateToCircles;
   Function logout;
 
   _ViewModel.build(
@@ -244,7 +264,9 @@ class _ViewModel extends BaseModel<AppState> {
       this.loadingStatus,
       this.logout,
       this.navigateToProfile,
-      this.navigateLanguage})
+      this.navigateLanguage,
+      this.navigateToCircles,
+      })
       : super(equals: [loadingStatus]);
 
   @override
@@ -264,6 +286,12 @@ class _ViewModel extends BaseModel<AppState> {
         },
         navigateToProfile: () {
           dispatch(NavigateAction.pushNamed("/profile"));
-        });
+        },
+        navigateToCircles: () {
+          dispatch(NavigateAction.pushNamed("/circles", arguments: {
+            "fromAccountScreen":true
+          }));
+        }
+    );
   }
 }

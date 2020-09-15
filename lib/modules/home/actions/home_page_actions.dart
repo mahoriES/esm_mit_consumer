@@ -4,12 +4,14 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/views/my_clusters_view.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:flutter/material.dart';
 
 class GetMerchantDetails extends ReduxAction<AppState> {
   final String getUrl;
@@ -63,6 +65,38 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   }
 }
 
+class ChangeSelectedCircleAction extends ReduxAction<AppState> {
+
+  final BuildContext context;
+
+  ChangeSelectedCircleAction({@required this.context});
+
+  @override
+  FutureOr<AppState> reduce() async{
+
+    final Cluster cluster = await showModalBottomSheet(
+        context: context,
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        builder: (context) => Container( child: MyCirclesBottomView
+          (myCircles: [
+            ...state.authState.myClusters ?? <Cluster>[],
+            ...state.authState.nearbyClusters ?? <Cluster>[],
+        ].toSet().toList()),
+        ));
+    if (cluster == null || !(cluster is Cluster)) return null;
+    return state.copyWith(
+      authState: state.authState.copyWith(
+        cluster: cluster,
+      ),
+    );
+
+  }
+
+}
+
 class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
@@ -98,6 +132,7 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
 }
 
 class GetClusterDetailsAction extends ReduxAction<AppState> {
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -112,9 +147,18 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       List<Cluster> result = [];
       response.data.forEach((item) {
         result.add(Cluster.fromJson(item));
+        debugPrint("Cluster++++++++++++++++++"+item.toString());
       });
+//      if ((response.data == null || response.data.isEmpty) &&
+//          (state.authState.myClusters == null || state.authState.myClusters
+//              .isEmpty)) {
+//        dispatch(NavigateAction.pushNamed('/circles'));
+//      }
       return state.copyWith(
-          authState: state.authState.copyWith(cluster: result.first));
+          authState: state.authState.copyWith(
+              cluster: result.first,
+              myClusters: result,
+          ));
     }
   }
 

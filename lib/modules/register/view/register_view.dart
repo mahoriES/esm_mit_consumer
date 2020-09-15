@@ -243,85 +243,7 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
 
-      //pin code
-      Padding(
-        padding: const EdgeInsets.only(top: 20.0, bottom: 40),
-        child: TextInputBG(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                      validator: (value) {
-                        if (value.length == 0) return null;
-
-                        if (value.isEmpty
-//                                                ||
-//                                                !pinCodeController.text
-//                                                    .contains(new RegExp(
-//                                                        r'^[1-9][0-9]{5}$'))
-
-                            ) {
-                          return tr('screen_register.pin_code.title');
-                          return null;
-                        }
-                        return null;
-                      },
-                      autovalidate: true,
-                      controller: pinCodeController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: tr('screen_register.pin_code.title'),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      style: const TextStyle(
-                          color: const Color(0xff1a1a1a),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 13.0),
-                      textAlign: TextAlign.center),
-                ),
-                Container(
-//                  color: Colors.red,
-                  width: 40,
-                  child: Center(
-                    child: PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: AppColors.icColors,
-                        size: 30,
-                      ),
-                      onSelected: (value) {
-                        selectedCircle = value;
-                        pinCodeController.text = value;
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return ['UDUPI01'].map((String value) {
-                          return PopupMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList();
-                      },
-                    ),
-                  ),
-                ),
-//                Icon(
-//                  Icons.local_post_office,
-//                  color: AppColors.icColors,
-//                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      SizedBox(height: 30,),
 
       //location
       //Register_but
@@ -350,7 +272,6 @@ class _RegistrationState extends State<Registration> {
                 snapshot.updateCustomerDetails(
                     CustomerDetailsRequest(
                         profileName: nameController.text,
-                        clusterCode: pinCodeController.text,
                         role: "CUSTOMER"),
                     AddressRequest(
                         addressName: nameController.text,
@@ -360,7 +281,7 @@ class _RegistrationState extends State<Registration> {
                         geoAddr: GeoAddr(pincode: "")));
               }
             } else {
-              Fluttertoast.showToast(msg: "all fields required");
+              Fluttertoast.showToast(msg: "All fields are required");
             }
           },
           child: Hero(
@@ -406,32 +327,13 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
 
-      Padding(
-        padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-        child: InkWell(
-          onTap: () {
-            launchURL();
-          },
-          child: Text(
-            "screen_register.pin_code.no_circle_code",
-            style: const TextStyle(
-                color: AppColors.icColors,
-                fontWeight: FontWeight.w500,
-                fontFamily: "Avenir-Medium",
-                fontStyle: FontStyle.normal,
-                fontSize: 16.0),
-          ).tr(),
-        ),
-      ),
-      SizedBox(
-        height: 50,
-      ),
     ];
   }
 
   launchURL() async {
     const url =
-        'https://docs.google.com/forms/d/e/1FAIpQLSe479y0f0lIwD8CpqRILJNDS5P6OvZTonooAatQ8ngHLnz5pA/viewform?usp=pp_url';
+        'https://docs.google.com/forms/d/e/1FAIpQLSe479y0f0lIwD8CpqRILJNDS5P6O'
+        'vZTonooAatQ8ngHLnz5pA/viewform?usp=pp_url';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

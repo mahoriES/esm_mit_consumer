@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -17,6 +18,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:fm_fit/fm_fit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -123,6 +125,24 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                           fontWeight: FontWeight.w400,
                                           fontStyle: FontStyle.normal,
                                         )),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    GestureDetector(
+                                      child: Text('Change Circle', style: TextStyle(
+                                          fontFamily: 'JTLeonor',
+                                          color: AppColors.offWhitish,
+                                          fontSize: fit.t(12),
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                      ),),
+                                      onTap: (){
+                                        snapshot.changeSelectedCircle(
+                                          ApiURL.getBusinessesUrl,
+                                          context,
+                                        );
+                                      },
+                                    ),
                                   ],
                                 );
                               })
@@ -137,6 +157,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
+            onInit: (snapshot) async {
+              if (snapshot.state.authState.cluster == null) {
+                await snapshot.dispatchFuture(GetNearbyCirclesAction());
+                snapshot.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+              }
+
+            },
             builder: (context, snapshot) {
               List<Business> firstList = List<Business>();
               List<Business> secondList = List<Business>();
@@ -781,12 +808,14 @@ class StoresListView extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
   Function(String) getMerchantList;
+  Function(String, BuildContext) changeSelectedCircle;
   String userAddress;
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
   Function navigateToStoreDetailsPage;
   Function updateCurrentIndex;
   VoidCallback navigateToCart;
+  VoidCallback navigateToCircles;
   Function(Business) updateSelectedMerchant;
   int currentIndex;
   List<Business> merchants;
@@ -808,7 +837,9 @@ class _ViewModel extends BaseModel<AppState> {
       this.userAddress,
       this.updateSelectedMerchant,
       this.getMerchantList,
-      this.response})
+      this.response,
+      this.changeSelectedCircle,
+      this.navigateToCircles})
       : super(equals: [
           currentIndex,
           merchants,
@@ -847,6 +878,13 @@ class _ViewModel extends BaseModel<AppState> {
         },
         getMerchantList: (url) {
           dispatch(GetMerchantDetails(getUrl: url));
+        },
+        changeSelectedCircle: (url, context) async{
+          await dispatchFuture(ChangeSelectedCircleAction(context: context));
+          dispatch(GetMerchantDetails(getUrl: url));
+        },
+        navigateToCircles: () {
+          dispatch(NavigateAction.pushNamed("/circles"));
         },
         currentIndex: state.homePageState.currentIndex);
   }

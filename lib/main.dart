@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
@@ -35,6 +36,7 @@ import 'modules/About/view/about_view.dart';
 import 'modules/language/view/language_view.dart';
 import 'modules/orders/views/payments.dart';
 import 'modules/otp/view/otp_view.dart';
+import 'package:fm_fit/fm_fit.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -44,6 +46,7 @@ void main() {
   Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
+    return;
     // Pass all uncaught errors from the framework to Crashlytics.
     Crashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
@@ -75,7 +78,7 @@ void main() {
   }, (Object error, StackTrace stackTrace) {
     /// Whenever an error occurs, call the `reportError` function. This sends
     /// Dart errors to the dev env or prod env of Sentry based on current status.
-    SentryHandler().reportError(error, stackTrace);
+    //SentryHandler().reportError(error, stackTrace);
   });
 }
 
@@ -100,6 +103,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    fit.init(width: MediaQuery.of(context).size.width);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -168,8 +172,8 @@ class MyAppBase extends StatelessWidget {
             primarySwatch: Colors.blue,
             fontFamily: "JTLeonor",
             appBarTheme: AppBarTheme(
-//              color: FreshNetColors.green,
-                )),
+              color: Color(0xffffffff),
+            ),),
         home: UserExceptionDialog<AppState>(
           child: MyApp(),
           onShowUserExceptionDialog: (context, excpn) {
@@ -199,6 +203,7 @@ class MyAppBase extends StatelessWidget {
           "/about": (BuildContext context) => AboutView(),
           "/onBoarding": (BuildContext context) => OnboardingWidget(),
           "/payment": (BuildContext context) => Payments(),
+          "/circles": (BuildContext context) => CirclePicker(),
 
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },

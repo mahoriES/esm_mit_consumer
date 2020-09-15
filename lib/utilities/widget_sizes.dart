@@ -13,4 +13,7 @@ class AppSizes {
   static const itemSubtitle3FontSize = 12.0;
   static const bottomSheetListHeightFraction = 0.35;
   static const minorTopPadding = 3.0;
+  static const adjustableFontTitleSize = 20.0;
+  static const sliverPadding = 10.0;
+  static const adjustableWidgetPadding = 20.0;
 }

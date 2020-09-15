@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/models/User.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
