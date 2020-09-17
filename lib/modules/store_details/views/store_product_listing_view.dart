@@ -170,10 +170,19 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     padding: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 20),
                     child: new TextField(
+                      onTap: () {
+                        FocusScope.of(context)
+                            .requestFocus(FocusNode());
+                        snapshot.navigateToProductSearch();
+                      },
                       controller: _controller,
                       decoration: new InputDecoration(
                           prefixIcon: Icon(
                             Icons.search,
+                            color: AppColors.icColors,
+                          ),
+                          suffixIcon: Icon(
+                            Icons.navigate_next,
                             color: AppColors.icColors,
                           ),
                           hintText: tr('product_list.search_placeholder'),
@@ -181,23 +190,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                               borderRadius: BorderRadius.circular(20),
                               borderSide: new BorderSide(
                                 color: AppColors.icColors,
-                              ))),
-                      onSubmitted: (String value) {
-                        _controller.text = "";
-                        snapshot.updateProductList(snapshot.productTempListing);
-                      },
-                      onChanged: (text) {
-                        if (snapshot.productTempListing.isEmpty) {
-                          snapshot.updateTempProductList(snapshot.products);
-                        }
-                        var filteredResult =
-                            snapshot.productTempListing.where((product) {
-                          return product.productName
-                              .toLowerCase()
-                              .contains(text.toLowerCase());
-                        }).toList();
-                        snapshot.updateProductList(filteredResult);
-                      },
+                              ),),),
                     ),
                   ),
                   Container(
@@ -450,6 +443,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(CategoriesNew) updateSelectedCategory;
   Function(List<Product>) updateTempProductList;
   Function(List<Product>) updateProductList;
+  Function navigateToProductSearch;
 
   _ViewModel();
 
@@ -469,7 +463,9 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateTempProductList,
       this.updateProductList,
       this.selectedMerchant,
-      this.selectedSubCategory})
+      this.selectedSubCategory,
+      this.navigateToProductSearch
+      })
       : super(equals: [
           products,
           localCartListing,
@@ -507,6 +503,11 @@ class _ViewModel extends BaseModel<AppState> {
         },
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
+        },
+        navigateToProductSearch: () {
+          dispatch(
+            NavigateAction.pushNamed('/productSearch'),
+          );
         },
         subCategories: state.productState.subCategories,
         productTempListing: state.productState.productListingTempDataSource,

@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/cart/views/cart_sku_bottom_sheet.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -46,90 +47,118 @@ class _MerchantProductsSearchViewState
                 child: Container(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      left: 20,
-                      right: 20,
                       top: 20,
                     ),
                     child: SafeArea(
-                      child: ListView(
-                        children: [
-                          Container(
-                            child: TextField(
-                              onEditingComplete: () {
-                                if (_controller.text.length < 3) return;
-                                snapshot.getSearchedProductsForMerchant(
-                                    _controller.text);
-                              },
-                              controller: _controller,
-                              decoration: InputDecoration(
-                                hintText:
-                                    'Search ${snapshot.selectedMerchant.businessName}..',
-                                prefixIcon: IconButton(
-                                    icon: Icon(
-                                      Icons.navigate_before,
-                                      color: AppColors.icColors,
-                                    ),
-                                    onPressed: () {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                      snapshot.closeSearchWindowAction();
-                                      snapshot.clearSearchResults();
-                                    }),
-                                suffixIcon: snapshot.loadingStatusApp ==
-                                        LoadingStatusApp.loading
-                                    ? Padding(
-                                        padding: EdgeInsets.only(right: 15),
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
+                      child: Container(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: TextField(
+                                onSubmitted: (_){
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                },
+                                onEditingComplete: () {
+                                  if (_controller.text.length < 3) return;
+                                  snapshot.getSearchedProductsForMerchant(
+                                      _controller.text);
+                                },
+                                controller: _controller,
+                                decoration: InputDecoration(
+                                  hintText:
+                                      'Search ${snapshot.selectedMerchant.businessName}..',
+                                  prefixIcon: IconButton(
+                                      icon: Icon(
+                                        Icons.navigate_before,
+                                        color: AppColors.icColors,
+                                      ),
+                                      onPressed: () {
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                        snapshot.closeSearchWindowAction();
+                                        snapshot.clearSearchResults();
+                                      }),
+                                  suffixIcon: snapshot.loadingStatusApp ==
+                                          LoadingStatusApp.loading
+                                      ? Padding(
+                                          padding: EdgeInsets.only(right: 15),
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
                                             ),
                                           ),
+                                        )
+                                      : IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: AppColors.icColors,
+                                          ),
+                                          onPressed: () => _controller.clear(),
                                         ),
-                                      )
-                                    : IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: AppColors.icColors,
-                                        ),
-                                        onPressed: () => _controller.clear(),
-                                      ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          if (snapshot.searchProductsForMerchant.isNotEmpty)
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: 20,
+                            if (snapshot.searchProductsForMerchant.isEmpty)
+                              Expanded(
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height,
+                                ),
                               ),
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: ClampingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return SearchProductListingItemView(
-                                    index: index,
-                                    item: snapshot
-                                        .searchProductsForMerchant[index],
-                                    imageLink:
-                                        "https://via.placeholder.com/150",
-                                  );
+                            if (snapshot.searchProductsForMerchant.isNotEmpty)
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 10, left: 20, right: 20),
+                                  child: ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return SearchProductListingItemView(
+                                        index: index,
+                                        item: snapshot
+                                            .searchProductsForMerchant[index],
+                                        imageLink:
+                                            "https://via.placeholder.com/150",
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return SizedBox(
+                                        height: 20,
+                                      );
+                                    },
+                                    itemCount: snapshot
+                                        .searchProductsForMerchant.length,
+                                  ),
+                                ),
+                              ),
+                            AnimatedContainer(
+                              height:
+                                  snapshot.localCartListing.isEmpty ? 0 : 86,
+                              duration: Duration(milliseconds: 300),
+                              child: BottomView(
+                                storeName:
+                                    snapshot.selectedMerchant?.businessName ??
+                                        "",
+                                height:
+                                    snapshot.localCartListing.isEmpty ? 0 : 86,
+                                buttonTitle: tr('cart.view_cart'),
+                                didPressButton: () {
+                                  snapshot.navigateToCart();
                                 },
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: 20,
-                                  );
-                                },
-                                itemCount:
-                                    snapshot.searchProductsForMerchant.length,
                               ),
                             ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -151,6 +180,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Product) removeFromCart;
   Function closeSearchWindowAction;
   Function clearSearchResults;
+  Function navigateToCart;
 
   _ViewModel();
 
@@ -163,7 +193,8 @@ class _ViewModel extends BaseModel<AppState> {
       @required this.addToCart,
       @required this.removeFromCart,
       @required this.clearSearchResults,
-      @required this.searchProductsForMerchant})
+      @required this.searchProductsForMerchant,
+      @required this.navigateToCart})
       : super(equals: [
           loadingStatusApp,
           selectedMerchant,
@@ -181,6 +212,9 @@ class _ViewModel extends BaseModel<AppState> {
       },
       removeFromCart: (item) {
         dispatch(RemoveFromCartLocalAction(product: item));
+      },
+      navigateToCart: () {
+        dispatch(NavigateAction.pushNamed('/CartView'));
       },
       localCartListing: state.productState.localCartItems,
       getSearchedProductsForMerchant: (queryText) {
