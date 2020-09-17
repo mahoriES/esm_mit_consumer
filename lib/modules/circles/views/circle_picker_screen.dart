@@ -52,16 +52,14 @@ class _CirclePickerState extends State<CirclePicker> {
       onInit: (store) async {
         _controller..addListener(() async {
           if (_controller.text.length<3) return;
-          debugPrint('Text changed ${_controller.text}');
           await store.dispatchFuture(GetSuggestionsForCircleAction(queryText: _controller.text));
-          textField.updateSuggestions(store.state.authState.suggestedClusters);
+          textField.updateSuggestions(store.state.authState.suggestedClusters ?? <Cluster>[]);
         });
         await store.dispatchFuture(GetNearbyCirclesAction());
         if (store.state.authState.cluster != null &&
             (ModalRoute.of(context).settings.arguments
                     as Map)["fromAccountScreen"] ==
                 false) {
-          debugPrint('Tis getting called man!');
           Future.delayed(Duration.zero, () {
             store.dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
           });
@@ -69,7 +67,6 @@ class _CirclePickerState extends State<CirclePicker> {
       },
       builder: (context, snapshot) {
         textField = buildSuggestionTextfield(snapshot: snapshot);
-        debugPrint('Rebuilt');
         ///[WillPopScope] will prevent the user from popping by clicking the
         ///back button on Android phones only!
         return WillPopScope(
@@ -195,7 +192,7 @@ class _CirclePickerState extends State<CirclePicker> {
     debugPrint('The suggestion textfield was built');
     return AutoCompleteTextField<Cluster>(
       controller: _controller,
-      suggestions: snapshot.suggestedClusters,
+      suggestions: snapshot.suggestedClusters ?? <Cluster>[],
 
       key: suggestionsTextfieldKey,
       itemFilter: (suggestion, itemFilter) => true,

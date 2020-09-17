@@ -5,16 +5,20 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/cart/views/cart_sku_bottom_sheet.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+///This widget displays the search screen where the user can search for products
+///across the entire catalogue for a particular merchant.
 class MerchantProductsSearchView extends StatefulWidget {
   @override
   _MerchantProductsSearchViewState createState() =>
@@ -30,14 +34,23 @@ class _MerchantProductsSearchViewState
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
+          _controller.clearComposing();
+          _controller.clear();
           _controller.addListener(() async {
             if (_controller.text.length < 3) return;
+            store.dispatch(GetItemsForMerchantProductSearch(
+              merchantId: store.state.productState.selectedMerchand.businessId,
+              queryText: _controller.text,
+            ));
           });
         },
         builder: (context, snapshot) {
-          debugPrint('Found products and will rebuild');
           return WillPopScope(
+            ///Widget used to clear products when back button is pressed
             onWillPop: () {
+              ///To remove focus from [TextField]
+              _controller.clearComposing();
+              _controller.clear();
               FocusScope.of(context).requestFocus(FocusNode());
               snapshot.clearSearchResults();
               return Future.value(true);
@@ -47,78 +60,100 @@ class _MerchantProductsSearchViewState
                 child: Container(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: 20,
+                      top: AppSizes.adjustableWidgetPadding,
                     ),
                     child: SafeArea(
                       child: Container(
                         child: Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 20, right: 20),
-                              child: TextField(
-                                onSubmitted: (_){
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                },
-                                onEditingComplete: () {
-                                  if (_controller.text.length < 3) return;
-                                  snapshot.getSearchedProductsForMerchant(
-                                      _controller.text);
-                                },
-                                controller: _controller,
-                                decoration: InputDecoration(
-                                  hintText:
-                                      'Search ${snapshot.selectedMerchant.businessName}..',
-                                  prefixIcon: IconButton(
-                                      icon: Icon(
-                                        Icons.navigate_before,
-                                        color: AppColors.icColors,
-                                      ),
-                                      onPressed: () {
-                                        FocusScope.of(context)
-                                            .requestFocus(FocusNode());
-                                        snapshot.closeSearchWindowAction();
-                                        snapshot.clearSearchResults();
-                                      }),
-                                  suffixIcon: snapshot.loadingStatusApp ==
-                                          LoadingStatusApp.loading
-                                      ? Padding(
-                                          padding: EdgeInsets.only(right: 15),
-                                          child: Align(
-                                            alignment: Alignment.centerRight,
+                              padding: EdgeInsets.only(
+                                  left: AppSizes.adjustableWidgetPadding,
+                                  right: AppSizes.adjustableWidgetPadding),
+                              child: Hero(
+                                flightShuttleBuilder:
+                                    (BuildContext flightContext,
+                                            Animation<double> animation,
+                                            HeroFlightDirection flightDirection,
+                                            BuildContext fromHeroContext,
+                                            BuildContext toHeroContext) =>
+                                        Material(child: toHeroContext.widget),
+                                tag: 'toSearchScreen',
+                                child: TextField(
+                                  onSubmitted: (_) {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                  },
+                                  controller: _controller,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        'Search ${snapshot.selectedMerchant.businessName}..',
+                                    prefixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.navigate_before,
+                                          color: AppColors.icColors,
+                                        ),
+                                        onPressed: () {
+                                          _controller.clearComposing();
+                                          _controller.clear();
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
+                                          snapshot.clearSearchResults();
+                                          snapshot.closeSearchWindowAction();
+                                        },),
+                                    suffixIcon: snapshot.loadingStatusApp ==
+                                            LoadingStatusApp.loading
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                                right: AppSizes.widgetPadding),
                                             child: SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
+                                              height: AppSizes
+                                                  .circularIndicatorSide,
+                                              width: AppSizes
+                                                  .circularIndicatorSide,
+                                              child: Center(
+                                                child:
+                                                    ///Shown when the relevant
+                                                ///product(s) are being fetched from API
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 3,
+                                                ),
                                               ),
                                             ),
+                                          )
+                                        : IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: AppColors.icColors,
+                                            ),
+                                            onPressed: () =>
+                                                _controller.clear(),
                                           ),
-                                        )
-                                      : IconButton(
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: AppColors.icColors,
-                                          ),
-                                          onPressed: () => _controller.clear(),
-                                        ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          AppSizes.productItemBorderRadius),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+
+                            ///To keep the cart total view stick to bottom
                             if (snapshot.searchProductsForMerchant.isEmpty)
                               Expanded(
                                 child: Container(
                                   height: MediaQuery.of(context).size.height,
                                 ),
                               ),
+
+                            ///Search results for a keyword
                             if (snapshot.searchProductsForMerchant.isNotEmpty)
                               Expanded(
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                      top: 10, left: 20, right: 20),
+                                      top: AppSizes.adjustableWidgetPadding / 2,
+                                      left: AppSizes.adjustableWidgetPadding,
+                                      right: AppSizes.adjustableWidgetPadding),
                                   child: ListView.separated(
                                     shrinkWrap: true,
                                     physics: ClampingScrollPhysics(),
@@ -127,13 +162,21 @@ class _MerchantProductsSearchViewState
                                         index: index,
                                         item: snapshot
                                             .searchProductsForMerchant[index],
-                                        imageLink:
-                                            "https://via.placeholder.com/150",
+                                        imageLink: snapshot.selectedCategory.images !=
+                                            null
+                                            ? snapshot.selectedCategory
+                                            .images.length >
+                                            0
+                                            ? snapshot.selectedCategory
+                                            .images.first.photoUrl
+                                            : ""
+                                            : "",
                                       );
                                     },
                                     separatorBuilder: (context, index) {
                                       return SizedBox(
-                                        height: 20,
+                                        height:
+                                            AppSizes.adjustableWidgetPadding,
                                       );
                                     },
                                     itemCount: snapshot
@@ -141,16 +184,20 @@ class _MerchantProductsSearchViewState
                                   ),
                                 ),
                               ),
+
+                            ///Bottom cart total view
                             AnimatedContainer(
-                              height:
-                                  snapshot.localCartListing.isEmpty ? 0 : 86,
+                              height: snapshot.localCartListing.isEmpty
+                                  ? 0
+                                  : AppSizes.cartTotalBottomViewHeight,
                               duration: Duration(milliseconds: 300),
                               child: BottomView(
                                 storeName:
                                     snapshot.selectedMerchant?.businessName ??
                                         "",
-                                height:
-                                    snapshot.localCartListing.isEmpty ? 0 : 86,
+                                height: snapshot.localCartListing.isEmpty
+                                    ? 0
+                                    : AppSizes.cartTotalBottomViewHeight,
                                 buttonTitle: tr('cart.view_cart'),
                                 didPressButton: () {
                                   snapshot.navigateToCart();
@@ -181,11 +228,13 @@ class _ViewModel extends BaseModel<AppState> {
   Function closeSearchWindowAction;
   Function clearSearchResults;
   Function navigateToCart;
+  CategoriesNew selectedCategory;
 
   _ViewModel();
 
   _ViewModel.build(
       {@required this.loadingStatusApp,
+      @required this.selectedCategory,
       @required this.closeSearchWindowAction,
       @required this.selectedMerchant,
       @required this.getSearchedProductsForMerchant,
@@ -199,11 +248,14 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatusApp,
           selectedMerchant,
           localCartListing,
+          searchProductsForMerchant,
+          selectedCategory,
         ]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+      selectedCategory: state.productState.selectedCategory,
       searchProductsForMerchant: state.productState.searchResultProducts,
       loadingStatusApp: state.authState.loadingStatus,
       selectedMerchant: state.productState.selectedMerchand,
@@ -255,20 +307,19 @@ class _SearchProductListingItemViewState
             child: Row(
               children: <Widget>[
                 Container(
-                  height: 100,
-                  width: 100,
+                  height: AppSizes.productItemImageSize / 5,
+                  width: AppSizes.productItemImageSize / 5,
                   margin: EdgeInsets.only(
-                    left: 13,
-                    right: 13,
+                    left: AppSizes.widgetPadding,
+                    right: AppSizes.widgetPadding,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xffe7eaf0),
+                        color: AppColors.offWhitish,
                         offset: Offset(0, 8),
-                        blurRadius: 15,
-                        spreadRadius: 0,
+                        blurRadius: AppSizes.productItemBlurRadius,
                       ),
                     ],
                   ),
@@ -278,17 +329,20 @@ class _SearchProductListingItemViewState
                       ColorFiltered(
                         child: widget.item.images == null
                             ? Padding(
-                                padding: const EdgeInsets.all(25.0),
+                                padding: const EdgeInsets.all(
+                                    AppSizes.productItemBorderRadius),
                                 child: CachedNetworkImage(
                                     fit: BoxFit.cover,
-                                    imageUrl: "",
+                                    imageUrl:
+                                        widget.item?.images?.first?.photoUrl ??
+                                            "",
                                     placeholder: (context, url) =>
                                         CupertinoActivityIndicator(),
                                     errorWidget: (context, url, error) =>
                                         Center(
                                           child: Icon(
                                             Icons.image,
-                                            size: 30,
+                                            size: AppSizes.productItemIconSize,
                                           ),
                                         )),
                               )
@@ -296,7 +350,7 @@ class _SearchProductListingItemViewState
                                 ? Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: CachedNetworkImage(
-                                        height: 500.0,
+                                        height: AppSizes.productItemImageSize,
                                         fit: BoxFit.cover,
                                         imageUrl: widget.item?.images?.first
                                                 ?.photoUrl ??
@@ -307,7 +361,8 @@ class _SearchProductListingItemViewState
                                             Center(
                                               child: Icon(
                                                 Icons.image,
-                                                size: 30,
+                                                size: AppSizes
+                                                    .adjustableWidgetPadding,
                                               ),
                                             )),
                                   )
@@ -322,7 +377,8 @@ class _SearchProductListingItemViewState
                                             Center(
                                               child: Icon(
                                                 Icons.image,
-                                                size: 30,
+                                                size: AppSizes
+                                                    .adjustableWidgetPadding,
                                               ),
                                             )),
                                   ),
@@ -336,11 +392,12 @@ class _SearchProductListingItemViewState
                               child: // Out of stock
                                   Text("Out of stock",
                                       style: const TextStyle(
-                                          color: const Color(0xfff51818),
+                                          color: AppColors.iconColors,
                                           fontWeight: FontWeight.w500,
                                           fontFamily: "Avenir-Medium",
                                           fontStyle: FontStyle.normal,
-                                          fontSize: 12.0),
+                                          fontSize:
+                                              AppSizes.itemSubtitle3FontSize),
                                       textAlign: TextAlign.left))
                           : Container()
                     ],
@@ -348,18 +405,18 @@ class _SearchProductListingItemViewState
                 ),
                 Expanded(
                   child: Container(
-                    height: 100,
+                    height: AppSizes.productItemImageSize / 5,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Text(widget.item.productName,
                             style: const TextStyle(
-                                color: const Color(0xff515c6f),
+                                color: AppColors.offGreyish,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: "Avenir-Medium",
                                 fontStyle: FontStyle.normal,
-                                fontSize: 15.0),
+                                fontSize: AppSizes.itemSubtitle2FontSize),
                             textAlign: TextAlign.left),
                         // ₹ 55.00
                         Row(
@@ -370,15 +427,16 @@ class _SearchProductListingItemViewState
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus.first.basePrice / 100}",
+                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget
+                                        .item.skus.first.basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
-                                            ? Color(0xffc1c1c1)
-                                            : Color(0xff5091cd)),
+                                            ? AppColors.offWhitish
+                                            : AppColors.lightBlue),
                                         fontWeight: FontWeight.w500,
                                         fontFamily: "Avenir-Medium",
                                         fontStyle: FontStyle.normal,
-                                        fontSize: 18.0),
+                                        fontSize: AppSizes.productItemFontSize),
                                     textAlign: TextAlign.left),
                                 SizedBox(
                                   height: 3,
@@ -392,7 +450,8 @@ class _SearchProductListingItemViewState
                                         widget.item.skus.first.variationOptions
                                             .weight,
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize:
+                                              AppSizes.itemSubtitle3FontSize,
                                           fontWeight: FontWeight.w300,
                                           color: AppColors.darkGrey,
                                           fontFamily: 'Avenir',
@@ -401,7 +460,8 @@ class _SearchProductListingItemViewState
                                     : Text(
                                         'cart.customize'.tr(),
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize:
+                                              AppSizes.itemSubtitle3FontSize,
                                           fontWeight: FontWeight.w300,
                                           color: AppColors.darkGrey,
                                           fontFamily: 'Avenir',
@@ -411,7 +471,7 @@ class _SearchProductListingItemViewState
                             ),
                             CSStepper(
                               backgroundColor: !isOutOfStock
-                                  ? Color(0xffb1b1b1)
+                                  ? AppColors.offWhitish
                                   : AppColors.icColors,
                               addButtonAction: () {
                                 if (widget.item.skus.isNotEmpty &&
@@ -483,7 +543,8 @@ class _SearchProductListingItemViewState
         context: context,
         elevation: 3.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderRadius: BorderRadius.all(Radius.circular(AppSizes
+              .bottomSheetBorderRadius)),
         ),
         builder: (context) => Container(
               child: SkuBottomSheet(

@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
@@ -97,36 +98,45 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.only(right: 20, left: 20),
+                                    padding: const EdgeInsets.only(
+                                        right: 20, left: 20),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Padding(
                                           padding: EdgeInsets.only(bottom: 20),
                                           child: Container(
-                                            child: TextField(
-                                              onTap: () {
-                                                FocusScope.of(context)
-                                                    .requestFocus(FocusNode());
-                                                snapshot.navigateToProductSearch();
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                    'Search ${snapshot.selectedMerchant?.businessName}...',
-                                                prefixIcon: Icon(
-                                                  Icons.search,
-                                                  color: AppColors.icColors,
-                                                ),
-                                                suffixIcon: Icon(
-                                                  Icons.navigate_next,
-                                                  color: AppColors.icColors,
-                                                ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
+                                            child: Material(
+                                              child: Hero(
+                                                tag: 'herotag',
+                                                child: TextField(
+                                                  onTap: () {
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            FocusNode());
+                                                    snapshot
+                                                        .navigateToProductSearch();
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    hintText:
+                                                        'Search ${snapshot.selectedMerchant?.businessName}...',
+                                                    prefixIcon: Icon(
+                                                      Icons.search,
+                                                      color: AppColors.icColors,
+                                                    ),
+                                                    suffixIcon: Icon(
+                                                      Icons.navigate_next,
+                                                      color: AppColors.icColors,
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -134,15 +144,17 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                         ),
                                         // Organic Store
                                         Hero(
-                                          tag:
-                                              snapshot.selectedMerchant?.businessName,
+                                          tag: snapshot
+                                              .selectedMerchant?.businessName,
                                           child: Text(
                                               snapshot.selectedMerchant
                                                       ?.businessName ??
                                                   "",
                                               style: const TextStyle(
-                                                  decoration: TextDecoration.none,
-                                                  color: const Color(0xff000000),
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  color:
+                                                      const Color(0xff000000),
                                                   fontWeight: FontWeight.w500,
                                                   fontFamily: "Avenir-Medium",
                                                   fontStyle: FontStyle.normal,
@@ -157,18 +169,21 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                           children: <Widget>[
                                             Expanded(
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.only(top: 5),
+                                                padding: const EdgeInsets.only(
+                                                    top: 5),
                                                 child: Text(
                                                     snapshot.selectedMerchant
                                                             ?.description ??
                                                         "",
                                                     style: const TextStyle(
-                                                        color:
-                                                            const Color(0xff797979),
-                                                        fontWeight: FontWeight.w500,
-                                                        fontFamily: "Avenir-Medium",
-                                                        fontStyle: FontStyle.normal,
+                                                        color: const Color(
+                                                            0xff797979),
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            "Avenir-Medium",
+                                                        fontStyle:
+                                                            FontStyle.normal,
                                                         fontSize: 14.0),
                                                     textAlign: TextAlign.left),
                                               ),
@@ -177,8 +192,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               children: <Widget>[
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.only(right: 8),
-                                                  child: snapshot.selectedMerchant
+                                                      const EdgeInsets.only(
+                                                          right: 8),
+                                                  child: snapshot
+                                                          .selectedMerchant
                                                           .hasDelivery
                                                       ? Image.asset(
                                                           'assets/images/delivery.png')
@@ -189,13 +206,17 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                     snapshot.selectedMerchant
                                                             .hasDelivery
                                                         ? tr("shop.delivery_ok")
-                                                        : tr("shop.delivery_no"),
+                                                        : tr(
+                                                            "shop.delivery_no"),
                                                     style: const TextStyle(
-                                                        color:
-                                                            const Color(0xff6f6f6f),
-                                                        fontWeight: FontWeight.w500,
-                                                        fontFamily: "Avenir-Medium",
-                                                        fontStyle: FontStyle.normal,
+                                                        color: const Color(
+                                                            0xff6f6f6f),
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            "Avenir-Medium",
+                                                        fontStyle:
+                                                            FontStyle.normal,
                                                         fontSize: 16.0),
                                                     textAlign: TextAlign.left),
                                               ],
@@ -206,7 +227,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(top: 20, bottom: 10),
+                                    padding:
+                                        EdgeInsets.only(top: 20, bottom: 10),
                                     child: MySeparator(
                                       color: AppColors.darkGrey,
                                       height: 0.5,
@@ -214,7 +236,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        left: 20, right: 10, top: 15, bottom: 20),
+                                        left: 20,
+                                        right: 10,
+                                        top: 15,
+                                        bottom: 20),
                                     child: Row(
                                       children: <Widget>[
                                         ImageIcon(
@@ -228,7 +253,9 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                             padding: const EdgeInsets.only(
                                                 left: 8, right: 8),
                                             child: Text(
-                                                snapshot.selectedMerchant?.address
+                                                snapshot
+                                                        .selectedMerchant
+                                                        ?.address
                                                         ?.prettyAddress ??
                                                     "",
 //                                              snapshot.selectedMerchant.address
@@ -237,7 +264,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
 //                                                  snapshot.selectedMerchant
 //                                                      .address.addressLine2,
                                                 style: const TextStyle(
-                                                    color: const Color(0xff6f6f6f),
+                                                    color:
+                                                        const Color(0xff6f6f6f),
                                                     fontWeight: FontWeight.w500,
                                                     fontFamily: "Avenir-Medium",
                                                     fontStyle: FontStyle.normal,
@@ -268,7 +296,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
                                       child: Text(
                                         "shop.item_category",
                                         style: TextStyle(
@@ -296,7 +325,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               onTap: () {
                                                 snapshot.updateSelectedCategory(
                                                     snapshot.categories[index]);
-                                                snapshot.navigateToProductDetails();
+                                                snapshot
+                                                    .navigateToProductDetails();
                                               },
                                               child: Column(
                                                 children: <Widget>[
@@ -304,15 +334,19 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
                                                       border: Border.all(
-                                                        color: Color(0xffe0e0e0),
+                                                        color:
+                                                            Color(0xffe0e0e0),
                                                         width: 1,
                                                       ),
                                                       borderRadius:
-                                                          BorderRadius.circular(8),
+                                                          BorderRadius.circular(
+                                                              8),
                                                     ),
                                                     child: ClipRRect(
-                                                      borderRadius: BorderRadius.all(
-                                                          Radius.circular(10)),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
                                                       child: Container(
                                                         width: double.infinity,
 //                                              padding: EdgeInsets.all(10),
@@ -321,59 +355,70 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
 
                                                             Padding(
                                                           padding:
-                                                              const EdgeInsets.all(
-                                                                  15.0),
-                                                          child: CachedNetworkImage(
-                                                              height: 75,
-                                                              fit: BoxFit.cover,
+                                                              const EdgeInsets
+                                                                  .all(15.0),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                                  height: 75,
+                                                                  fit: BoxFit
+                                                                      .cover,
 //                                                  height: 80,
-                                                              imageUrl: snapshot
-                                                                      .categories[
-                                                                          index]
-                                                                      .images
-                                                                      .isEmpty
-                                                                  ? "https://via.placeholder.com/150"
-                                                                  : snapshot
-                                                                      .categories[
-                                                                          index]
-                                                                      .images
-                                                                      .first
-                                                                      .photoUrl,
-                                                              placeholder: (context,
-                                                                      url) =>
-                                                                  Container(
+                                                                  imageUrl: snapshot
+                                                                          .categories[
+                                                                              index]
+                                                                          .images
+                                                                          .isEmpty
+                                                                      ? ""
+                                                                      : snapshot
+                                                                          .categories[
+                                                                              index]
+                                                                          .images
+                                                                          .first
+                                                                          .photoUrl,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      Container(
 //                                                              height: 170,
-                                                                      child: Icon(Icons
-                                                                          .image)),
-                                                              errorWidget: (context,
-                                                                      url, error) =>
-                                                                  Container(
-                                                                    height: 75,
-                                                                    child: Center(
-                                                                      child: Icon(
-                                                                        Icons.image,
-                                                                        size: 30,
-                                                                      ),
-                                                                    ),
-                                                                  )),
+                                                                          child: Icon(Icons
+                                                                              .image)),
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Container(
+                                                                        height:
+                                                                            75,
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Icon(
+                                                                            Icons.image,
+                                                                            size:
+                                                                                30,
+                                                                          ),
+                                                                        ),
+                                                                      )),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                   Container(
-                                                    padding: EdgeInsets.only(top: 10),
+                                                    padding: EdgeInsets.only(
+                                                        top: 10),
 //                                      height: 30,
                                                     child: Center(
                                                       child: Wrap(
-                                                        direction: Axis.horizontal,
+                                                        direction:
+                                                            Axis.horizontal,
                                                         children: <Widget>[
                                                           Hero(
                                                             tag: snapshot
-                                                                .categories[index]
+                                                                .categories[
+                                                                    index]
                                                                 .categoryName,
                                                             child: Text(
                                                               snapshot
-                                                                  .categories[index]
+                                                                  .categories[
+                                                                      index]
                                                                   .categoryName,
                                                               style: const TextStyle(
                                                                   decoration:
@@ -382,12 +427,15 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                                   color: const Color(
                                                                       0xff747474),
                                                                   fontWeight:
-                                                                      FontWeight.w600,
+                                                                      FontWeight
+                                                                          .w600,
                                                                   fontFamily:
                                                                       "Avenir-Medium",
-                                                                  fontStyle: FontStyle
-                                                                      .normal,
-                                                                  fontSize: 14.0),
+                                                                  fontStyle:
+                                                                      FontStyle
+                                                                          .normal,
+                                                                  fontSize:
+                                                                      14.0),
                                                               maxLines: 2,
                                                             ),
                                                           ),
@@ -414,15 +462,16 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                         ),
                       ),
                       AnimatedContainer(
-                        height:
-                        snapshot.localCartListing.isEmpty ? 0 : 86,
+                        height: snapshot.localCartListing.isEmpty
+                            ? 0
+                            : AppSizes.cartTotalBottomViewHeight,
                         duration: Duration(milliseconds: 300),
                         child: BottomView(
                           storeName:
-                          snapshot.selectedMerchant?.businessName ??
-                              "",
-                          height:
-                          snapshot.localCartListing.isEmpty ? 0 : 86,
+                              snapshot.selectedMerchant?.businessName ?? "",
+                          height: snapshot.localCartListing.isEmpty
+                              ? 0
+                              : AppSizes.cartTotalBottomViewHeight,
                           buttonTitle: tr('cart.view_cart'),
                           didPressButton: () {
                             snapshot.navigateToCart();
@@ -490,7 +539,12 @@ class _ViewModel extends BaseModel<AppState> {
       this.navigateToProductSearch,
       this.localCartListing,
       this.navigateToCart})
-      : super(equals: [selectedMerchant, loadingStatus, categories,localCartListing]);
+      : super(equals: [
+          selectedMerchant,
+          loadingStatus,
+          categories,
+          localCartListing
+        ]);
 
   @override
   BaseModel fromStore() {

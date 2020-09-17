@@ -14,6 +14,8 @@ class AppColors {
   static const blackShadowColor = Color.fromRGBO(0, 0, 0, 0.12);
   static const blackTextColor = Color.fromRGBO(0, 0, 0, 0.87);
   static const greyishText = const Color(0xff808080);
+  static const lightBlue = const Color(0xff5091cd);
+  static const offGreyish = const Color(0xff515c6f);
 
 
   static const linearGradient = LinearGradient(

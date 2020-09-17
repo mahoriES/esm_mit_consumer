@@ -9,7 +9,9 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+///An action to search products for a particular merchant for a given query text
 class GetItemsForMerchantProductSearch extends ReduxAction<AppState> {
 
    final String queryText;
@@ -41,16 +43,21 @@ class GetItemsForMerchantProductSearch extends ReduxAction<AppState> {
         }
     );
     if (response.status == ResponseStatus.success200) {
+
       var responseModel = CatalogSearchResponse.fromJson(response.data);
       var items = responseModel.results;
-
-      var products = items.map((f) {
-        f.count = 0;
-        return f;
+      ///Preparing a list of products from the fetched items and initialising
+      ///the selected quantity for each [product] to zero.
+      var products = items.map((item) {
+        item.count = 0;
+        return item;
       }).toList();
-
+      ///Getting the list of all items currently persisted in the local cart
+      ///data source
       List<Product> allCartItems = await CartDataSource.getListOfCartWith();
-
+      ///Initialising the selected SKU for each product (in the fetched product
+      ///list) and if the item has already been added to the local cart, then
+      ///updating it's quantity to that in the local cart.
       products.forEach((item) {
         item.selectedVariant = 0;
         allCartItems.forEach((localCartItem) {
@@ -60,27 +67,21 @@ class GetItemsForMerchantProductSearch extends ReduxAction<AppState> {
         });
       });
 
-//      if (url != null) {
-//        var totalProduct =
-//            state.productState.productResponse.results + products;
-//        products = totalProduct;
-//        responseModel.results = products;
-//      } else {}
-
       return state.copyWith(
           productState: state.productState.copyWith(
-              //productListingDataSource: products,
-              //productResponse: responseModel,
               searchResultProducts: products,
           ));
     }
     else {
+      Fluttertoast.showToast(msg: "Error fetching items!");
       return null;
     }
   }
 
 }
 
+///This action is used to clear the items which were searched and stored in the
+///local store.
 class ClearSearchResultProductsAction extends ReduxAction<AppState> {
 
   @override

@@ -14,6 +14,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -169,28 +170,33 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 20),
-                    child: new TextField(
-                      onTap: () {
-                        FocusScope.of(context)
-                            .requestFocus(FocusNode());
-                        snapshot.navigateToProductSearch();
-                      },
-                      controller: _controller,
-                      decoration: new InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: AppColors.icColors,
-                          ),
-                          suffixIcon: Icon(
-                            Icons.navigate_next,
-                            color: AppColors.icColors,
-                          ),
-                          hintText: tr('product_list.search_placeholder'),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: new BorderSide(
+                    child: Material(
+                      child: Hero(
+                        tag: 'toSearchScreen',
+                        child: new TextField(
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(FocusNode());
+                            snapshot.navigateToProductSearch();
+                          },
+                          controller: _controller,
+                          decoration: new InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.search,
                                 color: AppColors.icColors,
-                              ),),),
+                              ),
+                              suffixIcon: Icon(
+                                Icons.navigate_next,
+                                color: AppColors.icColors,
+                              ),
+                              hintText: tr('product_list.search_placeholder'),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: new BorderSide(
+                                    color: AppColors.icColors,
+                                  ),),),
+                        ),
+                      ),
                     ),
                   ),
                   Container(
@@ -335,11 +341,11 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     ),
                   ),
                   AnimatedContainer(
-                    height: snapshot.localCartListing.isEmpty ? 0 : 86,
+                    height: snapshot.localCartListing.isEmpty ? 0 : AppSizes.cartTotalBottomViewHeight,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
                       storeName: snapshot.selectedMerchant?.businessName ?? "",
-                      height: snapshot.localCartListing.isEmpty ? 0 : 86,
+                      height: snapshot.localCartListing.isEmpty ? 0 : AppSizes.cartTotalBottomViewHeight,
                       buttonTitle: tr('cart.view_cart'),
                       didPressButton: () {
                         snapshot.navigateToCart();
