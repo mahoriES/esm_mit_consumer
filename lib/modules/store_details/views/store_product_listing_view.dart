@@ -171,8 +171,6 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         top: 10, left: 20, right: 20, bottom: 20),
                     child: new TextField(
                       controller: _controller,
-
-//          autofocus: true,
                       decoration: new InputDecoration(
                           prefixIcon: Icon(
                             Icons.search,
@@ -180,7 +178,7 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                           ),
                           hintText: tr('product_list.search_placeholder'),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(20),
                               borderSide: new BorderSide(
                                 color: AppColors.icColors,
                               ))),

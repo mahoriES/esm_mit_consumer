@@ -13,6 +13,7 @@ class ProductState {
 //  final LoadingStatus loadingStatus;
   final List<Product> productListingDataSource;
   final List<Product> productListingTempDataSource;
+  final List<Product> searchResultProducts;
   final List<Merchants> searchResults;
   final bool currentOrderIsPickUp;
   final List<Product> localCartItems;
@@ -46,7 +47,8 @@ class ProductState {
       @required this.categories,
       @required this.currentOrderIsPickUp,
       @required this.productResponse,
-      @required this.selectedSubCategory});
+      @required this.selectedSubCategory,
+      @required this.searchResultProducts,});
 
   factory ProductState.initial() {
     return new ProductState(
@@ -63,6 +65,7 @@ class ProductState {
         selectedMerchand: null,
         productListingTempDataSource: [],
         productListingDataSource: [],
+        searchResultProducts: [],
         selectedCategory: null,
         selectedSubCategory: null,
         placeOrderResponse: null,
@@ -72,6 +75,7 @@ class ProductState {
   ProductState copyWith(
       {List<Product> productListingDataSource,
       List<Product> productListingTempDataSource,
+      List<Product> searchResultProducts,
       List<Product> localCartItems,
       List<CategoriesNew> categories,
       List<CategoriesNew> subCategories,
@@ -98,6 +102,7 @@ class ProductState {
         productListingTempDataSource:
             productListingTempDataSource ?? this.productListingTempDataSource,
         localCartItems: localCartItems ?? this.localCartItems,
+        searchResultProducts: searchResultProducts ?? this.searchResultProducts,
         selectedMerchand: selectedMerchant ?? this.selectedMerchand,
         productListingDataSource:
             productListingDataSource ?? this.productListingDataSource,

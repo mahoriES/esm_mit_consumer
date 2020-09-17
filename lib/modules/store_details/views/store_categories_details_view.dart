@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
@@ -25,6 +24,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        debugPrint('Onwillpop called');
         List<Business> merchants = await CartDataSource.getListOfMerchants();
         if (merchants.isNotEmpty &&
             merchants.first.businessId !=
@@ -100,6 +100,31 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: Container(
+                                      child: TextField(
+                                        onTap: () {
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
+                                          snapshot.navigateToProductSearch();
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText:
+                                              'Search ${snapshot.selectedMerchant?.businessName}...',
+                                          prefixIcon: Icon(
+                                            Icons.search,
+                                            color: AppColors.icColors,
+                                          ),
+                                          suffixIcon: Icon(Icons.navigate_next, color: AppColors.icColors,),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   // Organic Store
                                   Hero(
                                     tag:
@@ -301,7 +326,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                                     index]
                                                                 .images
                                                                 .isEmpty
-                                                            ? ""
+                                                            ? "https://via.placeholder.com/150"
                                                             : snapshot
                                                                 .categories[
                                                                     index]
@@ -425,14 +450,19 @@ class _ViewModel extends BaseModel<AppState> {
   Business selectedMerchant;
   List<CategoriesNew> categories;
   LoadingStatusApp loadingStatus;
+  Function navigateToProductSearch;
+
   _ViewModel();
+
   _ViewModel.build(
       {this.navigateToProductDetails,
       this.loadingStatus,
       this.categories,
       this.selectedMerchant,
-      this.updateSelectedCategory})
+      this.updateSelectedCategory,
+      this.navigateToProductSearch})
       : super(equals: [selectedMerchant, loadingStatus, categories]);
+
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
@@ -450,6 +480,11 @@ class _ViewModel extends BaseModel<AppState> {
           });
         },
         loadingStatus: state.authState.loadingStatus,
-        selectedMerchant: state.productState.selectedMerchand);
+        selectedMerchant: state.productState.selectedMerchand,
+        navigateToProductSearch: () {
+          dispatch(
+            NavigateAction.pushNamed('/productSearch'),
+          );
+        });
   }
 }
