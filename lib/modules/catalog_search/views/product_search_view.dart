@@ -257,16 +257,6 @@ class _MerchantProductsSearchViewState
                                         index: index,
                                         item: snapshot
                                             .searchProductsForMerchant[index],
-                                        imageLink:
-                                            snapshot.selectedCategory.images !=
-                                                    null
-                                                ? snapshot.selectedCategory
-                                                            .images.length >
-                                                        0
-                                                    ? snapshot.selectedCategory
-                                                        .images.first.photoUrl
-                                                    : ""
-                                                : "",
                                       );
                                     },
                                     separatorBuilder: (context, index) {
@@ -385,10 +375,9 @@ class _ViewModel extends BaseModel<AppState> {
 class SearchProductListingItemView extends StatefulWidget {
   final int index;
   final Product item;
-  final String imageLink;
 
   const SearchProductListingItemView(
-      {Key key, this.index, this.item, this.imageLink})
+      {Key key, this.index, this.item})
       : super(key: key);
 
   @override
