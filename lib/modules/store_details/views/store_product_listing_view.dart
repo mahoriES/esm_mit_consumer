@@ -4,6 +4,7 @@ import 'package:eSamudaay/main.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
@@ -14,6 +15,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -169,37 +171,33 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 20),
-                    child: new TextField(
-                      controller: _controller,
-
-//          autofocus: true,
-                      decoration: new InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: AppColors.icColors,
-                          ),
-                          hintText: tr('product_list.search_placeholder'),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: new BorderSide(
+                    child: Material(
+                      child: Hero(
+                        tag: 'toSearchScreen',
+                        child: new TextField(
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(FocusNode());
+                            snapshot.navigateToProductSearch();
+                          },
+                          controller: _controller,
+                          decoration: new InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.search,
                                 color: AppColors.icColors,
-                              ))),
-                      onSubmitted: (String value) {
-                        _controller.text = "";
-                        snapshot.updateProductList(snapshot.productTempListing);
-                      },
-                      onChanged: (text) {
-                        if (snapshot.productTempListing.isEmpty) {
-                          snapshot.updateTempProductList(snapshot.products);
-                        }
-                        var filteredResult =
-                            snapshot.productTempListing.where((product) {
-                          return product.productName
-                              .toLowerCase()
-                              .contains(text.toLowerCase());
-                        }).toList();
-                        snapshot.updateProductList(filteredResult);
-                      },
+                              ),
+                              suffixIcon: Icon(
+                                Icons.navigate_next,
+                                color: AppColors.icColors,
+                              ),
+                              hintText: tr('product_list.search_placeholder'),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: new BorderSide(
+                                    color: AppColors.icColors,
+                                  ),),),
+                        ),
+                      ),
                     ),
                   ),
                   Container(
@@ -344,11 +342,11 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     ),
                   ),
                   AnimatedContainer(
-                    height: snapshot.localCartListing.isEmpty ? 0 : 86,
+                    height: snapshot.localCartListing.isEmpty ? 0 : AppSizes.cartTotalBottomViewHeight,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
                       storeName: snapshot.selectedMerchant?.businessName ?? "",
-                      height: snapshot.localCartListing.isEmpty ? 0 : 86,
+                      height: snapshot.localCartListing.isEmpty ? 0 : AppSizes.cartTotalBottomViewHeight,
                       buttonTitle: tr('cart.view_cart'),
                       didPressButton: () {
                         snapshot.navigateToCart();
@@ -452,6 +450,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(CategoriesNew) updateSelectedCategory;
   Function(List<Product>) updateTempProductList;
   Function(List<Product>) updateProductList;
+  Function navigateToProductSearch;
 
   _ViewModel();
 
@@ -471,7 +470,9 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateTempProductList,
       this.updateProductList,
       this.selectedMerchant,
-      this.selectedSubCategory})
+      this.selectedSubCategory,
+      this.navigateToProductSearch
+      })
       : super(equals: [
           products,
           localCartListing,
@@ -509,6 +510,12 @@ class _ViewModel extends BaseModel<AppState> {
         },
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
+        },
+        navigateToProductSearch: () {
+          dispatch(ClearSearchResultProductsAction());
+          dispatch(
+            NavigateAction.pushNamed('/productSearch'),
+          );
         },
         subCategories: state.productState.subCategories,
         productTempListing: state.productState.productListingTempDataSource,

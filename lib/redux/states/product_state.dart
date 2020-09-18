@@ -13,8 +13,10 @@ class ProductState {
 //  final LoadingStatus loadingStatus;
   final List<Product> productListingDataSource;
   final List<Product> productListingTempDataSource;
+  final List<Product> searchResultProducts;
   final List<Merchants> searchResults;
   final bool currentOrderIsPickUp;
+  final bool searchForProductsComplete;
   final List<Product> localCartItems;
   final List<Charge> charges;
   final CategoriesNew selectedCategory;
@@ -29,29 +31,33 @@ class ProductState {
   final CatalogSearchResponse productResponse;
   final List<ApplicationMeta> upiApps;
 
-  ProductState(
-      {@required this.localCartItems,
-      @required this.charges,
-      @required this.upiApps,
-      @required this.selectedCluster,
-      @required this.placeOrderResponse,
-      @required this.getOrderListResponse,
-      @required this.selectedCategory,
-      @required this.productListingTempDataSource,
-      @required this.selectedMerchand,
-      @required this.searchResults,
-      @required this.productListingDataSource,
-      @required this.supportOrder,
-      @required this.subCategories,
-      @required this.categories,
-      @required this.currentOrderIsPickUp,
-      @required this.productResponse,
-      @required this.selectedSubCategory});
+  ProductState({
+    @required this.localCartItems,
+    @required this.charges,
+    @required this.searchForProductsComplete,
+    @required this.upiApps,
+    @required this.selectedCluster,
+    @required this.placeOrderResponse,
+    @required this.getOrderListResponse,
+    @required this.selectedCategory,
+    @required this.productListingTempDataSource,
+    @required this.selectedMerchand,
+    @required this.searchResults,
+    @required this.productListingDataSource,
+    @required this.supportOrder,
+    @required this.subCategories,
+    @required this.categories,
+    @required this.currentOrderIsPickUp,
+    @required this.productResponse,
+    @required this.selectedSubCategory,
+    @required this.searchResultProducts,
+  });
 
   factory ProductState.initial() {
     return new ProductState(
         upiApps: [],
         productResponse: CatalogSearchResponse(),
+        searchForProductsComplete: false,
         selectedCluster: null,
         charges: [],
         categories: [],
@@ -63,6 +69,7 @@ class ProductState {
         selectedMerchand: null,
         productListingTempDataSource: [],
         productListingDataSource: [],
+        searchResultProducts: [],
         selectedCategory: null,
         selectedSubCategory: null,
         placeOrderResponse: null,
@@ -72,6 +79,8 @@ class ProductState {
   ProductState copyWith(
       {List<Product> productListingDataSource,
       List<Product> productListingTempDataSource,
+      bool searchForProductsComplete,
+      List<Product> searchResultProducts,
       List<Product> localCartItems,
       List<CategoriesNew> categories,
       List<CategoriesNew> subCategories,
@@ -88,6 +97,8 @@ class ProductState {
       CatalogSearchResponse productResponse,
       Cluster selectedCluster}) {
     return ProductState(
+        searchForProductsComplete:
+            searchForProductsComplete ?? this.searchForProductsComplete,
         upiApps: upiApps ?? this.upiApps,
         productResponse: productResponse ?? this.productResponse,
         charges: charges ?? this.charges,
@@ -98,6 +109,7 @@ class ProductState {
         productListingTempDataSource:
             productListingTempDataSource ?? this.productListingTempDataSource,
         localCartItems: localCartItems ?? this.localCartItems,
+        searchResultProducts: searchResultProducts ?? this.searchResultProducts,
         selectedMerchand: selectedMerchant ?? this.selectedMerchand,
         productListingDataSource:
             productListingDataSource ?? this.productListingDataSource,

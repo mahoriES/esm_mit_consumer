@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
@@ -204,7 +205,7 @@ class MyAppBase extends StatelessWidget {
           "/onBoarding": (BuildContext context) => OnboardingWidget(),
           "/payment": (BuildContext context) => Payments(),
           "/circles": (BuildContext context) => CirclePicker(),
-
+          "/productSearch": (BuildContext context) => MerchantProductsSearchView(),
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
       ),
