@@ -70,11 +70,15 @@ class GetItemsForMerchantProductSearch extends ReduxAction<AppState> {
       return state.copyWith(
           productState: state.productState.copyWith(
               searchResultProducts: products,
+              searchForProductsComplete: true
           ));
     }
     else {
       Fluttertoast.showToast(msg: "Error fetching items!");
-      return null;
+      return state.copyWith(
+          productState: state.productState.copyWith(
+              searchForProductsComplete: true
+          ));
     }
   }
 
@@ -89,6 +93,7 @@ class ClearSearchResultProductsAction extends ReduxAction<AppState> {
     return state.copyWith(
       productState: state.productState.copyWith(
         searchResultProducts: [],
+        searchForProductsComplete: false,
       ),
     );
   }

@@ -68,7 +68,9 @@
   },
 
   "screen_search": {
-    "search": "Search"
+    "search": "Search",
+    "search_tag" : "Search for products",
+    "search_product_not_found": "Sorry, no match found for "
   },
 
   "shop": {

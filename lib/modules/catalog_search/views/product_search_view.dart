@@ -16,6 +16,7 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fm_fit/fm_fit.dart';
 
 ///This widget displays the search screen where the user can search for products
 ///across the entire catalogue for a particular merchant.
@@ -38,10 +39,13 @@ class _MerchantProductsSearchViewState
           _controller.clear();
           _controller.addListener(() async {
             if (_controller.text.length < 3) return;
-            store.dispatch(GetItemsForMerchantProductSearch(
-              merchantId: store.state.productState.selectedMerchand.businessId,
-              queryText: _controller.text,
-            ));
+            store.dispatch(
+              GetItemsForMerchantProductSearch(
+                merchantId:
+                    store.state.productState.selectedMerchand.businessId,
+                queryText: _controller.text,
+              ),
+            );
           });
         },
         builder: (context, snapshot) {
@@ -149,10 +153,91 @@ class _MerchantProductsSearchViewState
                             ),
 
                             ///To keep the cart total view stick to bottom
-                            if (snapshot.searchProductsForMerchant.isEmpty)
+                            if ((snapshot.searchProductsForMerchant.isEmpty &&
+                                    !snapshot.searchProductsQueryCompleted) ||
+                                _controller.text.isEmpty)
                               Expanded(
                                 child: Container(
                                   height: MediaQuery.of(context).size.height,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.1,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.1,
+                                          child: Image.asset(
+                                            'assets/images/search_icon.png',
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: AppSizes.widgetPadding,
+                                        ),
+                                        Text(
+                                          tr('screen_search.search_tag'),
+                                          style: TextStyle(
+                                            fontFamily: 'Avenir',
+                                            fontSize: fit
+                                                .t(AppSizes.itemTitleFontSize),
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (snapshot.searchProductsForMerchant.isEmpty &&
+                                snapshot.searchProductsQueryCompleted &&
+                                _controller.text.isNotEmpty)
+                              Expanded(
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.25,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.25,
+                                          child: Image.asset(
+                                            'assets/images/snack.jpg',
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: AppSizes.widgetPadding,
+                                        ),
+                                        Text(
+                                          tr('screen_search.search_product_not_found') +
+                                              (_controller.text.isNotEmpty
+                                                  ? _controller.text.toString()
+                                                  : "your query"),
+                                          style: TextStyle(
+                                            fontFamily: 'Avenir',
+                                            fontSize: fit
+                                                .t(AppSizes.itemTitleFontSize),
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
 
@@ -240,12 +325,14 @@ class _ViewModel extends BaseModel<AppState> {
   Function clearSearchResults;
   Function navigateToCart;
   CategoriesNew selectedCategory;
+  bool searchProductsQueryCompleted;
 
   _ViewModel();
 
   _ViewModel.build(
       {@required this.loadingStatusApp,
       @required this.selectedCategory,
+      @required this.searchProductsQueryCompleted,
       @required this.closeSearchWindowAction,
       @required this.selectedMerchant,
       @required this.getSearchedProductsForMerchant,
@@ -261,11 +348,14 @@ class _ViewModel extends BaseModel<AppState> {
           localCartListing,
           searchProductsForMerchant,
           selectedCategory,
+          searchProductsQueryCompleted,
         ]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+      searchProductsQueryCompleted:
+          state.productState.searchForProductsComplete,
       selectedCategory: state.productState.selectedCategory ??
           state.productState.categories.first,
       searchProductsForMerchant: state.productState.searchResultProducts,
@@ -439,8 +529,7 @@ class _SearchProductListingItemViewState
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Text(
-                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget
-                                        .item.skus.first.basePrice / 100}",
+                                    "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus.first.basePrice / 100}",
                                     style: TextStyle(
                                         color: (!isOutOfStock
                                             ? AppColors.offWhitish
