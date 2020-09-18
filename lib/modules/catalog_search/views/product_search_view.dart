@@ -34,7 +34,7 @@ class _MerchantProductsSearchViewState
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
-          _controller.clearComposing();
+          //_controller.clearComposing();
           _controller.clear();
           _controller.addListener(() async {
             if (_controller.text.length < 3) return;
@@ -80,6 +80,7 @@ class _MerchantProductsSearchViewState
                                         Material(child: toHeroContext.widget),
                                 tag: 'toSearchScreen',
                                 child: TextField(
+                                  autofocus: true,
                                   onSubmitted: (_) {
                                     FocusScope.of(context)
                                         .requestFocus(FocusNode());
@@ -89,18 +90,19 @@ class _MerchantProductsSearchViewState
                                     hintText:
                                         'Search ${snapshot.selectedMerchant.businessName}..',
                                     prefixIcon: IconButton(
-                                        icon: Icon(
-                                          Icons.navigate_before,
-                                          color: AppColors.icColors,
-                                        ),
-                                        onPressed: () {
-                                          _controller.clearComposing();
-                                          _controller.clear();
-                                          FocusScope.of(context)
-                                              .requestFocus(FocusNode());
-                                          snapshot.clearSearchResults();
-                                          snapshot.closeSearchWindowAction();
-                                        },),
+                                      icon: Icon(
+                                        Icons.navigate_before,
+                                        color: AppColors.icColors,
+                                      ),
+                                      onPressed: () {
+                                        _controller.clearComposing();
+                                        _controller.clear();
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                        snapshot.clearSearchResults();
+                                        snapshot.closeSearchWindowAction();
+                                      },
+                                    ),
                                     suffixIcon: snapshot.loadingStatusApp ==
                                             LoadingStatusApp.loading
                                         ? Padding(
@@ -111,12 +113,20 @@ class _MerchantProductsSearchViewState
                                                   .circularIndicatorSide,
                                               width: AppSizes
                                                   .circularIndicatorSide,
-                                              child: Center(
-                                                child:
-                                                    ///Shown when the relevant
-                                                ///product(s) are being fetched from API
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 3,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: AppSizes
+                                                        .circularIndicatorSide,
+                                                    horizontal: AppSizes
+                                                        .circularIndicatorHorizontalSide),
+                                                child: Center(
+                                                  child:
+
+                                                      ///Shown when the relevant
+                                                      ///product(s) are being fetched from API
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 3,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -162,15 +172,16 @@ class _MerchantProductsSearchViewState
                                         index: index,
                                         item: snapshot
                                             .searchProductsForMerchant[index],
-                                        imageLink: snapshot.selectedCategory.images !=
-                                            null
-                                            ? snapshot.selectedCategory
-                                            .images.length >
-                                            0
-                                            ? snapshot.selectedCategory
-                                            .images.first.photoUrl
-                                            : ""
-                                            : "",
+                                        imageLink:
+                                            snapshot.selectedCategory.images !=
+                                                    null
+                                                ? snapshot.selectedCategory
+                                                            .images.length >
+                                                        0
+                                                    ? snapshot.selectedCategory
+                                                        .images.first.photoUrl
+                                                    : ""
+                                                : "",
                                       );
                                     },
                                     separatorBuilder: (context, index) {
@@ -255,7 +266,8 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      selectedCategory: state.productState.selectedCategory,
+      selectedCategory: state.productState.selectedCategory ??
+          state.productState.categories.first,
       searchProductsForMerchant: state.productState.searchResultProducts,
       loadingStatusApp: state.authState.loadingStatus,
       selectedMerchant: state.productState.selectedMerchand,
@@ -543,8 +555,8 @@ class _SearchProductListingItemViewState
         context: context,
         elevation: 3.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(AppSizes
-              .bottomSheetBorderRadius)),
+          borderRadius: BorderRadius.all(
+              Radius.circular(AppSizes.bottomSheetBorderRadius)),
         ),
         builder: (context) => Container(
               child: SkuBottomSheet(

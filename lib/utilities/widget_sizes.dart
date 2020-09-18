@@ -23,4 +23,6 @@ class AppSizes {
   static const productItemBlurRadius = 15.0;
   static const productItemFontSize = 18.0;
   static const circularIndicatorSide = 15.0;
+  static const circularIndicatorHorizontalSide = 8.0;
+
 }

@@ -4,6 +4,7 @@ import 'package:eSamudaay/main.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
@@ -511,6 +512,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateProductListingDataAction(listingData: list));
         },
         navigateToProductSearch: () {
+          dispatch(ClearSearchResultProductsAction());
           dispatch(
             NavigateAction.pushNamed('/productSearch'),
           );

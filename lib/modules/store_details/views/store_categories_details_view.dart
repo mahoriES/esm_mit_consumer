@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -569,6 +570,7 @@ class _ViewModel extends BaseModel<AppState> {
         loadingStatus: state.authState.loadingStatus,
         selectedMerchant: state.productState.selectedMerchand,
         navigateToProductSearch: () {
+          dispatch(ClearSearchResultProductsAction());
           dispatch(
             NavigateAction.pushNamed('/productSearch'),
           );
