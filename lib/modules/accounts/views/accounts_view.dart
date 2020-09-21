@@ -235,7 +235,7 @@ class _AccountsViewState extends State<AccountsView> {
     print("Veresion $version Build $buildNumber");
 
     setState(() {
-      versionString = "Veresion $version Build $buildNumber";
+      versionString = "Version $version Build $buildNumber";
     });
   }
 

@@ -677,7 +677,7 @@ class _CartViewState extends State<CartView> {
                                                           // NJRA135, Second cross road,  Indiranagar- 6987452
                                                           Text(
                                                               snapshot.address
-                                                                  .prettyAddress,
+                                                                  .prettyAddress ?? "",
                                                               style: const TextStyle(
                                                                   color:
                                                                       const Color(

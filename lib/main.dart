@@ -174,6 +174,7 @@ class MyAppBase extends StatelessWidget {
             fontFamily: "JTLeonor",
             appBarTheme: AppBarTheme(
               color: Color(0xffffffff),
+              brightness: Brightness.light,
             ),),
         home: UserExceptionDialog<AppState>(
           child: MyApp(),
