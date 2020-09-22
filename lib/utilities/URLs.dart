@@ -1,6 +1,5 @@
 //Login
 
-import 'package:eSamudaay/utilities/stringConstants.dart';
 
 class ApiURL {
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";

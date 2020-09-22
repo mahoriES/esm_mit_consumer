@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>477395312345-ak0esb1ns2ca9jogtv2pe47868rgrahn.apps.googleusercontent.com</string>
+	<string>477395312345-upldk7llhm7ht5e4pmlve2ltms2usukp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.477395312345-ak0esb1ns2ca9jogtv2pe47868rgrahn</string>
+	<string>com.googleusercontent.apps.477395312345-upldk7llhm7ht5e4pmlve2ltms2usukp</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAms5YU9pQnNdjEOyjuXW11aPzW4frXImU</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.esamudaay.customer</string>
+	<string>com.esamudaay.consumer</string>
 	<key>PROJECT_ID</key>
 	<string>esamudaay-customer</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:477395312345:ios:69e71b61d208b59166e8c8</string>
+	<string>1:477395312345:ios:639f6666056f9f7966e8c8</string>
 	<key>DATABASE_URL</key>
 	<string>https://esamudaay-customer.firebaseio.com</string>
 </dict>
