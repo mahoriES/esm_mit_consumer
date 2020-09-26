@@ -1,18 +1,14 @@
+import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-List<String> url = [
-  'https://stream.mux.com/JpLPLOnbuOB7oEfxp401pNU6psesmkMRe.m3u8',
-  "https://multiplatform-f.akamaihd.net/i/multi/will/bunny/big_buck_bunny_,640x360_400,640x360_700,640x360_1000,950x540_1500,.f4v.csmil/master.m3u8",
-  'https://stream.mux.com/JpLPLOnbuOB7oEfxp401pNU6psesmkMRe.m3u8',
-  "https://multiplatform-f.akamaihd.net/i/multi/april11/sintel/sintel-hd_,512x288_450_b,640x360_700_b,768x432_1000_b,1024x576_1400_m,.mp4.csmil/master.m3u8",
-  'https://stream.mux.com/JpLPLOnbuOB7oEfxp401pNU6psesmkMRe.m3u8',
-];
-
 class VideosListWidget extends StatefulWidget {
+  final VideoFeedResponse videoFeedResponse;
+  final Function onRefresh;
+  VideosListWidget(this.videoFeedResponse, this.onRefresh);
   @override
   _VideosViewState createState() => _VideosViewState();
 }
@@ -35,16 +31,20 @@ class _VideosViewState extends State<VideosListWidget> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    if (widget.videoFeedResponse.results.length == 0) {
+      return Container();
+    }
+
     return Container(
       key: uniqueKey,
       height: 200.toHeight,
       margin: EdgeInsets.symmetric(vertical: 20.toHeight),
       child: ListView.builder(
-        itemCount: url.length,
+        itemCount: widget.videoFeedResponse.results.length,
         padding: EdgeInsets.zero,
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, index) => VisibilityDetector(
-          key: getKey(index + url.length),
+          key: getKey(index + widget.videoFeedResponse.results.length),
           onVisibilityChanged: (visibility) {
             if (visibility.visibleFraction >= 1.0)
               setState(() {
@@ -52,7 +52,7 @@ class _VideosViewState extends State<VideosListWidget> {
               });
           },
           child: _VideoPlayView(
-            url[index],
+            widget.videoFeedResponse.results[index],
             key: getKey(index),
             index: index,
             activeIndex: activeIndex,
@@ -64,10 +64,10 @@ class _VideosViewState extends State<VideosListWidget> {
 }
 
 class _VideoPlayView extends StatefulWidget {
-  final String url;
+  final Results videoData;
   final int index;
   final int activeIndex;
-  _VideoPlayView(this.url, {Key key, this.index, this.activeIndex})
+  _VideoPlayView(this.videoData, {Key key, this.index, this.activeIndex})
       : super(key: key);
   @override
   __VideoPlayViewState createState() => __VideoPlayViewState();
@@ -93,7 +93,8 @@ class __VideoPlayViewState extends State<_VideoPlayView>
   @override
   void initState() {
     print("init for ${widget.index}");
-    controller = new VideoPlayerController.network(widget.url)
+    controller = new VideoPlayerController.network(
+        widget.videoData.content.video.playUrl ?? '')
       ..initialize().then(
         (value) {
           if (widget.activeIndex == widget.index) controller.play();
@@ -129,7 +130,7 @@ class __VideoPlayViewState extends State<_VideoPlayView>
                     child: Card(
                       elevation: 10,
                       child: Container(
-                        height: 60.toHeight,
+                        // height: 30.toHeight,
                         padding: EdgeInsets.symmetric(
                           horizontal: 10.toWidth,
                           vertical: 5.toHeight,
@@ -141,7 +142,7 @@ class __VideoPlayViewState extends State<_VideoPlayView>
                         child: Column(
                           children: [
                             Text(
-                              'Video Title',
+                              widget.videoData.title ?? '',
                               style: TextStyle(
                                 fontSize: 20.toFont,
                                 color: Colors.black,
@@ -150,16 +151,16 @@ class __VideoPlayViewState extends State<_VideoPlayView>
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            Flexible(
-                              child: Text(
-                                'Video descriptoion : Lorem Ipsum Lorem Ipsum',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            )
+                            // Flexible(
+                            //   child: Text(
+                            //     'Video descriptoion : Lorem Ipsum Lorem Ipsum',
+                            //     style: TextStyle(
+                            //       color: Colors.black,
+                            //     ),
+                            //     maxLines: 2,
+                            //     overflow: TextOverflow.ellipsis,
+                            //   ),
+                            // )
                           ],
                         ),
                       ),

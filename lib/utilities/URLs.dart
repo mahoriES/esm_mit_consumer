@@ -1,6 +1,5 @@
 //Login
 
-
 class ApiURL {
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
   static const liveURL = "https://api.esamudaay.com/";
@@ -29,4 +28,5 @@ class ApiURL {
   static const getClustersUrl = "api/v1/clusters/";
   static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
   static const imageUpload = "$baseURL" + "api/v1/media/photo/";
+  static const getVideoFeed = baseURL + 'api/v1/feed/';
 }

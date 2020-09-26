@@ -5,8 +5,10 @@ import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
@@ -42,6 +44,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
 //      snapshot.getMerchantList(snapshot.response.previous);
     } else {
       snapshot.getMerchantList(ApiURL.getBusinessesUrl);
+      snapshot.loadVideoFeed();
     }
 
     _refreshController.refreshCompleted();
@@ -159,84 +162,90 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            VideosListWidget(),
-            Expanded(
-              child: StoreConnector<AppState, _ViewModel>(
-                  model: _ViewModel(),
-                  onInit: (snapshot) async {
-                    if (snapshot.state.authState.cluster == null) {
-                      await snapshot.dispatchFuture(GetNearbyCirclesAction());
-                      snapshot.dispatch(
-                          GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-                    }
-                  },
-                  builder: (context, snapshot) {
-                    List<Business> firstList = List<Business>();
-                    List<Business> secondList = List<Business>();
-                    snapshot.merchants.asMap().forEach((index, element) {
-                      if (index <= 2) {
-                        firstList.add(element);
-                      } else {
-                        secondList.add(element);
-                      }
-                    });
+        body: StoreConnector<AppState, _ViewModel>(
+            model: _ViewModel(),
+            onInit: (snapshot) async {
+              if (snapshot.state.authState.cluster == null) {
+                await snapshot.dispatchFuture(GetNearbyCirclesAction());
+                snapshot.dispatch(
+                    GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+                snapshot.dispatch(
+                  LoadVideoFeed(),
+                );
+              }
+            },
+            builder: (context, snapshot) {
+              List<Business> firstList = List<Business>();
+              List<Business> secondList = List<Business>();
+              snapshot.merchants.asMap().forEach((index, element) {
+                if (index <= 2) {
+                  firstList.add(element);
+                } else {
+                  secondList.add(element);
+                }
+              });
 
-                    return ModalProgressHUD(
-                      progressIndicator: Card(
-                        child: Image.asset(
-                          'assets/images/indicator.gif',
-                          height: 75,
-                          width: 75,
-                        ),
+              return ModalProgressHUD(
+                progressIndicator: Card(
+                  child: Image.asset(
+                    'assets/images/indicator.gif',
+                    height: 75,
+                    width: 75,
+                  ),
+                ),
+                inAsyncCall:
+                    snapshot.loadingStatus == LoadingStatusApp.loading &&
+                        snapshot.merchants.isEmpty,
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  header: WaterDropHeader(
+                    waterDropColor: AppColors.icColors,
+                    complete: Image.asset(
+                      'assets/images/indicator.gif',
+                      height: 75,
+                      width: 75,
+                    ),
+                    refresh: Image.asset(
+                      'assets/images/indicator.gif',
+                      height: 75,
+                      width: 75,
+                    ),
+                  ),
+                  footer: CustomFooter(
+                    builder: (BuildContext context, LoadStatus mode) {
+                      Widget body;
+                      if (mode == LoadStatus.idle) {
+                        body = Text("");
+                      } else if (mode == LoadStatus.loading) {
+                        body = CupertinoActivityIndicator();
+                      } else if (mode == LoadStatus.failed) {
+                        body = Text("Load Failed!Click retry!");
+                      } else if (mode == LoadStatus.canLoading) {
+                        body = Text("");
+                      } else {
+                        body = Text("No more Data");
+                      }
+                      return Container(
+                        height: 55.0,
+                        child: Center(child: body),
+                      );
+                    },
+                  ),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    _onRefresh(snapshot);
+                  },
+                  onLoading: () {
+                    _onLoading(snapshot);
+                  },
+                  child: Column(
+                    children: [
+                      VideosListWidget(
+                        snapshot.videoFeedResponse,
+                        () => snapshot.dispatch(LoadVideoFeed()),
                       ),
-                      inAsyncCall:
-                          snapshot.loadingStatus == LoadingStatusApp.loading &&
-                              snapshot.merchants.isEmpty,
-                      child: SmartRefresher(
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        header: WaterDropHeader(
-                          waterDropColor: AppColors.icColors,
-                          complete: Image.asset(
-                            'assets/images/indicator.gif',
-                            height: 75,
-                            width: 75,
-                          ),
-                          refresh: Image.asset(
-                            'assets/images/indicator.gif',
-                            height: 75,
-                            width: 75,
-                          ),
-                        ),
-                        footer: CustomFooter(
-                          builder: (BuildContext context, LoadStatus mode) {
-                            Widget body;
-                            if (mode == LoadStatus.idle) {
-                              body = Text("");
-                            } else if (mode == LoadStatus.loading) {
-                              body = CupertinoActivityIndicator();
-                            } else if (mode == LoadStatus.failed) {
-                              body = Text("Load Failed!Click retry!");
-                            } else if (mode == LoadStatus.canLoading) {
-                              body = Text("");
-                            } else {
-                              body = Text("No more Data");
-                            }
-                            return Container(
-                              height: 55.0,
-                              child: Center(child: body),
-                            );
-                          },
-                        ),
-                        controller: _refreshController,
-                        onRefresh: () {
-                          _onRefresh(snapshot);
-                        },
-                        onLoading: () {
-                          _onLoading(snapshot);
-                        },
+                      Expanded(
                         child: (snapshot.merchants != null &&
                                     snapshot.merchants.isEmpty) &&
                                 snapshot.loadingStatus !=
@@ -439,11 +448,11 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                 ],
                               ),
                       ),
-                    );
-                  }),
-            ),
-          ],
-        ),
+                    ],
+                  ),
+                ),
+              );
+            }),
       ),
     );
   }
@@ -855,12 +864,14 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
   Function navigateToStoreDetailsPage;
+  Function loadVideoFeed;
   Function updateCurrentIndex;
   VoidCallback navigateToCart;
   VoidCallback navigateToCircles;
   Function(Business) updateSelectedMerchant;
   int currentIndex;
   List<Business> merchants;
+  VideoFeedResponse videoFeedResponse;
   List<Photo> banners;
   LoadingStatusApp loadingStatus;
   Cluster cluster;
@@ -875,12 +886,14 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateCurrentIndex,
       this.currentIndex,
       this.loadingStatus,
+      this.loadVideoFeed,
       this.merchants,
       this.userAddress,
       this.updateSelectedMerchant,
       this.getMerchantList,
       this.response,
       this.changeSelectedCircle,
+      this.videoFeedResponse,
       this.navigateToCircles})
       : super(equals: [
           currentIndex,
@@ -889,7 +902,8 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatus,
           userAddress,
           cluster,
-          response
+          response,
+          videoFeedResponse,
         ]);
 
   @override
@@ -902,6 +916,10 @@ class _ViewModel extends BaseModel<AppState> {
         loadingStatus: state.authState.loadingStatus,
         merchants: state.homePageState.merchants,
         banners: state.homePageState.banners,
+        videoFeedResponse: state.videosState.videosResponse,
+        loadVideoFeed: () {
+          dispatch(LoadVideoFeed());
+        },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
