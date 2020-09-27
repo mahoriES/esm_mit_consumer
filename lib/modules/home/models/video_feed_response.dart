@@ -114,10 +114,22 @@ class User {
 }
 
 class _Photo {
-  _Photo.fromJson(Map<String, dynamic> json) {}
+  String photoId;
+  String photoUrl;
+  String contentType;
+
+  _Photo.fromJson(Map<String, dynamic> json) {
+    if (json == null) json = {};
+    photoId = json['photo_id'] ?? '';
+    photoUrl = json['photo_url'] ?? '';
+    contentType = json['content_type'] ?? '';
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['photo_id'] = this.photoId;
+    data['photo_url'] = this.photoUrl;
+    data['content_type'] = this.contentType;
     return data;
   }
 }
@@ -130,13 +142,13 @@ class _Business {
 
   _Business.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    photo = json['photo'];
+    photo = json['photo'] != null ? new _Photo.fromJson(json['photo']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
-    data['photo'] = this.photo;
+    data['photo'] = this.photo.toJson();
     return data;
   }
 }
