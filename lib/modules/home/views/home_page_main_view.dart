@@ -944,6 +944,7 @@ class _ViewModel extends BaseModel<AppState> {
         changeSelectedCircle: (url, context) async {
           await dispatchFuture(ChangeSelectedCircleAction(context: context));
           dispatch(GetMerchantDetails(getUrl: url));
+          dispatch(LoadVideoFeed());
         },
         navigateToCircles: () {
           dispatch(NavigateAction.pushNamed("/circles"));
