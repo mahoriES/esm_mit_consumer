@@ -239,20 +239,22 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   onLoading: () {
                     _onLoading(snapshot);
                   },
-                  child: Column(
-                    children: [
-                      VideosListWidget(
-                        snapshot.videoFeedResponse,
-                        () => snapshot.dispatch(LoadVideoFeed()),
-                      ),
-                      Expanded(
-                        child: (snapshot.merchants != null &&
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        VideosListWidget(
+                          snapshot.videoFeedResponse,
+                          () => snapshot.dispatch(LoadVideoFeed()),
+                        ),
+                        (snapshot.merchants != null &&
                                     snapshot.merchants.isEmpty) &&
                                 snapshot.loadingStatus !=
                                     LoadingStatusApp.loading
                             ? buildEmptyView(context, snapshot)
                             : ListView(
                                 padding: EdgeInsets.only(top: 2, bottom: 15),
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(
@@ -447,8 +449,8 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                   )
                                 ],
                               ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

@@ -74,7 +74,6 @@ dependencies:
   fm_fit: ^0.0.3
   autocomplete_textfield: ^1.7.3
   video_player: ^0.10.12+3
-  visibility_detector: ^0.1.5
   chewie: ^0.9.10
 
 
