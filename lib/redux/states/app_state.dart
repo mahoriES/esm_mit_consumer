@@ -1,5 +1,6 @@
 import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
+import 'package:eSamudaay/redux/states/videos_state.dart';
 
 import 'auth_state.dart';
 
@@ -8,8 +9,14 @@ class AppState {
   final AuthState authState;
   final HomePageState homePageState;
   final ProductState productState;
-  const AppState(
-      {this.authState, this.isLoading, this.homePageState, this.productState});
+  final VideosState videosState;
+  const AppState({
+    this.authState,
+    this.isLoading,
+    this.homePageState,
+    this.productState,
+    this.videosState,
+  });
 
   static AppState fromJson(dynamic json) => AppState(
         isLoading: json == null ? false : json["isLoading"],
@@ -24,21 +31,26 @@ class AppState {
   }
 
   factory AppState.initial() => AppState(
-      authState: AuthState.initial(),
-      isLoading: false,
-      productState: ProductState.initial(),
-      homePageState: HomePageState.initial());
+        authState: AuthState.initial(),
+        isLoading: false,
+        productState: ProductState.initial(),
+        homePageState: HomePageState.initial(),
+        videosState: VideosState.initial(),
+      );
 
-  AppState copyWith(
-      {AuthState authState,
-      bool isLoading,
-      HomePageState homePageState,
-      ProductState productState}) {
+  AppState copyWith({
+    AuthState authState,
+    bool isLoading,
+    HomePageState homePageState,
+    ProductState productState,
+    VideosState videosState,
+  }) {
     return AppState(
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
       isLoading: isLoading ?? this.isLoading,
       homePageState: homePageState ?? this.homePageState,
+      videosState: videosState ?? this.videosState,
     );
   }
 
@@ -50,6 +62,7 @@ class AppState {
           authState == other.authState &&
           homePageState == other.homePageState &&
           productState == other.productState &&
+          videosState == other.videosState &&
           isLoading == other.isLoading;
 
   @override
