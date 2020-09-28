@@ -34,7 +34,7 @@ class Results {
   String postId;
   String title;
   User user;
-  _Business business;
+  VideoBusiness business;
   String circleId;
   String businessId;
   String status;
@@ -59,7 +59,7 @@ class Results {
     title = json['title'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     business = json['business'] != null
-        ? new _Business.fromJson(json['business'])
+        ? new VideoBusiness.fromJson(json['business'])
         : null;
     circleId = json['circle_id'];
     businessId = json['business_id'];
@@ -134,13 +134,13 @@ class _Photo {
   }
 }
 
-class _Business {
+class VideoBusiness {
   String name;
   _Photo photo;
 
-  _Business({this.name, this.photo});
+  VideoBusiness({this.name, this.photo});
 
-  _Business.fromJson(Map<String, dynamic> json) {
+  VideoBusiness.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     photo = json['photo'] != null ? new _Photo.fromJson(json['photo']) : null;
   }
