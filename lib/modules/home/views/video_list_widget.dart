@@ -48,7 +48,7 @@ class _VideosViewState extends State<VideosListWidget> {
             child: Column(
               children: [
                 Expanded(
-                  flex: 7,
+                  flex: 6,
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
@@ -67,6 +67,7 @@ class _VideosViewState extends State<VideosListWidget> {
                               thumbnailUrl:
                                   videoData?.content?.video?.thumbnail ?? '',
                               title: videoData?.title ?? '',
+                              merchantInfo: videoData?.business,
                             ),
                           ),
                         ),
@@ -95,7 +96,7 @@ class _VideosViewState extends State<VideosListWidget> {
                   ),
                 ),
                 SizedBox(height: 10.toHeight),
-                Expanded(
+                Flexible(
                   flex: 1,
                   child: Text(
                     videoData.title ?? '',
