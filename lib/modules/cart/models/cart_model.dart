@@ -58,7 +58,7 @@ class PlaceOrderRequest {
   String businessId;
   String deliveryType;
   List<OrderItems> orderItems;
-  List<FreeFormOrderItems> freeFormOrderItems;
+  List<JITProduct> freeFormOrderItems;
   String deliveryAddressId;
   String customerNote;
   List<String> customerNoteImages;
@@ -82,9 +82,9 @@ class PlaceOrderRequest {
       });
     }
     if(json['free_form_items'] != null) {
-      freeFormOrderItems = List<FreeFormOrderItems>();
+      freeFormOrderItems = List<JITProduct>();
       json['free_form_items'].forEach((item) {
-        freeFormOrderItems.add(FreeFormOrderItems.fromJson(item));
+        freeFormOrderItems.add(JITProduct.fromJson(item));
       });
     }
     deliveryAddressId = json['delivery_address_id'];
@@ -130,7 +130,7 @@ class PlaceOrderResponse {
   List<String> businessPhones;
   List<String> customerPhones;
   List<OrderItems> orderItems;
-  List<FreeFormOrderItems> freeFormOrderItems;
+  List<JITProduct> freeFormOrderItems;
   List<OtherChargesDetail> otherChargesDetail;
   List<OrderTrail> orderTrail;
   List<String> customerNoteImages;
@@ -212,9 +212,9 @@ class PlaceOrderResponse {
       });
     }
     if (json['free_form_items'] != null) {
-      freeFormOrderItems = new List<FreeFormOrderItems>();
+      freeFormOrderItems = new List<JITProduct>();
       json['free_form_items'].forEach((v) {
-        freeFormOrderItems.add(new FreeFormOrderItems.fromJson(v));
+        freeFormOrderItems.add(new JITProduct.fromJson(v));
       });
     }
     if (json['other_charges_detail'] != null) {
@@ -402,29 +402,6 @@ class GeoAddr {
   }
 }
 
-class FreeFormOrderItems {
-
-  int skuName;
-  int quantity;
-
-  FreeFormOrderItems({
-    @required this.skuName,
-    @required this.quantity,
-  });
-
-  FreeFormOrderItems.fromJson(Map<String, dynamic>json) {
-    skuName = json["sku_name"];
-    quantity = json["quantity"];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sku_name'] = this.skuName;
-    data['quantity'] = this.quantity;
-    return data;
-  }
-
-}
 
 class OrderItems {
   int skuId;

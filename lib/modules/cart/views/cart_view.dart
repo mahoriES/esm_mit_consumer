@@ -28,6 +28,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class CartView extends StatefulWidget {
   int radioValue = 0;
+
   @override
   _CartViewState createState() => _CartViewState();
 }
@@ -223,9 +224,9 @@ class _CartViewState extends State<CartView> {
                                             Text(
                                                 snapshot
                                                         .localCart[index]
-                                                        .skus
-                                                        [snapshot.localCart[index]
-                                                          .selectedVariant]
+                                                        .skus[snapshot
+                                                            .localCart[index]
+                                                            .selectedVariant]
                                                         .variationOptions
                                                         .weight ??
                                                     "",
@@ -329,11 +330,8 @@ class _CartViewState extends State<CartView> {
                                             blurRadius: 6,
                                             spreadRadius: 0)
                                       ], color: const Color(0xffffffff))),
-
                                   FreeFormItemsView(),
-
                                   CustomerNoteImagePicker(),
-
                                   Padding(
                                     padding: const EdgeInsets.all(0.0),
                                     child: TextField(
@@ -683,12 +681,11 @@ class _CartViewState extends State<CartView> {
                                                                       .center),
                                                           // NJRA135, Second cross road,  Indiranagar- 6987452
                                                           Text(
-                                                              snapshot.address
-                                                                  .prettyAddress ?? "",
+                                                              snapshot.address.prettyAddress ??
+                                                                  "",
                                                               style: const TextStyle(
-                                                                  color:
-                                                                      const Color(
-                                                                          0xff4b4b4b),
+                                                                  color: const Color(
+                                                                      0xff4b4b4b),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -917,6 +914,10 @@ class _CartViewState extends State<CartView> {
                                     await CartDataSource.getListOfCartWith();
                                 var merchats =
                                     await CartDataSource.getListOfMerchants();
+                                List<JITProduct> freeFormItems =
+                                    snapshot.localFreeFormItems ?? [];
+                                List<String> customerNoteImages =
+                                    snapshot.customerNoteImages ?? [];
                                 PlaceOrderRequest request = PlaceOrderRequest();
                                 request.businessId = merchats.first.businessId;
                                 request.deliveryAddressId =
@@ -933,11 +934,12 @@ class _CartViewState extends State<CartView> {
                                     .toList();
                                 request.customerNote =
                                     requestController.text ?? "";
-
+                                request.customerNoteImages = customerNoteImages;
+                                request.freeFormOrderItems = freeFormItems;
                                 snapshot.placeOrder(request);
                               }
                             },
-                          )
+                          ),
                         ],
                       ),
               ),
@@ -1069,12 +1071,16 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Business) updateSelectedMerchant;
   VoidCallback navigateToStore;
   List<JITProduct> localFreeFormItems;
+  List<String> customerNoteImages;
   Address address;
   Data user;
+
   _ViewModel();
+
   _ViewModel.build(
       {this.localCart,
       this.localFreeFormItems,
+      this.customerNoteImages,
       this.navigateToStore,
       this.charges,
       this.updateSelectedMerchant,
@@ -1094,14 +1100,17 @@ class _ViewModel extends BaseModel<AppState> {
           selectedMerchant,
           user,
           loadingStatus,
+          customerNoteImages,
           address,
           charges,
           localFreeFormItems,
         ]);
+
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        customerNoteImages: state.productState.customerNoteImages,
         localFreeFormItems: state.productState.localFreeFormCartItems,
         charges: state.productState.charges,
         address: state.authState.address,

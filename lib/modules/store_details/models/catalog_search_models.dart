@@ -221,7 +221,6 @@ class CatalogSearchResponse {
 }
 
 class JITProduct {
-
   int quantity;
   String itemName;
 
@@ -230,7 +229,14 @@ class JITProduct {
     this.itemName,
   });
 
+  JITProduct.fromJson(Map<String, dynamic> json)
+      : quantity = json['quantity'],
+        itemName = json['itemName'];
 
+  Map<String, dynamic> toJson() => {
+        'quantity': quantity,
+        'itemName': itemName,
+      };
 }
 
 class Product {

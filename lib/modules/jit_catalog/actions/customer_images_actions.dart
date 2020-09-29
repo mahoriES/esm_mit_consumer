@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class PickImageAction extends ReduxAction<AppState> {
       customerNoteImagesList.forEach((element) {
         newCustomerNoteImagesList.add(element);
       });
-
+      CartDataSource.insertCustomerNoteImagesList(newCustomerNoteImagesList);
       return state.copyWith(
         productState: state.productState.copyWith(
           customerNoteImages: newCustomerNoteImagesList,
@@ -105,7 +106,7 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
     customerNoteImagesList.forEach((element) {
       newCustomerNoteImagesList.add(element);
     });
-
+    CartDataSource.insertCustomerNoteImagesList(newCustomerNoteImagesList);
     return state.copyWith(
         productState: state.productState.copyWith(
       customerNoteImages: newCustomerNoteImagesList,

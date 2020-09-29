@@ -11,7 +11,6 @@ final String cartTable = "Cart";
 final String merchantTable = "Merchants";
 
 class CartDataSource {
-
   static Future<void> insert({Product product, String variation}) async {
     var dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
@@ -29,10 +28,45 @@ class CartDataSource {
     }
   }
 
-  void insertItem({Product product, String variation}) async{
+  static Future<List<JITProduct>> getFreeFormItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      List<JITProduct> jsonDecodedJITItems = [];
+      List<String> jsonEncodedJITItems = prefs.getStringList("freeFormItemsList");
+      jsonEncodedJITItems.forEach((element) {
+        jsonDecodedJITItems.add(JITProduct.fromJson(jsonDecode(element)));
+      });
+      return jsonDecodedJITItems;
+    } catch(e) {
+      debugPrint("Error occurred getting free form items ${e.toString()}");
+      return <JITProduct>[];
+    }
+  }
 
+  static Future<void> insertFreeFormItemsList(
+      List<JITProduct> freeFormItemsList) async {
     final prefs = await SharedPreferences.getInstance();
+    List<String> jsonEncodedJITItems = [];
+    freeFormItemsList.forEach((element) {
+      jsonEncodedJITItems.add(jsonEncode(element.toJson()));
+    });
+    prefs.setStringList('freeFormItemsList', jsonEncodedJITItems);
+  }
 
+  static Future<List<String>> getCustomerNoteImagesList() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getStringList("customerNoteImagesList") ?? [];
+    } catch(e) {
+      debugPrint("Error occurred getting customer note images ${e.toString()}");
+      return <String>[];
+    }
+  }
+
+  static Future<void> insertCustomerNoteImagesList(
+      List<String> customerNoteImages) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList("customerNoteImagesList", customerNoteImages);
   }
 
   ///This function will drop the cart SQL table and recreate it. It is a fix to
@@ -57,7 +91,6 @@ class CartDataSource {
     variation text
     )
     ''');
-
   }
 
   static Future<void> insertToMerchants({Business business}) async {
@@ -85,9 +118,8 @@ class CartDataSource {
     var dbClient = await DatabaseManager().db;
 
     try {
-      await dbClient.query(cartTable,columns: ['variation']);
-    } on DatabaseException
-    catch(e){
+      await dbClient.query(cartTable, columns: ['variation']);
+    } on DatabaseException catch (e) {
       CartDataSource.reCreateCartTable();
     }
     List<Map> list = await dbClient.query(cartTable);
@@ -101,8 +133,8 @@ class CartDataSource {
 
   static Future<bool> isAvailableInCart({String id, String variation}) async {
     var dbClient = await DatabaseManager().db;
-    List<Map> list =
-        await dbClient.query(cartTable, where: 'id = ? AND variation = ?', whereArgs: [id, variation]);
+    List<Map> list = await dbClient.query(cartTable,
+        where: 'id = ? AND variation = ?', whereArgs: [id, variation]);
     return list.isNotEmpty;
   }
 
@@ -119,12 +151,14 @@ class CartDataSource {
 
   static Future<int> deleteCartItemWith(String id, String variation) async {
     var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable, where: "id = ? AND variation = ?", whereArgs: [id,variation]);
+    return await dbClient.delete(cartTable,
+        where: "id = ? AND variation = ?", whereArgs: [id, variation]);
   }
 
-  static Future<int> delete(String id,variation) async {
+  static Future<int> delete(String id, variation) async {
     var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable, where: 'id = ? AND variation = ?', whereArgs: [id,variation]);
+    return await dbClient.delete(cartTable,
+        where: 'id = ? AND variation = ?', whereArgs: [id, variation]);
   }
 
   static Future<int> update(Product product, String variation) async {
@@ -135,11 +169,13 @@ class CartDataSource {
     cart['variation'] = variation;
     try {
       return await dbClient.update(cartTable, cart,
-          where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
-    } on DatabaseException catch(e) {
+          where: 'id = ? AND variation = ?',
+          whereArgs: [product.productId, variation]);
+    } on DatabaseException catch (e) {
       await CartDataSource.reCreateCartTable();
       return await dbClient.update(cartTable, cart,
-          where: 'id = ? AND variation = ?', whereArgs: [product.productId, variation]);
+          where: 'id = ? AND variation = ?',
+          whereArgs: [product.productId, variation]);
     }
   }
 }

@@ -21,11 +21,17 @@ class GetCartFromLocal extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     List<Product> localCartList = await CartDataSource.getListOfCartWith();
+    List<JITProduct> freeFormItemsList =
+        await CartDataSource.getFreeFormItems() ?? [];
+    List<String> customerNoteImages =
+        await CartDataSource.getCustomerNoteImagesList();
     var merchant = await CartDataSource.getListOfMerchants();
 
     return state.copyWith(
         productState: state.productState.copyWith(
             localCartItems: localCartList,
+            localFreeFormCartItems: freeFormItemsList,
+            customerNoteImages: customerNoteImages,
             selectedMerchant: state.productState.selectedMerchand != null
                 ? state.productState.selectedMerchand
                 : merchant.isEmpty ? null : merchant.first));
@@ -36,6 +42,7 @@ class UpdateCartListAction extends ReduxAction<AppState> {
   final List<Product> localCart;
 
   UpdateCartListAction({this.localCart});
+
   @override
   FutureOr<AppState> reduce() {
     // TODO: implement reduce
@@ -44,11 +51,12 @@ class UpdateCartListAction extends ReduxAction<AppState> {
   }
 }
 
-
 class AddToCartLocalAction extends ReduxAction<AppState> {
   final Product product;
   final BuildContext context;
+
   AddToCartLocalAction({this.product, this.context});
+
   @override
   FutureOr<AppState> reduce() async {
     var merchant = await CartDataSource.getListOfMerchants();
@@ -101,17 +109,17 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     bool isInCart = await CartDataSource.isAvailableInCart(
                         id: product.productId.toString(),
                         variation: product.skus[product.selectedVariant]
-                            .variationOptions.weight
-                    );
+                            .variationOptions.weight);
                     if (isInCart) {
-                      await CartDataSource.update(product,
-                          product.skus[product.selectedVariant].variationOptions.weight);
+                      await CartDataSource.update(
+                          product,
+                          product.skus[product.selectedVariant].variationOptions
+                              .weight);
                     } else {
                       await CartDataSource.insert(
                           product: product,
                           variation: product.skus[product.selectedVariant]
-                              .variationOptions.weight
-                      );
+                              .variationOptions.weight);
                     }
                     List<Product> allCartNewList = [];
                     List<Product> allCartItems =
@@ -138,18 +146,16 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
             business: state.productState.selectedMerchand);
         bool isInCart = await CartDataSource.isAvailableInCart(
             id: product.productId.toString(),
-            variation: product.skus[product.selectedVariant]
-              .variationOptions.weight
-        );
+            variation:
+                product.skus[product.selectedVariant].variationOptions.weight);
         if (isInCart) {
           await CartDataSource.update(product,
               product.skus[product.selectedVariant].variationOptions.weight);
         } else {
           await CartDataSource.insert(
               product: product,
-              variation: product.skus[product.selectedVariant]
-                  .variationOptions.weight
-          );
+              variation: product
+                  .skus[product.selectedVariant].variationOptions.weight);
         }
         List<Product> allCartNewList = [];
         List<Product> allCartItems =
@@ -174,18 +180,16 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
           business: state.productState.selectedMerchand);
       bool isInCart = await CartDataSource.isAvailableInCart(
           id: product.productId.toString(),
-          variation: product.skus[product.selectedVariant]
-              .variationOptions.weight
-      );
+          variation:
+              product.skus[product.selectedVariant].variationOptions.weight);
       if (isInCart) {
         await CartDataSource.update(product,
             product.skus[product.selectedVariant].variationOptions.weight);
       } else {
         await CartDataSource.insert(
             product: product,
-            variation: product.skus[product.selectedVariant]
-                .variationOptions.weight
-        );
+            variation:
+                product.skus[product.selectedVariant].variationOptions.weight);
       }
       List<Product> allCartNewList = [];
       List<Product> allCartItems = state.productState.productListingDataSource;
@@ -211,13 +215,13 @@ class RemoveFromCartLocalAction extends ReduxAction<AppState> {
   final Product product;
 
   RemoveFromCartLocalAction({this.product});
+
   @override
   FutureOr<AppState> reduce() async {
     bool isInCart = await CartDataSource.isAvailableInCart(
         id: product.productId.toString(),
-        variation: product.skus[product.selectedVariant]
-            .variationOptions.weight
-    );
+        variation:
+            product.skus[product.selectedVariant].variationOptions.weight);
     if (isInCart) {
       if (product.count == 0.0) {
         await CartDataSource.delete(product.productId.toString(),
@@ -329,6 +333,7 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
   final PlaceOrderRequest request;
 
   GetMerchantStatusAndPlaceOrderAction({this.request});
+
   @override
   FutureOr<AppState> reduce() async {
     var merchant = await CartDataSource.getListOfMerchants();

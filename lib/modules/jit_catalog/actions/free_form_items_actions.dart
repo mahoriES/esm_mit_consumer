@@ -5,6 +5,7 @@ import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -25,6 +26,7 @@ class AddFreeFormItemAction extends ReduxAction<AppState> {
     freeFormOrderItems.forEach((element) {
       newFreeFormItemList.add(element);
     });
+    CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
         productState: state.productState
             .copyWith(localFreeFormCartItems: newFreeFormItemList));
@@ -54,13 +56,6 @@ class RemoveFreeFormItemAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
         state.productState.localFreeFormCartItems ?? [];
-//    var itemToBeRemoved = freeFormOrderItems.firstWhere(
-//        (element) => (element.quantity == jitProduct.quantity &&
-//            element.itemName == jitProduct.itemName), orElse: () {
-//      debugPrint("Item doesn't exist");
-//      return null;
-//    });
-    //if (itemToBeRemoved != null) freeFormOrderItems.remove(itemToBeRemoved);
 
     freeFormOrderItems.remove(jitProduct);
 
@@ -68,6 +63,7 @@ class RemoveFreeFormItemAction extends ReduxAction<AppState> {
     freeFormOrderItems.forEach((element) {
       newFreeFormItemList.add(element);
     });
+    CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
       productState: state.productState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
@@ -125,6 +121,7 @@ class UpdateFreeFormItemSkuName extends ReduxAction<AppState> {
     freeFormOrderItems.forEach((element) {
       newFreeFormItemList.add(element);
     });
+    CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
       productState: state.productState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
@@ -160,7 +157,7 @@ class UpdateFreeFormItemQuantity extends ReduxAction<AppState> {
     freeFormOrderItems.forEach((element) {
       newFreeFormItemList.add(element);
     });
-
+    CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
       productState: state.productState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
@@ -188,7 +185,7 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
       newFreeFormItemList.add(element);
     });
     newFreeFormItemList.add(JITProduct(quantity: 0, itemName: ""));
-
+    CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
       productState: state.productState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
