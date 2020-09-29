@@ -5,11 +5,13 @@ import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dar
 import 'package:eSamudaay/repository/database_manage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final String cartTable = "Cart";
 final String merchantTable = "Merchants";
 
 class CartDataSource {
+
   static Future<void> insert({Product product, String variation}) async {
     var dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
@@ -25,6 +27,12 @@ class CartDataSource {
       print(id);
       print(error);
     }
+  }
+
+  void insertItem({Product product, String variation}) async{
+
+    final prefs = await SharedPreferences.getInstance();
+
   }
 
   ///This function will drop the cart SQL table and recreate it. It is a fix to
@@ -104,6 +112,7 @@ class CartDataSource {
   }
 
   static Future<int> deleteAllMerchants() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var dbClient = await DatabaseManager().db;
     return await dbClient.delete(merchantTable);
   }

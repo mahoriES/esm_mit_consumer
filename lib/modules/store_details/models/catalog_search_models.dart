@@ -220,6 +220,19 @@ class CatalogSearchResponse {
   }
 }
 
+class JITProduct {
+
+  int quantity;
+  String itemName;
+
+  JITProduct({
+    this.quantity,
+    this.itemName,
+  });
+
+
+}
+
 class Product {
   int productId;
   int selectedVariant;

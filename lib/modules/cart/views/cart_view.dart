@@ -10,6 +10,8 @@ import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
+import 'package:eSamudaay/modules/jit_catalog/views/free_form_items_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
@@ -327,6 +329,11 @@ class _CartViewState extends State<CartView> {
                                             blurRadius: 6,
                                             spreadRadius: 0)
                                       ], color: const Color(0xffffffff))),
+
+                                  FreeFormItemsView(),
+
+                                  CustomerNoteImagePicker(),
+
                                   Padding(
                                     padding: const EdgeInsets.all(0.0),
                                     child: TextField(
@@ -1061,11 +1068,13 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Function(Business) updateSelectedMerchant;
   VoidCallback navigateToStore;
+  List<JITProduct> localFreeFormItems;
   Address address;
   Data user;
   _ViewModel();
   _ViewModel.build(
       {this.localCart,
+      this.localFreeFormItems,
       this.navigateToStore,
       this.charges,
       this.updateSelectedMerchant,
@@ -1086,12 +1095,14 @@ class _ViewModel extends BaseModel<AppState> {
           user,
           loadingStatus,
           address,
-          charges
+          charges,
+          localFreeFormItems,
         ]);
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        localFreeFormItems: state.productState.localFreeFormCartItems,
         charges: state.productState.charges,
         address: state.authState.address,
         selectedMerchant: state.productState.selectedMerchand,

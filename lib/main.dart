@@ -10,6 +10,7 @@ import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
+import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
 import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
