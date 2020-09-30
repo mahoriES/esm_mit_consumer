@@ -7,7 +7,9 @@ import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddFreeFormItemAction extends ReduxAction<AppState> {
   final JITProduct jitProduct;
@@ -166,7 +168,25 @@ class UpdateFreeFormItemQuantity extends ReduxAction<AppState> {
   }
 }
 
+class ClearLocalFreeFormItemsAction extends ReduxAction<AppState> {
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      productState: state.productState.copyWith(
+        localFreeFormCartItems: [],
+        customerNoteImages: [],
+      ),
+    );
+  }
+}
+
 class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
+
+  final BuildContext context;
+
+  CheckLocalFreeFormItemsAndAddEmptyItem({@required this.context});
+
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
@@ -180,6 +200,7 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
         }
       }
     }
+    setMerchantForFreeFormItem(context);
     List<JITProduct> newFreeFormItemList = [];
     freeFormOrderItems.forEach((element) {
       newFreeFormItemList.add(element);
@@ -192,4 +213,71 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
       ),
     );
   }
+
+  void setMerchantForFreeFormItem(BuildContext context) async {
+
+    var merchant = await CartDataSource.getListOfMerchants();
+    if (merchant.isNotEmpty) {
+      if (merchant.first.businessId !=
+          state.productState.selectedMerchand.businessId) {
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              title: Text("E-samudaay"),
+              content: Text(
+                'new_changes.clear_info',
+                style: const TextStyle(
+                    color: const Color(0xff6f6d6d),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Avenir-Medium",
+                    fontStyle: FontStyle.normal,
+                    fontSize: 16.0),
+              ).tr(),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    'screen_account.cancel',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                  ).tr(),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                FlatButton(
+                  child: Text(
+                    'new_changes.continue',
+                    style: const TextStyle(
+                        color: const Color(0xff6f6d6d),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 16.0),
+                  ).tr(),
+                  onPressed: () async {
+                    await CartDataSource.deleteAllMerchants();
+                    await CartDataSource.deleteAll();
+                    await CartDataSource.insertToMerchants(
+                        business: state.productState.selectedMerchand);
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            ));
+      } else {
+        await CartDataSource.deleteAllMerchants();
+        await CartDataSource.insertToMerchants(
+            business: state.productState.selectedMerchand);
+      }
+    } else {
+      await CartDataSource.deleteAllMerchants();
+      await CartDataSource.insertToMerchants(
+          business: state.productState.selectedMerchand);
+    }
+  }
+
 }

@@ -145,7 +145,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
               color: AppColors.icColors,
             ),
             onPressed: () {
-              snapshot.addNewEmptyFreeFormItem();
+              snapshot.addNewEmptyFreeFormItem(context);
             }),
         Text(
           'Add Item',
@@ -190,7 +190,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(int) removeJitProductFromLocalCartByIndex;
   Function(String, int) updateFreeFormItemSkuName;
   Function(int, int) updateFreeFormItemQuantity;
-  Function addNewEmptyFreeFormItem;
+  Function(BuildContext) addNewEmptyFreeFormItem;
   LoadingStatusApp loadingStatusApp;
 
   _ViewModel();
@@ -232,8 +232,8 @@ class _ViewModel extends BaseModel<AppState> {
               UpdateFreeFormItemSkuName(updatedIndex: index, skuName: skuName));
           displayTheFreeFormItemList();
         },
-        addNewEmptyFreeFormItem: () {
-          dispatch(CheckLocalFreeFormItemsAndAddEmptyItem());
+        addNewEmptyFreeFormItem: (context) {
+          dispatch(CheckLocalFreeFormItemsAndAddEmptyItem(context: context));
           displayTheFreeFormItemList();
         },
         removeJitProductFromLocalCartByIndex: (index) {

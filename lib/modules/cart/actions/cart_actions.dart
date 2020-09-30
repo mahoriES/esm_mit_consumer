@@ -275,10 +275,11 @@ class PlaceOrderAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
 //      request.order.status = "UNCONFIRMED";
       var responseModel = PlaceOrderResponse.fromJson(response.data);
-
       Fluttertoast.showToast(msg: 'Order Placed');
       await CartDataSource.deleteAllMerchants();
       await CartDataSource.deleteAll();
+      await CartDataSource.insertCustomerNoteImagesList([]);
+      await CartDataSource.insertFreeFormItemsList([]);
 
       dispatch(GetCartFromLocal());
       dispatch(UpdateSelectedTabAction(1));

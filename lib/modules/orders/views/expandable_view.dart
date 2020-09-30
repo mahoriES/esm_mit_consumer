@@ -117,80 +117,167 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   child: Container(
                     child: Column(
                       children: <Widget>[
-                        ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          padding:
-                              EdgeInsets.only(top: 16, left: 15, right: 15),
-                          shrinkWrap: true,
-                          itemCount: snapshot
+                        ///Catalog order items view
+                        if (snapshot
+                            .getOrderListResponse
+                            .results[widget.merchantIndex]
+                            .orderItems != null && snapshot
+                            .getOrderListResponse
+                            .results[widget.merchantIndex]
+                            .orderItems
+                            .isNotEmpty)
+                          ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding:
+                                EdgeInsets.only(top: 16, left: 15, right: 15),
+                            shrinkWrap: true,
+                            itemCount: snapshot
+                                        .getOrderListResponse
+                                        .results[widget.merchantIndex]
+                                        .orderItems ==
+                                    null
+                                ? 0
+                                : snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .orderItems
+                                    .length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 7,
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              var price = snapshot
                                       .getOrderListResponse
                                       .results[widget.merchantIndex]
-                                      .orderItems ==
-                                  null
-                              ? 0
-                              : snapshot
+                                      .orderItems[index]
+                                      .unitPrice *
+                                  snapshot
+                                      .getOrderListResponse
+                                      .results[widget.merchantIndex]
+                                      .orderItems[index]
+                                      .quantity
+                                      .toDouble();
+                              return Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    // Faux Sued Ankle Mango - 500 GM x 3
+                                    Text(
+                                        snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .orderItems[index]
+                                                .productName +
+                                            " ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size : ""}"
+                                                " -  x " +
+                                            snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .orderItems[index]
+                                                .quantity
+                                                .toString(),
+                                        style: const TextStyle(
+                                            color: const Color(0xff7c7c7c),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        textAlign: TextAlign.left),
+                                    // ₹ 55.00
+                                    Text("₹ ${price / 100}",
+                                        style: const TextStyle(
+                                            color: const Color(0xff6f6f6f),
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        textAlign: TextAlign.left)
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ////////////////////////////////////////////////////////
+                        ///Free form order items list
+                        if (snapshot
+                            .getOrderListResponse
+                            .results[widget.merchantIndex]
+                            .freeFormOrderItems != null && snapshot
+                            .getOrderListResponse
+                            .results[widget.merchantIndex]
+                            .freeFormOrderItems
+                            .isNotEmpty)
+                          ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding:
+                                EdgeInsets.only(top: 16, left: 15, right: 15),
+                            shrinkWrap: true,
+                            itemCount: snapshot
+                                        .getOrderListResponse
+                                        .results[widget.merchantIndex]
+                                        .freeFormOrderItems ==
+                                    null
+                                ? 0
+                                : snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .freeFormOrderItems
+                                    .length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 7,
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              var price = snapshot
                                   .getOrderListResponse
                                   .results[widget.merchantIndex]
-                                  .orderItems
-                                  .length,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Container(
-                              height: 7,
-                            );
-                          },
-                          itemBuilder: (BuildContext context, int index) {
-                            var price = snapshot
-                                    .getOrderListResponse
-                                    .results[widget.merchantIndex]
-                                    .orderItems[index]
-                                    .unitPrice *
-                                snapshot
-                                    .getOrderListResponse
-                                    .results[widget.merchantIndex]
-                                    .orderItems[index]
-                                    .quantity
-                                    .toDouble();
-                            return Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  // Faux Sued Ankle Mango - 500 GM x 3
-                                  Text(
-                                      snapshot
-                                              .getOrderListResponse
-                                              .results[widget.merchantIndex]
-                                              .orderItems[index]
-                                              .productName +
-                                          " ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size : ""}"
-                                              " -  x " +
-                                          snapshot
-                                              .getOrderListResponse
-                                              .results[widget.merchantIndex]
-                                              .orderItems[index]
-                                              .quantity
-                                              .toString(),
-                                      style: const TextStyle(
-                                          color: const Color(0xff7c7c7c),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 14.0),
-                                      textAlign: TextAlign.left),
-                                  // ₹ 55.00
-                                  Text("₹ ${price / 100}",
-                                      style: const TextStyle(
-                                          color: const Color(0xff6f6f6f),
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 14.0),
-                                      textAlign: TextAlign.left)
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                                  .freeFormOrderItems[index]
+                                  .quantity
+                                  .toDouble();
+                              return Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                        snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .freeFormOrderItems[index]
+                                                .skuName +
+                                            snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .freeFormOrderItems[index]
+                                                .quantity
+                                                .toString(),
+                                        style: const TextStyle(
+                                            color: const Color(0xff7c7c7c),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        textAlign: TextAlign.left),
+                                    Text("₹ ${price / 100}",
+                                        style: const TextStyle(
+                                            color: const Color(0xff6f6f6f),
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        textAlign: TextAlign.left)
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ////////////////////////////////////////////////////////
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -245,7 +332,10 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal / 100}" ??
+                                                    "₹ ${snapshot.
+                                                    getOrderListResponse.results
+                                                    [widget.merchantIndex].
+                                                    itemTotal / 100}" ??
                                                         "0.0",
                                                     style:
                                                         const TextStyle(

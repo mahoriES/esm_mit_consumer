@@ -231,7 +231,7 @@ class PlaceOrderResponse {
       });
     }
     if (json['customer_note_images'] != null)
-      customerNoteImages = json['customer_note_images'];
+      customerNoteImages = json['customer_note_images'].cast<String>();
     created = json['created'];
     modified = json['modified'];
     rating =

@@ -212,50 +212,56 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                     );
                   }),
                 ),
-                InkWell(
-                  onTap: () {
-                    widget.didPressButton();
-                  },
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Container(
-                      height: 46,
-                      width: widget.buttonTitle == tr('cart.view_cart')
-                          ? 120
-                          : 160,
-                      decoration: BoxDecoration(
-                        color: AppColors.icColors,
-                        borderRadius: BorderRadius.circular(23),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                              snapshot
-                                      .getCartTotalPrice()
-                                      .toString()
-                                      .contains("Items")
-                                  ? "SEND REQUEST"
-                                  : widget.buttonTitle,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Avenir',
-                                fontWeight: FontWeight.w900,
+                Opacity(
+                  opacity: (snapshot.localFreeFormItems.isEmpty &&
+                          snapshot.localCart.isEmpty)
+                      ? 0.0
+                      : 1.0,
+                  child: InkWell(
+                    onTap: () {
+                      widget.didPressButton();
+                    },
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        height: 46,
+                        width: widget.buttonTitle == tr('cart.view_cart')
+                            ? 120
+                            : 160,
+                        decoration: BoxDecoration(
+                          color: AppColors.icColors,
+                          borderRadius: BorderRadius.circular(23),
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Text(
+                                snapshot
+                                        .getCartTotalPrice()
+                                        .toString()
+                                        .contains("Items")
+                                    ? "SEND REQUEST"
+                                    : widget.buttonTitle,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontFamily: 'Avenir',
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10.0),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                                size: 12,
-                              ),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10.0),
+                                child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
