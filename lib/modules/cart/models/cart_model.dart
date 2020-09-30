@@ -58,7 +58,7 @@ class PlaceOrderRequest {
   String businessId;
   String deliveryType;
   List<OrderItems> orderItems;
-  List<JITProduct> freeFormOrderItems;
+  List<FreeFormOrderItems> freeFormOrderItems;
   String deliveryAddressId;
   String customerNote;
   List<String> customerNoteImages;
@@ -81,10 +81,10 @@ class PlaceOrderRequest {
         orderItems.add(new OrderItems.fromJson(v));
       });
     }
-    if(json['free_form_items'] != null) {
-      freeFormOrderItems = List<JITProduct>();
+    if (json['free_form_items'] != null) {
+      freeFormOrderItems = List<FreeFormOrderItems>();
       json['free_form_items'].forEach((item) {
-        freeFormOrderItems.add(JITProduct.fromJson(item));
+        freeFormOrderItems.add(FreeFormOrderItems.fromJson(item));
       });
     }
     deliveryAddressId = json['delivery_address_id'];
@@ -100,8 +100,8 @@ class PlaceOrderRequest {
       data['order_items'] = this.orderItems.map((v) => v.toJson()).toList();
     }
     if (this.freeFormOrderItems != null) {
-      data['free_form_items'] = this.freeFormOrderItems.map((e) => e.toJson())
-          .toList();
+      data['free_form_items'] =
+          this.freeFormOrderItems.map((e) => e.toJson()).toList();
     }
     data['delivery_address_id'] = this.deliveryAddressId;
     data['customer_note'] = this.customerNote;
@@ -130,7 +130,7 @@ class PlaceOrderResponse {
   List<String> businessPhones;
   List<String> customerPhones;
   List<OrderItems> orderItems;
-  List<JITProduct> freeFormOrderItems;
+  List<FreeFormOrderItems> freeFormOrderItems;
   List<OtherChargesDetail> otherChargesDetail;
   List<OrderTrail> orderTrail;
   List<String> customerNoteImages;
@@ -138,6 +138,7 @@ class PlaceOrderResponse {
   String modified;
   Rating rating;
   PaymentInfo paymentInfo;
+
   PlaceOrderResponse(
       {this.deliveryCharges,
       this.orderId,
@@ -212,9 +213,9 @@ class PlaceOrderResponse {
       });
     }
     if (json['free_form_items'] != null) {
-      freeFormOrderItems = new List<JITProduct>();
+      freeFormOrderItems = new List<FreeFormOrderItems>();
       json['free_form_items'].forEach((v) {
-        freeFormOrderItems.add(new JITProduct.fromJson(v));
+        freeFormOrderItems.add(new FreeFormOrderItems.fromJson(v));
       });
     }
     if (json['other_charges_detail'] != null) {
@@ -262,6 +263,10 @@ class PlaceOrderResponse {
     data['customer_phones'] = this.customerPhones;
     if (this.orderItems != null) {
       data['order_items'] = this.orderItems.map((v) => v.toJson()).toList();
+    }
+    if (this.freeFormOrderItems != null) {
+      data['free_form_items'] =
+          this.freeFormOrderItems.map((e) => e.toJson()).toList();
     }
     if (this.otherChargesDetail != null) {
       data['other_charges_detail'] =
@@ -402,6 +407,35 @@ class GeoAddr {
   }
 }
 
+class FreeFormOrderItems {
+  String skuName;
+  int quantity;
+  String productStatus;
+
+  FreeFormOrderItems({
+    @required this.skuName,
+    @required this.quantity,
+    this.productStatus,
+  });
+
+  FreeFormOrderItems.fromJson(Map<String, dynamic> json) {
+    skuName = json['sku_name'];
+    quantity = json['quantity'];
+    if (json['product_status'] != null) {
+      productStatus = json['product_status'];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sku_name'] = skuName;
+    data['quantity'] = quantity;
+    if (this.productStatus != null) {
+      data['product_status'] = productStatus;
+    }
+    return data;
+  }
+}
 
 class OrderItems {
   int skuId;

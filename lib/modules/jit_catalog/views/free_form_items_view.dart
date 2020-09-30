@@ -37,15 +37,19 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
                 ],
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Free Form Items',
-                    style: TextStyle(
-                      fontSize: AppSizes.productItemFontSize,
-                      fontFamily: 'Avenir-Medium',
-                      color: AppColors.icColors,
+                  Padding(
+                    padding: EdgeInsets.only(left: AppSizes.widgetPadding),
+                    child: Text(
+                      'List Items',
+                      style: TextStyle(
+                        fontSize: AppSizes.productItemFontSize,
+                        fontFamily: 'Avenir-Medium',
+                        color: AppColors.icColors,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.left,
                   ),
                   SizedBox(
                     height: AppSizes.widgetPadding,
@@ -110,8 +114,9 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
               initialValue: quantity == 0 ? "" : quantity.toString(),
               decoration: InputDecoration(hintText: "e.g. 2"),
               onChanged: (value) {
-                debugPrint('On changed called for quantity');
-                snapshot.updateFreeFormItemQuantity(int.parse(value), index);
+                debugPrint('On changed called for quantity $value');
+                snapshot.updateFreeFormItemQuantity(
+                    value != "" ? int.parse(value) : 0, index);
               },
             )),
         Expanded(
@@ -120,7 +125,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
               icon: Icon(
                 Icons.clear,
                 color: AppColors.iconColors,
-                size: AppSizes.productItemIconSize/1.2,
+                size: AppSizes.productItemIconSize / 1.2,
               ),
               onPressed: () {
                 snapshot.removeJitProductFromLocalCartByIndex(index);

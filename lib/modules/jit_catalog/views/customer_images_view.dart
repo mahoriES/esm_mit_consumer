@@ -177,18 +177,6 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
         ),
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: AppSizes.widgetPadding / 2),
-              child: Text(
-                'Customer Note Images',
-                style: TextStyle(
-                  fontSize: AppSizes.productItemFontSize,
-                  fontFamily: 'Avenir-Medium',
-                  color: AppColors.icColors,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
             GridView.count(
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
@@ -206,8 +194,8 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
                     child: buildImageViewTile(
                         index: index,
                         snapshot: snapshot,
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: MediaQuery.of(context).size.width / 2,
+                        width: MediaQuery.of(context).size.width / 3,
+                        height: MediaQuery.of(context).size.width / 3,
                         imageUrl: snapshot.customerNoteImages[index]),
                   );
                 } else {
@@ -217,8 +205,8 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
                       },
                       child: GridTile(
                         child: buildAddImageEmptyTile(
-                            MediaQuery.of(context).size.width / 2,
-                            MediaQuery.of(context).size.width / 2.5,
+                            MediaQuery.of(context).size.width / 3,
+                            MediaQuery.of(context).size.width / 3,
                             context,
                             snapshot),
                       ));
@@ -232,7 +220,7 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
   }
 
   void showNativeBottomSheet(BuildContext context, _ViewModel snapshot) {
-    if (Platform.isIOS) {
+    if (Platform.isAndroid) {
       showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -315,7 +303,9 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back,),
+                    icon: Icon(
+                      Icons.arrow_back,
+                    ),
                     onPressed: () => snapshot.closeWindowAction(),
                   ),
                 ),

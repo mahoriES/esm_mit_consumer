@@ -95,7 +95,8 @@ class _CartViewState extends State<CartView> {
               ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Container(
-                child: snapshot.localCart.isEmpty
+                child: (snapshot.localCart.isEmpty &&
+                        snapshot.localFreeFormItems.isEmpty)
                     ? snapshot.loadingStatus != LoadingStatusApp.loading
                         ? EmptyView()
                         : Container()
@@ -935,7 +936,11 @@ class _CartViewState extends State<CartView> {
                                 request.customerNote =
                                     requestController.text ?? "";
                                 request.customerNoteImages = customerNoteImages;
-                                request.freeFormOrderItems = freeFormItems;
+                                request.freeFormOrderItems = freeFormItems
+                                    .map((e) => FreeFormOrderItems(
+                                        skuName: e.itemName,
+                                        quantity: e.quantity))
+                                    .toList();
                                 snapshot.placeOrder(request);
                               }
                             },

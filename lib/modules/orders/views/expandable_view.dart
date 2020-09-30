@@ -17,8 +17,10 @@ import 'package:url_launcher/url_launcher.dart';
 class ExpandableListView extends StatefulWidget {
   final int merchantIndex;
   final Function(bool) didExpand;
+
   const ExpandableListView({Key key, this.merchantIndex, this.didExpand})
       : super(key: key);
+
   @override
   _ExpandableListViewState createState() => new _ExpandableListViewState();
 }
@@ -28,6 +30,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController reviewController = TextEditingController();
   int rating = 0;
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
@@ -73,7 +76,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         date: DateFormat('dd MMMM, hh:mm a').format(
                             DateTime.parse(snapshot.getOrderListResponse
                                     .results[widget.merchantIndex].created)
-                                .toLocal()), //"20 -April, 07.45 PM ",
+                                .toLocal()),
+                        //"20 -April, 07.45 PM ",
                         price:
                             "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal / 100.0}",
                       ),
@@ -886,7 +890,9 @@ class _ViewModel extends BaseModel<AppState> {
   Function(AddReviewRequest, String) rateOrder;
   Function(LoadingStatusApp) updateLoadingStatus;
   LoadingStatusApp loadingStatus;
+
   _ViewModel();
+
   _ViewModel.build(
       {this.getOrderListResponse,
       this.rateOrder,
@@ -894,6 +900,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateLoadingStatus,
       this.updateOrderId})
       : super(equals: [getOrderListResponse, loadingStatus]);
+
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore

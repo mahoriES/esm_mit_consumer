@@ -25,28 +25,49 @@ class CartCount extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   List<Product> cartListDataSource;
   List<Product> localCart;
+  List<JITProduct> localFreeFormItems;
   double getCartTotal;
   Function getCartTotalPrice;
   VoidCallback navigateToCart;
+
   _ViewModel();
 
   _ViewModel.build(
       {this.cartListDataSource,
       this.getCartTotalPrice,
+      this.localFreeFormItems,
       this.navigateToCart,
       this.localCart,
       this.getCartTotal})
-      : super(equals: [cartListDataSource, localCart, getCartTotal]);
+      : super(equals: [
+          cartListDataSource,
+          localCart,
+          getCartTotal,
+          localFreeFormItems
+        ]);
+
+  bool allItemsHaveZeroQuantity(List<JITProduct> givenList) {
+    for (final item in givenList) {
+      if (item.quantity != 0 && item.quantity != null) return false;
+    }
+    return true;
+  }
+
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      cartListDataSource: [], //state.productState.cartListingDataSource.items,
+      cartListDataSource: [],
+      //state.productState.cartListingDataSource.items,
       localCart: state.productState.localCartItems,
+      localFreeFormItems: state.productState.localFreeFormCartItems,
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed('/CartView'));
       },
       getCartTotalPrice: () {
-        if (state.productState.localCartItems.isNotEmpty) {
+        if (state.productState.localCartItems.isNotEmpty &&
+            (state.productState.localFreeFormCartItems.isEmpty ||
+                allItemsHaveZeroQuantity(
+                    state.productState.localFreeFormCartItems))) {
           final formatCurrency = new NumberFormat.simpleCurrency(
             name: "INR",
           );
@@ -63,6 +84,16 @@ class _ViewModel extends BaseModel<AppState> {
                   0.0;
 
           return formatCurrency.format(total.toDouble());
+        } else if (state.productState.localCartItems.isNotEmpty ||
+            state.productState.localFreeFormCartItems.isNotEmpty) {
+          var totalItemCount = 0;
+          state.productState.localCartItems.forEach((element) {
+            totalItemCount += element.count;
+          });
+          state.productState.localFreeFormCartItems.forEach((element) {
+            totalItemCount += element.quantity;
+          });
+          return "${totalItemCount.toString()} Items";
         } else {
           return "Cart is empty";
         }
@@ -77,13 +108,14 @@ class BottomView extends StatefulWidget {
   final String buttonTitle;
   final VoidCallback didPressButton;
   final double height;
+
   const BottomView({
     Key key,
     this.storeName,
     this.didPressButton,
     this.buttonTitle,
     this.height,
-  }) : super(key: key );
+  }) : super(key: key);
 
   @override
   _BottomViewState createState() => _BottomViewState();
@@ -200,7 +232,12 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             Text(
-                              widget.buttonTitle,
+                              snapshot
+                                      .getCartTotalPrice()
+                                      .toString()
+                                      .contains("Items")
+                                  ? "SEND REQUEST"
+                                  : widget.buttonTitle,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -229,5 +266,4 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
           );
         });
   }
-
 }
