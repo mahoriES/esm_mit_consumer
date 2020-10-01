@@ -446,6 +446,7 @@ class OrderItems {
   List<Photo> images;
   String unitName;
   VariationOption variationOption;
+  String productStatus;
   SkuCharges skuCharges;
 
   OrderItems(
@@ -455,6 +456,7 @@ class OrderItems {
       this.productName,
       this.skuCode,
       this.images,
+      this.productStatus,
       this.unitName,
       this.variationOption,
       this.skuCharges});
@@ -471,6 +473,7 @@ class OrderItems {
         images.add(Photo.fromJson(v));
       });
     }
+    productStatus = json['product_status'];
     unitName = json['unit_name'];
     variationOption = json['variation_option'] != null
         ? new VariationOption.fromJson(json['variation_option'])
@@ -485,6 +488,7 @@ class OrderItems {
     data['sku_id'] = this.skuId;
     data['quantity'] = this.quantity;
     data['unit_price'] = this.unitPrice;
+    data['product_status'] = this.productStatus;
     data['product_name'] = this.productName;
     data['sku_code'] = this.skuCode;
     if (this.images != null) {

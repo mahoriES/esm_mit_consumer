@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
@@ -8,6 +9,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/customAlert.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -31,11 +33,48 @@ class _ExpandableListViewState extends State<ExpandableListView> {
   TextEditingController reviewController = TextEditingController();
   int rating = 0;
 
+  List<OrderItems> getOrderItemsToBeShown(List<OrderItems> responseOrderItems) {
+    if (responseOrderItems == null) return [];
+    List<OrderItems> orderItemsToBeShown = [];
+    responseOrderItems.forEach((element) {
+      if (element.productStatus == "IS_AVAILABLE")
+        orderItemsToBeShown.add(element);
+    });
+    return orderItemsToBeShown;
+  }
+
+  List<String> unavailableItems(List<OrderItems> responseOrderItems,
+      List<FreeFormOrderItems> responseFreeFormOrderItems) {
+    List<String> unavailableItemsName = [];
+
+    if (responseOrderItems != null)
+      responseOrderItems.forEach((element) {
+        if (element.productStatus != "IS_AVAILABLE")
+          unavailableItemsName.add(element.productName);
+      });
+
+    if (responseFreeFormOrderItems != null)
+      responseFreeFormOrderItems.forEach((element) {
+        if (element.productStatus == "FREE_FORM_NOT_ADDED")
+          unavailableItemsName.add(element.skuName);
+      });
+
+    return unavailableItemsName;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
+          List<OrderItems> orderItemsToBeShown = getOrderItemsToBeShown(snapshot
+              .getOrderListResponse.results[widget.merchantIndex].orderItems);
+          List<String> ordersMarkedUnavailable = unavailableItems(
+              snapshot.getOrderListResponse.results[widget.merchantIndex]
+                  .orderItems,
+              snapshot.getOrderListResponse.results[widget.merchantIndex]
+                  .freeFormOrderItems);
+
           var orderStatus = snapshot
               .getOrderListResponse.results[widget.merchantIndex].orderStatus;
           return new Column(
@@ -116,16 +155,10 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   expanded: expandFlag,
                   child: Container(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         ///Catalog order items view
-                        if (snapshot
-                            .getOrderListResponse
-                            .results[widget.merchantIndex]
-                            .orderItems != null && snapshot
-                            .getOrderListResponse
-                            .results[widget.merchantIndex]
-                            .orderItems
-                            .isNotEmpty)
+                        if (orderItemsToBeShown.isNotEmpty)
                           ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
                             padding:
@@ -203,30 +236,28 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                           ),
                         ////////////////////////////////////////////////////////
                         ///Free form order items list
-                        if (snapshot
-                            .getOrderListResponse
-                            .results[widget.merchantIndex]
-                            .freeFormOrderItems != null && snapshot
-                            .getOrderListResponse
-                            .results[widget.merchantIndex]
-                            .freeFormOrderItems
-                            .isNotEmpty)
+                        if (ordersMarkedUnavailable.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: AppSizes.widgetPadding,
+                                top: AppSizes.widgetPadding),
+                            child: Text(
+                              'Unavailable Items:',
+                              style: TextStyle(
+                                color: AppColors.greyishText,
+                                fontSize: AppSizes.itemSubtitle2FontSize,
+                                fontFamily: 'Avenir-Medium',
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        if (ordersMarkedUnavailable.isNotEmpty)
                           ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
                             padding:
-                                EdgeInsets.only(top: 16, left: 15, right: 15),
+                                EdgeInsets.only(top: 10, left: 15, right: 15),
                             shrinkWrap: true,
-                            itemCount: snapshot
-                                        .getOrderListResponse
-                                        .results[widget.merchantIndex]
-                                        .freeFormOrderItems ==
-                                    null
-                                ? 0
-                                : snapshot
-                                    .getOrderListResponse
-                                    .results[widget.merchantIndex]
-                                    .freeFormOrderItems
-                                    .length,
+                            itemCount: ordersMarkedUnavailable.length,
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return Container(
@@ -234,44 +265,21 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               );
                             },
                             itemBuilder: (BuildContext context, int index) {
-                              var price = snapshot
-                                  .getOrderListResponse
-                                  .results[widget.merchantIndex]
-                                  .freeFormOrderItems[index]
-                                  .quantity
-                                  .toDouble();
                               return Container(
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(
-                                        snapshot
-                                                .getOrderListResponse
-                                                .results[widget.merchantIndex]
-                                                .freeFormOrderItems[index]
-                                                .skuName +
-                                            snapshot
-                                                .getOrderListResponse
-                                                .results[widget.merchantIndex]
-                                                .freeFormOrderItems[index]
-                                                .quantity
-                                                .toString(),
+                                    Text(ordersMarkedUnavailable[index],
                                         style: const TextStyle(
-                                            color: const Color(0xff7c7c7c),
+                                            color: AppColors.iconColors,
                                             fontWeight: FontWeight.w400,
                                             fontFamily: "Avenir-Medium",
                                             fontStyle: FontStyle.normal,
-                                            fontSize: 14.0),
+                                            decoration: TextDecoration.lineThrough,
+                                            fontSize:
+                                                AppSizes.itemSubtitle2FontSize),
                                         textAlign: TextAlign.left),
-                                    Text("₹ ${price / 100}",
-                                        style: const TextStyle(
-                                            color: const Color(0xff6f6f6f),
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: "Avenir-Medium",
-                                            fontStyle: FontStyle.normal,
-                                            fontSize: 14.0),
-                                        textAlign: TextAlign.left)
                                   ],
                                 ),
                               );
@@ -332,10 +340,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                             TextAlign.left)
                                                     .tr(), // ₹ 175.00
                                                 Text(
-                                                    "₹ ${snapshot.
-                                                    getOrderListResponse.results
-                                                    [widget.merchantIndex].
-                                                    itemTotal / 100}" ??
+                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal / 100}" ??
                                                         "0.0",
                                                     style:
                                                         const TextStyle(

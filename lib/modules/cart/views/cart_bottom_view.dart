@@ -253,7 +253,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 10, right: 10.0),
+                                    left: 5, right: 10.0),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   color: Colors.white,

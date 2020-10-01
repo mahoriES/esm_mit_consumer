@@ -10,6 +10,9 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+///This class implements the picker view for the customer note images.
+///Up to 5 images are allowed to be added by the customer.
+
 class CustomerNoteImagePicker extends StatefulWidget {
   @override
   _CustomerNoteImagePickerState createState() =>
@@ -218,9 +221,12 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
       ),
     );
   }
-
+///This function shows a bottom sheet for picking the source for the customer
+  ///note images depending on your mobile OS. Hence for Android and iOS different native components are
+  ///displayed.
   void showNativeBottomSheet(BuildContext context, _ViewModel snapshot) {
     if (Platform.isAndroid) {
+      ///For android
       showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -248,6 +254,7 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
         },
       );
     } else {
+      ///For iOS
       final action = CupertinoActionSheet(
         actions: <Widget>[
           CupertinoActionSheetAction(
@@ -275,7 +282,7 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
       showCupertinoModalPopup(context: context, builder: (context) => action);
     }
   }
-
+///To display the customer note image in full screen mode when it is tapped on!
   void showImageInFullScreenMode(String imageUrl, _ViewModel snapshot) {
     showGeneralDialog(
       barrierColor: null,

@@ -213,7 +213,8 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
       ),
     );
   }
-
+  ///This function checks if the user has already added free form items previously from another merchant.
+  ///If yes, then those are cleared before adding list items for new merchant.
   void setMerchantForFreeFormItem(BuildContext context) async {
 
     var merchant = await CartDataSource.getListOfMerchants();

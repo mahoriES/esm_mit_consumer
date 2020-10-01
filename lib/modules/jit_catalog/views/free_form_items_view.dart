@@ -7,6 +7,9 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 
+///This class implements the list item view using which the user can add the list items to be ordered.
+///These items are persisted using SharedPreferences
+
 class FreeFormItemsView extends StatefulWidget {
   @override
   _FreeFormItemsViewState createState() => _FreeFormItemsViewState();

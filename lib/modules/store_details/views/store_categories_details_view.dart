@@ -710,7 +710,6 @@ class _ViewModel extends BaseModel<AppState> {
               await CartDataSource.deleteAllMerchants();
               await CartDataSource.insertToMerchants(
                   business: state.productState.selectedMerchand);
-              dispatch(ClearLocalFreeFormItemsAction());
               dispatch(NavigateAction.pushNamed('/CartView'));
             }
           } else {
