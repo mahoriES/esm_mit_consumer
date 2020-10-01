@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
@@ -18,6 +20,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -69,6 +72,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                 store.dispatch(GetCategoriesDetailsAction());
               },
               builder: (context, snapshot) {
+                debugPrint('Phone number ${snapshot.selectedMerchant.phones[0]}');
                 return ModalProgressHUD(
                   progressIndicator: Card(
                     child: Image.asset(
@@ -156,26 +160,59 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 ),
                                               ),
                                               // Organic Store
-                                              Hero(
-                                                tag: snapshot.selectedMerchant
-                                                    ?.businessName,
-                                                child: Text(
-                                                    snapshot.selectedMerchant
-                                                            ?.businessName ??
-                                                        "",
-                                                    style: const TextStyle(
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                        color: const Color(
-                                                            0xff000000),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily:
-                                                            "Avenir-Medium",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 22.0),
-                                                    textAlign: TextAlign.left),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 70,
+                                                    child: Hero(
+                                                      tag: snapshot
+                                                          .selectedMerchant
+                                                          ?.businessName,
+                                                      child: Text(
+                                                          snapshot.selectedMerchant
+                                                                  ?.businessName ??
+                                                              "",
+                                                          style: const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                              color: const Color(
+                                                                  0xff000000),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontFamily:
+                                                                  "Avenir-Medium",
+                                                              fontStyle:
+                                                                  FontStyle
+                                                                      .normal,
+                                                              fontSize: 22.0),
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                      overflow: TextOverflow.ellipsis,),
+                                                    ),
+                                                  ),
+                                                  if (snapshot.selectedMerchant
+                                                              .phones !=
+                                                          null &&
+                                                      snapshot.selectedMerchant
+                                                          .phones.isNotEmpty)
+                                                    Expanded(flex: 15,
+                                                        child: buildPhoneButtonForContactingMerchant(
+                                                            snapshot
+                                                                .selectedMerchant
+                                                                .phones[0])),
+                                                  if (snapshot.selectedMerchant
+                                                              .phones !=
+                                                          null &&
+                                                      snapshot.selectedMerchant
+                                                          .phones.isNotEmpty)
+                                                    Expanded(flex: 15,
+                                                        child: buildWhatsappButtonForContactingMerchant(
+                                                            snapshot
+                                                                .selectedMerchant
+                                                                .phones[0])),
+                                                ],
                                               ),
                                               SizedBox(
                                                 height: 10,
@@ -270,7 +307,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 AssetImage(
                                                   'assets/images/path330.png',
                                                 ),
-                                                color: AppColors.darkGrey,
+                                                 color: AppColors.darkGrey,
                                               ),
                                               Expanded(
                                                 child: Padding(
@@ -551,6 +588,47 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                   ),
                 );
               })),
+    );
+  }
+
+  Widget buildWhatsappButtonForContactingMerchant(String telephone) {
+    if (telephone.substring(0,3) != "+91")
+      telephone = "+91"+telephone;
+    return IconButton(
+      icon: SizedBox(
+          height: AppSizes.productItemIconSize,
+          width: AppSizes.productItemIconSize,
+          child: Image.asset(
+            'assets/images/call.png',
+            fit: BoxFit.contain,
+          )),
+      onPressed: () {
+        launch('tel:$telephone');
+      },
+    );
+  }
+
+  Widget buildPhoneButtonForContactingMerchant(String telephone) {
+    if (telephone.substring(0,3) != "+91")
+      telephone = "+91"+telephone;
+    return IconButton(
+      icon: SizedBox(
+        height: AppSizes.productItemIconSize,
+        width: AppSizes.productItemIconSize,
+        child: Image.asset(
+          'assets/images/whatsapp.png',
+          fit: BoxFit.contain,
+        ),
+      ),
+      onPressed: () {
+        if (Platform.isIOS) {
+          launch(
+              "whatsapp://wa.me/$telephone}/?text=${Uri.parse('Message from eSamudaay.')}");
+        } else {
+          launch(
+              "whatsapp://send?phone=$telephone&text=${Uri.parse('Message from eSamudaay.')}");
+        }
+      },
     );
   }
 }

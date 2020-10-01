@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -26,21 +27,27 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> cartListDataSource;
   List<Product> localCart;
   List<JITProduct> localFreeFormItems;
+  List<Charge> cartCharges;
   double getCartTotal;
   Function getCartTotalPrice;
   VoidCallback navigateToCart;
+  Business selectedMerchant;
 
   _ViewModel();
 
   _ViewModel.build(
       {this.cartListDataSource,
+      this.cartCharges,
       this.getCartTotalPrice,
+      this.selectedMerchant,
       this.localFreeFormItems,
       this.navigateToCart,
       this.localCart,
       this.getCartTotal})
       : super(equals: [
           cartListDataSource,
+          selectedMerchant,
+          cartCharges,
           localCart,
           getCartTotal,
           localFreeFormItems
@@ -57,6 +64,8 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       cartListDataSource: [],
+      selectedMerchant: state.productState.selectedMerchand,
+      cartCharges: state.productState.charges,
       //state.productState.cartListingDataSource.items,
       localCart: state.productState.localCartItems,
       localFreeFormItems: state.productState.localFreeFormCartItems,
@@ -82,7 +91,15 @@ class _ViewModel extends BaseModel<AppState> {
                     return (double.parse(previous.toString()) + price);
                   }) ??
                   0.0;
-
+          if (state.productState.charges != null && state.productState.charges.isNotEmpty) {
+            state.productState.charges.forEach((element) {
+              debugPrint('Getting here to add price ${element.chargeValue}');
+              if (element.businessId == state.productState.selectedMerchand.businessId) {
+                debugPrint('PRice to be added ${element.chargeValue}');
+                total += (element.chargeValue/100).toDouble();
+              }
+            });
+          }else {debugPrint('This is null man:(');}
           return formatCurrency.format(total.toDouble());
         } else if (state.productState.localCartItems.isNotEmpty ||
             state.productState.localFreeFormCartItems.isNotEmpty) {
@@ -252,8 +269,8 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                                 textAlign: TextAlign.center,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5, right: 10.0),
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 10.0),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   color: Colors.white,

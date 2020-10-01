@@ -48,7 +48,6 @@ void main() {
   Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
-    return;
     // Pass all uncaught errors from the framework to Crashlytics.
     Crashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
@@ -80,7 +79,7 @@ void main() {
   }, (Object error, StackTrace stackTrace) {
     /// Whenever an error occurs, call the `reportError` function. This sends
     /// Dart errors to the dev env or prod env of Sentry based on current status.
-    //SentryHandler().reportError(error, stackTrace);
+    SentryHandler().reportError(error, stackTrace);
   });
 }
 

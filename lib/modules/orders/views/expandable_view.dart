@@ -164,7 +164,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                 left: AppSizes.widgetPadding,
                                 top: AppSizes.widgetPadding),
                             child: Text(
-                              'Available Items',
+                              'Cart Items',
                               style: TextStyle(
                                 color: AppColors.blackTextColor,
                                 fontWeight: FontWeight.w500,
@@ -174,6 +174,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               textAlign: TextAlign.left,
                             ),
                           ),
+
                         if (orderItemsToBeShown.isNotEmpty)
                           ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
@@ -250,6 +251,91 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               );
                             },
                           ),
+
+                        if ((orderStatus == "CREATED" ||
+                            orderStatus == "MERCHANT_CANCELLED" ||
+                            orderStatus == "CUSTOMER_CANCELLED") &&
+                            snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .freeFormOrderItems !=
+                                null &&
+                            snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .freeFormOrderItems
+                                .isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: AppSizes.widgetPadding,
+                                top: AppSizes.widgetPadding),
+                            child: Text(
+                              'List Items',
+                              style: TextStyle(
+                                color: AppColors.blackTextColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                fontFamily: 'Avenir-Medium',
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+
+                        if ((orderStatus == "CREATED" ||
+                                orderStatus == "MERCHANT_CANCELLED" ||
+                                orderStatus == "CUSTOMER_CANCELLED") &&
+                            snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .freeFormOrderItems !=
+                                null &&
+                            snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .freeFormOrderItems
+                                .isNotEmpty)
+                          ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding:
+                                EdgeInsets.only(top: 10, left: 15, right: 15),
+                            shrinkWrap: true,
+                            itemCount: snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .freeFormOrderItems
+                                .length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 7,
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                        snapshot
+                                            .getOrderListResponse
+                                            .results[widget.merchantIndex]
+                                            .freeFormOrderItems[index]
+                                            .skuName,
+                                        style: const TextStyle(
+                                            color: AppColors.greyishText,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize:
+                                                AppSizes.itemSubtitle2FontSize),
+                                        textAlign: TextAlign.left),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
                         ////////////////////////////////////////////////////////
                         ///Free form order items list
                         if (ordersMarkedUnavailable.isNotEmpty)
@@ -293,7 +379,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                             fontWeight: FontWeight.w400,
                                             fontFamily: "Avenir-Medium",
                                             fontStyle: FontStyle.normal,
-                                            decoration: TextDecoration.lineThrough,
+                                            decoration:
+                                                TextDecoration.lineThrough,
                                             fontSize:
                                                 AppSizes.itemSubtitle2FontSize),
                                         textAlign: TextAlign.left),
