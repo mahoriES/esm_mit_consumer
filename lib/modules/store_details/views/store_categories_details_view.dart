@@ -72,7 +72,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                 store.dispatch(GetCategoriesDetailsAction());
               },
               builder: (context, snapshot) {
-                debugPrint('Phone number ${snapshot.selectedMerchant.phones[0]}');
                 return ModalProgressHUD(
                   progressIndicator: Card(
                     child: Image.asset(
