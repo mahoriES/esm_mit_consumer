@@ -159,6 +159,22 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       children: <Widget>[
                         ///Catalog order items view
                         if (orderItemsToBeShown.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: AppSizes.widgetPadding,
+                                top: AppSizes.widgetPadding),
+                            child: Text(
+                              'Available Items',
+                              style: TextStyle(
+                                color: AppColors.blackTextColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                fontFamily: 'Avenir-Medium',
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        if (orderItemsToBeShown.isNotEmpty)
                           ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
                             padding:
@@ -242,10 +258,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                 left: AppSizes.widgetPadding,
                                 top: AppSizes.widgetPadding),
                             child: Text(
-                              'Unavailable Items:',
+                              'Unavailable Items',
                               style: TextStyle(
-                                color: AppColors.greyishText,
-                                fontSize: AppSizes.itemSubtitle2FontSize,
+                                color: AppColors.blackTextColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
                                 fontFamily: 'Avenir-Medium',
                               ),
                               textAlign: TextAlign.left,
@@ -272,7 +289,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   children: <Widget>[
                                     Text(ordersMarkedUnavailable[index],
                                         style: const TextStyle(
-                                            color: AppColors.iconColors,
+                                            color: AppColors.greyishText,
                                             fontWeight: FontWeight.w400,
                                             fontFamily: "Avenir-Medium",
                                             fontStyle: FontStyle.normal,
