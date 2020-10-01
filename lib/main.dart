@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/Profile/views/profile_view.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
@@ -48,6 +47,7 @@ void main() {
   Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
+    return;
     // Pass all uncaught errors from the framework to Crashlytics.
     Crashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
@@ -168,14 +168,15 @@ class MyAppBase extends StatelessWidget {
         locale: EasyLocalization.of(context).locale,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            primarySwatch: Colors.blue,
-            fontFamily: "JTLeonor",
-            appBarTheme: AppBarTheme(
-              color: Color(0xffffffff),
-              brightness: Brightness.light,
-            ),),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          primarySwatch: Colors.blue,
+          fontFamily: "JTLeonor",
+          appBarTheme: AppBarTheme(
+            color: Color(0xffffffff),
+            brightness: Brightness.light,
+          ),
+        ),
         home: UserExceptionDialog<AppState>(
           child: MyApp(),
           onShowUserExceptionDialog: (context, excpn) {
@@ -206,7 +207,8 @@ class MyAppBase extends StatelessWidget {
           "/onBoarding": (BuildContext context) => OnboardingWidget(),
           "/payment": (BuildContext context) => Payments(),
           "/circles": (BuildContext context) => CirclePicker(),
-          "/productSearch": (BuildContext context) => MerchantProductsSearchView(),
+          "/productSearch": (BuildContext context) =>
+              MerchantProductsSearchView(),
 //          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
       ),
