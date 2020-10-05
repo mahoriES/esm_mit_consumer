@@ -324,7 +324,7 @@ class _MaterialSearchInputState<T> extends State<MaterialSearchInput<T>> {
 
   bool get autovalidate {
     return widget.autovalidate ??
-        Form.of(context)?.widget?.autovalidate ??
+        Form.of(context)?.widget?.autovalidateMode == AutovalidateMode.always ??
         false;
   }
 

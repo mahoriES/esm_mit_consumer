@@ -622,7 +622,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
       onPressed: () {
         if (Platform.isIOS) {
           launch(
-              "whatsapp://wa.me/$telephone}/?text=${Uri.parse('Message from eSamudaay.')}");
+              "whatsapp://wa.me/$telephone/?text=${Uri.parse('Message from eSamudaay.')}");
         } else {
           launch(
               "whatsapp://send?phone=$telephone&text=${Uri.parse('Message from eSamudaay.')}");

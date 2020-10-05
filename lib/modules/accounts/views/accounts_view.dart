@@ -1,5 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/accounts/action/account_action.dart';
@@ -43,8 +42,6 @@ class _AccountsViewState extends State<AccountsView> {
       ),
       body: StoreConnector<AppState, _ViewModel>(
           onInit: (store) {
-//                store.dispatch(GetLocationAction());
-//                store.dispatch(GetCartFromLocal());
           },
           model: _ViewModel(),
           builder: (context, snapshot) {
@@ -232,22 +229,13 @@ class _AccountsViewState extends State<AccountsView> {
     String version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
 
-    print("Veresion $version Build $buildNumber");
+    print("Version $version Build $buildNumber");
 
     setState(() {
       versionString = "Version $version Build $buildNumber";
     });
   }
 
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('screen_account.title').tr(),
-//      ),
-//      body: Container(),
-//    );
-//  }
 }
 
 class _ViewModel extends BaseModel<AppState> {

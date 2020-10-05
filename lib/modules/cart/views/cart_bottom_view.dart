@@ -8,6 +8,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 
 class CartCount extends StatelessWidget {
   final Function(BuildContext context, _ViewModel count) builder;
@@ -241,7 +242,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                     child: Material(
                       type: MaterialType.transparency,
                       child: Container(
-                        height: 46,
+                        height: 46.toHeight,
                         width: widget.buttonTitle == tr('cart.view_cart')
                             ? 120
                             : 160,
@@ -270,7 +271,7 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 5, right: 10.0),
+                                     EdgeInsets.only(left: 5.toWidth, right: 10.toWidth),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   color: Colors.white,

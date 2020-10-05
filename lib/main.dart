@@ -47,7 +47,13 @@ void main() {
   Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
+
+    ///The return keyword below is used to abort the initialization of Sentry
     return;
+    ///This is done to prevent the assertion used in setup from throwing an error
+    ///HOWEVER THE ABOVE MUST BE REMOVED WHEN PUSHING TO PRODUCTION TO RECORD THE
+    ///ERRORS!
+
     // Pass all uncaught errors from the framework to Crashlytics.
     Crashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
@@ -59,9 +65,6 @@ void main() {
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
 
-    Future.delayed(Duration(seconds: 10), () {
-      Crashlytics.instance.crash();
-    });
   };
 
   runZonedGuarded(() async {
@@ -197,7 +200,6 @@ class MyAppBase extends StatelessWidget {
           "/StoreProductListingView": (BuildContext context) =>
               StoreProductListingView(),
           "/ProductSearchView": (BuildContext context) => ProductSearchView(),
-//          "/ManageAddresses": (BuildContext context) => ManageAddresses(),
           "/OrdersView": (BuildContext context) => OrdersView(),
           "/SMAlertView": (BuildContext context) => SMAlertView(),
           "/Support": (BuildContext context) => Support(),
@@ -209,7 +211,6 @@ class MyAppBase extends StatelessWidget {
           "/circles": (BuildContext context) => CirclePicker(),
           "/productSearch": (BuildContext context) =>
               MerchantProductsSearchView(),
-//          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
       ),
     );
