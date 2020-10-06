@@ -99,6 +99,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
         Expanded(
           flex: 50,
           child: TextFormField(
+            maxLength: 30,
             key: Key(snapshot.localFreeFormCartItems.length.toString()),
             initialValue: skuName,
             decoration: InputDecoration(hintText: "e.g. Atta 5 kg"),
@@ -112,6 +113,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
         Expanded(
             flex: 20,
             child: TextFormField(
+              maxLength: 3,
               key: Key(snapshot.localFreeFormCartItems.length.toString()),
               keyboardType: TextInputType.numberWithOptions(),
               initialValue: quantity == 0 ? "" : quantity.toString(),
