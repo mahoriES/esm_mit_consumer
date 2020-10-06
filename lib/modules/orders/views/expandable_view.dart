@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
@@ -8,6 +9,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/customAlert.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -17,8 +19,10 @@ import 'package:url_launcher/url_launcher.dart';
 class ExpandableListView extends StatefulWidget {
   final int merchantIndex;
   final Function(bool) didExpand;
+
   const ExpandableListView({Key key, this.merchantIndex, this.didExpand})
       : super(key: key);
+
   @override
   _ExpandableListViewState createState() => new _ExpandableListViewState();
 }
@@ -28,11 +32,49 @@ class _ExpandableListViewState extends State<ExpandableListView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController reviewController = TextEditingController();
   int rating = 0;
+
+  List<OrderItems> getOrderItemsToBeShown(List<OrderItems> responseOrderItems) {
+    if (responseOrderItems == null) return [];
+    List<OrderItems> orderItemsToBeShown = [];
+    responseOrderItems.forEach((element) {
+      if (element.productStatus == "IS_AVAILABLE")
+        orderItemsToBeShown.add(element);
+    });
+    return orderItemsToBeShown;
+  }
+
+  List<String> unavailableItems(List<OrderItems> responseOrderItems,
+      List<FreeFormOrderItems> responseFreeFormOrderItems) {
+    List<String> unavailableItemsName = [];
+
+    if (responseOrderItems != null)
+      responseOrderItems.forEach((element) {
+        if (element.productStatus != "IS_AVAILABLE")
+          unavailableItemsName.add(element.productName);
+      });
+
+    if (responseFreeFormOrderItems != null)
+      responseFreeFormOrderItems.forEach((element) {
+        if (element.productStatus == "FREE_FORM_NOT_ADDED")
+          unavailableItemsName.add(element.skuName);
+      });
+
+    return unavailableItemsName;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
+          List<OrderItems> orderItemsToBeShown = getOrderItemsToBeShown(snapshot
+              .getOrderListResponse.results[widget.merchantIndex].orderItems);
+          List<String> ordersMarkedUnavailable = unavailableItems(
+              snapshot.getOrderListResponse.results[widget.merchantIndex]
+                  .orderItems,
+              snapshot.getOrderListResponse.results[widget.merchantIndex]
+                  .freeFormOrderItems);
+
           var orderStatus = snapshot
               .getOrderListResponse.results[widget.merchantIndex].orderStatus;
           return new Column(
@@ -73,7 +115,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                         date: DateFormat('dd MMMM, hh:mm a').format(
                             DateTime.parse(snapshot.getOrderListResponse
                                     .results[widget.merchantIndex].created)
-                                .toLocal()), //"20 -April, 07.45 PM ",
+                                .toLocal()),
+                        //"20 -April, 07.45 PM ",
                         price:
                             "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderTotal / 100.0}",
                       ),
@@ -112,81 +155,241 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                   expanded: expandFlag,
                   child: Container(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          padding:
-                              EdgeInsets.only(top: 16, left: 15, right: 15),
-                          shrinkWrap: true,
-                          itemCount: snapshot
+                        ///Catalog order items view
+                        if (orderItemsToBeShown.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: AppSizes.widgetPadding,
+                                top: AppSizes.widgetPadding),
+                            child: Text(
+                              'Cart Items',
+                              style: TextStyle(
+                                color: AppColors.blackTextColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                fontFamily: 'Avenir-Medium',
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+
+                        if (orderItemsToBeShown.isNotEmpty)
+                          ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding:
+                                EdgeInsets.only(top: 16, left: 15, right: 15),
+                            shrinkWrap: true,
+                            itemCount: snapshot
+                                        .getOrderListResponse
+                                        .results[widget.merchantIndex]
+                                        .orderItems ==
+                                    null
+                                ? 0
+                                : snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .orderItems
+                                    .length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 7,
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              var price = snapshot
                                       .getOrderListResponse
                                       .results[widget.merchantIndex]
-                                      .orderItems ==
-                                  null
-                              ? 0
-                              : snapshot
-                                  .getOrderListResponse
-                                  .results[widget.merchantIndex]
-                                  .orderItems
-                                  .length,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Container(
-                              height: 7,
-                            );
-                          },
-                          itemBuilder: (BuildContext context, int index) {
-                            var price = snapshot
+                                      .orderItems[index]
+                                      .unitPrice *
+                                  snapshot
+                                      .getOrderListResponse
+                                      .results[widget.merchantIndex]
+                                      .orderItems[index]
+                                      .quantity
+                                      .toDouble();
+                              return Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    // Faux Sued Ankle Mango - 500 GM x 3
+                                    Text(
+                                        snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .orderItems[index]
+                                                .productName +
+                                            " ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size : ""}"
+                                                " -  x " +
+                                            snapshot
+                                                .getOrderListResponse
+                                                .results[widget.merchantIndex]
+                                                .orderItems[index]
+                                                .quantity
+                                                .toString(),
+                                        style: const TextStyle(
+                                            color: const Color(0xff7c7c7c),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        textAlign: TextAlign.left),
+                                    // ₹ 55.00
+                                    Text("₹ ${price / 100}",
+                                        style: const TextStyle(
+                                            color: const Color(0xff6f6f6f),
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        textAlign: TextAlign.left)
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
+                        if ((orderStatus == "CREATED" ||
+                            orderStatus == "MERCHANT_CANCELLED" ||
+                            orderStatus == "CUSTOMER_CANCELLED") &&
+                            snapshot
                                     .getOrderListResponse
                                     .results[widget.merchantIndex]
-                                    .orderItems[index]
-                                    .unitPrice *
-                                snapshot
-                                    .getOrderListResponse
-                                    .results[widget.merchantIndex]
-                                    .orderItems[index]
-                                    .quantity
-                                    .toDouble();
-                            return Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  // Faux Sued Ankle Mango - 500 GM x 3
-                                  Text(
-                                      snapshot
-                                              .getOrderListResponse
-                                              .results[widget.merchantIndex]
-                                              .orderItems[index]
-                                              .productName +
-                                          " ${snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].orderItems[index].variationOption.size : ""}"
-                                              " -  x " +
-                                          snapshot
-                                              .getOrderListResponse
-                                              .results[widget.merchantIndex]
-                                              .orderItems[index]
-                                              .quantity
-                                              .toString(),
-                                      style: const TextStyle(
-                                          color: const Color(0xff7c7c7c),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 14.0),
-                                      textAlign: TextAlign.left),
-                                  // ₹ 55.00
-                                  Text("₹ ${price / 100}",
-                                      style: const TextStyle(
-                                          color: const Color(0xff6f6f6f),
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 14.0),
-                                      textAlign: TextAlign.left)
-                                ],
+                                    .freeFormOrderItems !=
+                                null &&
+                            snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .freeFormOrderItems
+                                .isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: AppSizes.widgetPadding,
+                                top: AppSizes.widgetPadding),
+                            child: Text(
+                              'List Items',
+                              style: TextStyle(
+                                color: AppColors.blackTextColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                fontFamily: 'Avenir-Medium',
                               ),
-                            );
-                          },
-                        ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+
+                        if ((orderStatus == "CREATED" ||
+                                orderStatus == "MERCHANT_CANCELLED" ||
+                                orderStatus == "CUSTOMER_CANCELLED") &&
+                            snapshot
+                                    .getOrderListResponse
+                                    .results[widget.merchantIndex]
+                                    .freeFormOrderItems !=
+                                null &&
+                            snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .freeFormOrderItems
+                                .isNotEmpty)
+                          ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding:
+                                EdgeInsets.only(top: 10, left: 15, right: 15),
+                            shrinkWrap: true,
+                            itemCount: snapshot
+                                .getOrderListResponse
+                                .results[widget.merchantIndex]
+                                .freeFormOrderItems
+                                .length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 7,
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                        snapshot
+                                            .getOrderListResponse
+                                            .results[widget.merchantIndex]
+                                            .freeFormOrderItems[index]
+                                            .skuName,
+                                        style: const TextStyle(
+                                            color: AppColors.greyishText,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize:
+                                                AppSizes.itemSubtitle2FontSize),
+                                        textAlign: TextAlign.left),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
+                        ////////////////////////////////////////////////////////
+                        ///Free form order items list
+                        if (ordersMarkedUnavailable.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: AppSizes.widgetPadding,
+                                top: AppSizes.widgetPadding),
+                            child: Text(
+                              'Unavailable Items',
+                              style: TextStyle(
+                                color: AppColors.blackTextColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                fontFamily: 'Avenir-Medium',
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        if (ordersMarkedUnavailable.isNotEmpty)
+                          ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding:
+                                EdgeInsets.only(top: 10, left: 15, right: 15),
+                            shrinkWrap: true,
+                            itemCount: ordersMarkedUnavailable.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 7,
+                              );
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(ordersMarkedUnavailable[index],
+                                        style: const TextStyle(
+                                            color: AppColors.greyishText,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            fontSize:
+                                                AppSizes.itemSubtitle2FontSize),
+                                        textAlign: TextAlign.left),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ////////////////////////////////////////////////////////
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -886,7 +1089,9 @@ class _ViewModel extends BaseModel<AppState> {
   Function(AddReviewRequest, String) rateOrder;
   Function(LoadingStatusApp) updateLoadingStatus;
   LoadingStatusApp loadingStatus;
+
   _ViewModel();
+
   _ViewModel.build(
       {this.getOrderListResponse,
       this.rateOrder,
@@ -894,6 +1099,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateLoadingStatus,
       this.updateOrderId})
       : super(equals: [getOrderListResponse, loadingStatus]);
+
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore

@@ -220,6 +220,25 @@ class CatalogSearchResponse {
   }
 }
 
+class JITProduct {
+  int quantity;
+  String itemName;
+
+  JITProduct({
+    this.quantity,
+    this.itemName,
+  });
+
+  JITProduct.fromJson(Map<String, dynamic> json)
+      : quantity = json['quantity'],
+        itemName = json['itemName'];
+
+  Map<String, dynamic> toJson() => {
+        'quantity': quantity,
+        'itemName': itemName,
+      };
+}
+
 class Product {
   int productId;
   int selectedVariant;

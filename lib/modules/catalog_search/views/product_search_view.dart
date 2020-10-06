@@ -273,7 +273,8 @@ class _MerchantProductsSearchViewState
 
                             ///Bottom cart total view
                             AnimatedContainer(
-                              height: snapshot.localCartListing.isEmpty
+                              height: (snapshot.localCartListing.isEmpty &&
+                                      snapshot.freeFormItemsList.isEmpty)
                                   ? 0
                                   : AppSizes.cartTotalBottomViewHeight,
                               duration: Duration(milliseconds: 300),
@@ -308,6 +309,7 @@ class _ViewModel extends BaseModel<AppState> {
   Business selectedMerchant;
   Function(String) getSearchedProductsForMerchant;
   List<Product> localCartListing;
+  List<JITProduct> freeFormItemsList;
   List<Product> searchProductsForMerchant;
   Function(Product, BuildContext) addToCart;
   Function(Product) removeFromCart;
@@ -322,6 +324,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel.build(
       {@required this.loadingStatusApp,
       @required this.selectedCategory,
+      @required this.freeFormItemsList,
       @required this.searchProductsQueryCompleted,
       @required this.closeSearchWindowAction,
       @required this.selectedMerchant,
@@ -336,6 +339,7 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatusApp,
           selectedMerchant,
           localCartListing,
+          freeFormItemsList,
           searchProductsForMerchant,
           selectedCategory,
           searchProductsQueryCompleted,
@@ -344,6 +348,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+      freeFormItemsList: state.productState.localFreeFormCartItems,
       searchProductsQueryCompleted:
           state.productState.searchForProductsComplete,
       selectedCategory: state.productState.selectedCategory ??
@@ -376,8 +381,7 @@ class SearchProductListingItemView extends StatefulWidget {
   final int index;
   final Product item;
 
-  const SearchProductListingItemView(
-      {Key key, this.index, this.item})
+  const SearchProductListingItemView({Key key, this.index, this.item})
       : super(key: key);
 
   @override

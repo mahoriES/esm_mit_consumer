@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:upi_pay/upi_pay.dart';
 
 class ProductState {
-//  final LoadingStatus loadingStatus;
   final List<Product> productListingDataSource;
   final List<Product> productListingTempDataSource;
   final List<Product> searchResultProducts;
@@ -18,7 +17,9 @@ class ProductState {
   final bool currentOrderIsPickUp;
   final bool searchForProductsComplete;
   final List<Product> localCartItems;
+  final List<JITProduct> localFreeFormCartItems;
   final List<Charge> charges;
+  final List<String> customerNoteImages;
   final CategoriesNew selectedCategory;
   final CategoriesNew selectedSubCategory;
   final PlaceOrderResponse placeOrderResponse;
@@ -34,6 +35,8 @@ class ProductState {
   ProductState({
     @required this.localCartItems,
     @required this.charges,
+    @required this.customerNoteImages,
+    @required this.localFreeFormCartItems,
     @required this.searchForProductsComplete,
     @required this.upiApps,
     @required this.selectedCluster,
@@ -55,6 +58,8 @@ class ProductState {
 
   factory ProductState.initial() {
     return new ProductState(
+        customerNoteImages: [],
+        localFreeFormCartItems: [],
         upiApps: [],
         productResponse: CatalogSearchResponse(),
         searchForProductsComplete: false,
@@ -80,8 +85,10 @@ class ProductState {
       {List<Product> productListingDataSource,
       List<Product> productListingTempDataSource,
       bool searchForProductsComplete,
+      List<String> customerNoteImages,
       List<Product> searchResultProducts,
       List<Product> localCartItems,
+      List<JITProduct> localFreeFormCartItems,
       List<CategoriesNew> categories,
       List<CategoriesNew> subCategories,
       List<Merchants> searchResults,
@@ -97,6 +104,7 @@ class ProductState {
       CatalogSearchResponse productResponse,
       Cluster selectedCluster}) {
     return ProductState(
+        customerNoteImages: customerNoteImages ?? this.customerNoteImages,
         searchForProductsComplete:
             searchForProductsComplete ?? this.searchForProductsComplete,
         upiApps: upiApps ?? this.upiApps,
@@ -109,6 +117,7 @@ class ProductState {
         productListingTempDataSource:
             productListingTempDataSource ?? this.productListingTempDataSource,
         localCartItems: localCartItems ?? this.localCartItems,
+        localFreeFormCartItems: localFreeFormCartItems ?? this.localFreeFormCartItems,
         searchResultProducts: searchResultProducts ?? this.searchResultProducts,
         selectedMerchand: selectedMerchant ?? this.selectedMerchand,
         productListingDataSource:

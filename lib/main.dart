@@ -9,6 +9,7 @@ import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
+import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
 import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
@@ -46,7 +47,13 @@ void main() {
   Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
-    // return;
+
+    ///The return keyword below is used to abort the initialization of Sentry
+    return;
+    ///This is done to prevent the assertion used in setup from throwing an error
+    ///HOWEVER THE ABOVE MUST BE REMOVED WHEN PUSHING TO PRODUCTION TO RECORD THE
+    ///ERRORS!
+
     // Pass all uncaught errors from the framework to Crashlytics.
     Crashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
@@ -58,9 +65,6 @@ void main() {
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
 
-    Future.delayed(Duration(seconds: 10), () {
-      Crashlytics.instance.crash();
-    });
   };
 
   runZonedGuarded(() async {
@@ -196,7 +200,6 @@ class MyAppBase extends StatelessWidget {
           "/StoreProductListingView": (BuildContext context) =>
               StoreProductListingView(),
           "/ProductSearchView": (BuildContext context) => ProductSearchView(),
-//          "/ManageAddresses": (BuildContext context) => ManageAddresses(),
           "/OrdersView": (BuildContext context) => OrdersView(),
           "/SMAlertView": (BuildContext context) => SMAlertView(),
           "/Support": (BuildContext context) => Support(),
@@ -208,7 +211,6 @@ class MyAppBase extends StatelessWidget {
           "/circles": (BuildContext context) => CirclePicker(),
           "/productSearch": (BuildContext context) =>
               MerchantProductsSearchView(),
-//          "/SelectAddressView": (BuildContext context) => SelectAddressView()
         },
       ),
     );

@@ -176,26 +176,27 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         tag: 'toSearchScreen',
                         child: new TextField(
                           onTap: () {
-                            FocusScope.of(context)
-                                .requestFocus(FocusNode());
+                            FocusScope.of(context).requestFocus(FocusNode());
                             snapshot.navigateToProductSearch();
                           },
                           controller: _controller,
                           decoration: new InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.search,
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: AppColors.icColors,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.navigate_next,
+                              color: AppColors.icColors,
+                            ),
+                            hintText: tr('product_list.search_placeholder'),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: new BorderSide(
                                 color: AppColors.icColors,
                               ),
-                              suffixIcon: Icon(
-                                Icons.navigate_next,
-                                color: AppColors.icColors,
-                              ),
-                              hintText: tr('product_list.search_placeholder'),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: new BorderSide(
-                                    color: AppColors.icColors,
-                                  ),),),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -342,11 +343,16 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                     ),
                   ),
                   AnimatedContainer(
-                    height: snapshot.localCartListing.isEmpty ? 0 : AppSizes.cartTotalBottomViewHeight,
+                    height: (snapshot.localCartListing.isEmpty &&
+                            snapshot.freeFormItemsList.isEmpty)
+                        ? 0
+                        : AppSizes.cartTotalBottomViewHeight,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
                       storeName: snapshot.selectedMerchant?.businessName ?? "",
-                      height: snapshot.localCartListing.isEmpty ? 0 : AppSizes.cartTotalBottomViewHeight,
+                      height: snapshot.localCartListing.isEmpty
+                          ? 0
+                          : AppSizes.cartTotalBottomViewHeight,
                       buttonTitle: tr('cart.view_cart'),
                       didPressButton: () {
                         snapshot.navigateToCart();
@@ -439,6 +445,7 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> products;
   LoadingStatusApp loadingStatus;
   List<Product> localCartListing;
+  List<JITProduct> freeFormItemsList;
   List<Product> productTempListing;
   Business selectedMerchant;
   List<CategoriesNew> subCategories;
@@ -458,6 +465,7 @@ class _ViewModel extends BaseModel<AppState> {
       {this.productResponse,
       this.navigateToCart,
       this.updateSelectedCategory,
+      this.freeFormItemsList,
       this.loadingStatus,
       this.selectedCategory,
       this.products,
@@ -471,12 +479,12 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateProductList,
       this.selectedMerchant,
       this.selectedSubCategory,
-      this.navigateToProductSearch
-      })
+      this.navigateToProductSearch})
       : super(equals: [
           products,
           localCartListing,
           selectedMerchant,
+          freeFormItemsList,
           loadingStatus,
           productTempListing,
           selectedCategory,
@@ -489,6 +497,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        freeFormItemsList: state.productState.localFreeFormCartItems,
         addToCart: (item, context) {
           dispatch(AddToCartLocalAction(product: item, context: context));
         },

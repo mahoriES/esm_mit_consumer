@@ -898,8 +898,8 @@ class OrderItemBottomView extends StatelessWidget {
       );
     } else if (orderStatus == "MERCHANT_UPDATED") {
       return Icon(
-        Icons.help_outline,
-        color: Colors.red,
+        Icons.info_outline,
+        color: Colors.blue,
       );
     } else if (orderStatus == "COMPLETED") {
       return Icon(

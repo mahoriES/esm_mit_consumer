@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -7,6 +8,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 
 class CartCount extends StatelessWidget {
   final Function(BuildContext context, _ViewModel count) builder;
@@ -25,28 +27,57 @@ class CartCount extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   List<Product> cartListDataSource;
   List<Product> localCart;
+  List<JITProduct> localFreeFormItems;
+  List<Charge> cartCharges;
   double getCartTotal;
   Function getCartTotalPrice;
   VoidCallback navigateToCart;
+  Business selectedMerchant;
+
   _ViewModel();
 
   _ViewModel.build(
       {this.cartListDataSource,
+      this.cartCharges,
       this.getCartTotalPrice,
+      this.selectedMerchant,
+      this.localFreeFormItems,
       this.navigateToCart,
       this.localCart,
       this.getCartTotal})
-      : super(equals: [cartListDataSource, localCart, getCartTotal]);
+      : super(equals: [
+          cartListDataSource,
+          selectedMerchant,
+          cartCharges,
+          localCart,
+          getCartTotal,
+          localFreeFormItems
+        ]);
+
+  bool allItemsHaveZeroQuantity(List<JITProduct> givenList) {
+    for (final item in givenList) {
+      if (item.quantity != 0 && item.quantity != null) return false;
+    }
+    return true;
+  }
+
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      cartListDataSource: [], //state.productState.cartListingDataSource.items,
+      cartListDataSource: [],
+      selectedMerchant: state.productState.selectedMerchand,
+      cartCharges: state.productState.charges,
+      //state.productState.cartListingDataSource.items,
       localCart: state.productState.localCartItems,
+      localFreeFormItems: state.productState.localFreeFormCartItems,
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed('/CartView'));
       },
       getCartTotalPrice: () {
-        if (state.productState.localCartItems.isNotEmpty) {
+        if (state.productState.localCartItems.isNotEmpty &&
+            (state.productState.localFreeFormCartItems.isEmpty ||
+                allItemsHaveZeroQuantity(
+                    state.productState.localFreeFormCartItems))) {
           final formatCurrency = new NumberFormat.simpleCurrency(
             name: "INR",
           );
@@ -61,8 +92,26 @@ class _ViewModel extends BaseModel<AppState> {
                     return (double.parse(previous.toString()) + price);
                   }) ??
                   0.0;
-
+          if (state.productState.charges != null && state.productState.charges.isNotEmpty) {
+            state.productState.charges.forEach((element) {
+              debugPrint('Getting here to add price ${element.chargeValue}');
+              if (element.businessId == state.productState.selectedMerchand.businessId) {
+                debugPrint('PRice to be added ${element.chargeValue}');
+                total += (element.chargeValue/100).toDouble();
+              }
+            });
+          }else {debugPrint('This is null man:(');}
           return formatCurrency.format(total.toDouble());
+        } else if (state.productState.localCartItems.isNotEmpty ||
+            state.productState.localFreeFormCartItems.isNotEmpty) {
+          var totalItemCount = 0;
+          state.productState.localCartItems.forEach((element) {
+            totalItemCount += element.count;
+          });
+          state.productState.localFreeFormCartItems.forEach((element) {
+            totalItemCount += element.quantity;
+          });
+          return "${totalItemCount.toString()} Items";
         } else {
           return "Cart is empty";
         }
@@ -77,13 +126,14 @@ class BottomView extends StatefulWidget {
   final String buttonTitle;
   final VoidCallback didPressButton;
   final double height;
+
   const BottomView({
     Key key,
     this.storeName,
     this.didPressButton,
     this.buttonTitle,
     this.height,
-  }) : super(key: key );
+  }) : super(key: key);
 
   @override
   _BottomViewState createState() => _BottomViewState();
@@ -180,45 +230,56 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                     );
                   }),
                 ),
-                InkWell(
-                  onTap: () {
-                    widget.didPressButton();
-                  },
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Container(
-                      height: 46,
-                      width: widget.buttonTitle == tr('cart.view_cart')
-                          ? 120
-                          : 160,
-                      decoration: BoxDecoration(
-                        color: AppColors.icColors,
-                        borderRadius: BorderRadius.circular(23),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                              widget.buttonTitle,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Avenir',
-                                fontWeight: FontWeight.w900,
+                Opacity(
+                  opacity: (snapshot.localFreeFormItems.isEmpty &&
+                          snapshot.localCart.isEmpty)
+                      ? 0.0
+                      : 1.0,
+                  child: InkWell(
+                    onTap: () {
+                      widget.didPressButton();
+                    },
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        height: 46.toHeight,
+                        width: widget.buttonTitle == tr('cart.view_cart')
+                            ? 120
+                            : 160,
+                        decoration: BoxDecoration(
+                          color: AppColors.icColors,
+                          borderRadius: BorderRadius.circular(23),
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Text(
+                                snapshot
+                                        .getCartTotalPrice()
+                                        .toString()
+                                        .contains("Items")
+                                    ? "SEND REQUEST"
+                                    : widget.buttonTitle,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontFamily: 'Avenir',
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10.0),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                                size: 12,
-                              ),
-                            )
-                          ],
+                              Padding(
+                                padding:
+                                     EdgeInsets.only(left: 5.toWidth, right: 10.toWidth),
+                                child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -229,5 +290,4 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
           );
         });
   }
-
 }

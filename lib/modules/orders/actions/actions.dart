@@ -70,10 +70,15 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
       orderResponse.results.forEach((e) {
         if (e.orderId == orderId) {
           print("equal");
-          e.orderItems = responseModel.orderItems;
           e.otherChargesDetail = responseModel.otherChargesDetail;
           e.businessPhones = responseModel.businessPhones;
           e.businessId = responseModel.businessId;
+          if (responseModel.orderItems != null)
+            e.orderItems = responseModel.orderItems;
+          if (responseModel.freeFormOrderItems != null)
+            e.freeFormOrderItems = responseModel.freeFormOrderItems;
+          if (responseModel.customerNoteImages != null)
+            e.customerNoteImages = responseModel.customerNoteImages;
         }
       });
       return state.copyWith(
