@@ -66,35 +66,60 @@ class GetMerchantDetails extends ReduxAction<AppState> {
 }
 
 class ChangeSelectedCircleAction extends ReduxAction<AppState> {
-
   final BuildContext context;
 
   ChangeSelectedCircleAction({@required this.context});
 
   @override
-  FutureOr<AppState> reduce() async{
-
+  FutureOr<AppState> reduce() async {
     final Cluster cluster = await showModalBottomSheet(
         context: context,
         elevation: 3.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        builder: (context) => Container( child: MyCirclesBottomView
-          (myCircles: [
-            ...state.authState.myClusters ?? <Cluster>[],
-            ...state.authState.nearbyClusters ?? <Cluster>[],
-        ].toSet().toList()),
-        ));
+        builder: (context) => Container(
+              child: MyCirclesBottomView(
+                  myCircles: [
+                ...state.authState.myClusters ?? <Cluster>[],
+                ...state.authState.nearbyClusters ?? <Cluster>[],
+              ].toSet().toList()),
+            ));
     if (cluster == null || !(cluster is Cluster)) return null;
     return state.copyWith(
       authState: state.authState.copyWith(
         cluster: cluster,
       ),
     );
-
   }
+}
 
+class ChangeCircleByIdAction extends ReduxAction<AppState> {
+  String clusterId;
+  ChangeCircleByIdAction(this.clusterId);
+  @override
+  FutureOr<AppState> reduce() async {
+    print('change circle');
+    List<Cluster> myCircles = [
+      ...state.authState.myClusters ?? <Cluster>[],
+      ...state.authState.nearbyClusters ?? <Cluster>[],
+    ];
+    print('list of circles => ${myCircles.length}');
+    int clusterIndex;
+    for (int i = 0; i < myCircles.length; i++) {
+      print('for $i => ${myCircles[i].clusterName}');
+      if (myCircles[i].clusterId == clusterId) {
+        print('matched');
+        clusterIndex = i;
+      }
+    }
+    if (clusterIndex != null) {
+      return state.copyWith(
+        authState: state.authState.copyWith(cluster: myCircles[clusterIndex]),
+      );
+    }
+    return null;
+  }
 }
 
 class GetBannerDetailsAction extends ReduxAction<AppState> {
@@ -132,7 +157,6 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
 }
 
 class GetClusterDetailsAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -147,7 +171,7 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       List<Cluster> result = [];
       response.data.forEach((item) {
         result.add(Cluster.fromJson(item));
-        debugPrint("Cluster++++++++++++++++++"+item.toString());
+        debugPrint("Cluster++++++++++++++++++" + item.toString());
       });
 //      if ((response.data == null || response.data.isEmpty) &&
 //          (state.authState.myClusters == null || state.authState.myClusters
@@ -156,9 +180,9 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
 //      }
       return state.copyWith(
           authState: state.authState.copyWith(
-              cluster: result.first,
-              myClusters: result,
-          ));
+        cluster: result.first,
+        myClusters: result,
+      ));
     }
   }
 

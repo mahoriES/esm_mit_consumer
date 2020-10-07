@@ -18,12 +18,15 @@ import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+bool isDynamicLinkInitialized = false;
 
 class HomePageMainView extends StatefulWidget {
   @override
@@ -34,6 +37,67 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   String address = "";
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  String bid;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  initDynamicLink(_ViewModel snapshot) async {
+    print('init dynamic link');
+    PendingDynamicLinkData linkData =
+        await FirebaseDynamicLinks.instance.getInitialLink();
+    print('init dynamic link => $linkData');
+    _handleLinkData(linkData, snapshot);
+    FirebaseDynamicLinks.instance.onLink(
+      onSuccess: (dynamicLink) async {
+        print('init dynamic link success => $dynamicLink');
+        _handleLinkData(dynamicLink, snapshot);
+      },
+      onError: (e) async {
+        print('DynamicLinks onError $e');
+      },
+    );
+    isDynamicLinkInitialized = true;
+  }
+
+  _handleLinkData(PendingDynamicLinkData data, _ViewModel snapshot) async {
+    print('handle dynamic link => $data');
+
+    final Uri uri = data?.link;
+    print('handle dynamic link uri=> $uri');
+
+    if (uri != null) {
+      print('uri is not null');
+      final queryParams = uri.queryParameters;
+      print('queryParams => $queryParams');
+      if (queryParams.length > 0) {
+        String businessId = queryParams["business"];
+        String clusterId = queryParams['clusterId'];
+        print("got params: $businessId $clusterId");
+        if (businessId != null && clusterId != null) {
+          print('bui id not null');
+          await snapshot.changeCircleById(clusterId, businessId);
+          print('loaded circles');
+          bid = businessId;
+          print('merchants number => ${snapshot.merchants.length}');
+          if (bid != null) {
+            for (int i = 0; i < snapshot.merchants.length; i++) {
+              print('for loop');
+              if (snapshot.merchants[i].businessId == bid) {
+                print('matched for i = $i');
+                snapshot.updateSelectedMerchant(snapshot.merchants[i]);
+                snapshot.navigateToStoreDetailsPage();
+                break;
+              }
+            }
+            bid = null;
+          }
+        }
+      }
+    }
+  }
 
   void _onRefresh(_ViewModel snapshot) async {
     // monitor network fetch
@@ -169,14 +233,16 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 await snapshot.dispatchFuture(GetNearbyCirclesAction());
                 snapshot.dispatch(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-                snapshot.dispatch(
-                  LoadVideoFeed(),
-                );
+                snapshot.dispatch(LoadVideoFeed());
               }
             },
             builder: (context, snapshot) {
               List<Business> firstList = List<Business>();
               List<Business> secondList = List<Business>();
+
+              if (!isDynamicLinkInitialized) {
+                initDynamicLink(snapshot);
+              }
               snapshot.merchants.asMap().forEach((index, element) {
                 if (index <= 2) {
                   firstList.add(element);
@@ -860,6 +926,7 @@ class StoresListView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+  Function(String, String) changeCircleById;
   Function(String) getMerchantList;
   Function(String, BuildContext) changeSelectedCircle;
   String userAddress;
@@ -879,7 +946,8 @@ class _ViewModel extends BaseModel<AppState> {
   Cluster cluster;
   GetBusinessesResponse response;
   _ViewModel.build(
-      {this.navigateToAddAddressPage,
+      {this.changeCircleById,
+      this.navigateToAddAddressPage,
       this.navigateToCart,
       this.cluster,
       this.banners,
@@ -919,6 +987,12 @@ class _ViewModel extends BaseModel<AppState> {
         merchants: state.homePageState.merchants,
         banners: state.homePageState.banners,
         videoFeedResponse: state.videosState.videosResponse,
+        changeCircleById: (clusterId, businessId) async {
+          await dispatch(ChangeCircleByIdAction(clusterId));
+          dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+
+          dispatch(LoadVideoFeed());
+        },
         loadVideoFeed: () {
           dispatch(LoadVideoFeed());
         },
