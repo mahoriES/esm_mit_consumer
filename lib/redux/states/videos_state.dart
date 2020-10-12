@@ -6,11 +6,13 @@ class VideosState {
   final VideoFeedResponse videosResponse;
   final LoadingStatusApp loadingStatus;
   final int currentIndex;
+  final VideoItem selectedVideo;
 
   VideosState({
     @required this.videosResponse,
     @required this.loadingStatus,
     @required this.currentIndex,
+    @required this.selectedVideo,
   });
 
   factory VideosState.initial() {
@@ -21,18 +23,21 @@ class VideosState {
         results: [],
       ),
       currentIndex: 0,
+      selectedVideo: null,
     );
   }
 
   VideosState copyWith({
     LoadingStatusApp loadingStatus,
     int currentIndex,
-    final VideoFeedResponse videosResponse,
+    VideoFeedResponse videosResponse,
+    VideoItem selectedVideo,
   }) {
     return new VideosState(
       currentIndex: currentIndex ?? this.currentIndex,
       loadingStatus: loadingStatus ?? this.loadingStatus,
       videosResponse: videosResponse ?? this.videosResponse,
+      selectedVideo: selectedVideo ?? this.selectedVideo,
     );
   }
 }

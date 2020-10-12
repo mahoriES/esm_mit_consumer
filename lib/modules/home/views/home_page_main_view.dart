@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
+import 'package:eSamudaay/modules/home/models/dynamic_link_params.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
@@ -45,54 +46,38 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   }
 
   initDynamicLink(_ViewModel snapshot) async {
-    print('init dynamic link');
     PendingDynamicLinkData linkData =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    print('init dynamic link => $linkData');
     _handleLinkData(linkData, snapshot);
     FirebaseDynamicLinks.instance.onLink(
       onSuccess: (dynamicLink) async {
-        print('init dynamic link success => $dynamicLink');
+        debugPrint('init dynamic link success => $dynamicLink');
         _handleLinkData(dynamicLink, snapshot);
       },
       onError: (e) async {
-        print('DynamicLinks onError $e');
+        debugPrint('DynamicLinks onError $e');
+        throw UserException('Some Error Occured in processing the Video.');
       },
     );
     isDynamicLinkInitialized = true;
   }
 
   _handleLinkData(PendingDynamicLinkData data, _ViewModel snapshot) async {
-    print('handle dynamic link => $data');
-
     final Uri uri = data?.link;
-    print('handle dynamic link uri=> $uri');
 
     if (uri != null) {
-      print('uri is not null');
       final queryParams = uri.queryParameters;
-      print('queryParams => $queryParams');
       if (queryParams.length > 0) {
-        String businessId = queryParams["business"];
-        String clusterId = queryParams['clusterId'];
-        print("got params: $businessId $clusterId");
-        if (businessId != null && clusterId != null) {
-          print('bui id not null');
-          await snapshot.changeCircleById(clusterId, businessId);
-          print('loaded circles');
-          bid = businessId;
-          print('merchants number => ${snapshot.merchants.length}');
-          if (bid != null) {
-            for (int i = 0; i < snapshot.merchants.length; i++) {
-              print('for loop');
-              if (snapshot.merchants[i].businessId == bid) {
-                print('matched for i = $i');
-                snapshot.updateSelectedMerchant(snapshot.merchants[i]);
-                snapshot.navigateToStoreDetailsPage();
-                break;
-              }
-            }
-            bid = null;
+        DynamicLinkDataValues dynamicLinkDataValues =
+            DynamicLinkDataValues.fromJson(queryParams);
+        debugPrint(dynamicLinkDataValues.toString());
+        if (dynamicLinkDataValues.clusterId != null) {
+          await snapshot.changeCircleById(dynamicLinkDataValues.clusterId);
+          if (dynamicLinkDataValues.videoId != null) {
+            await snapshot.goToVideoById(dynamicLinkDataValues.videoId);
+          } else if (dynamicLinkDataValues.businessId != null) {
+            await snapshot
+                .goToStoreDetailsById(dynamicLinkDataValues.businessId);
           }
         }
       }
@@ -309,8 +294,12 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     child: Column(
                       children: [
                         VideosListWidget(
-                          snapshot.videoFeedResponse,
-                          () => snapshot.dispatch(LoadVideoFeed()),
+                          videoFeedResponse: snapshot.videoFeedResponse,
+                          onRefresh: () => snapshot.dispatch(LoadVideoFeed()),
+                          onTapOnVideo: (videoItem) {
+                            snapshot.updateSelectedVideo(videoItem);
+                            snapshot.navigateToVideoView();
+                          },
                         ),
                         (snapshot.merchants != null &&
                                     snapshot.merchants.isEmpty) &&
@@ -926,7 +915,14 @@ class StoresListView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  Function(String, String) changeCircleById;
+  /* start */
+  // Created these methods to handle dynamic link actions.
+  Function(String) changeCircleById;
+  Function(String) goToStoreDetailsById;
+  Function(String) goToVideoById;
+  /* end */
+  Function(VideoItem) updateSelectedVideo;
+  Function navigateToVideoView;
   Function(String) getMerchantList;
   Function(String, BuildContext) changeSelectedCircle;
   String userAddress;
@@ -945,27 +941,31 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Cluster cluster;
   GetBusinessesResponse response;
-  _ViewModel.build(
-      {this.changeCircleById,
-      this.navigateToAddAddressPage,
-      this.navigateToCart,
-      this.cluster,
-      this.banners,
-      this.navigateToProductSearch,
-      this.navigateToStoreDetailsPage,
-      this.updateCurrentIndex,
-      this.currentIndex,
-      this.loadingStatus,
-      this.loadVideoFeed,
-      this.merchants,
-      this.userAddress,
-      this.updateSelectedMerchant,
-      this.getMerchantList,
-      this.response,
-      this.changeSelectedCircle,
-      this.videoFeedResponse,
-      this.navigateToCircles})
-      : super(equals: [
+  _ViewModel.build({
+    this.changeCircleById,
+    this.goToStoreDetailsById,
+    this.goToVideoById,
+    this.updateSelectedVideo,
+    this.navigateToVideoView,
+    this.navigateToAddAddressPage,
+    this.navigateToCart,
+    this.cluster,
+    this.banners,
+    this.navigateToProductSearch,
+    this.navigateToStoreDetailsPage,
+    this.updateCurrentIndex,
+    this.currentIndex,
+    this.loadingStatus,
+    this.loadVideoFeed,
+    this.merchants,
+    this.userAddress,
+    this.updateSelectedMerchant,
+    this.getMerchantList,
+    this.response,
+    this.changeSelectedCircle,
+    this.videoFeedResponse,
+    this.navigateToCircles,
+  }) : super(equals: [
           currentIndex,
           merchants,
           banners,
@@ -980,49 +980,65 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        response: state.homePageState.response,
-        cluster: state.authState.cluster,
-        userAddress: "",
-        loadingStatus: state.authState.loadingStatus,
-        merchants: state.homePageState.merchants,
-        banners: state.homePageState.banners,
-        videoFeedResponse: state.videosState.videosResponse,
-        changeCircleById: (clusterId, businessId) async {
-          await dispatch(ChangeCircleByIdAction(clusterId));
-          dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-
-          dispatch(LoadVideoFeed());
-        },
-        loadVideoFeed: () {
-          dispatch(LoadVideoFeed());
-        },
-        navigateToCart: () {
-          dispatch(NavigateAction.pushNamed('/CartView'));
-        },
-        updateSelectedMerchant: (merchant) {
-          dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
-        },
-        navigateToStoreDetailsPage: () {
-          dispatch(RemoveCategoryAction());
-          dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
-        },
-        navigateToAddAddressPage: () {
-          dispatch(NavigateAction.pushNamed('/AddAddressView'));
-        },
-        navigateToProductSearch: () {
-          dispatch(UpdateSelectedTabAction(1));
-        },
-        getMerchantList: (url) {
-          dispatch(GetMerchantDetails(getUrl: url));
-        },
-        changeSelectedCircle: (url, context) async {
-          await dispatchFuture(ChangeSelectedCircleAction(context: context));
-          dispatch(GetMerchantDetails(getUrl: url));
-          dispatch(LoadVideoFeed());
-        },
-        navigateToCircles: () {
-          dispatch(NavigateAction.pushNamed("/circles"));
-        },
-        currentIndex: state.homePageState.currentIndex);
+      response: state.homePageState.response,
+      cluster: state.authState.cluster,
+      userAddress: "",
+      loadingStatus: state.authState.loadingStatus,
+      merchants: state.homePageState.merchants,
+      banners: state.homePageState.banners,
+      videoFeedResponse: state.videosState.videosResponse,
+      loadVideoFeed: () {
+        dispatch(LoadVideoFeed());
+      },
+      navigateToCart: () {
+        dispatch(NavigateAction.pushNamed('/CartView'));
+      },
+      updateSelectedMerchant: (merchant) {
+        dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
+      },
+      navigateToStoreDetailsPage: () {
+        dispatch(RemoveCategoryAction());
+        dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+      },
+      navigateToAddAddressPage: () {
+        dispatch(NavigateAction.pushNamed('/AddAddressView'));
+      },
+      navigateToProductSearch: () {
+        dispatch(UpdateSelectedTabAction(1));
+      },
+      getMerchantList: (url) {
+        dispatch(GetMerchantDetails(getUrl: url));
+      },
+      changeSelectedCircle: (url, context) async {
+        await dispatchFuture(ChangeSelectedCircleAction(context: context));
+        dispatch(GetMerchantDetails(getUrl: url));
+        dispatch(LoadVideoFeed());
+      },
+      navigateToCircles: () {
+        dispatch(NavigateAction.pushNamed("/circles"));
+      },
+      currentIndex: state.homePageState.currentIndex,
+      changeCircleById: (clusterId) async {
+        await dispatchFuture(ChangeCircleByIdAction(clusterId));
+        dispatch(LoadVideoFeed());
+        await dispatchFuture(
+            GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      },
+      goToStoreDetailsById: (businessId) async {
+        await dispatchFuture(SelectStoreDetailsByIdAction(businessId));
+        dispatch(RemoveCategoryAction());
+        dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+      },
+      goToVideoById: (videoId) async {
+        await dispatchFuture(UpdateSelectedVideoByIdAction(videoId: videoId));
+        dispatch(NavigateAction.pushNamed("/videoPlayer"));
+      },
+      updateSelectedVideo: (video) async {
+        dispatch(UpdateSelectedVideoAction(selectedVideo: video));
+      },
+      navigateToVideoView: () {
+        dispatch(NavigateAction.pushNamed("/videoPlayer"));
+      },
+    );
   }
 }

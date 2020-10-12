@@ -35,3 +35,37 @@ class LoadVideoFeed extends ReduxAction<AppState> {
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
+
+class UpdateSelectedVideoAction extends ReduxAction<AppState> {
+  final VideoItem selectedVideo;
+
+  UpdateSelectedVideoAction({this.selectedVideo});
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+        videosState: state.videosState.copyWith(selectedVideo: selectedVideo));
+  }
+}
+
+class UpdateSelectedVideoByIdAction extends ReduxAction<AppState> {
+  final String videoId;
+
+  UpdateSelectedVideoByIdAction({this.videoId});
+  @override
+  FutureOr<AppState> reduce() {
+    int selectedIndex;
+    for (int i = 0; i < state.videosState.videosResponse.results.length; i++) {
+      if (state.videosState.videosResponse.results[i].postId == videoId) {
+        selectedIndex = i;
+        break;
+      }
+    }
+    if (selectedIndex != null) {
+      return state.copyWith(
+          videosState: state.videosState.copyWith(
+        selectedVideo: state.videosState.videosResponse.results[selectedIndex],
+      ));
+    } else
+      throw UserException('Video Not Found');
+  }
+}

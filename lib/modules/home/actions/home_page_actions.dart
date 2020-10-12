@@ -122,6 +122,28 @@ class ChangeCircleByIdAction extends ReduxAction<AppState> {
   }
 }
 
+class SelectStoreDetailsByIdAction extends ReduxAction<AppState> {
+  String businessId;
+  SelectStoreDetailsByIdAction(this.businessId);
+  @override
+  FutureOr<AppState> reduce() async {
+    int selectedIndex;
+    for (int i = 0; i < state.homePageState.merchants.length; i++) {
+      if (state.homePageState.merchants[i].businessId == businessId) {
+        selectedIndex = i;
+        break;
+      }
+    }
+    if (selectedIndex != null) {
+      return state.copyWith(
+          productState: state.productState.copyWith(
+              selectedMerchant: state.homePageState.merchants[selectedIndex]));
+    } else {
+      throw UserException('Store Not Found');
+    }
+  }
+}
+
 class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
