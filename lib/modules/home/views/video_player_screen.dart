@@ -6,13 +6,14 @@ import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import '../../../main.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> with RouteAware {
   VideoPlayerController controller;
   ChewieController chewieController;
   bool isLoading;
@@ -21,6 +22,28 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   void initState() {
     isLoading = false;
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPushNext() {
+    debugPrint("didPushNext");
+    controller?.pause();
+    chewieController?.pause();
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    debugPrint("didPopNext");
+    controller?.play();
+    chewieController?.play();
+    super.didPopNext();
   }
 
   @override
@@ -63,7 +86,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             elevation: 0,
             title: FittedBox(
               child: Text(
-                snapshot.selectedVideo.title ?? '',
+                snapshot.selectedVideo?.title ?? '',
               ),
             ),
             centerTitle: true,
