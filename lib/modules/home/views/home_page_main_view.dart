@@ -46,8 +46,10 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   }
 
   initDynamicLink(_ViewModel snapshot) async {
+    debugPrint('init dynamic link');
     PendingDynamicLinkData linkData =
         await FirebaseDynamicLinks.instance.getInitialLink();
+    debugPrint('init dynamic link, initial link => $linkData');
     _handleLinkData(linkData, snapshot);
     FirebaseDynamicLinks.instance.onLink(
       onSuccess: (dynamicLink) async {
@@ -64,7 +66,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
 
   _handleLinkData(PendingDynamicLinkData data, _ViewModel snapshot) async {
     final Uri uri = data?.link;
-
+    debugPrint('handle dynamic link => $uri');
     if (uri != null) {
       final queryParams = uri.queryParameters;
       if (queryParams.length > 0) {
@@ -1019,6 +1021,9 @@ class _ViewModel extends BaseModel<AppState> {
       },
       currentIndex: state.homePageState.currentIndex,
       changeCircleById: (clusterId) async {
+        if (state.authState.cluster == null) {
+          await dispatchFuture(GetNearbyCirclesAction());
+        }
         await dispatchFuture(ChangeCircleByIdAction(clusterId));
         dispatch(LoadVideoFeed());
         await dispatchFuture(
