@@ -12,6 +12,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/sentry_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,9 +23,11 @@ import 'package:fm_fit/fm_fit.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-void main() {
+void main() async {
   NavigateAction.setNavigatorKey(navigatorKey);
-  Crashlytics.instance.enableInDevMode = true;
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   FlutterError.onError = (FlutterErrorDetails details) {
     ///The return keyword below is used to abort the initialization of Sentry
@@ -35,7 +38,7 @@ void main() {
     ///ERRORS!
 
     // Pass all uncaught errors from the framework to Crashlytics.
-    Crashlytics.instance.recordFlutterError(details);
+    FirebaseCrashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
       // In development mode, simply print to console.
       FlutterError.dumpErrorToConsole(details);
