@@ -1031,12 +1031,16 @@ class _ViewModel extends BaseModel<AppState> {
       },
       goToStoreDetailsById: (businessId) async {
         await dispatchFuture(SelectStoreDetailsByIdAction(businessId));
-        dispatch(RemoveCategoryAction());
-        dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+        if (state.productState.selectedMerchand != null) {
+          dispatch(RemoveCategoryAction());
+          dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+        }
       },
       goToVideoById: (videoId) async {
         await dispatchFuture(UpdateSelectedVideoByIdAction(videoId: videoId));
-        dispatch(NavigateAction.pushNamed("/videoPlayer"));
+        if (state.videosState.selectedVideo != null) {
+          dispatch(NavigateAction.pushNamed("/videoPlayer"));
+        }
       },
       updateSelectedVideo: (video) async {
         dispatch(UpdateSelectedVideoAction(selectedVideo: video));
