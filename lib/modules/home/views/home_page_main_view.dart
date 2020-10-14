@@ -4,10 +4,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
+import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
-import 'package:eSamudaay/modules/home/models/dynamic_link_params.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
@@ -19,15 +19,12 @@ import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-bool isDynamicLinkInitialized = false;
 
 class HomePageMainView extends StatefulWidget {
   @override
@@ -38,51 +35,17 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   String address = "";
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String bid;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  initDynamicLink(_ViewModel snapshot) async {
-    debugPrint('init dynamic link');
-    PendingDynamicLinkData linkData =
-        await FirebaseDynamicLinks.instance.getInitialLink();
-    debugPrint('init dynamic link, initial link => $linkData');
-    _handleLinkData(linkData, snapshot);
-    FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (dynamicLink) async {
-        debugPrint('init dynamic link success => $dynamicLink');
-        _handleLinkData(dynamicLink, snapshot);
-      },
-      onError: (e) async {
-        debugPrint('DynamicLinks onError $e');
-        throw UserException('Some Error Occured in processing the Video.');
-      },
-    );
-    isDynamicLinkInitialized = true;
-  }
-
-  _handleLinkData(PendingDynamicLinkData data, _ViewModel snapshot) async {
-    final Uri uri = data?.link;
-    debugPrint('handle dynamic link => $uri');
-    if (uri != null) {
-      final queryParams = uri.queryParameters;
-      if (queryParams.length > 0) {
-        DynamicLinkDataValues dynamicLinkDataValues =
-            DynamicLinkDataValues.fromJson(queryParams);
-        debugPrint(dynamicLinkDataValues.toString());
-        if (dynamicLinkDataValues.clusterId != null) {
-          await snapshot.changeCircleById(dynamicLinkDataValues.clusterId);
-          if (dynamicLinkDataValues.videoId != null) {
-            await snapshot.goToVideoById(dynamicLinkDataValues.videoId);
-          } else if (dynamicLinkDataValues.businessId != null) {
-            await snapshot
-                .goToStoreDetailsById(dynamicLinkDataValues.businessId);
-          }
-        }
-      }
+    debugPrint(
+        'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
+    if (!DynamicLinkService().isDynamicLinkInitialized) {
+      DynamicLinkService().initDynamicLink(context);
+    } else if (DynamicLinkService().pendingLinkData != null) {
+      DynamicLinkService().handleLinkData(DynamicLinkService().pendingLinkData);
+      DynamicLinkService().pendingLinkData = null;
     }
   }
 
@@ -227,9 +190,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
               List<Business> firstList = List<Business>();
               List<Business> secondList = List<Business>();
 
-              if (!isDynamicLinkInitialized) {
-                initDynamicLink(snapshot);
-              }
               snapshot.merchants.asMap().forEach((index, element) {
                 if (index <= 2) {
                   firstList.add(element);
@@ -917,12 +877,6 @@ class StoresListView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  /* start */
-  // Created these methods to handle dynamic link actions.
-  Function(String) changeCircleById;
-  Function(String) goToStoreDetailsById;
-  Function(String) goToVideoById;
-  /* end */
   Function(VideoItem) updateSelectedVideo;
   Function navigateToVideoView;
   Function(String) getMerchantList;
@@ -944,9 +898,6 @@ class _ViewModel extends BaseModel<AppState> {
   Cluster cluster;
   GetBusinessesResponse response;
   _ViewModel.build({
-    this.changeCircleById,
-    this.goToStoreDetailsById,
-    this.goToVideoById,
     this.updateSelectedVideo,
     this.navigateToVideoView,
     this.navigateToAddAddressPage,
@@ -980,7 +931,6 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
       response: state.homePageState.response,
       cluster: state.authState.cluster,
@@ -1020,28 +970,6 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(NavigateAction.pushNamed("/circles"));
       },
       currentIndex: state.homePageState.currentIndex,
-      changeCircleById: (clusterId) async {
-        if (state.authState.cluster == null) {
-          await dispatchFuture(GetNearbyCirclesAction());
-        }
-        await dispatchFuture(ChangeCircleByIdAction(clusterId));
-        dispatch(LoadVideoFeed());
-        await dispatchFuture(
-            GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-      },
-      goToStoreDetailsById: (businessId) async {
-        await dispatchFuture(SelectStoreDetailsByIdAction(businessId));
-        if (state.productState.selectedMerchand != null) {
-          dispatch(RemoveCategoryAction());
-          dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
-        }
-      },
-      goToVideoById: (videoId) async {
-        await dispatchFuture(UpdateSelectedVideoByIdAction(videoId: videoId));
-        if (state.videosState.selectedVideo != null) {
-          dispatch(NavigateAction.pushNamed("/videoPlayer"));
-        }
-      },
       updateSelectedVideo: (video) async {
         dispatch(UpdateSelectedVideoAction(selectedVideo: video));
       },
