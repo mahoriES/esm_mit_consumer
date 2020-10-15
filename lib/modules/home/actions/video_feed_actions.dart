@@ -7,6 +7,7 @@ import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoadVideoFeed extends ReduxAction<AppState> {
@@ -48,26 +49,47 @@ class UpdateSelectedVideoAction extends ReduxAction<AppState> {
   }
 }
 
-class UpdateSelectedVideoByIdAction extends ReduxAction<AppState> {
+class GoToVideoPlayerByID extends ReduxAction<AppState> {
   final String videoId;
+  GoToVideoPlayerByID({@required this.videoId});
 
-  UpdateSelectedVideoByIdAction({this.videoId});
   @override
-  FutureOr<AppState> reduce() {
-    int selectedIndex;
-    for (int i = 0; i < state.videosState.videosResponse.results.length; i++) {
-      if (state.videosState.videosResponse.results[i].postId == videoId) {
-        selectedIndex = i;
-        break;
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+      url: ApiURL.getVideoFeed + '$videoId',
+      params: null,
+      requestType: RequestType.get,
+    );
+    debugPrint('GoToVideoPlayerByID response=> ${response.data.toString()}');
+    if (response.status == ResponseStatus.error404)
+      throw UserException(response.data['message']);
+    else if (response.status == ResponseStatus.error500)
+      throw UserException('Something went wrong');
+    else {
+      VideoItem responseModel = VideoItem.fromJson(response.data);
+
+      if (responseModel != null) {
+        DynamicLinkService().isLinkPathValid = true;
+        return state.copyWith(
+          videosState: state.videosState.copyWith(
+            selectedVideo: responseModel,
+          ),
+        );
       }
     }
-    if (selectedIndex != null) {
-      DynamicLinkService().isLinkPathValid = true;
-      return state.copyWith(
-          videosState: state.videosState.copyWith(
-        selectedVideo: state.videosState.videosResponse.results[selectedIndex],
-      ));
-    } else
-      throw UserException('Video Not Found');
+    return null;
+  }
+
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    super.after();
   }
 }

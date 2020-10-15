@@ -1,10 +1,8 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/dynamic_link_params.dart';
 import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/store.dart';
-import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'home_page_actions.dart';
@@ -37,7 +35,8 @@ class DynamicLinkService {
         }
       },
       onError: (e) async {
-        throw UserException('Some Error Occured.');
+        throw UserException(
+            'Some Error Occured while processing the deep link  : ${e.toString()}.');
       },
     );
     isDynamicLinkInitialized = true;
@@ -53,28 +52,17 @@ class DynamicLinkService {
         DynamicLinkDataValues dynamicLinkDataValues =
             DynamicLinkDataValues.fromJson(queryParams);
         debugPrint(dynamicLinkDataValues.toString());
-        if (dynamicLinkDataValues.clusterId != null) {
-          await _changeCircleById(dynamicLinkDataValues.clusterId);
-          if (dynamicLinkDataValues.videoId != null) {
-            await _goToVideoById(dynamicLinkDataValues.videoId);
-          } else if (dynamicLinkDataValues.businessId != null) {
-            await _goToStoreDetailsById(dynamicLinkDataValues.businessId);
-          }
+        if (dynamicLinkDataValues.videoId != null) {
+          await _goToVideoById(dynamicLinkDataValues.videoId);
+        } else if (dynamicLinkDataValues.businessId != null) {
+          await _goToStoreDetailsById(dynamicLinkDataValues.businessId);
         }
       }
     }
   }
 
-  _changeCircleById(String clusterId) async {
-    await store.dispatchFuture(GetNearbyCirclesAction());
-    await store.dispatchFuture(ChangeCircleByIdAction(clusterId));
-    await store
-        .dispatchFuture(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-    await store.dispatchFuture(LoadVideoFeed());
-  }
-
   _goToStoreDetailsById(String businessId) async {
-    await store.dispatchFuture(SelectStoreDetailsByIdAction(businessId));
+    await store.dispatchFuture(GoToMerchantDetailsByID(businessId: businessId));
     if (isLinkPathValid) {
       store.dispatch(RemoveCategoryAction());
       store.dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
@@ -82,7 +70,7 @@ class DynamicLinkService {
   }
 
   _goToVideoById(String videoId) async {
-    await store.dispatchFuture(UpdateSelectedVideoByIdAction(videoId: videoId));
+    await store.dispatchFuture(GoToVideoPlayerByID(videoId: videoId));
     if (isLinkPathValid) {
       store.dispatch(NavigateAction.pushNamed("/videoPlayer"));
     }

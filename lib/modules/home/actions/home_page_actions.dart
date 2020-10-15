@@ -95,51 +95,49 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
   }
 }
 
-class ChangeCircleByIdAction extends ReduxAction<AppState> {
-  String clusterId;
-  ChangeCircleByIdAction(this.clusterId);
+class GoToMerchantDetailsByID extends ReduxAction<AppState> {
+  final String businessId;
+  GoToMerchantDetailsByID({@required this.businessId});
+
   @override
   FutureOr<AppState> reduce() async {
-    List<Cluster> myCircles = [
-      ...state.authState.myClusters ?? <Cluster>[],
-      ...state.authState.nearbyClusters ?? <Cluster>[],
-    ];
-    int clusterIndex;
-    for (int i = 0; i < myCircles.length; i++) {
-      if (myCircles[i].clusterId == clusterId) {
-        clusterIndex = i;
+    var response = await APIManager.shared.request(
+      url: ApiURL.baseURL + ApiURL.getBusinessesUrl + '$businessId',
+      params: null,
+      requestType: RequestType.get,
+    );
+    debugPrint(
+        'GoToMerchantDetailsByID response=> ${response.status.toString()}');
+    if (response.status == ResponseStatus.error404) {
+      throw UserException(response.data['message']);
+    } else if (response.status == ResponseStatus.error500)
+      throw UserException('Something went wrong');
+    else {
+      var responseModel = Business.fromJson(response.data);
+
+      if (responseModel != null) {
+        DynamicLinkService().isLinkPathValid = true;
+        return state.copyWith(
+          productState: state.productState.copyWith(
+            selectedMerchant: responseModel,
+          ),
+        );
       }
-    }
-    if (clusterIndex != null) {
-      return state.copyWith(
-        authState: state.authState.copyWith(cluster: myCircles[clusterIndex]),
-      );
     }
     return null;
   }
-}
 
-class SelectStoreDetailsByIdAction extends ReduxAction<AppState> {
-  String businessId;
-  SelectStoreDetailsByIdAction(this.businessId);
   @override
-  FutureOr<AppState> reduce() async {
-    int selectedIndex;
-    for (int i = 0; i < state.homePageState.merchants.length; i++) {
-      if (state.homePageState.merchants[i].businessId == businessId) {
-        selectedIndex = i;
-        break;
-      }
-    }
-    if (selectedIndex != null) {
-      DynamicLinkService().isLinkPathValid = true;
-      return state.copyWith(
-        productState: state.productState.copyWith(
-            selectedMerchant: state.homePageState.merchants[selectedIndex]),
-      );
-    } else {
-      throw UserException('Store Not Found');
-    }
+  FutureOr<void> before() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    super.after();
   }
 }
 

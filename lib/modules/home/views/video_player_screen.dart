@@ -143,8 +143,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with RouteAware {
                       ),
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(snapshot.selectedVideo?.business?.name ??
-                            'Unknown'),
+                        title:
+                            Text(snapshot.selectedVideo?.business?.name ?? ''),
                         subtitle: Text(snapshot.selectedVideo?.title ?? ''),
                         leading: Container(
                           height: 60.toWidth,
