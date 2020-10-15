@@ -12,6 +12,7 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/material.dart';
+import 'dynamic_link_actions.dart';
 
 class GetMerchantDetails extends ReduxAction<AppState> {
   final String getUrl;
@@ -135,9 +136,11 @@ class SelectStoreDetailsByIdAction extends ReduxAction<AppState> {
       }
     }
     if (selectedIndex != null) {
+      DynamicLinkService().isLinkPathValid = true;
       return state.copyWith(
-          productState: state.productState.copyWith(
-              selectedMerchant: state.homePageState.merchants[selectedIndex]));
+        productState: state.productState.copyWith(
+            selectedMerchant: state.homePageState.merchants[selectedIndex]),
+      );
     } else {
       throw UserException('Store Not Found');
     }

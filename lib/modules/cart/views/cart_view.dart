@@ -74,8 +74,8 @@ class _CartViewState extends State<CartView> {
           model: _ViewModel(),
           onInit: (store) {
             widget.radioValue = widget.radioValue == 0
-                ? store.state.productState.selectedMerchand != null
-                    ? store.state.productState.selectedMerchand.hasDelivery
+                ? store.state.productState.selectedMerchant != null
+                    ? store.state.productState.selectedMerchant.hasDelivery
                         ? 1
                         : 2
                     : 0
@@ -220,7 +220,6 @@ class _CartViewState extends State<CartView> {
                               ),
                             ),
                             MySeparator(),
-
                             FreeFormItemsView(),
                             CustomerNoteImagePicker(),
                             Padding(
@@ -950,7 +949,7 @@ class _ViewModel extends BaseModel<AppState> {
         localFreeFormItems: state.productState.localFreeFormCartItems,
         charges: state.productState.charges,
         address: state.authState.address,
-        selectedMerchant: state.productState.selectedMerchand,
+        selectedMerchant: state.productState.selectedMerchant,
         localCart: state.productState.localCartItems,
         user: state.authState.user,
         loadingStatus: state.authState.loadingStatus,

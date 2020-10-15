@@ -39,14 +39,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   @override
   void initState() {
     super.initState();
-    debugPrint(
-        'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
-    if (!DynamicLinkService().isDynamicLinkInitialized) {
-      DynamicLinkService().initDynamicLink(context);
-    } else if (DynamicLinkService().pendingLinkData != null) {
-      DynamicLinkService().handleLinkData(DynamicLinkService().pendingLinkData);
-      DynamicLinkService().pendingLinkData = null;
-    }
   }
 
   void _onRefresh(_ViewModel snapshot) async {
@@ -181,9 +173,18 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             onInit: (snapshot) async {
               if (snapshot.state.authState.cluster == null) {
                 await snapshot.dispatchFuture(GetNearbyCirclesAction());
-                snapshot.dispatch(
+                await snapshot.dispatchFuture(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-                snapshot.dispatch(LoadVideoFeed());
+                await snapshot.dispatchFuture(LoadVideoFeed());
+              }
+              debugPrint(
+                  'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
+              if (!DynamicLinkService().isDynamicLinkInitialized) {
+                DynamicLinkService().initDynamicLink(context);
+              } else if (DynamicLinkService().pendingLinkData != null) {
+                DynamicLinkService()
+                    .handleLinkData(DynamicLinkService().pendingLinkData);
+                DynamicLinkService().pendingLinkData = null;
               }
             },
             builder: (context, snapshot) {

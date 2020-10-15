@@ -65,7 +65,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       cartListDataSource: [],
-      selectedMerchant: state.productState.selectedMerchand,
+      selectedMerchant: state.productState.selectedMerchant,
       cartCharges: state.productState.charges,
       //state.productState.cartListingDataSource.items,
       localCart: state.productState.localCartItems,
@@ -92,15 +92,19 @@ class _ViewModel extends BaseModel<AppState> {
                     return (double.parse(previous.toString()) + price);
                   }) ??
                   0.0;
-          if (state.productState.charges != null && state.productState.charges.isNotEmpty) {
+          if (state.productState.charges != null &&
+              state.productState.charges.isNotEmpty) {
             state.productState.charges.forEach((element) {
               debugPrint('Getting here to add price ${element.chargeValue}');
-              if (element.businessId == state.productState.selectedMerchand.businessId) {
+              if (element.businessId ==
+                  state.productState.selectedMerchant.businessId) {
                 debugPrint('PRice to be added ${element.chargeValue}');
-                total += (element.chargeValue/100).toDouble();
+                total += (element.chargeValue / 100).toDouble();
               }
             });
-          }else {debugPrint('This is null man:(');}
+          } else {
+            debugPrint('This is null man:(');
+          }
           return formatCurrency.format(total.toDouble());
         } else if (state.productState.localCartItems.isNotEmpty ||
             state.productState.localFreeFormCartItems.isNotEmpty) {
@@ -270,8 +274,8 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
                                 textAlign: TextAlign.center,
                               ),
                               Padding(
-                                padding:
-                                     EdgeInsets.only(left: 5.toWidth, right: 10.toWidth),
+                                padding: EdgeInsets.only(
+                                    left: 5.toWidth, right: 10.toWidth),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   color: Colors.white,

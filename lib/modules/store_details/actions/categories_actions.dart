@@ -15,7 +15,7 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
         url:
-            "api/v1/businesses/${state.productState.selectedMerchand.businessId}/catalog/categories",
+            "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
         params: {"": ""},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)

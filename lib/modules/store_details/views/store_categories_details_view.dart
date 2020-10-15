@@ -36,7 +36,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
         List<Business> merchants = await CartDataSource.getListOfMerchants();
         if (merchants.isNotEmpty &&
             merchants.first.businessId !=
-                store.state.productState.selectedMerchand.businessId) {
+                store.state.productState.selectedMerchant.businessId) {
           var localMerchant = merchants.first;
           store.dispatch(
               UpdateSelectedMerchantAction(selectedMerchant: localMerchant));
@@ -58,7 +58,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                   if (merchants.isNotEmpty &&
                       merchants.first.businessId !=
                           store
-                              .state.productState.selectedMerchand.businessId) {
+                              .state.productState.selectedMerchant.businessId) {
                     var localMerchant = merchants.first;
                     store.dispatch(UpdateSelectedMerchantAction(
                         selectedMerchant: localMerchant));
@@ -168,27 +168,27 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           .selectedMerchant
                                                           ?.businessName,
                                                       child: Text(
-                                                          snapshot.selectedMerchant
-                                                                  ?.businessName ??
-                                                              "",
-                                                          style: const TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
-                                                              color: const Color(
-                                                                  0xff000000),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Avenir-Medium",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 22.0),
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                      overflow: TextOverflow.ellipsis,),
+                                                        snapshot.selectedMerchant
+                                                                ?.businessName ??
+                                                            "",
+                                                        style: const TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                            color: const Color(
+                                                                0xff000000),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir-Medium",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 22.0),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
                                                     ),
                                                   ),
                                                   if (snapshot.selectedMerchant
@@ -196,7 +196,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           null &&
                                                       snapshot.selectedMerchant
                                                           .phones.isNotEmpty)
-                                                    Expanded(flex: 15,
+                                                    Expanded(
+                                                        flex: 15,
                                                         child: buildPhoneButtonForContactingMerchant(
                                                             snapshot
                                                                 .selectedMerchant
@@ -206,7 +207,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           null &&
                                                       snapshot.selectedMerchant
                                                           .phones.isNotEmpty)
-                                                    Expanded(flex: 15,
+                                                    Expanded(
+                                                        flex: 15,
                                                         child: buildWhatsappButtonForContactingMerchant(
                                                             snapshot
                                                                 .selectedMerchant
@@ -306,7 +308,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 AssetImage(
                                                   'assets/images/path330.png',
                                                 ),
-                                                 color: AppColors.darkGrey,
+                                                color: AppColors.darkGrey,
                                               ),
                                               Expanded(
                                                 child: Padding(
@@ -591,8 +593,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
   }
 
   Widget buildWhatsappButtonForContactingMerchant(String telephone) {
-    if (telephone.substring(0,3) != "+91")
-      telephone = "+91"+telephone;
+    if (telephone.substring(0, 3) != "+91") telephone = "+91" + telephone;
     return IconButton(
       icon: SizedBox(
           height: AppSizes.productItemIconSize,
@@ -608,8 +609,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
   }
 
   Widget buildPhoneButtonForContactingMerchant(String telephone) {
-    if (telephone.substring(0,3) != "+91")
-      telephone = "+91"+telephone;
+    if (telephone.substring(0, 3) != "+91") telephone = "+91" + telephone;
     return IconButton(
       icon: SizedBox(
         height: AppSizes.productItemIconSize,
@@ -719,7 +719,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
         loadingStatus: state.authState.loadingStatus,
-        selectedMerchant: state.productState.selectedMerchand,
+        selectedMerchant: state.productState.selectedMerchant,
         navigateToProductSearch: () {
           dispatch(ClearSearchResultProductsAction());
           dispatch(
@@ -730,7 +730,7 @@ class _ViewModel extends BaseModel<AppState> {
           var merchant = await CartDataSource.getListOfMerchants();
           if (merchant.isNotEmpty) {
             if (merchant.first.businessId !=
-                state.productState.selectedMerchand.businessId) {
+                state.productState.selectedMerchant.businessId) {
               showDialog(
                   context: context,
                   child: AlertDialog(
@@ -773,7 +773,7 @@ class _ViewModel extends BaseModel<AppState> {
                           await CartDataSource.deleteAllMerchants();
                           await CartDataSource.deleteAll();
                           await CartDataSource.insertToMerchants(
-                              business: state.productState.selectedMerchand);
+                              business: state.productState.selectedMerchant);
                           await CartDataSource.insertFreeFormItemsList([]);
                           await CartDataSource.insertCustomerNoteImagesList([]);
                           Navigator.pop(context);
@@ -786,13 +786,13 @@ class _ViewModel extends BaseModel<AppState> {
             } else {
               await CartDataSource.deleteAllMerchants();
               await CartDataSource.insertToMerchants(
-                  business: state.productState.selectedMerchand);
+                  business: state.productState.selectedMerchant);
               dispatch(NavigateAction.pushNamed('/CartView'));
             }
           } else {
             await CartDataSource.deleteAllMerchants();
             await CartDataSource.insertToMerchants(
-                business: state.productState.selectedMerchand);
+                business: state.productState.selectedMerchant);
             dispatch(ClearLocalFreeFormItemsAction());
             dispatch(NavigateAction.pushNamed('/CartView'));
           }

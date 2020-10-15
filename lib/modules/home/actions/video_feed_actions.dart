@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -61,6 +62,7 @@ class UpdateSelectedVideoByIdAction extends ReduxAction<AppState> {
       }
     }
     if (selectedIndex != null) {
+      DynamicLinkService().isLinkPathValid = true;
       return state.copyWith(
           videosState: state.videosState.copyWith(
         selectedVideo: state.videosState.videosResponse.results[selectedIndex],

@@ -32,9 +32,11 @@ class GetCartFromLocal extends ReduxAction<AppState> {
             localCartItems: localCartList,
             localFreeFormCartItems: freeFormItemsList,
             customerNoteImages: customerNoteImages,
-            selectedMerchant: state.productState.selectedMerchand != null
-                ? state.productState.selectedMerchand
-                : merchant.isEmpty ? null : merchant.first));
+            selectedMerchant: state.productState.selectedMerchant != null
+                ? state.productState.selectedMerchant
+                : merchant.isEmpty
+                    ? null
+                    : merchant.first));
   }
 }
 
@@ -62,7 +64,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
     var merchant = await CartDataSource.getListOfMerchants();
     if (merchant.isNotEmpty) {
       if (merchant.first.businessId !=
-          state.productState.selectedMerchand.businessId) {
+          state.productState.selectedMerchant.businessId) {
         showDialog(
             context: context,
             child: AlertDialog(
@@ -105,7 +107,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
                     await CartDataSource.deleteAllMerchants();
                     await CartDataSource.deleteAll();
                     await CartDataSource.insertToMerchants(
-                        business: state.productState.selectedMerchand);
+                        business: state.productState.selectedMerchant);
                     bool isInCart = await CartDataSource.isAvailableInCart(
                         id: product.productId.toString(),
                         variation: product.skus[product.selectedVariant]
@@ -143,7 +145,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       } else {
         await CartDataSource.deleteAllMerchants();
         await CartDataSource.insertToMerchants(
-            business: state.productState.selectedMerchand);
+            business: state.productState.selectedMerchant);
         bool isInCart = await CartDataSource.isAvailableInCart(
             id: product.productId.toString(),
             variation:
@@ -177,7 +179,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
     } else {
       await CartDataSource.deleteAllMerchants();
       await CartDataSource.insertToMerchants(
-          business: state.productState.selectedMerchand);
+          business: state.productState.selectedMerchant);
       bool isInCart = await CartDataSource.isAvailableInCart(
           id: product.productId.toString(),
           variation:

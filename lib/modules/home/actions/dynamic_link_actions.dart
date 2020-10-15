@@ -16,6 +16,7 @@ class DynamicLinkService {
 
   bool isDynamicLinkInitialized = false;
   PendingDynamicLinkData pendingLinkData;
+  bool isLinkPathValid = false;
 
   disposeDynamicLinkListener() async {}
 
@@ -24,13 +25,9 @@ class DynamicLinkService {
         '********************************************************** init dynamic link');
     PendingDynamicLinkData linkData =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    debugPrint(
-        '********************************************************** init dynamic link, initial link => $linkData');
     handleLinkData(linkData);
     FirebaseDynamicLinks.instance.onLink(
       onSuccess: (dynamicLink) async {
-        debugPrint(
-            '********************************************************** init dynamic link success => $dynamicLink');
         if (!store.state.authState.isLoggedIn) {
           pendingLinkData = dynamicLink;
           debugPrint(
@@ -40,8 +37,6 @@ class DynamicLinkService {
         }
       },
       onError: (e) async {
-        debugPrint(
-            '********************************************************** DynamicLinks onError $e');
         throw UserException('Some Error Occured.');
       },
     );
@@ -50,6 +45,7 @@ class DynamicLinkService {
 
   handleLinkData(PendingDynamicLinkData data) async {
     final Uri uri = data?.link;
+    isLinkPathValid = false;
     debugPrint('handle dynamic link => $uri');
     if (uri != null) {
       final queryParams = uri.queryParameters;
@@ -70,26 +66,24 @@ class DynamicLinkService {
   }
 
   _changeCircleById(String clusterId) async {
-    if (store.state.authState.cluster == null) {
-      await store.dispatchFuture(GetNearbyCirclesAction());
-    }
+    await store.dispatchFuture(GetNearbyCirclesAction());
     await store.dispatchFuture(ChangeCircleByIdAction(clusterId));
+    await store
+        .dispatchFuture(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+    await store.dispatchFuture(LoadVideoFeed());
   }
 
   _goToStoreDetailsById(String businessId) async {
-    await store
-        .dispatchFuture(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
     await store.dispatchFuture(SelectStoreDetailsByIdAction(businessId));
-    if (store.state.productState.selectedMerchand != null) {
+    if (isLinkPathValid) {
       store.dispatch(RemoveCategoryAction());
       store.dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
     }
   }
 
   _goToVideoById(String videoId) async {
-    await store.dispatchFuture(LoadVideoFeed());
     await store.dispatchFuture(UpdateSelectedVideoByIdAction(videoId: videoId));
-    if (store.state.videosState.selectedVideo != null) {
+    if (isLinkPathValid) {
       store.dispatch(NavigateAction.pushNamed("/videoPlayer"));
     }
   }
