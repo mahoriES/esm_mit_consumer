@@ -41,7 +41,7 @@ class LoadVideoFeed extends ReduxAction<AppState> {
 class UpdateSelectedVideoAction extends ReduxAction<AppState> {
   final VideoItem selectedVideo;
 
-  UpdateSelectedVideoAction({this.selectedVideo});
+  UpdateSelectedVideoAction({@required this.selectedVideo});
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(

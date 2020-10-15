@@ -173,9 +173,9 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             onInit: (snapshot) async {
               if (snapshot.state.authState.cluster == null) {
                 await snapshot.dispatchFuture(GetNearbyCirclesAction());
-                await snapshot.dispatchFuture(
+                snapshot.dispatch(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-                await snapshot.dispatchFuture(LoadVideoFeed());
+                snapshot.dispatch(LoadVideoFeed());
               }
               debugPrint(
                   'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
