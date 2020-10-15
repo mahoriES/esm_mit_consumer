@@ -721,7 +721,7 @@ class StoresListView extends StatelessWidget {
                                         fontStyle: FontStyle.normal,
                                         fontSize: 12.0),
                                     textAlign: TextAlign.left),
-                              )
+                              ),
                             ],
                           )
                         ],

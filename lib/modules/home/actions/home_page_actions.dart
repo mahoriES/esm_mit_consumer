@@ -61,6 +61,7 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   @override
   void after() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(GetBannerDetailsAction());
     super.after();
   }
 }
