@@ -100,17 +100,13 @@ class ChangeCircleByIdAction extends ReduxAction<AppState> {
   ChangeCircleByIdAction(this.clusterId);
   @override
   FutureOr<AppState> reduce() async {
-    print('change circle');
     List<Cluster> myCircles = [
       ...state.authState.myClusters ?? <Cluster>[],
       ...state.authState.nearbyClusters ?? <Cluster>[],
     ];
-    print('list of circles => ${myCircles.length}');
     int clusterIndex;
     for (int i = 0; i < myCircles.length; i++) {
-      print('for $i => ${myCircles[i].clusterName}');
       if (myCircles[i].clusterId == clusterId) {
-        print('matched');
         clusterIndex = i;
       }
     }
