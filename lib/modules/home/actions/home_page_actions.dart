@@ -95,9 +95,9 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
   }
 }
 
-class GoToMerchantDetailsByID extends ReduxAction<AppState> {
+class SelectMerchantDetailsByID extends ReduxAction<AppState> {
   final String businessId;
-  GoToMerchantDetailsByID({@required this.businessId});
+  SelectMerchantDetailsByID({@required this.businessId});
 
   @override
   FutureOr<AppState> reduce() async {

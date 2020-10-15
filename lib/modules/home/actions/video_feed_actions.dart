@@ -49,9 +49,9 @@ class UpdateSelectedVideoAction extends ReduxAction<AppState> {
   }
 }
 
-class GoToVideoPlayerByID extends ReduxAction<AppState> {
+class SlelectVideoPlayerByID extends ReduxAction<AppState> {
   final String videoId;
-  GoToVideoPlayerByID({@required this.videoId});
+  SlelectVideoPlayerByID({@required this.videoId});
 
   @override
   FutureOr<AppState> reduce() async {

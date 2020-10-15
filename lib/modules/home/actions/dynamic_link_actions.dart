@@ -62,7 +62,8 @@ class DynamicLinkService {
   }
 
   _goToStoreDetailsById(String businessId) async {
-    await store.dispatchFuture(GoToMerchantDetailsByID(businessId: businessId));
+    await store
+        .dispatchFuture(SelectMerchantDetailsByID(businessId: businessId));
     if (isLinkPathValid) {
       store.dispatch(RemoveCategoryAction());
       store.dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
@@ -70,7 +71,7 @@ class DynamicLinkService {
   }
 
   _goToVideoById(String videoId) async {
-    await store.dispatchFuture(GoToVideoPlayerByID(videoId: videoId));
+    await store.dispatchFuture(SlelectVideoPlayerByID(videoId: videoId));
     if (isLinkPathValid) {
       store.dispatch(NavigateAction.pushNamed("/videoPlayer"));
     }
