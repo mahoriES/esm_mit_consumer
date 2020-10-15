@@ -21,6 +21,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -168,27 +169,27 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           .selectedMerchant
                                                           ?.businessName,
                                                       child: Text(
-                                                          snapshot.selectedMerchant
-                                                                  ?.businessName ??
-                                                              "",
-                                                          style: const TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
-                                                              color: const Color(
-                                                                  0xff000000),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Avenir-Medium",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 22.0),
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                      overflow: TextOverflow.ellipsis,),
+                                                        snapshot.selectedMerchant
+                                                                ?.businessName ??
+                                                            "",
+                                                        style: const TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                            color: const Color(
+                                                                0xff000000),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir-Medium",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 22.0),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
                                                     ),
                                                   ),
                                                   if (snapshot.selectedMerchant
@@ -196,7 +197,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           null &&
                                                       snapshot.selectedMerchant
                                                           .phones.isNotEmpty)
-                                                    Expanded(flex: 15,
+                                                    Expanded(
+                                                        flex: 15,
                                                         child: buildPhoneButtonForContactingMerchant(
                                                             snapshot
                                                                 .selectedMerchant
@@ -206,7 +208,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                           null &&
                                                       snapshot.selectedMerchant
                                                           .phones.isNotEmpty)
-                                                    Expanded(flex: 15,
+                                                    Expanded(
+                                                        flex: 15,
                                                         child: buildWhatsappButtonForContactingMerchant(
                                                             snapshot
                                                                 .selectedMerchant
@@ -306,7 +309,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 AssetImage(
                                                   'assets/images/path330.png',
                                                 ),
-                                                 color: AppColors.darkGrey,
+                                                color: AppColors.darkGrey,
                                               ),
                                               Expanded(
                                                 child: Padding(
@@ -346,7 +349,16 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                               ),
                                             ],
                                           ),
-                                        )
+                                        ),
+
+                                        ///Show the optional merchant note added by the merchant to inform
+                                        ///customers regarding any current development e.g. orders will be delayed etc.
+                                        if (snapshot.selectedMerchant.notice !=
+                                                null &&
+                                            snapshot.selectedMerchant.notice !=
+                                                '')
+                                          getMerchantNoteRow(
+                                              snapshot.selectedMerchant.notice)
                                       ],
                                     ),
                                   ),
@@ -590,9 +602,64 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
     );
   }
 
+  Widget getMerchantNoteRow(String note) {
+    ///The adjusted length would trim the merchant note to 127 characters in length only, since beyond that
+    ///the UX would get affected.
+
+    ////////////////////////////////////////////////////////////////////////////
+    if (note.length > 127) {
+      //Note is modified here if length is beyond 127 characters
+      note = note.substring(0, 128)+'...';
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding:
+              EdgeInsets.only(bottom: AppSizes.widgetPadding.toHeight),
+          child: MySeparator(
+            color: AppColors.darkGrey,
+            height: 0.5.toHeight,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+              bottom: AppSizes.widgetPadding.toHeight,
+              right: AppSizes.widgetPadding.toWidth),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 18,
+                child: Center(
+                  child: Icon(
+                    Icons.info_outline,
+                    color: AppColors.lightBlue,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 82,
+                child: Text(
+                  note,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      fontSize: AppSizes.itemSubtitle2FontSize,
+                      color: AppColors.greyishText),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildWhatsappButtonForContactingMerchant(String telephone) {
-    if (telephone.substring(0,3) != "+91")
-      telephone = "+91"+telephone;
+    if (telephone.substring(0, 3) != "+91") telephone = "+91" + telephone;
     return IconButton(
       icon: SizedBox(
           height: AppSizes.productItemIconSize,
@@ -608,8 +675,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
   }
 
   Widget buildPhoneButtonForContactingMerchant(String telephone) {
-    if (telephone.substring(0,3) != "+91")
-      telephone = "+91"+telephone;
+    if (telephone.substring(0, 3) != "+91") telephone = "+91" + telephone;
     return IconButton(
       icon: SizedBox(
         height: AppSizes.productItemIconSize,
