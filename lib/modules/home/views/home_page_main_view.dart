@@ -728,18 +728,6 @@ class StoresListView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              // 1000+ Products available
-                              Expanded(
-                                flex: 40,
-                                child: Text(itemsCount ?? "",
-                                    style: const TextStyle(
-                                        color: const Color(0xff141414),
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Avenir-Medium",
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 12.0),
-                                    textAlign: TextAlign.left),
-                              )
                             ],
                           )
                         ],

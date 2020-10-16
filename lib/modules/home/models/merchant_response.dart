@@ -39,9 +39,12 @@ class Business {
   bool isOpen;
   AddressNew address;
   String description;
-//  Timing timing;
   List<Photo> images;
   List<String> phones;
+
+  ///A custom notice (merchant note) added optionally by merchant to convey important information
+  ///e.g. Raining heavily, orders will be delayed etc. This value be null
+  String notice;
 
   bool hasDelivery;
 
@@ -52,7 +55,7 @@ class Business {
       this.itemsCount,
       this.address,
       this.description,
-//      this.timing,
+      this.notice,
       this.images,
       this.phones,
       this.hasDelivery});
@@ -66,14 +69,14 @@ class Business {
     address = json['address'] != null
         ? new AddressNew.fromJson(json['address'])
         : null;
-//    timing =
-//        json['timing'] != null ? new Timing.fromJson(json['timing']) : null;
     if (json['images'] != null) {
       images = new List<Photo>();
       json['images'].forEach((v) {
         images.add(new Photo.fromJson(v));
       });
     }
+    if (json['notice'] != null)
+      notice = json['notice'].toString();
     phones = json['phones'] != null ? json['phones'].cast<String>() : [];
     hasDelivery = json['has_delivery'];
   }
@@ -88,9 +91,8 @@ class Business {
     if (this.address != null) {
       data['address'] = this.address.toJson();
     }
-//    if (this.timing != null) {
-//      data['timing'] = this.timing.toJson();
-//    }
+    if (this.notice != null)
+      data['notice'] = this.notice;
     if (this.images != null) {
       data['images'] = this.images.map((v) => v.toJson()).toList();
     }
