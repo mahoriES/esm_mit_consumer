@@ -61,11 +61,13 @@ class SlelectVideoPlayerByID extends ReduxAction<AppState> {
       requestType: RequestType.get,
     );
     debugPrint('GoToVideoPlayerByID response=> ${response.data.toString()}');
-    if (response.status == ResponseStatus.error404)
-      throw UserException(response.data['message']);
-    else if (response.status == ResponseStatus.error500)
-      throw UserException('Something went wrong');
-    else {
+    if (response.status == ResponseStatus.error404) {
+      Fluttertoast.showToast(msg: 'Store Not Found');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else if (response.status == ResponseStatus.error500) {
+      Fluttertoast.showToast(msg: 'Something went wrong');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else {
       VideoItem responseModel = VideoItem.fromJson(response.data);
 
       if (responseModel != null) {

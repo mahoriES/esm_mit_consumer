@@ -31,7 +31,7 @@ void main() async {
 
   FlutterError.onError = (FlutterErrorDetails details) {
     ///The return keyword below is used to abort the initialization of Sentry
-    return;
+    // return;
 
     ///This is done to prevent the assertion used in setup from throwing an error
     ///HOWEVER THE ABOVE MUST BE REMOVED WHEN PUSHING TO PRODUCTION TO RECORD THE

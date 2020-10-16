@@ -12,6 +12,7 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dynamic_link_actions.dart';
 
 class GetMerchantDetails extends ReduxAction<AppState> {
@@ -109,10 +110,12 @@ class SelectMerchantDetailsByID extends ReduxAction<AppState> {
     debugPrint(
         'GoToMerchantDetailsByID response=> ${response.status.toString()}');
     if (response.status == ResponseStatus.error404) {
-      throw UserException(response.data['message']);
-    } else if (response.status == ResponseStatus.error500)
-      throw UserException('Something went wrong');
-    else {
+      Fluttertoast.showToast(msg: 'Store Not Found');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else if (response.status == ResponseStatus.error500) {
+      Fluttertoast.showToast(msg: 'Something went wrong');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else {
       var responseModel = Business.fromJson(response.data);
 
       if (responseModel != null) {
