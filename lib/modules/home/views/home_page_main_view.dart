@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
+import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
@@ -34,6 +35,11 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   String address = "";
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _onRefresh(_ViewModel snapshot) async {
     // monitor network fetch
@@ -169,14 +175,22 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 await snapshot.dispatchFuture(GetNearbyCirclesAction());
                 snapshot.dispatch(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-                snapshot.dispatch(
-                  LoadVideoFeed(),
-                );
+                snapshot.dispatch(LoadVideoFeed());
+              }
+              debugPrint(
+                  'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
+              if (!DynamicLinkService().isDynamicLinkInitialized) {
+                DynamicLinkService().initDynamicLink(context);
+              } else if (DynamicLinkService().pendingLinkData != null) {
+                DynamicLinkService()
+                    .handleLinkData(DynamicLinkService().pendingLinkData);
+                DynamicLinkService().pendingLinkData = null;
               }
             },
             builder: (context, snapshot) {
               List<Business> firstList = List<Business>();
               List<Business> secondList = List<Business>();
+
               snapshot.merchants.asMap().forEach((index, element) {
                 if (index <= 2) {
                   firstList.add(element);
@@ -243,8 +257,12 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     child: Column(
                       children: [
                         VideosListWidget(
-                          snapshot.videoFeedResponse,
-                          () => snapshot.dispatch(LoadVideoFeed()),
+                          videoFeedResponse: snapshot.videoFeedResponse,
+                          onRefresh: () => snapshot.dispatch(LoadVideoFeed()),
+                          onTapOnVideo: (videoItem) {
+                            snapshot.updateSelectedVideo(videoItem);
+                            snapshot.navigateToVideoView();
+                          },
                         ),
                         (snapshot.merchants != null &&
                                     snapshot.merchants.isEmpty) &&
@@ -848,6 +866,8 @@ class StoresListView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+  Function(VideoItem) updateSelectedVideo;
+  Function navigateToVideoView;
   Function(String) getMerchantList;
   Function(String, BuildContext) changeSelectedCircle;
   String userAddress;
@@ -866,26 +886,28 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Cluster cluster;
   GetBusinessesResponse response;
-  _ViewModel.build(
-      {this.navigateToAddAddressPage,
-      this.navigateToCart,
-      this.cluster,
-      this.banners,
-      this.navigateToProductSearch,
-      this.navigateToStoreDetailsPage,
-      this.updateCurrentIndex,
-      this.currentIndex,
-      this.loadingStatus,
-      this.loadVideoFeed,
-      this.merchants,
-      this.userAddress,
-      this.updateSelectedMerchant,
-      this.getMerchantList,
-      this.response,
-      this.changeSelectedCircle,
-      this.videoFeedResponse,
-      this.navigateToCircles})
-      : super(equals: [
+  _ViewModel.build({
+    this.updateSelectedVideo,
+    this.navigateToVideoView,
+    this.navigateToAddAddressPage,
+    this.navigateToCart,
+    this.cluster,
+    this.banners,
+    this.navigateToProductSearch,
+    this.navigateToStoreDetailsPage,
+    this.updateCurrentIndex,
+    this.currentIndex,
+    this.loadingStatus,
+    this.loadVideoFeed,
+    this.merchants,
+    this.userAddress,
+    this.updateSelectedMerchant,
+    this.getMerchantList,
+    this.response,
+    this.changeSelectedCircle,
+    this.videoFeedResponse,
+    this.navigateToCircles,
+  }) : super(equals: [
           currentIndex,
           merchants,
           banners,
@@ -898,45 +920,51 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
-        response: state.homePageState.response,
-        cluster: state.authState.cluster,
-        userAddress: "",
-        loadingStatus: state.authState.loadingStatus,
-        merchants: state.homePageState.merchants,
-        banners: state.homePageState.banners,
-        videoFeedResponse: state.videosState.videosResponse,
-        loadVideoFeed: () {
-          dispatch(LoadVideoFeed());
-        },
-        navigateToCart: () {
-          dispatch(NavigateAction.pushNamed('/CartView'));
-        },
-        updateSelectedMerchant: (merchant) {
-          dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
-        },
-        navigateToStoreDetailsPage: () {
-          dispatch(RemoveCategoryAction());
-          dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
-        },
-        navigateToAddAddressPage: () {
-          dispatch(NavigateAction.pushNamed('/AddAddressView'));
-        },
-        navigateToProductSearch: () {
-          dispatch(UpdateSelectedTabAction(1));
-        },
-        getMerchantList: (url) {
-          dispatch(GetMerchantDetails(getUrl: url));
-        },
-        changeSelectedCircle: (url, context) async {
-          await dispatchFuture(ChangeSelectedCircleAction(context: context));
-          dispatch(GetMerchantDetails(getUrl: url));
-          dispatch(LoadVideoFeed());
-        },
-        navigateToCircles: () {
-          dispatch(NavigateAction.pushNamed("/circles"));
-        },
-        currentIndex: state.homePageState.currentIndex);
+      response: state.homePageState.response,
+      cluster: state.authState.cluster,
+      userAddress: "",
+      loadingStatus: state.authState.loadingStatus,
+      merchants: state.homePageState.merchants,
+      banners: state.homePageState.banners,
+      videoFeedResponse: state.videosState.videosResponse,
+      loadVideoFeed: () {
+        dispatch(LoadVideoFeed());
+      },
+      navigateToCart: () {
+        dispatch(NavigateAction.pushNamed('/CartView'));
+      },
+      updateSelectedMerchant: (merchant) {
+        dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
+      },
+      navigateToStoreDetailsPage: () {
+        dispatch(RemoveCategoryAction());
+        dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+      },
+      navigateToAddAddressPage: () {
+        dispatch(NavigateAction.pushNamed('/AddAddressView'));
+      },
+      navigateToProductSearch: () {
+        dispatch(UpdateSelectedTabAction(1));
+      },
+      getMerchantList: (url) {
+        dispatch(GetMerchantDetails(getUrl: url));
+      },
+      changeSelectedCircle: (url, context) async {
+        await dispatchFuture(ChangeSelectedCircleAction(context: context));
+        dispatch(GetMerchantDetails(getUrl: url));
+        dispatch(LoadVideoFeed());
+      },
+      navigateToCircles: () {
+        dispatch(NavigateAction.pushNamed("/circles"));
+      },
+      currentIndex: state.homePageState.currentIndex,
+      updateSelectedVideo: (video) async {
+        dispatch(UpdateSelectedVideoAction(selectedVideo: video));
+      },
+      navigateToVideoView: () {
+        dispatch(NavigateAction.pushNamed("/videoPlayer"));
+      },
+    );
   }
 }

@@ -12,6 +12,8 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dynamic_link_actions.dart';
 
 class GetMerchantDetails extends ReduxAction<AppState> {
   final String getUrl;
@@ -67,35 +69,80 @@ class GetMerchantDetails extends ReduxAction<AppState> {
 }
 
 class ChangeSelectedCircleAction extends ReduxAction<AppState> {
-
   final BuildContext context;
 
   ChangeSelectedCircleAction({@required this.context});
 
   @override
-  FutureOr<AppState> reduce() async{
-
+  FutureOr<AppState> reduce() async {
     final Cluster cluster = await showModalBottomSheet(
         context: context,
         elevation: 3.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        builder: (context) => Container( child: MyCirclesBottomView
-          (myCircles: [
-            ...state.authState.myClusters ?? <Cluster>[],
-            ...state.authState.nearbyClusters ?? <Cluster>[],
-        ].toSet().toList()),
-        ));
+        builder: (context) => Container(
+              child: MyCirclesBottomView(
+                  myCircles: [
+                ...state.authState.myClusters ?? <Cluster>[],
+                ...state.authState.nearbyClusters ?? <Cluster>[],
+              ].toSet().toList()),
+            ));
     if (cluster == null || !(cluster is Cluster)) return null;
     return state.copyWith(
       authState: state.authState.copyWith(
         cluster: cluster,
       ),
     );
+  }
+}
 
+class SelectMerchantDetailsByID extends ReduxAction<AppState> {
+  final String businessId;
+  SelectMerchantDetailsByID({@required this.businessId});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+      url: ApiURL.baseURL + ApiURL.getBusinessesUrl + '$businessId',
+      params: null,
+      requestType: RequestType.get,
+    );
+    debugPrint(
+        'GoToMerchantDetailsByID response=> ${response.status.toString()}');
+    if (response.status == ResponseStatus.error404) {
+      Fluttertoast.showToast(msg: 'Store Not Found');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else if (response.status == ResponseStatus.error500) {
+      Fluttertoast.showToast(msg: 'Something went wrong');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else {
+      var responseModel = Business.fromJson(response.data);
+
+      if (responseModel != null) {
+        DynamicLinkService().isLinkPathValid = true;
+        return state.copyWith(
+          productState: state.productState.copyWith(
+            selectedMerchant: responseModel,
+          ),
+        );
+      }
+    }
+    return null;
   }
 
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    super.after();
+  }
 }
 
 class GetBannerDetailsAction extends ReduxAction<AppState> {
@@ -133,7 +180,6 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
 }
 
 class GetClusterDetailsAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -148,7 +194,7 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       List<Cluster> result = [];
       response.data.forEach((item) {
         result.add(Cluster.fromJson(item));
-        debugPrint("Cluster++++++++++++++++++"+item.toString());
+        debugPrint("Cluster++++++++++++++++++" + item.toString());
       });
 //      if ((response.data == null || response.data.isEmpty) &&
 //          (state.authState.myClusters == null || state.authState.myClusters
@@ -157,9 +203,9 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
 //      }
       return state.copyWith(
           authState: state.authState.copyWith(
-              cluster: result.first,
-              myClusters: result,
-          ));
+        cluster: result.first,
+        myClusters: result,
+      ));
     }
   }
 

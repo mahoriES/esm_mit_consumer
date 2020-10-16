@@ -42,7 +42,7 @@ class _MerchantProductsSearchViewState
             store.dispatch(
               GetItemsForMerchantProductSearch(
                 merchantId:
-                    store.state.productState.selectedMerchand.businessId,
+                    store.state.productState.selectedMerchant.businessId,
                 queryText: _controller.text,
               ),
             );
@@ -355,7 +355,7 @@ class _ViewModel extends BaseModel<AppState> {
           state.productState.categories.first,
       searchProductsForMerchant: state.productState.searchResultProducts,
       loadingStatusApp: state.authState.loadingStatus,
-      selectedMerchant: state.productState.selectedMerchand,
+      selectedMerchant: state.productState.selectedMerchant,
       addToCart: (item, context) {
         dispatch(AddToCartLocalAction(product: item, context: context));
       },
@@ -368,7 +368,7 @@ class _ViewModel extends BaseModel<AppState> {
       localCartListing: state.productState.localCartItems,
       getSearchedProductsForMerchant: (queryText) {
         dispatch(GetItemsForMerchantProductSearch(
-            merchantId: state.productState.selectedMerchand.businessId,
+            merchantId: state.productState.selectedMerchant.businessId,
             queryText: queryText));
       },
       closeSearchWindowAction: () => dispatch(NavigateAction.pop()),
@@ -573,7 +573,7 @@ class _SearchProductListingItemViewState
                                   handleActionForMultipleSkus(
                                       product: widget.item,
                                       storeName: store.state.productState
-                                          .selectedMerchand.businessName,
+                                          .selectedMerchant.businessName,
                                       productIndex: widget.index);
                                   return;
                                 }
@@ -589,7 +589,7 @@ class _SearchProductListingItemViewState
                                   handleActionForMultipleSkus(
                                       product: widget.item,
                                       storeName: store.state.productState
-                                          .selectedMerchand.businessName,
+                                          .selectedMerchant.businessName,
                                       productIndex: widget.index);
                                   return;
                                 }

@@ -2,7 +2,7 @@ class VideoFeedResponse {
   int count;
   String next;
   String previous;
-  List<Results> results;
+  List<VideoItem> results;
 
   VideoFeedResponse({this.count, this.next, this.previous, this.results});
 
@@ -11,9 +11,9 @@ class VideoFeedResponse {
     next = json['next'];
     previous = json['previous'];
     if (json['results'] != null) {
-      results = new List<Results>();
+      results = new List<VideoItem>();
       json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
+        results.add(new VideoItem.fromJson(v));
       });
     }
   }
@@ -30,7 +30,7 @@ class VideoFeedResponse {
   }
 }
 
-class Results {
+class VideoItem {
   String postId;
   String title;
   User user;
@@ -42,7 +42,7 @@ class Results {
   Content content;
   String created;
 
-  Results(
+  VideoItem(
       {this.postId,
       this.title,
       this.user,
@@ -54,7 +54,7 @@ class Results {
       this.content,
       this.created});
 
-  Results.fromJson(Map<String, dynamic> json) {
+  VideoItem.fromJson(Map<String, dynamic> json) {
     postId = json['post_id'];
     title = json['title'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
@@ -154,12 +154,13 @@ class VideoBusiness {
 }
 
 class Content {
-  Video video;
+  VideoData video;
 
   Content({this.video});
 
   Content.fromJson(Map<String, dynamic> json) {
-    video = json['video'] != null ? new Video.fromJson(json['video']) : null;
+    video =
+        json['video'] != null ? new VideoData.fromJson(json['video']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -171,7 +172,7 @@ class Content {
   }
 }
 
-class Video {
+class VideoData {
   int width;
   int height;
   int duration;
@@ -181,7 +182,7 @@ class Video {
   String aspectRatio;
   String maxResolution;
 
-  Video(
+  VideoData(
       {this.width,
       this.height,
       this.duration,
@@ -191,7 +192,7 @@ class Video {
       this.aspectRatio,
       this.maxResolution});
 
-  Video.fromJson(Map<String, dynamic> json) {
+  VideoData.fromJson(Map<String, dynamic> json) {
     width = json['width'];
     height = json['height'];
     duration = json['duration'];

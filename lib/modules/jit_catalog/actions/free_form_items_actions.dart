@@ -77,7 +77,6 @@ class RemoveFreeFormItemAction extends ReduxAction<AppState> {
       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-
 }
 
 class RemoveFreeFormItemByIndexAction extends ReduxAction<AppState> {
@@ -169,7 +168,6 @@ class UpdateFreeFormItemQuantity extends ReduxAction<AppState> {
 }
 
 class ClearLocalFreeFormItemsAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -182,7 +180,6 @@ class ClearLocalFreeFormItemsAction extends ReduxAction<AppState> {
 }
 
 class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
-
   final BuildContext context;
 
   CheckLocalFreeFormItemsAndAddEmptyItem({@required this.context});
@@ -213,14 +210,14 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
       ),
     );
   }
+
   ///This function checks if the user has already added free form items previously from another merchant.
   ///If yes, then those are cleared before adding list items for new merchant.
   void setMerchantForFreeFormItem(BuildContext context) async {
-
     var merchant = await CartDataSource.getListOfMerchants();
     if (merchant.isNotEmpty) {
       if (merchant.first.businessId !=
-          state.productState.selectedMerchand.businessId) {
+          state.productState.selectedMerchant.businessId) {
         showDialog(
             context: context,
             child: AlertDialog(
@@ -263,7 +260,7 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
                     await CartDataSource.deleteAllMerchants();
                     await CartDataSource.deleteAll();
                     await CartDataSource.insertToMerchants(
-                        business: state.productState.selectedMerchand);
+                        business: state.productState.selectedMerchant);
                     Navigator.pop(context);
                   },
                 )
@@ -272,13 +269,12 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
       } else {
         await CartDataSource.deleteAllMerchants();
         await CartDataSource.insertToMerchants(
-            business: state.productState.selectedMerchand);
+            business: state.productState.selectedMerchant);
       }
     } else {
       await CartDataSource.deleteAllMerchants();
       await CartDataSource.insertToMerchants(
-          business: state.productState.selectedMerchand);
+          business: state.productState.selectedMerchant);
     }
   }
-
 }

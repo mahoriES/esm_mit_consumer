@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
-import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/size_cpnfig.dart';
 
 class VideosListWidget extends StatefulWidget {
   final VideoFeedResponse videoFeedResponse;
   final Function onRefresh;
-  VideosListWidget(this.videoFeedResponse, this.onRefresh);
+  final Function(VideoItem) onTapOnVideo;
+  VideosListWidget({
+    @required this.videoFeedResponse,
+    @required this.onRefresh,
+    @required this.onTapOnVideo,
+  });
   @override
   _VideosViewState createState() => _VideosViewState();
 }
@@ -36,7 +40,7 @@ class _VideosViewState extends State<VideosListWidget> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, index) {
-          Results videoData = widget.videoFeedResponse.results[index];
+          VideoItem videoData = widget.videoFeedResponse.results[index];
           return Container(
             margin: EdgeInsets.symmetric(horizontal: 10.toWidth),
             width: (SizeConfig.screenWidth / 3 - 20.toWidth),
@@ -60,17 +64,7 @@ class _VideosViewState extends State<VideosListWidget> {
                       width: (SizeConfig.screenWidth / 3 - 20.toWidth),
                       imageUrl: videoData?.content?.video?.thumbnail ?? '',
                       imageBuilder: (context, imageProvider) => InkWell(
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => VideoPlayerScreen(
-                              playUrl: videoData?.content?.video?.playUrl ?? '',
-                              thumbnailUrl:
-                                  videoData?.content?.video?.thumbnail ?? '',
-                              title: videoData?.title ?? '',
-                              merchantInfo: videoData?.business,
-                            ),
-                          ),
-                        ),
+                        onTap: () => widget.onTapOnVideo(videoData),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(

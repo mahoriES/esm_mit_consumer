@@ -1,61 +1,44 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/Profile/views/profile_view.dart';
-import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
-import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/modules/cart/views/cart_view.dart';
-import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
-import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
-import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
-import 'package:eSamudaay/modules/login/views/login_View.dart';
-import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
-import 'package:eSamudaay/modules/orders/views/orders_View.dart';
-import 'package:eSamudaay/modules/orders/views/support.dart';
-import 'package:eSamudaay/modules/register/view/register_view.dart';
-import 'package:eSamudaay/modules/search/views/Search_View.dart';
-import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
-import 'package:eSamudaay/presentations/alert.dart';
 import 'package:eSamudaay/presentations/check_user_widget.dart';
 import 'package:eSamudaay/presentations/splash_screen.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/sentry_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'modules/About/view/about_view.dart';
-import 'modules/language/view/language_view.dart';
-import 'modules/orders/views/payments.dart';
-import 'modules/otp/view/otp_view.dart';
 import 'package:fm_fit/fm_fit.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-void main() {
+void main() async {
   NavigateAction.setNavigatorKey(navigatorKey);
-  Crashlytics.instance.enableInDevMode = true;
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   FlutterError.onError = (FlutterErrorDetails details) {
-
     ///The return keyword below is used to abort the initialization of Sentry
-    return;
+    // return;
+
     ///This is done to prevent the assertion used in setup from throwing an error
     ///HOWEVER THE ABOVE MUST BE REMOVED WHEN PUSHING TO PRODUCTION TO RECORD THE
     ///ERRORS!
 
     // Pass all uncaught errors from the framework to Crashlytics.
-    Crashlytics.instance.recordFlutterError(details);
+    FirebaseCrashlytics.instance.recordFlutterError(details);
     if (!SentryHandler().isInProdMode) {
       // In development mode, simply print to console.
       FlutterError.dumpErrorToConsole(details);
@@ -64,7 +47,6 @@ void main() {
       // Sentry.
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
-
   };
 
   runZonedGuarded(() async {
@@ -80,6 +62,9 @@ void main() {
       path: 'assets/languages',
     ));
   }, (Object error, StackTrace stackTrace) {
+    // print('********************************************** ${error.toString()}');
+    // print('********************************************** $stackTrace');
+
     /// Whenever an error occurs, call the `reportError` function. This sends
     /// Dart errors to the dev env or prod env of Sentry based on current status.
     SentryHandler().reportError(error, stackTrace);
@@ -187,31 +172,7 @@ class MyAppBase extends StatelessWidget {
           },
         ),
         navigatorKey: navigatorKey,
-        routes: <String, WidgetBuilder>{
-          "/loginView": (BuildContext context) => new LoginView(),
-          "/language": (BuildContext context) => new LanguageScreen(),
-          "/otpScreen": (BuildContext context) => new OtpScreen(),
-          "/mobileNumber": (BuildContext context) => new LoginView(),
-          "/registration": (BuildContext context) => new Registration(),
-          "/myHomeView": (BuildContext context) => new MyHomeView(),
-          "/CartView": (BuildContext context) => CartView(),
-          "/AccountsView": (BuildContext context) => AccountsView(),
-          "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
-          "/StoreProductListingView": (BuildContext context) =>
-              StoreProductListingView(),
-          "/ProductSearchView": (BuildContext context) => ProductSearchView(),
-          "/OrdersView": (BuildContext context) => OrdersView(),
-          "/SMAlertView": (BuildContext context) => SMAlertView(),
-          "/Support": (BuildContext context) => Support(),
-          "/RecommendShop": (BuildContext context) => RecommendedShop(),
-          "/profile": (BuildContext context) => ProfileView(),
-          "/about": (BuildContext context) => AboutView(),
-          "/onBoarding": (BuildContext context) => OnboardingWidget(),
-          "/payment": (BuildContext context) => Payments(),
-          "/circles": (BuildContext context) => CirclePicker(),
-          "/productSearch": (BuildContext context) =>
-              MerchantProductsSearchView(),
-        },
+        routes: SetupRoutes.routes,
       ),
     );
   }

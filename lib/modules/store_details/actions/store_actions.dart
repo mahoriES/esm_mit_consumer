@@ -17,7 +17,7 @@ class GetSubCatalogAction extends ReduxAction<AppState> {
     var id = state.productState.selectedCategory.categoryId;
     var response = await APIManager.shared.request(
         url:
-            "api/v1/businesses/${state.productState.selectedMerchand.businessId}/catalog/categories",
+            "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
         params: {"parent_category_id": "$id"},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -60,7 +60,7 @@ class GetCatalogDetailsAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
         url: url == null
-            ? "api/v1/businesses/${state.productState.selectedMerchand.businessId}/catalog/categories/${state.productState.selectedSubCategory.categoryId}/products"
+            ? "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories/${state.productState.selectedSubCategory.categoryId}/products"
             : url,
         params: query == null ? {"": ""} : {"filter": query},
         requestType: RequestType.get);

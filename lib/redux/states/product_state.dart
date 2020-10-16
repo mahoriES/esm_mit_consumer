@@ -23,7 +23,7 @@ class ProductState {
   final CategoriesNew selectedCategory;
   final CategoriesNew selectedSubCategory;
   final PlaceOrderResponse placeOrderResponse;
-  final Business selectedMerchand;
+  final Business selectedMerchant;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
   final List<CategoriesNew> categories;
@@ -44,7 +44,7 @@ class ProductState {
     @required this.getOrderListResponse,
     @required this.selectedCategory,
     @required this.productListingTempDataSource,
-    @required this.selectedMerchand,
+    @required this.selectedMerchant,
     @required this.searchResults,
     @required this.productListingDataSource,
     @required this.supportOrder,
@@ -71,7 +71,7 @@ class ProductState {
         getOrderListResponse: GetOrderListResponse(results: []),
         localCartItems: [],
         searchResults: [],
-        selectedMerchand: null,
+        selectedMerchant: null,
         productListingTempDataSource: [],
         productListingDataSource: [],
         searchResultProducts: [],
@@ -117,9 +117,10 @@ class ProductState {
         productListingTempDataSource:
             productListingTempDataSource ?? this.productListingTempDataSource,
         localCartItems: localCartItems ?? this.localCartItems,
-        localFreeFormCartItems: localFreeFormCartItems ?? this.localFreeFormCartItems,
+        localFreeFormCartItems:
+            localFreeFormCartItems ?? this.localFreeFormCartItems,
         searchResultProducts: searchResultProducts ?? this.searchResultProducts,
-        selectedMerchand: selectedMerchant ?? this.selectedMerchand,
+        selectedMerchant: selectedMerchant ?? this.selectedMerchant,
         productListingDataSource:
             productListingDataSource ?? this.productListingDataSource,
         selectedCategory: selectedCategory ?? this.selectedCategory,

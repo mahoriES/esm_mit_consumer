@@ -533,7 +533,7 @@ class _ViewModel extends BaseModel<AppState> {
         selectedSubCategory: state.productState.selectedSubCategory,
         products: state.productState.productListingDataSource,
         localCartListing: state.productState.localCartItems,
-        selectedMerchant: state.productState.selectedMerchand,
+        selectedMerchant: state.productState.selectedMerchant,
         productResponse: state.productState.productResponse);
   }
 }
@@ -726,7 +726,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                   handleActionForMultipleSkus(
                                       product: widget.item,
                                       storeName: store.state.productState
-                                          .selectedMerchand.businessName,
+                                          .selectedMerchant.businessName,
                                       productIndex: widget.index);
                                   return;
                                 }
@@ -742,7 +742,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                   handleActionForMultipleSkus(
                                       product: widget.item,
                                       storeName: store.state.productState
-                                          .selectedMerchand.businessName,
+                                          .selectedMerchant.businessName,
                                       productIndex: widget.index);
                                   return;
                                 }
