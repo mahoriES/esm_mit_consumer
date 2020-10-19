@@ -9,6 +9,7 @@ import 'package:eSamudaay/presentations/splash_screen.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/sentry_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,11 +21,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
-final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
 void main() async {
-  NavigateAction.setNavigatorKey(navigatorKey);
+  NavigateAction.setNavigatorKey(NavigationHandler().navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -146,7 +144,7 @@ class MyAppBase extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
-        navigatorObservers: [routeObserver],
+        navigatorObservers: [NavigationHandler().routeObserver],
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -171,7 +169,7 @@ class MyAppBase extends StatelessWidget {
             print('sdas');
           },
         ),
-        navigatorKey: navigatorKey,
+        navigatorKey: NavigationHandler().navigatorKey,
         routes: SetupRoutes.routes,
       ),
     );

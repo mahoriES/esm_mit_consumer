@@ -3,6 +3,7 @@ import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/dynamic_link_params.dart';
 import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'home_page_actions.dart';
@@ -66,14 +67,24 @@ class DynamicLinkService {
         .dispatchFuture(SelectMerchantDetailsByID(businessId: businessId));
     if (isLinkPathValid) {
       store.dispatch(RemoveCategoryAction());
-      store.dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+      String _routeName = '/StoreDetailsView';
+      if (NavigationHandler().navigationStack.contains(_routeName)) {
+        store.dispatch(NavigateAction.popUntil(_routeName));
+        store.dispatch(NavigateAction.pushReplacementNamed(_routeName));
+      } else
+        store.dispatch(NavigateAction.pushNamed(_routeName));
     }
   }
 
   _goToVideoById(String videoId) async {
     await store.dispatchFuture(SlelectVideoPlayerByID(videoId: videoId));
     if (isLinkPathValid) {
-      store.dispatch(NavigateAction.pushNamed("/videoPlayer"));
+      String _routeName = '/videoPlayer';
+      if (NavigationHandler().navigationStack.contains(_routeName)) {
+        store.dispatch(NavigateAction.popUntil(_routeName));
+        store.dispatch(NavigateAction.pushReplacementNamed(_routeName));
+      } else
+        store.dispatch(NavigateAction.pushNamed(_routeName));
     }
   }
 }

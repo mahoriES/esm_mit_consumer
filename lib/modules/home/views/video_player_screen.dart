@@ -2,11 +2,11 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
-import '../../../main.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   @override
@@ -26,7 +26,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with RouteAware {
 
   @override
   void didChangeDependencies() {
-    routeObserver.subscribe(this, ModalRoute.of(context));
+    NavigationHandler().routeObserver.subscribe(this, ModalRoute.of(context));
     super.didChangeDependencies();
   }
 
@@ -48,6 +48,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with RouteAware {
 
   @override
   void dispose() {
+    NavigationHandler().routeObserver.unsubscribe(this);
     controller?.dispose();
     chewieController?.dispose();
     super.dispose();
