@@ -5,10 +5,10 @@ class NavigationHandler {
   static NavigationHandler _instance = NavigationHandler._();
   factory NavigationHandler() => _instance;
 
-  final navigatorKey = GlobalKey<NavigatorState>();
-  final RouteObserver<PageRoute> routeObserver = _MyRouteObserver();
+  static final navigatorKey = GlobalKey<NavigatorState>();
+  static final RouteObserver<PageRoute> routeObserver = _MyRouteObserver();
 
-  List<String> navigationStack = [];
+  static List<String> navigationStack = [];
 }
 
 class _MyRouteObserver extends RouteObserver<PageRoute> {
@@ -16,9 +16,9 @@ class _MyRouteObserver extends RouteObserver<PageRoute> {
   void didPush(Route route, Route previousRoute) {
     if (route is PageRoute && previousRoute is PageRoute) {
       debugPrint('--------------------------- did push ${route.settings.name}');
-      NavigationHandler().navigationStack.add(route.settings.name);
+      NavigationHandler.navigationStack.add(route.settings.name);
       debugPrint(
-          '--------------------------- ${NavigationHandler().navigationStack}');
+          '--------------------------- ${NavigationHandler.navigationStack}');
     }
     super.didPush(route, previousRoute);
   }
@@ -27,11 +27,11 @@ class _MyRouteObserver extends RouteObserver<PageRoute> {
   void didPop(Route route, Route previousRoute) {
     if (route is PageRoute && previousRoute is PageRoute) {
       debugPrint('--------------------------- did pop ${route.settings.name}');
-      if (NavigationHandler().navigationStack.isNotEmpty) {
-        NavigationHandler().navigationStack.removeLast();
+      if (NavigationHandler.navigationStack.isNotEmpty) {
+        NavigationHandler.navigationStack.removeLast();
       }
       debugPrint(
-          '--------------------------- ${NavigationHandler().navigationStack}');
+          '--------------------------- ${NavigationHandler.navigationStack}');
     }
     super.didPop(route, previousRoute);
   }
@@ -41,12 +41,12 @@ class _MyRouteObserver extends RouteObserver<PageRoute> {
     if (newRoute is PageRoute && oldRoute is PageRoute) {
       debugPrint(
           '--------------------------- did replace ${newRoute.settings.name}');
-      if (NavigationHandler().navigationStack.isNotEmpty) {
-        NavigationHandler().navigationStack.removeLast();
+      if (NavigationHandler.navigationStack.isNotEmpty) {
+        NavigationHandler.navigationStack.removeLast();
       }
-      NavigationHandler().navigationStack.add(newRoute.settings.name);
+      NavigationHandler.navigationStack.add(newRoute.settings.name);
       debugPrint(
-          '--------------------------- ${NavigationHandler().navigationStack}');
+          '--------------------------- ${NavigationHandler.navigationStack}');
     }
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
   }
@@ -56,11 +56,11 @@ class _MyRouteObserver extends RouteObserver<PageRoute> {
     if (route is PageRoute && previousRoute is PageRoute) {
       debugPrint(
           '--------------------------- did remove ${route.settings.name}');
-      if (NavigationHandler().navigationStack.isNotEmpty) {
-        NavigationHandler().navigationStack.removeLast();
+      if (NavigationHandler.navigationStack.isNotEmpty) {
+        NavigationHandler.navigationStack.removeLast();
       }
       debugPrint(
-          '--------------------------- ${NavigationHandler().navigationStack}');
+          '--------------------------- ${NavigationHandler.navigationStack}');
     }
     super.didRemove(route, previousRoute);
   }

@@ -21,7 +21,7 @@ class PushNotificationsManager {
 
   showMessage(String msg) {
     showDialog(
-        context: NavigationHandler().navigatorKey.currentState.overlay.context,
+        context: NavigationHandler.navigatorKey.currentState.overlay.context,
         child: AlertDialog(
           title: Text("eSamudaay"),
           content: Text(msg),

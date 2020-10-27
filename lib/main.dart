@@ -22,7 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
 
 void main() async {
-  NavigateAction.setNavigatorKey(NavigationHandler().navigatorKey);
+  NavigateAction.setNavigatorKey(NavigationHandler.navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -60,12 +60,13 @@ void main() async {
       path: 'assets/languages',
     ));
   }, (Object error, StackTrace stackTrace) {
-    // print('********************************************** ${error.toString()}');
-    // print('********************************************** $stackTrace');
+    debugPrint(
+        '********************************************** ${error.toString()}');
+    debugPrint('********************************************** $stackTrace');
 
     /// Whenever an error occurs, call the `reportError` function. This sends
     /// Dart errors to the dev env or prod env of Sentry based on current status.
-    SentryHandler().reportError(error, stackTrace);
+    // SentryHandler().reportError(error, stackTrace);
   });
 }
 
@@ -144,7 +145,7 @@ class MyAppBase extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
-        navigatorObservers: [NavigationHandler().routeObserver],
+        navigatorObservers: [NavigationHandler.routeObserver],
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -169,7 +170,7 @@ class MyAppBase extends StatelessWidget {
             print('sdas');
           },
         ),
-        navigatorKey: NavigationHandler().navigatorKey,
+        navigatorKey: NavigationHandler.navigatorKey,
         routes: SetupRoutes.routes,
       ),
     );

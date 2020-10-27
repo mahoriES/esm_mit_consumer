@@ -68,7 +68,7 @@ class DynamicLinkService {
     if (isLinkPathValid) {
       store.dispatch(RemoveCategoryAction());
       String _routeName = '/StoreDetailsView';
-      if (NavigationHandler().navigationStack.contains(_routeName)) {
+      if (NavigationHandler.navigationStack.contains(_routeName)) {
         store.dispatch(NavigateAction.popUntil(_routeName));
         store.dispatch(NavigateAction.pushReplacementNamed(_routeName));
       } else
@@ -80,7 +80,7 @@ class DynamicLinkService {
     await store.dispatchFuture(SlelectVideoPlayerByID(videoId: videoId));
     if (isLinkPathValid) {
       String _routeName = '/videoPlayer';
-      if (NavigationHandler().navigationStack.contains(_routeName)) {
+      if (NavigationHandler.navigationStack.contains(_routeName)) {
         store.dispatch(NavigateAction.popUntil(_routeName));
         store.dispatch(NavigateAction.pushReplacementNamed(_routeName));
       } else

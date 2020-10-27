@@ -26,7 +26,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with RouteAware {
 
   @override
   void didChangeDependencies() {
-    NavigationHandler().routeObserver.subscribe(this, ModalRoute.of(context));
+    NavigationHandler.routeObserver.subscribe(this, ModalRoute.of(context));
     super.didChangeDependencies();
   }
 
@@ -48,7 +48,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with RouteAware {
 
   @override
   void dispose() {
-    NavigationHandler().routeObserver.unsubscribe(this);
+    NavigationHandler.routeObserver.unsubscribe(this);
     controller?.dispose();
     chewieController?.dispose();
     super.dispose();

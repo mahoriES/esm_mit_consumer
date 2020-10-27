@@ -41,12 +41,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    NavigationHandler().routeObserver.subscribe(this, ModalRoute.of(context));
+    NavigationHandler.routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
   @override
   void dispose() {
-    NavigationHandler().routeObserver.unsubscribe(this);
+    NavigationHandler.routeObserver.unsubscribe(this);
     controller = null;
     _controller = null;
     super.dispose();
