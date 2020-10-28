@@ -183,9 +183,10 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.getClustersUrl,
-        params: {"": ""},
-        requestType: RequestType.get);
+      url: ApiURL.getClustersUrl,
+      params: null,
+      requestType: RequestType.get,
+    );
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
     else if (response.status == ResponseStatus.error500)

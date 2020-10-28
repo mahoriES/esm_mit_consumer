@@ -1,5 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/main.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/global.dart' as globals;
@@ -7,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'navigation_handler.dart';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -21,7 +21,7 @@ class PushNotificationsManager {
 
   showMessage(String msg) {
     showDialog(
-        context: navigatorKey.currentState.overlay.context,
+        context: NavigationHandler.navigatorKey.currentState.overlay.context,
         child: AlertDialog(
           title: Text("eSamudaay"),
           content: Text(msg),
