@@ -76,6 +76,7 @@
   "shop": {
     "delivery_ok" : "Delivery Available",
     "delivery_no" : "Delivery Not Available",
+    "home_delivery_order": "Home Delivery Order",
     "item_category": "Item Categories",
     "pickup_order": "Pickup Order"
   },
@@ -210,9 +211,12 @@
     "created": "Order Received",
     "order_updated": "Awaiting your approval",
     "order_confirmed": "Order Confirmed",
-    "order_ready": "Order Ready",
-    "order_picked_DA": "Order Picked",
-    "order_cancelled": "Order Cancelled",
+    "order_ready_pickup": "Ready to pickup",
+    "order_picked_DA": "Out for Delivery",
+    "order_cancelled_merchant": "Order Cancelled by Merchant",
+    "order_cancelled_customer": "Order Cancelled",
+    "order_assigned_DA": "Delivery partner assigned",
+    "order_requesting_DA": "Finding Delivery Partner",
     "order_delivered": "Order Delivered",
     "order_picked_customer": "Order received successfully"
   },
@@ -221,11 +225,15 @@
     "created": "It is under process by the store",
     "order_updated": "Please approve the updates done by the merchant",
     "order_confirmed": "We are working on delivering it soon",
+    "order_ready_pickup": "Order is ready to be picked up",
     "order_ready": "Ready to be delivered",
     "order_picked_DA": "Your order will reach you shortly",
-    "order_cancelled": "Let us know how we can improve",
+    "order_cancelled_merchant": "Items were unavailable",
+    "order_cancelled_customer": "Let us know how we can improve",
+    "order_requesting_DA": "A delivery partner will be assigned shortly",
+    "order_assigned_DA": "Delivery partner assigned. Will pick up your order soon",
     "order_delivered": "Enjoy your order",
-    "order_picked_customer": "Enjoy your order"
+    "order_picked_customer": "Thanks for picking up your order. Enjoy your order!"
   }
 
 

@@ -1,11 +1,15 @@
+import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'dart:math' as math;
 
 class TextInputBG extends StatelessWidget {
   final Widget child;
 
   const TextInputBG({Key key, this.child}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,6 +34,20 @@ class TextInputBG extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class CustomDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: AppSizes.widgetPadding.toHeight,
+            horizontal: AppSizes.widgetPadding.toWidth),
+        child: Container(
+          height: 1.toHeight,
+          color: AppColors.offWhitish,
+        ));
   }
 }
 
@@ -208,6 +226,7 @@ enum FieldStyle { underline, box }
 
 class CustomClipPath extends CustomClipper<Path> {
   var radius = 10.0;
+
   @override
   Path getClip(Size size) {
     Path path = Path();
