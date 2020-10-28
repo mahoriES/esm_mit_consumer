@@ -204,6 +204,28 @@
     "service": "Service Charges",
     "other": "Other Charges",
     "delivery": "Delivery Charges"
+  },
+
+  "order_statuses_title": {
+    "created": "Order Received",
+    "order_updated": "Awaiting your approval",
+    "order_confirmed": "Order Confirmed",
+    "order_ready": "Order Ready",
+    "order_picked_DA": "Order Picked",
+    "order_cancelled": "Order Cancelled",
+    "order_delivered": "Order Delivered",
+    "order_picked_customer": "Order received successfully"
+  },
+
+  "order_statuses_subtitle": {
+    "created": "It is under process by the store",
+    "order_updated": "Please approve the updates done by the merchant",
+    "order_confirmed": "We are working on delivering it soon",
+    "order_ready": "Ready to be delivered",
+    "order_picked_DA": "Your order will reach you shortly",
+    "order_cancelled": "Let us know how we can improve",
+    "order_delivered": "Enjoy your order",
+    "order_picked_customer": "Enjoy your order"
   }
 
 
