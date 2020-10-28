@@ -645,6 +645,7 @@ class OrderItemBottomView extends StatelessWidget {
     print(orderStatus);
     print(deliveryStatus);
     if (orderStatus == 'MERCHANT_ACCEPTED' ||
+        orderStatus == 'REQUESTING_TO_DA' ||
         orderStatus == 'READY_FOR_PICKUP') {
       if (deliveryStatus == "SELF_PICK_UP") {
         return false;
@@ -669,6 +670,7 @@ class OrderItemBottomView extends StatelessWidget {
   bool isButtonShow() {
     if (orderStatus == "CREATED" ||
         orderStatus == "COMPLETED" ||
+        orderStatus == "REQUESTING_TO_DA" ||
         orderStatus == "MERCHANT_UPDATED" ||
         orderStatus == 'MERCHANT_ACCEPTED') {
       return true;
@@ -773,7 +775,7 @@ class OrderItemBottomView extends StatelessWidget {
       },
     );
   }
-
+//REQUESTING_TO_DA
   String title() {
     var order = snapshot.getOrderListResponse.results[index];
     if (orderStatus == "CREATED") {

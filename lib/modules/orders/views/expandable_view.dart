@@ -1,4 +1,6 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/utilities/charges_name.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
@@ -60,6 +62,78 @@ class _ExpandableListViewState extends State<ExpandableListView> {
       });
 
     return unavailableItemsName;
+  }
+
+  Widget buildChargesSection(_ViewModel snapshot) {
+    return ListView.separated(
+      padding: EdgeInsets.symmetric(horizontal: 15.toWidth),
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 1 + (snapshot.getOrderListResponse.results[widget.merchantIndex]
+          .otherChargesDetail?.length ?? 0),
+      itemBuilder: (BuildContext context, int index) {
+        return index == 0
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // Item Total
+                  Text("Item Total",
+                          style: const TextStyle(
+                              color: const Color(0xff696666),
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "Avenir-Medium",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 16.0),
+                          textAlign: TextAlign.left)
+                      .tr(), // ₹ 175.00
+                  Text(
+                      "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal / 100}" ??
+                          "0.0",
+                      style: const TextStyle(
+                          color: const Color(0xff696666),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Avenir-Medium",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.left)
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // Item Total
+                  Text(
+                      AdditionChargesMetaDataGenerator
+                          .friendlyChargeNameFromKeyValue(snapshot
+                              .getOrderListResponse
+                              .results[widget.merchantIndex]
+                              .otherChargesDetail[index - 1]
+                              .name),
+                      style: const TextStyle(
+                          color: const Color(0xff696666),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Avenir-Medium",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.left), // ₹ 175.00
+                  Text(
+                      "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherChargesDetail[index - 1].value / 100}",
+                      style: const TextStyle(
+                          color: const Color(0xff696666),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Avenir-Medium",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.left)
+                ],
+              );
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return Container(
+          height: 13,
+        );
+      },
+    );
   }
 
   @override
@@ -126,7 +200,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                       height: expandFlag ? 0 : 0.5,
                       color: Colors.grey,
                       duration: Duration(milliseconds: 200),
-                    )
+                    ),
                   ],
                 ),
                 onTap: () {
@@ -253,8 +327,8 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                           ),
 
                         if ((orderStatus == "CREATED" ||
-                            orderStatus == "MERCHANT_CANCELLED" ||
-                            orderStatus == "CUSTOMER_CANCELLED") &&
+                                orderStatus == "MERCHANT_CANCELLED" ||
+                                orderStatus == "CUSTOMER_CANCELLED") &&
                             snapshot
                                     .getOrderListResponse
                                     .results[widget.merchantIndex]
@@ -414,132 +488,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                               ),
                               child: Column(
                                 children: <Widget>[
-                                  ListView.separated(
-                                    padding:
-                                        EdgeInsets.only(left: 15, right: 15),
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: 3,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return index == 0
-                                          ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                // Item Total
-                                                Text('screen_order.item_total',
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff696666),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.left)
-                                                    .tr(), // ₹ 175.00
-                                                Text(
-                                                    "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].itemTotal / 100}" ??
-                                                        "0.0",
-                                                    style:
-                                                        const TextStyle(
-                                                            color:
-                                                                const Color(
-                                                                    0xff696666),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                    textAlign: TextAlign.left)
-                                              ],
-                                            )
-                                          : index == 1
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    // Item Total
-                                                    Text('Delivery Charge',
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff696666),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign: TextAlign
-                                                            .left), // ₹ 175.00
-                                                    Text(
-                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].deliveryCharges / 100}",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff696666),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.left)
-                                                  ],
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    // Item Total
-                                                    Text('Other Charges',
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff696666),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign: TextAlign
-                                                            .left), // ₹ 175.00
-                                                    Text(
-                                                        "₹ ${snapshot.getOrderListResponse.results[widget.merchantIndex].otherCharges / 100}",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff696666),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.left)
-                                                  ],
-                                                );
-                                    },
-                                    separatorBuilder:
-                                        (BuildContext context, int index) {
-                                      return Container(
-                                        height: 13,
-                                      );
-                                    },
-                                  ),
+                                  buildChargesSection(snapshot),
                                   Container(
                                     padding: EdgeInsets.only(
                                       top: 10,
@@ -596,10 +545,9 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                   )
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
-
                         // Please pay your bill amount to the  merchant directly using Cash, Card or UPI
                         orderStatus == "CONFIRMED"
                             ? Container(
@@ -753,7 +701,11 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                                                                         child:
                                                                             RatingBar(
                                                                           initialRating: widget != null
-                                                                              ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue != null ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue.ceilToDouble() : 0 : 0
+                                                                              ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating != null
+                                                                                  ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue != null
+                                                                                      ? snapshot.getOrderListResponse.results[widget.merchantIndex].rating.ratingValue.ceilToDouble()
+                                                                                      : 0
+                                                                                  : 0
                                                                               : 0,
                                                                           minRating:
                                                                               1,

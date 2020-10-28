@@ -18,6 +18,7 @@ import 'package:eSamudaay/modules/store_details/views/store_categories_details_v
 import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/utilities/charges_name.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
@@ -326,13 +327,16 @@ class _CartViewState extends State<CartView> {
                                                     children: <Widget>[
                                                       // Item Total
                                                       Text(
-                                                          snapshot
-                                                              .charges[
-                                                                  index - 1]
-                                                              .chargeName,
+                                                          AdditionChargesMetaDataGenerator
+                                                              .friendlyChargeNameFromKeyValue(
+                                                                  snapshot
+                                                                      .charges[index -
+                                                                          1]
+                                                                      .chargeName),
                                                           style: const TextStyle(
-                                                              color: const Color(
-                                                                  0xff696666),
+                                                              color:
+                                                                  const Color(
+                                                                      0xff696666),
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500,
@@ -372,7 +376,6 @@ class _CartViewState extends State<CartView> {
                                                               TextAlign.left)
                                                     ],
                                                   );
-                                            return Container();
                                           },
                                           separatorBuilder:
                                               (BuildContext context,

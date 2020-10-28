@@ -197,6 +197,13 @@
     "call": "Call Support",
     "no_contact": "No contact details available."
 
+  },
+  "charges_name": {
+    "packing" : "Packing Charges",
+    "extra": "Extra Charges",
+    "service": "Service Charges",
+    "other": "Other Charges",
+    "delivery": "Delivery Charges"
   }
 
 
