@@ -15,12 +15,12 @@ import 'package:eSamudaay/modules/jit_catalog/views/free_form_items_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/charges_name.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -96,198 +96,401 @@ class _CartViewState extends State<CartView> {
               ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
               child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        child: ListView(
-                          shrinkWrap: true,
+                width: SizeConfig.screenWidth,
+                child: snapshot.selectedMerchant == null
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/clipart.png'),
+                          SizedBox(height: 50.toHeight),
+                          Text(
+                            'Your Cart Is Empty',
+                            style: TextStyle(
+                              color: AppColors.offGreyish, //Color(0xff6f6d6d),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16.toFont,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      )
+                    : Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: snapshot.localCart.length,
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return Container(
-                                    height: 10,
-                                  );
-                                },
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                      child: Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Text(
-                                                snapshot.localCart[index]
-                                                    .productName,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    color:
-                                                        const Color(0xff515c6f),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir-Medium",
-                                                    fontStyle: FontStyle.normal,
-                                                    fontSize: 15.0),
-                                                textAlign: TextAlign.left),
-                                          ),
-                                          Expanded(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                CSStepper(
-                                                  value: snapshot
-                                                      .localCart[index].count
-                                                      .toString(),
-                                                  addButtonAction: () {
-                                                    var item = snapshot
-                                                        .localCart[index];
-                                                    item.count =
-                                                        ((item?.count ?? 0) + 1)
-                                                            .clamp(
-                                                                0, double.nan);
-                                                    snapshot.addToCart(
-                                                        item, context);
-                                                    snapshot.getOrderTax(
-                                                        widget.radioValue);
-                                                  },
-                                                  removeButtonAction: () {
-                                                    var item = snapshot
-                                                        .localCart[index];
-                                                    item.count =
-                                                        ((item?.count ?? 0) - 1)
-                                                            .clamp(
-                                                                0, double.nan);
-                                                    snapshot
-                                                        .removeFromCart(item);
-                                                    snapshot.getOrderTax(
-                                                        widget.radioValue);
-                                                  },
-                                                ),
-                                                // ₹ 55.00
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                      "₹ ${snapshot.localCart[index].skus[snapshot.localCart[index].selectedVariant].basePrice / 100}",
-                                                      style: const TextStyle(
-                                                          color: const Color(
-                                                              0xff5091cd),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontFamily:
-                                                              "Avenir-Medium",
-                                                          fontStyle:
-                                                              FontStyle.normal,
-                                                          fontSize: 18.0),
-                                                      textAlign:
-                                                          TextAlign.left),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      // 500GMS
-                                      Text(
-                                          snapshot
-                                                  .localCart[index]
-                                                  .skus[snapshot
-                                                      .localCart[index]
-                                                      .selectedVariant]
-                                                  .variationOptions
-                                                  .weight ??
-                                              "",
-                                          style: const TextStyle(
-                                              color: const Color(0xffa7a7a7),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.left)
-                                    ],
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                  ));
-                                },
-                              ),
-                            ),
-                            MySeparator(),
-                            FreeFormItemsView(),
-                            CustomerNoteImagePicker(),
-                            Padding(
-                              padding: const EdgeInsets.all(0.0),
-                              child: TextField(
-                                style: const TextStyle(
-                                    color: const Color(0xff796c6c),
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Avenir-Medium",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 14.0),
-                                decoration: const InputDecoration(
-                                  prefixIcon: ImageIcon(
-                                      AssetImage('assets/images/notepad.png')),
-                                  hintText: 'Any Request to the Merchant?',
-                                  labelText: 'Any Request to the Merchant?',
-                                ),
-                                autofocus: false,
-                                maxLines: null,
-                                controller: requestController,
-                                keyboardType: TextInputType.text,
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 20),
-                              padding: EdgeInsets.only(
-                                  left: 18, top: 20, bottom: 13, right: 22),
-                              color: Colors.white,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  // Payment Details
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 20),
-                                    child: Text("cart.payment_details",
-                                            style: const TextStyle(
-                                                color: const Color(0xff000000),
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: "Avenir-Medium",
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 16.0),
-                                            textAlign: TextAlign.center)
-                                        .tr(),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 20),
-                                    child: Column(
-                                      children: <Widget>[
-                                        ListView.separated(
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              snapshot.charges.length + 1,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return index == 0
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: <Widget>[
-                                                      // Item Total
-                                                      Text("screen_order.item_total",
+                            Expanded(
+                              child: Container(
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: ListView.separated(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: snapshot.localCart.length,
+                                        separatorBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                            height: 10,
+                                          );
+                                        },
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Container(
+                                              child: Column(
+                                            children: <Widget>[
+                                              Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    child: Text(
+                                                        snapshot
+                                                            .localCart[index]
+                                                            .productName,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                            color: const Color(
+                                                                0xff515c6f),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Avenir-Medium",
+                                                            fontStyle: FontStyle
+                                                                .normal,
+                                                            fontSize: 15.0),
+                                                        textAlign:
+                                                            TextAlign.left),
+                                                  ),
+                                                  Expanded(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        CSStepper(
+                                                          value: snapshot
+                                                              .localCart[index]
+                                                              .count
+                                                              .toString(),
+                                                          addButtonAction: () {
+                                                            var item = snapshot
+                                                                    .localCart[
+                                                                index];
+                                                            item.count =
+                                                                ((item?.count ??
+                                                                            0) +
+                                                                        1)
+                                                                    .clamp(
+                                                                        0,
+                                                                        double
+                                                                            .nan);
+                                                            snapshot.addToCart(
+                                                                item, context);
+                                                            snapshot.getOrderTax(
+                                                                widget
+                                                                    .radioValue);
+                                                          },
+                                                          removeButtonAction:
+                                                              () {
+                                                            var item = snapshot
+                                                                    .localCart[
+                                                                index];
+                                                            item.count =
+                                                                ((item?.count ??
+                                                                            0) -
+                                                                        1)
+                                                                    .clamp(
+                                                                        0,
+                                                                        double
+                                                                            .nan);
+                                                            snapshot
+                                                                .removeFromCart(
+                                                                    item);
+                                                            snapshot.getOrderTax(
+                                                                widget
+                                                                    .radioValue);
+                                                          },
+                                                        ),
+                                                        // ₹ 55.00
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                              "₹ ${snapshot.localCart[index].skus[snapshot.localCart[index].selectedVariant].basePrice / 100}",
                                                               style: const TextStyle(
                                                                   color: const Color(
-                                                                      0xff696666),
+                                                                      0xff5091cd),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontFamily:
+                                                                      "Avenir-Medium",
+                                                                  fontStyle:
+                                                                      FontStyle
+                                                                          .normal,
+                                                                  fontSize:
+                                                                      18.0),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              // 500GMS
+                                              Text(
+                                                  snapshot
+                                                          .localCart[index]
+                                                          .skus[snapshot
+                                                              .localCart[index]
+                                                              .selectedVariant]
+                                                          .variationOptions
+                                                          .weight ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                      color: const Color(
+                                                          0xffa7a7a7),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily:
+                                                          "Avenir-Medium",
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 14.0),
+                                                  textAlign: TextAlign.left)
+                                            ],
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                          ));
+                                        },
+                                      ),
+                                    ),
+                                    MySeparator(),
+                                    FreeFormItemsView(),
+                                    CustomerNoteImagePicker(),
+                                    Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: TextField(
+                                        style: const TextStyle(
+                                            color: const Color(0xff796c6c),
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Avenir-Medium",
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 14.0),
+                                        decoration: const InputDecoration(
+                                          prefixIcon: ImageIcon(AssetImage(
+                                              'assets/images/notepad.png')),
+                                          hintText:
+                                              'Any Request to the Merchant?',
+                                          labelText:
+                                              'Any Request to the Merchant?',
+                                        ),
+                                        autofocus: false,
+                                        maxLines: null,
+                                        controller: requestController,
+                                        keyboardType: TextInputType.text,
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 20),
+                                      padding: EdgeInsets.only(
+                                          left: 18,
+                                          top: 20,
+                                          bottom: 13,
+                                          right: 22),
+                                      color: Colors.white,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          // Payment Details
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 20),
+                                            child: Text("cart.payment_details",
+                                                    style: const TextStyle(
+                                                        color: const Color(
+                                                            0xff000000),
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            "Avenir-Medium",
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontSize: 16.0),
+                                                    textAlign: TextAlign.center)
+                                                .tr(),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 20),
+                                            child: Column(
+                                              children: <Widget>[
+                                                ListView.separated(
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  itemCount:
+                                                      snapshot.charges.length +
+                                                          1,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return index == 0
+                                                        ? Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: <Widget>[
+                                                              // Item Total
+                                                              Text("screen_order.item_total",
+                                                                      style: const TextStyle(
+                                                                          color: const Color(
+                                                                              0xff696666),
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          fontFamily:
+                                                                              "Avenir-Medium",
+                                                                          fontStyle: FontStyle
+                                                                              .normal,
+                                                                          fontSize:
+                                                                              16.0),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left)
+                                                                  .tr(), // ₹ 175.00
+                                                              Text(
+                                                                  "₹ ${snapshot.getCartTotal()}",
+                                                                  style: const TextStyle(
+                                                                      color: const Color(
+                                                                          0xff696666),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontFamily:
+                                                                          "Avenir-Medium",
+                                                                      fontStyle:
+                                                                          FontStyle
+                                                                              .normal,
+                                                                      fontSize:
+                                                                          16.0),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left)
+                                                            ],
+                                                          )
+                                                        : Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: <Widget>[
+                                                              // Item Total
+                                                              Text(
+                                                                  snapshot
+                                                                      .charges[
+                                                                          index -
+                                                                              1]
+                                                                      .chargeName,
+                                                                  style: const TextStyle(
+                                                                      color: const Color(
+                                                                          0xff696666),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontFamily:
+                                                                          "Avenir-Medium",
+                                                                      fontStyle:
+                                                                          FontStyle
+                                                                              .normal,
+                                                                      fontSize:
+                                                                          16.0),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left), // ₹ 175.00
+                                                              Text(
+                                                                  snapshot.charges[index - 1].chargeName.contains(
+                                                                              "DELIVERY") &&
+                                                                          widget.radioValue ==
+                                                                              2
+                                                                      ? "0"
+                                                                      : "₹ ${snapshot.charges[index - 1].chargeValue / 100}",
+                                                                  style: const TextStyle(
+                                                                      color: const Color(
+                                                                          0xff696666),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontFamily:
+                                                                          "Avenir-Medium",
+                                                                      fontStyle:
+                                                                          FontStyle
+                                                                              .normal,
+                                                                      fontSize:
+                                                                          16.0),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left)
+                                                            ],
+                                                          );
+                                                    return Container();
+                                                  },
+                                                  separatorBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return Container(
+                                                      height: 13,
+                                                    );
+                                                  },
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.only(
+                                                      top: 10, bottom: 10),
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        height: 0.5,
+                                                        margin: EdgeInsets.only(
+                                                            bottom: 10),
+                                                        color: Colors.grey,
+                                                      ),
+                                                      // Amount to be paid
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: <Widget>[
+                                                          Text("cart.total_amount",
+                                                                  style: const TextStyle(
+                                                                      color: const Color(
+                                                                          0xff696666),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontFamily:
+                                                                          "Avenir-Medium",
+                                                                      fontStyle:
+                                                                          FontStyle
+                                                                              .normal,
+                                                                      fontSize:
+                                                                          16.0),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left)
+                                                              .tr(),
+                                                          // ₹ 195.00
+                                                          // ₹ 195.00
+                                                          //update with addition of tax etc
+                                                          Text(
+                                                              "₹ ${snapshot.getOrderTax(widget.radioValue) ?? 0.0}",
+                                                              style: const TextStyle(
+                                                                  color: const Color(
+                                                                      0xff5091cd),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -301,209 +504,311 @@ class _CartViewState extends State<CartView> {
                                                               textAlign:
                                                                   TextAlign
                                                                       .left)
-                                                          .tr(), // ₹ 175.00
-                                                      Text(
-                                                          "₹ ${snapshot.getCartTotal()}",
-                                                          style: const TextStyle(
-                                                              color: const Color(
-                                                                  0xff696666),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Avenir-Medium",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 16.0),
-                                                          textAlign:
-                                                              TextAlign.left)
+                                                        ],
+                                                      )
                                                     ],
-                                                  )
-                                                : Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: <Widget>[
-                                                      // Item Total
-                                                      Text(
-                                                          AdditionChargesMetaDataGenerator
-                                                              .friendlyChargeNameFromKeyValue(
-                                                                  snapshot
-                                                                      .charges[index -
-                                                                          1]
-                                                                      .chargeName),
-                                                          style: const TextStyle(
-                                                              color:
-                                                                  const Color(
-                                                                      0xff696666),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Avenir-Medium",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 16.0),
-                                                          textAlign: TextAlign
-                                                              .left), // ₹ 175.00
-                                                      Text(
-                                                          snapshot
-                                                                      .charges[
-                                                                          index -
-                                                                              1]
-                                                                      .chargeName
-                                                                      .contains(
-                                                                          "DELIVERY") &&
-                                                                  widget.radioValue ==
-                                                                      2
-                                                              ? "0"
-                                                              : "₹ ${snapshot.charges[index - 1].chargeValue / 100}",
-                                                          style: const TextStyle(
-                                                              color: const Color(
-                                                                  0xff696666),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Avenir-Medium",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 16.0),
-                                                          textAlign:
-                                                              TextAlign.left)
-                                                    ],
-                                                  );
-                                          },
-                                          separatorBuilder:
-                                              (BuildContext context,
-                                                  int index) {
-                                            return Container(
-                                              height: 13,
-                                            );
-                                          },
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              top: 10, bottom: 10),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 0.5,
-                                                margin:
-                                                    EdgeInsets.only(bottom: 10),
-                                                color: Colors.grey,
-                                              ),
-                                              // Amount to be paid
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text("cart.total_amount",
-                                                          style: const TextStyle(
-                                                              color: const Color(
-                                                                  0xff696666),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  "Avenir-Medium",
-                                                              fontStyle:
-                                                                  FontStyle
-                                                                      .normal,
-                                                              fontSize: 16.0),
-                                                          textAlign:
-                                                              TextAlign.left)
-                                                      .tr(),
-                                                  // ₹ 195.00
-                                                  // ₹ 195.00
-                                                  //update with addition of tax etc
-                                                  Text(
-                                                      "₹ ${snapshot.getOrderTax(widget.radioValue) ?? 0.0}",
-                                                      style: const TextStyle(
-                                                          color: const Color(
-                                                              0xff5091cd),
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontFamily:
-                                                              "Avenir-Medium",
-                                                          fontStyle:
-                                                              FontStyle.normal,
-                                                          fontSize: 16.0),
-                                                      textAlign: TextAlign.left)
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 82,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Radio(
-                                      activeColor: AppColors.icColors,
-                                      value: 1,
-                                      groupValue:
-                                          snapshot.selectedMerchant.hasDelivery
-                                              ? widget.radioValue
-                                              : null,
-                                      onChanged: ((value) {
-                                        if (snapshot
-                                            .selectedMerchant.hasDelivery) {
-                                          setState(() {
-                                            widget.radioValue = value;
-                                          });
-                                        }
-                                      })),
-                                  // Delivery
-                                  Text('cart.delivery',
-                                          style: const TextStyle(
-                                              color: const Color(0xff2f2e2e),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.left)
-                                      .tr(),
-                                  Radio(
-                                      activeColor: AppColors.icColors,
-                                      value: 2,
-                                      groupValue: widget.radioValue,
-                                      onChanged: ((value) {
-                                        setState(() {
-                                          widget.radioValue = value;
-                                        });
-                                      })),
-                                  // Pickup
-                                  Text('cart.pickup',
-                                          style: const TextStyle(
-                                              color: const Color(0xff2f2e2e),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.left)
-                                      .tr()
-                                ],
-                              ),
-                            ),
-                            snapshot.selectedMerchant.hasDelivery
-                                ? widget.radioValue != 1
-                                    ? Container()
-                                    : Container(
-                                        color: Colors.white,
-                                        padding: EdgeInsets.only(
-                                            top: 15, bottom: 15),
+                                    Container(
+                                      height: 82,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Radio(
+                                              activeColor: AppColors.icColors,
+                                              value: 1,
+                                              groupValue: snapshot
+                                                      .selectedMerchant
+                                                      .hasDelivery
+                                                  ? widget.radioValue
+                                                  : null,
+                                              onChanged: ((value) {
+                                                if (snapshot.selectedMerchant
+                                                    .hasDelivery) {
+                                                  setState(() {
+                                                    widget.radioValue = value;
+                                                  });
+                                                }
+                                              })),
+                                          // Delivery
+                                          Text('cart.delivery',
+                                                  style: const TextStyle(
+                                                      color: const Color(
+                                                          0xff2f2e2e),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily:
+                                                          "Avenir-Medium",
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 14.0),
+                                                  textAlign: TextAlign.left)
+                                              .tr(),
+                                          Radio(
+                                              activeColor: AppColors.icColors,
+                                              value: 2,
+                                              groupValue: widget.radioValue,
+                                              onChanged: ((value) {
+                                                setState(() {
+                                                  widget.radioValue = value;
+                                                });
+                                              })),
+                                          // Pickup
+                                          Text('cart.pickup',
+                                                  style: const TextStyle(
+                                                      color: const Color(
+                                                          0xff2f2e2e),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily:
+                                                          "Avenir-Medium",
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 14.0),
+                                                  textAlign: TextAlign.left)
+                                              .tr()
+                                        ],
+                                      ),
+                                    ),
+                                    snapshot.selectedMerchant.hasDelivery
+                                        ? widget.radioValue != 1
+                                            ? Container()
+                                            : Container(
+                                                color: Colors.white,
+                                                padding: EdgeInsets.only(
+                                                    top: 15, bottom: 15),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(right: 8),
+                                                        child: ImageIcon(
+                                                          AssetImage(
+                                                              'assets/images/home41.png'),
+                                                          color: AppColors
+                                                              .icColors,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            Text("Deliver to:",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff000000),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir-Medium",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center),
+                                                            // NJRA135, Second cross road,  Indiranagar- 6987452
+                                                            Text(
+                                                                snapshot.address.prettyAddress ??
+                                                                    "",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff4b4b4b),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir-Medium",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        14.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                        : Container(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.only(
+                                                top: 15, bottom: 15),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    child: ImageIcon(
+                                                      AssetImage(
+                                                          'assets/images/pen2.png'),
+                                                      color: AppColors.icColors,
+                                                    ),
+                                                  ),
+                                                  // Door number 1244 ,  Indiranagar, 2nd cross road
+                                                  // Delivering to:
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Text("cart.note",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff000000),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir-Medium",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center)
+                                                            .tr(),
+                                                        // NJRA135, Second cross road,  Indiranagar- 6987452
+                                                        Text("cart.please_collect",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff4b4b4b),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir-Medium",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        14.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left)
+                                                            .tr()
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                    snapshot.selectedMerchant.hasDelivery &&
+                                            widget.radioValue == 1
+                                        ? Container()
+                                        : Container(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.only(
+                                                top: 15, bottom: 15),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    child: ImageIcon(
+                                                      AssetImage(
+                                                        'assets/images/path330.png',
+                                                      ),
+                                                      color: AppColors.icColors,
+                                                    ),
+                                                  ),
+                                                  // Door number 1244 ,  Indiranagar, 2nd cross road
+                                                  // Delivering to:
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Text("cart.store_address",
+                                                                style: const TextStyle(
+                                                                    color: const Color(
+                                                                        0xff000000),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        "Avenir-Medium",
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center)
+                                                            .tr(),
+                                                        // NJRA135, Second cross road,  Indiranagar- 6987452
+                                                        Text(
+                                                            snapshot
+                                                                    .selectedMerchant
+                                                                    ?.address
+                                                                    ?.prettyAddress ??
+                                                                "",
+                                                            style: const TextStyle(
+                                                                color: const Color(
+                                                                    0xff4b4b4b),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontFamily:
+                                                                    "Avenir-Medium",
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 14.0),
+                                                            textAlign:
+                                                                TextAlign.left)
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 15, bottom: 15),
+                                      child: Container(
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
                                           child: Row(
@@ -513,18 +818,14 @@ class _CartViewState extends State<CartView> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: 8),
-                                                child: ImageIcon(
-                                                  AssetImage(
-                                                      'assets/images/home41.png'),
-                                                  color: AppColors.icColors,
+                                                child: Icon(
+                                                  Icons.error_outline,
+                                                  color: AppColors.mainColor,
                                                 ),
                                               ),
                                               Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text("Deliver to:",
+                                                child: Text(
+                                                        "cart.confirm_order_detail",
                                                         style: const TextStyle(
                                                             color: const Color(
                                                                 0xff000000),
@@ -534,252 +835,80 @@ class _CartViewState extends State<CartView> {
                                                                 "Avenir-Medium",
                                                             fontStyle: FontStyle
                                                                 .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.center),
-                                                    // NJRA135, Second cross road,  Indiranagar- 6987452
-                                                    Text(
-                                                        snapshot.address
-                                                                .prettyAddress ??
-                                                            "",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff4b4b4b),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
                                                             fontSize: 14.0),
                                                         textAlign:
                                                             TextAlign.left)
-                                                  ],
-                                                ),
+                                                    .tr(),
                                               )
                                             ],
                                           ),
                                         ),
-                                      )
-                                : Container(
-                                    color: Colors.white,
-                                    padding:
-                                        EdgeInsets.only(top: 15, bottom: 15),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 8),
-                                            child: ImageIcon(
-                                              AssetImage(
-                                                  'assets/images/pen2.png'),
-                                              color: AppColors.icColors,
-                                            ),
-                                          ),
-                                          // Door number 1244 ,  Indiranagar, 2nd cross road
-                                          // Delivering to:
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text("cart.note",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff000000),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.center)
-                                                    .tr(),
-                                                // NJRA135, Second cross road,  Indiranagar- 6987452
-                                                Text("cart.please_collect",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff4b4b4b),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 14.0),
-                                                        textAlign:
-                                                            TextAlign.left)
-                                                    .tr()
-                                              ],
-                                            ),
-                                          )
-                                        ],
                                       ),
                                     ),
-                                  ),
-                            snapshot.selectedMerchant.hasDelivery &&
-                                    widget.radioValue == 1
-                                ? Container()
-                                : Container(
-                                    color: Colors.white,
-                                    padding:
-                                        EdgeInsets.only(top: 15, bottom: 15),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 8),
-                                            child: ImageIcon(
-                                              AssetImage(
-                                                'assets/images/path330.png',
-                                              ),
-                                              color: AppColors.icColors,
-                                            ),
-                                          ),
-                                          // Door number 1244 ,  Indiranagar, 2nd cross road
-                                          // Delivering to:
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text("cart.store_address",
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xff000000),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.center)
-                                                    .tr(),
-                                                // NJRA135, Second cross road,  Indiranagar- 6987452
-                                                Text(
-                                                    snapshot
-                                                            .selectedMerchant
-                                                            ?.address
-                                                            ?.prettyAddress ??
-                                                        "",
-                                                    style: const TextStyle(
-                                                        color: const Color(
-                                                            0xff4b4b4b),
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontFamily:
-                                                            "Avenir-Medium",
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 14.0),
-                                                    textAlign: TextAlign.left)
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15, bottom: 15),
-                              child: Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: Icon(
-                                          Icons.error_outline,
-                                          color: AppColors.mainColor,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text("cart.confirm_order_detail",
-                                                style: const TextStyle(
-                                                    color:
-                                                        const Color(0xff000000),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: "Avenir-Medium",
-                                                    fontStyle: FontStyle.normal,
-                                                    fontSize: 14.0),
-                                                textAlign: TextAlign.left)
-                                            .tr(),
-                                      )
-                                    ],
-                                  ),
+                                  ],
                                 ),
                               ),
+                            ),
+                            BottomView(
+                              storeName: snapshot.selectedMerchant.businessName,
+                              buttonTitle: tr('cart.confirm_order'),
+                              height: 80,
+                              didPressButton: () async {
+                                if (widget.radioValue == 0) {
+                                  Fluttertoast.showToast(
+                                      msg: tr("new_changes.choose_one"));
+//                                return;
+                                } else {
+                                  var address = await UserManager.getAddress();
+                                  List<Product> cart =
+                                      await CartDataSource.getListOfCartWith();
+                                  var merchats =
+                                      await CartDataSource.getListOfMerchants();
+                                  List<JITProduct> freeFormItems =
+                                      snapshot.localFreeFormItems ?? [];
+                                  freeFormItems.removeWhere((element) =>
+                                      element.quantity == 0 ||
+                                      element.itemName == "");
+                                  if (cart.isEmpty && freeFormItems.isEmpty)
+                                    return;
+                                  List<String> customerNoteImages =
+                                      snapshot.customerNoteImages ?? [];
+                                  PlaceOrderRequest request =
+                                      PlaceOrderRequest();
+                                  request.businessId =
+                                      merchats.first.businessId;
+                                  request.deliveryAddressId =
+                                      widget.radioValue == 1
+                                          ? address.addressId
+                                          : null;
+                                  request.deliveryType = widget.radioValue == 1
+                                      ? "DA_DELIVERY"
+                                      : "SELF_PICK_UP";
+                                  debugPrint('Not getting executed 4');
+                                  if (cart.isNotEmpty)
+                                    request.orderItems = cart
+                                        .map((e) => OrderItems(
+                                            skuId:
+                                                e.skus[e.selectedVariant].skuId,
+                                            quantity: e.count))
+                                        .toList();
+                                  request.customerNote =
+                                      requestController.text ?? "";
+                                  request.customerNoteImages =
+                                      customerNoteImages;
+                                  if (freeFormItems.isNotEmpty)
+                                    request.freeFormOrderItems = freeFormItems
+                                        .map((e) => FreeFormOrderItems(
+                                            skuName: e.itemName,
+                                            quantity: e.quantity))
+                                        .toList();
+                                  snapshot.placeOrder(request);
+                                }
+                              },
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    BottomView(
-                      storeName: snapshot.selectedMerchant.businessName,
-                      buttonTitle: tr('cart.confirm_order'),
-                      height: 80,
-                      didPressButton: () async {
-                        if (widget.radioValue == 0) {
-                          Fluttertoast.showToast(
-                              msg: tr("new_changes.choose_one"));
-//                                return;
-                        } else {
-                          var address = await UserManager.getAddress();
-                          List<Product> cart =
-                              await CartDataSource.getListOfCartWith();
-                          var merchats =
-                              await CartDataSource.getListOfMerchants();
-                          List<JITProduct> freeFormItems =
-                              snapshot.localFreeFormItems ?? [];
-                          freeFormItems.removeWhere((element) =>
-                              element.quantity == 0 || element.itemName == "");
-                          if (cart.isEmpty && freeFormItems.isEmpty) return;
-                          List<String> customerNoteImages =
-                              snapshot.customerNoteImages ?? [];
-                          PlaceOrderRequest request = PlaceOrderRequest();
-                          request.businessId = merchats.first.businessId;
-                          request.deliveryAddressId =
-                              widget.radioValue == 1 ? address.addressId : null;
-                          request.deliveryType = widget.radioValue == 1
-                              ? "DA_DELIVERY"
-                              : "SELF_PICK_UP";
-                          debugPrint('Not getting executed 4');
-                          if (cart.isNotEmpty)
-                            request.orderItems = cart
-                                .map((e) => OrderItems(
-                                    skuId: e.skus[e.selectedVariant].skuId,
-                                    quantity: e.count))
-                                .toList();
-                          request.customerNote = requestController.text ?? "";
-                          request.customerNoteImages = customerNoteImages;
-                          if (freeFormItems.isNotEmpty)
-                            request.freeFormOrderItems = freeFormItems
-                                .map((e) => FreeFormOrderItems(
-                                    skuName: e.itemName, quantity: e.quantity))
-                                .toList();
-                          snapshot.placeOrder(request);
-                        }
-                      },
-                    ),
-                  ],
-                ),
               ),
             );
           }),

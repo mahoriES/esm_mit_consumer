@@ -121,38 +121,35 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 padding:
                                                     EdgeInsets.only(bottom: 20),
                                                 child: Container(
-                                                  child: Material(
-                                                    child: Hero(
-                                                      tag: 'herotag',
-                                                      child: TextField(
-                                                        onTap: () {
-                                                          FocusScope.of(context)
-                                                              .requestFocus(
-                                                                  FocusNode());
-                                                          snapshot
-                                                              .navigateToProductSearch();
-                                                        },
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              'Search ${snapshot.selectedMerchant?.businessName}...',
-                                                          prefixIcon: Icon(
-                                                            Icons.search,
-                                                            color: AppColors
-                                                                .icColors,
-                                                          ),
-                                                          suffixIcon: Icon(
-                                                            Icons.navigate_next,
-                                                            color: AppColors
-                                                                .icColors,
-                                                          ),
-                                                          border:
-                                                              OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                          ),
+                                                  child: Hero(
+                                                    tag: 'herotag',
+                                                    child: TextField(
+                                                      onTap: () {
+                                                        FocusScope.of(context)
+                                                            .requestFocus(
+                                                                FocusNode());
+                                                        snapshot
+                                                            .navigateToProductSearch();
+                                                      },
+                                                      decoration:
+                                                          InputDecoration(
+                                                        hintText:
+                                                            'Search ${snapshot.selectedMerchant?.businessName}...',
+                                                        prefixIcon: Icon(
+                                                          Icons.search,
+                                                          color: AppColors
+                                                              .icColors,
+                                                        ),
+                                                        suffixIcon: Icon(
+                                                          Icons.navigate_next,
+                                                          color: AppColors
+                                                              .icColors,
+                                                        ),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
                                                         ),
                                                       ),
                                                     ),
@@ -609,7 +606,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
     ////////////////////////////////////////////////////////////////////////////
     if (note.length > 127) {
       //Note is modified here if length is beyond 127 characters
-      note = note.substring(0, 128)+'...';
+      note = note.substring(0, 128) + '...';
     }
     ////////////////////////////////////////////////////////////////////////////
     return Column(
@@ -617,8 +614,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding:
-              EdgeInsets.only(bottom: AppSizes.widgetPadding.toHeight),
+          padding: EdgeInsets.only(bottom: AppSizes.widgetPadding.toHeight),
           child: MySeparator(
             color: AppColors.darkGrey,
             height: 0.5.toHeight,

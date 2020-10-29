@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eSamudaay/main.dart';
+import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
@@ -41,12 +41,12 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context));
+    NavigationHandler.routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    NavigationHandler.routeObserver.unsubscribe(this);
     controller = null;
     _controller = null;
     super.dispose();
