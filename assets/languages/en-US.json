@@ -76,7 +76,7 @@
   "shop": {
     "delivery_ok" : "Delivery Available",
     "delivery_no" : "Delivery Not Available",
-    "home_delivery_order": "Home Delivery Order",
+    "home_delivery_order": "Home Delivery",
     "item_category": "Item Categories",
     "pickup_order": "Pickup Order"
   },
@@ -125,7 +125,7 @@
   },
 
   "screen_order": {
-    "made_payment": "I’ve made my payment",
+    "made_payment": "Mark Paid",
     "title": "Orders",
     "payment_details": "Payment Details",
     "item_total": "Item Total",
@@ -165,7 +165,7 @@
     "merchant_notify_text": "This will send a notification to Merchant. Merchant may approve or reject the payment. Are you sure you want to send payment confirmation to merchant?",
     "Cancel": "Cancel",
     "Confirm": "Confirm",
-    "made_my_payment" : "I’ve made my payment",
+    "made_my_payment" : "Mark Paid",
     "Pay_via_upi" : "Pay via UPI",
     "Paid_at" : "approved payment at"
   },
@@ -218,23 +218,30 @@
     "order_assigned_DA": "Delivery partner assigned",
     "order_requesting_DA": "Finding Delivery Partner",
     "order_delivered": "Order Delivered",
-    "order_picked_customer": "Order received successfully"
+    "order_picked_customer": "Order Picked Up"
   },
 
   "order_statuses_subtitle": {
     "created": "It is under process by the store",
     "order_updated": "Please approve the updates done by the merchant",
     "order_confirmed": "We are working on delivering it soon",
+    "order_confirmed_pickup": "Order will be ready for pickup soon",
     "order_ready_pickup": "Order is ready to be picked up",
     "order_ready": "Ready to be delivered",
     "order_picked_DA": "Your order will reach you shortly",
-    "order_cancelled_merchant": "Items were unavailable",
+    "order_cancelled_merchant": "Items were unavailable. Let us know how we can improve",
     "order_cancelled_customer": "Let us know how we can improve",
     "order_requesting_DA": "A delivery partner will be assigned shortly",
     "order_assigned_DA": "Delivery partner assigned. Will pick up your order soon",
     "order_delivered": "Enjoy your order",
     "order_picked_customer": "Thanks for picking up your order. Enjoy your order!"
-  }
+  },
 
+  "payment_statuses": {
+    "initiated": "Waiting for merchant to confirm payment",
+    "approved": "Payment received by merchant",
+    "pending": "Payment not done",
+    "rejected": "Payment not done"
+  }
 
 }
