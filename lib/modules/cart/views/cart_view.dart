@@ -17,6 +17,7 @@ import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/utilities/charges_name.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_cpnfig.dart';
