@@ -18,6 +18,8 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -559,313 +561,167 @@ class StoresListView extends StatelessWidget {
       this.items,
       this.shopClosed})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return true
-        ? // Rectangle 2104
-        Container(
-            width: 334,
-            height: 162,
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(9)),
-                boxShadow: [
-                  BoxShadow(
-                      color: const Color(0x29000000),
-                      offset: Offset(0, 3),
-                      blurRadius: 6,
-                      spreadRadius: 0)
-                ],
-                color: const Color(0xffffffff)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // logo
-                Row(
-                  children: [
-                    Container(
-                      width: 46,
-                      height: 46,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          ColorFiltered(
-                            colorFilter: ColorFilter.mode(
-                                shopClosed ? Colors.grey : Colors.white,
-                                BlendMode.modulate),
-                            child: shopImage == null
-                                ? Image.asset(
-                                    'assets/images/shop1.png',
-                                    fit: BoxFit.cover,
-                                  )
-                                : ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: CachedNetworkImage(
-                                        height: 46,
-                                        width: 46,
-                                        fit: BoxFit.cover,
-                                        imageUrl: shopImage,
-                                        placeholder: (context, url) => Icon(
-                                              Icons.image,
-                                              size: 30,
-                                            ),
-                                        errorWidget: (context, url, error) =>
-                                            Center(
-                                              child: Icon(
-                                                Icons.image,
-                                                size: 30,
-                                              ),
-                                            )),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ), // Astore Groceries
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Hero(
-                        tag: name,
-                        child: Text(name,
-                            style: const TextStyle(
-                                decoration: TextDecoration.none,
-                                color: const Color(0xffd5133a),
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir-Medium",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14.0),
-                            textAlign: TextAlign.left),
-                      ),
-                    ),
-                    Spacer(),
-                    shopClosed
-                        ? Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppColors.iconColors,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.white30, spreadRadius: 3),
-                              ],
-                            ),
-                            child: // Out of stock
-                                Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 4.0, right: 4.0),
-                              child: Text('common.closed',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 12.0),
-                                      textAlign: TextAlign.left)
-                                  .tr(),
-                            ))
-                        : Container()
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(7)),
-                        color: const Color(0xfffafafa)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(items,
-                              style: const TextStyle(
-                                  color: Color(0xff939393),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Helvetica",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 12.0),
-                              textAlign: TextAlign.left),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                flex: 60,
-                                child: Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: deliveryStatus
-                                          ? ImageIcon(
-                                              AssetImage(
-                                                  'assets/images/delivery.png'),
-                                              color: shopClosed
-                                                  ? Colors.grey.shade400
-                                                  : Colors.black,
-                                            )
-                                          : shopClosed
-                                              ? Image.asset(
-                                                  'assets/images/group236.png')
-                                              : Image.asset(
-                                                  'assets/images/no_delivery.png'),
-                                    ),
-                                    Expanded(
-                                      flex: 80,
-                                      child: Text(
-                                          deliveryStatus
-                                              ? tr("shop.delivery_ok")
-                                              : tr("shop.delivery_no"),
-                                          style: const TextStyle(
-                                              color: const Color(0xff141414),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 11.0),
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+    return Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(9)),
+          boxShadow: [
+            BoxShadow(
+                color: const Color(0x29000000),
+                offset: Offset(0, 3),
+                blurRadius: 6,
+                spreadRadius: 0)
+          ],
+          color: const Color(0xffffffff)),
+      child: Row(
+        children: [
+          Expanded(flex: 40,
+            child: Container(
+              width: SizeConfig.screenWidth / 3,
+              height: SizeConfig.screenWidth / 3,
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                        shopClosed ? Colors.grey : Colors.white,
+                        BlendMode.modulate),
+                    child: shopImage == null
+                        ? Image.asset(
+                            'assets/images/shop1.png',
+                            fit: BoxFit.cover,
                           )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )
-        : Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  width: 79,
-                  height: 79,
-                  margin: new EdgeInsets.all(10.0),
-                  decoration: new BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      ColorFiltered(
-                        colorFilter: ColorFilter.mode(
-                            shopClosed ? Colors.grey : Colors.transparent,
-                            BlendMode.saturation),
-                        child: shopImage == null
-                            ? Image.asset(
-                                'assets/images/shop1.png',
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: CachedNetworkImage(
+                                height: SizeConfig.screenWidth / 3,
+                                width: SizeConfig.screenWidth / 3,
                                 fit: BoxFit.cover,
+                                imageUrl: shopImage,
+                                placeholder: (context, url) => Icon(
+                                      Icons.image,
+                                      size: 30,
+                                    ),
+                                errorWidget: (context, url, error) => Center(
+                                      child: Icon(
+                                        Icons.image,
+                                        size: 30,
+                                      ),
+                                    )),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ), // Astore Groceries
+          Expanded(flex: 60,
+            child: Padding(
+              padding: EdgeInsets.only(left: AppSizes.minorTopPadding * 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Hero(
+                    tag: name,
+                    child: Text(name,
+                        style: const TextStyle(
+                            decoration: TextDecoration.none,
+                            color: AppColors.blackTextColor,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "Avenir-Medium",
+                            fontStyle: FontStyle.normal,
+                            fontSize: AppSizes.itemSubtitleFontSize),
+                        textAlign: TextAlign.left),
+                  ),
+                  SizedBox(
+                    height: AppSizes.separatorPadding,
+                  ),
+                  Text(items ?? '',
+                      style: const TextStyle(
+                          color: AppColors.greyishText,
+                          fontWeight: FontWeight.w300,
+                          fontFamily: "Helvetica",
+                          fontStyle: FontStyle.normal,
+                          fontSize: AppSizes.itemSubtitle3FontSize),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left),
+                  SizedBox(
+                    height: AppSizes.separatorPadding,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: deliveryStatus
+                            ? ImageIcon(
+                                AssetImage('assets/images/delivery.png'),
+                                color: Colors.black,
                               )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: CachedNetworkImage(
-                                    height: 100.0,
-                                    fit: BoxFit.cover,
-                                    imageUrl: shopImage,
-                                    placeholder: (context, url) => Icon(
-                                          Icons.image,
-                                          size: 30,
-                                        ),
-                                    errorWidget: (context, url, error) =>
-                                        Center(
-                                          child: Icon(
-                                            Icons.image,
-                                            size: 30,
-                                          ),
-                                        )),
-                              ),
+                            : shopClosed
+                                ? Image.asset('assets/images/group236.png')
+                                : Image.asset(
+                                    'assets/images/no_delivery.png'),
                       ),
-                      shopClosed
-                          ? Positioned(
-                              bottom: 5,
-                              child: // Out of stock
-                                  Text('common.closed',
-                                          style: const TextStyle(
-                                              color: const Color(0xfff51818),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 12.0),
-                                          textAlign: TextAlign.left)
-                                      .tr())
-                          : Container()
+                      Text(
+                          deliveryStatus
+                              ? tr("shop.delivery_ok")
+                              : tr("shop.delivery_no"),
+                          style: const TextStyle(
+                              color: AppColors.greyishText,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: "Avenir-Medium",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 11.0),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left),
                     ],
                   ),
-                ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(name,
-                            style: const TextStyle(
-                                color: const Color(0xff2c2c2c),
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir-Medium",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 16.0),
-                            textAlign: TextAlign.left),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8, bottom: 8),
-                          child: Text(items,
-                              style: const TextStyle(
-                                  color: const Color(0xff7c7c7c),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir-Medium",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 14.0),
-                              textAlign: TextAlign.left),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: deliveryStatus
-                                  ? ImageIcon(
-                                      AssetImage('assets/images/delivery.png'),
-                                      color: shopClosed
-                                          ? Colors.grey.shade400
-                                          : Colors.black,
-                                    )
-                                  : shopClosed
-                                      ? Image.asset(
-                                          'assets/images/group236.png')
-                                      : Image.asset(
-                                          'assets/images/no_delivery.png'),
-                            ),
-                            Text(
-                                deliveryStatus
-                                    ? tr("shop.delivery_ok")
-                                    : tr("shop.delivery_no"),
-                                style: const TextStyle(
-                                    color: const Color(0xff7c7c7c),
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: "Avenir-Medium",
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 14.0),
-                                textAlign: TextAlign.left),
-                          ],
-                        )
-                      ],
-                    ),
+                  SizedBox(
+                    height: AppSizes.separatorPadding,
                   ),
-                )
-              ],
+                  Opacity(
+                    opacity: shopClosed ? 1 : 0,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.iconColors,
+                          boxShadow: [
+                            BoxShadow(color: Colors.white30, spreadRadius: 3),
+                          ],
+                        ),
+                        child: // Out of stock
+                            Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 2),
+                          child: Text('common.closed',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily: "Avenir-Medium",
+                                      fontStyle: FontStyle.normal,
+                                      fontSize:
+                                          AppSizes.itemSubtitle3FontSize),
+                                  textAlign: TextAlign.left)
+                              .tr(),
+                        )),
+                  )
+                ],
+              ),
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function(VideoItem) updateSelectedVideo;
   Function navigateToVideoView;
   Function(String) getMerchantList;
@@ -886,6 +742,7 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Cluster cluster;
   GetBusinessesResponse response;
+
   _ViewModel.build({
     this.updateSelectedVideo,
     this.navigateToVideoView,
