@@ -9,9 +9,9 @@ import 'package:eSamudaay/presentations/splash_screen.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
-import 'package:eSamudaay/utilities/sentry_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -21,30 +21,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
 
+// Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
+final _kTestingCrashlytics = true;
+
 void main() async {
   NavigateAction.setNavigatorKey(NavigationHandler.navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await _initializeFlutterFire();
+
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   FlutterError.onError = (FlutterErrorDetails details) {
-    ///The return keyword below is used to abort the initialization of Sentry
-     return;
-
-    ///This is done to prevent the assertion used in setup from throwing an error
-    ///HOWEVER THE ABOVE MUST BE REMOVED WHEN PUSHING TO PRODUCTION TO RECORD THE
-    ///ERRORS!
-
     // Pass all uncaught errors from the framework to Crashlytics.
     FirebaseCrashlytics.instance.recordFlutterError(details);
-    if (!SentryHandler().isInProdMode) {
-      // In development mode, simply print to console.
-      FlutterError.dumpErrorToConsole(details);
-    } else {
-      // In production mode, report to the application zone to report to
-      // Sentry.
-      Zone.current.handleUncaughtError(details.exception, details.stack);
-    }
   };
 
   runZonedGuarded(() async {
@@ -59,16 +48,40 @@ void main() async {
       ],
       path: 'assets/languages',
     ));
-  }, (Object error, StackTrace stackTrace) {
-    debugPrint(
-        '********************************************** ${error.toString()}');
-    debugPrint('********************************************** $stackTrace');
-
-    /// Whenever an error occurs, call the `reportError` function. This sends
-    /// Dart errors to the dev env or prod env of Sentry based on current status.
-    // SentryHandler().reportError(error, stackTrace);
+  }, (error, stackTrace) {
+    debugPrint('runZonedGuarded: Caught Error -> $error in root zone.');
+    debugPrint('Stacktrace -> $stackTrace');
+    /// Whenever an error occurs, call the `recordError` function. This sends
+    /// it submits a Crashlytics report of a caught error.
+    FirebaseCrashlytics.instance.recordError(error, stackTrace);
   });
 }
+
+// Define an async function to initialize FlutterFire
+Future<void> _initializeFlutterFire() async {
+  // Wait for Firebase to initialize
+  await Firebase.initializeApp();
+
+  if (_kTestingCrashlytics) {
+    // Force enable crashlytics collection enabled if we're testing it.
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  } else {
+    // Else only enable it in non-debug builds.
+    //Could additionally extend this to allow users to opt-in or something else.
+    await FirebaseCrashlytics.instance
+        .setCrashlyticsCollectionEnabled(ApiURL.baseURL==ApiURL.liveURL);
+  }
+
+  // Pass all uncaught errors to Crashlytics.
+  Function originalOnError = FlutterError.onError;
+  FlutterError.onError = (FlutterErrorDetails errorDetails) async {
+    await FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+    // Forward details of this error to original handler.
+    originalOnError(errorDetails);
+  };
+
+}
+
 
 class MyApp extends StatefulWidget {
   @override
