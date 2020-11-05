@@ -2,7 +2,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'dart:math' as math;
 
 class TextInputBG extends StatelessWidget {

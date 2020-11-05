@@ -8,7 +8,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class CartCount extends StatelessWidget {
   final Function(BuildContext context, _ViewModel count) builder;

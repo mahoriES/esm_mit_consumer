@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
+import 'package:eSamudaay/themes/eSamudaay_theme_data.dart';
 
 // Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
 final _kTestingCrashlytics = true;
@@ -167,16 +168,10 @@ class MyAppBase extends StatelessWidget {
         supportedLocales: EasyLocalization.of(context).supportedLocales,
         locale: EasyLocalization.of(context).locale,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          primarySwatch: Colors.blue,
-          fontFamily: "JTLeonor",
-          appBarTheme: AppBarTheme(
-            color: Color(0xffffffff),
-            brightness: Brightness.light,
-          ),
-        ),
+        ///The [theme] accepts a value of type [ThemeData].
+        ///The default value is [AppThemeData.lightThemeData].
+        ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
+        theme: AppThemeData.lightThemeData,
         home: UserExceptionDialog<AppState>(
           child: MyApp(),
           onShowUserExceptionDialog: (context, excpn) {

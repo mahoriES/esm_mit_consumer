@@ -1,4 +1,4 @@
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class ThirdPageWidget extends StatelessWidget {

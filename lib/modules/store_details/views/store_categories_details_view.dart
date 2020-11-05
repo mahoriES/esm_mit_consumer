@@ -21,7 +21,7 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -577,14 +577,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                 children: [
                                   Image.asset(
                                     'assets/images/notepad.png',
-                                    color: AppColors.pureWhite,
+                                    color: AppColors.solidWhite,
                                   ),
                                   SizedBox(width: AppSizes.separatorPadding),
                                   Text(
                                     'List Items',
                                     style: TextStyle(
                                         fontFamily: "Avenir-Medium",
-                                        color: AppColors.pureWhite),
+                                        color: AppColors.solidWhite),
                                   ),
                                 ],
                               ),

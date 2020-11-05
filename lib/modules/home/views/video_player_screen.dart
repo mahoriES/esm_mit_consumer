@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';

@@ -80,13 +80,13 @@ class _CirclePickerState extends State<CirclePicker> {
                 style: TextStyle(
                   fontFamily: 'Avenir',
                   fontSize: fit.t(AppSizes.adjustableFontTitleSize),
-                  color: AppColors.blackTextColor,
+                  color: AppColors.solidBlack,
                 ),
               ),
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  color: AppColors.blackTextColor,
+                  color: AppColors.solidBlack,
                 ),
                 onPressed: () {
                   if (!snapshot.hasSelectedCluster) {
@@ -237,7 +237,7 @@ class _CirclePickerState extends State<CirclePicker> {
       child: Text(
         title,
         style: TextStyle(
-            color: AppColors.blackTextColor,
+            color: AppColors.solidBlack,
             fontSize: fit.t(AppSizes.adjustableFontTitleSize),
             fontFamily: 'Avenir',
             fontWeight: FontWeight.w300),
@@ -278,7 +278,7 @@ class _CirclePickerState extends State<CirclePicker> {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppSizes.adjustableWidgetPadding),
-        color: AppColors.pureWhite,
+        color: AppColors.solidWhite,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -294,7 +294,7 @@ class _CirclePickerState extends State<CirclePicker> {
                       fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
                       fontFamily: 'Avenir',
                       fontWeight: FontWeight.w400,
-                      color: AppColors.blackTextColor),
+                      color: AppColors.solidBlack),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(
@@ -341,7 +341,7 @@ class _CirclePickerState extends State<CirclePicker> {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppSizes.adjustableWidgetPadding),
-        color: AppColors.pureWhite,
+        color: AppColors.solidWhite,
       ),
       child: Row(
         children: [
@@ -367,7 +367,7 @@ class _CirclePickerState extends State<CirclePicker> {
                     fontSize: fit.t(15),
                     fontFamily: 'Avenir',
                     fontWeight: FontWeight.w400,
-                    color: AppColors.blackTextColor,
+                    color: AppColors.solidBlack,
                   ),
                 ),
                 SizedBox(

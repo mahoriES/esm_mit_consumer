@@ -24,7 +24,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:upi_india/upi_india.dart';
 import 'package:upi_pay/upi_pay.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class OrdersView extends StatefulWidget {
   @override

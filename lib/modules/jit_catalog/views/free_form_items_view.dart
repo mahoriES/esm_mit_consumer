@@ -30,7 +30,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
           child: Container(
               padding: EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                color: AppColors.pureWhite,
+                color: AppColors.solidWhite,
                 borderRadius:
                     BorderRadius.circular(AppSizes.productItemBorderRadius),
                 boxShadow: [
@@ -80,7 +80,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
             style: TextStyle(
               fontSize: AppSizes.itemTitleFontSize,
               fontFamily: 'Avenir',
-              color: AppColors.blackTextColor,
+              color: AppColors.solidBlack,
             ),
           ),
         ],
@@ -157,7 +157,7 @@ class _FreeFormItemsViewState extends State<FreeFormItemsView> {
           style: TextStyle(
             fontSize: AppSizes.itemSubtitle2FontSize,
             fontFamily: 'Avenir',
-            color: AppColors.blackTextColor,
+            color: AppColors.solidBlack,
           ),
         ),
       ],

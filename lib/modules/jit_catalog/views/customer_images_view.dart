@@ -105,7 +105,7 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
                   child: Icon(
                     Icons.close,
                     size: width / 8,
-                    color: AppColors.pureWhite,
+                    color: AppColors.solidWhite,
                   ),
                   height: width / 6,
                   width: width / 6,
@@ -170,7 +170,7 @@ class _CustomerNoteImagePickerState extends State<CustomerNoteImagePicker> {
           top: 10,
         ),
         decoration: BoxDecoration(
-          color: AppColors.pureWhite,
+          color: AppColors.solidWhite,
           borderRadius: BorderRadius.circular(AppSizes.productItemBorderRadius),
           boxShadow: [
             BoxShadow(

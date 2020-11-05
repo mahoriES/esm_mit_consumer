@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/utilities/charges_name.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
@@ -240,7 +240,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                             child: Text(
                               'Cart Items',
                               style: TextStyle(
-                                color: AppColors.blackTextColor,
+                                color: AppColors.solidBlack,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 fontFamily: 'Avenir-Medium',
@@ -346,7 +346,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                             child: Text(
                               'List Items',
                               style: TextStyle(
-                                color: AppColors.blackTextColor,
+                                color: AppColors.solidBlack,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 fontFamily: 'Avenir-Medium',
@@ -420,7 +420,7 @@ class _ExpandableListViewState extends State<ExpandableListView> {
                             child: Text(
                               'Unavailable Items',
                               style: TextStyle(
-                                color: AppColors.blackTextColor,
+                                color: AppColors.solidBlack,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 fontFamily: 'Avenir-Medium',

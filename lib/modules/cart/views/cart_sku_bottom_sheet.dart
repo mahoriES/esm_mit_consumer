@@ -44,7 +44,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                 AppSizes.bottomSheetHeightFraction,
           ),
           decoration: BoxDecoration(
-            color: AppColors.pureWhite,
+            color: AppColors.solidWhite,
             boxShadow: [
               BoxShadow(
                   color: AppColors.blackShadowColor,
@@ -72,7 +72,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                         child: Text(
                           widget.storeName,
                           style: TextStyle(
-                            color: AppColors.blackTextColor,
+                            color: AppColors.solidBlack,
                             fontFamily: 'Avenir',
                             fontSize: AppSizes.itemTitleFontSize,
                             fontWeight: FontWeight.w300,
@@ -124,7 +124,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                       ///in stock.
                       return ColorFiltered(
                         colorFilter: ColorFilter.mode(
-                          AppColors.pureWhite,
+                          AppColors.solidWhite,
                           BlendMode.softLight,
                         ),
                         child: buildCustomizableItem(
@@ -182,16 +182,16 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                 Text(
                   title,
                   style: TextStyle(
-                    color: AppColors.blackTextColor,
+                    color: AppColors.solidBlack,
                     fontFamily: 'Avenir',
-                    fontSize: AppSizes.itemSubtitleFontSize,
+                    fontSize: AppSizes.itemSubtitle1FontSize,
                   ),
                   textAlign: TextAlign.left,
                 ),
                 Text(
                   '₹' + price.toString(),
                   style: TextStyle(
-                    color: AppColors.blackTextColor,
+                    color: AppColors.solidBlack,
                     fontFamily: 'Avenir',
                     fontSize: AppSizes.itemSubtitle2FontSize,
                   ),
@@ -199,7 +199,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                 Text(
                   'Quantity: $specificationName',
                   style: TextStyle(
-                    color: AppColors.blackTextColor,
+                    color: AppColors.solidBlack,
                     fontFamily: 'Avenir',
                     fontSize: AppSizes.itemSubtitle3FontSize,
                   ),
@@ -232,7 +232,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                 Text(
                   '₹' + (quantity * price).toString(),
                   style: TextStyle(
-                    color: AppColors.blackTextColor,
+                    color: AppColors.solidBlack,
                     fontFamily: 'Avenir',
                     fontSize: AppSizes.itemSubtitle2FontSize,
                   ),

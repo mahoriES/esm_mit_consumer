@@ -18,7 +18,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -629,11 +629,11 @@ class StoresListView extends StatelessWidget {
                     child: Text(name,
                         style: const TextStyle(
                             decoration: TextDecoration.none,
-                            color: AppColors.blackTextColor,
+                            color: AppColors.solidBlack,
                             fontWeight: FontWeight.w400,
                             fontFamily: "Avenir-Medium",
                             fontStyle: FontStyle.normal,
-                            fontSize: AppSizes.itemSubtitleFontSize),
+                            fontSize: AppSizes.itemSubtitle1FontSize),
                         textAlign: TextAlign.left),
                   ),
                   SizedBox(
