@@ -145,6 +145,19 @@ class UpdateSelectedSubCategoryAction extends ReduxAction<AppState> {
   }
 }
 
+class UpdateSelectedProductAction extends ReduxAction<AppState> {
+  final Product selectedProduct;
+  UpdateSelectedProductAction(this.selectedProduct);
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      productState: state.productState.copyWith(
+        selectedProductForDetails: selectedProduct,
+      ),
+    );
+  }
+}
+
 class UpdateProductListingTempDataAction extends ReduxAction<AppState> {
   final List<Product> listingData;
 

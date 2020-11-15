@@ -564,9 +564,7 @@ class _SearchProductListingItemViewState
                               ],
                             ),
                             CSStepper(
-                              backgroundColor: !isOutOfStock
-                                  ? AppColors.offWhitish
-                                  : AppColors.icColors,
+                              fillColor: !isOutOfStock ? false : true,
                               addButtonAction: () {
                                 if (widget.item.skus.isNotEmpty &&
                                     widget.item.skus.length > 1) {
@@ -644,7 +642,6 @@ class _SearchProductListingItemViewState
               child: SkuBottomSheet(
                 product: product,
                 storeName: storeName,
-                productIndex: productIndex,
               ),
             ));
   }

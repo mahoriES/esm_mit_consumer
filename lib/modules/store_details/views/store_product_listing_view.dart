@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
@@ -458,29 +459,33 @@ class _ViewModel extends BaseModel<AppState> {
   Function(List<Product>) updateTempProductList;
   Function(List<Product>) updateProductList;
   Function navigateToProductSearch;
+  Function(Product) updateSelectedProduct;
+  Function navigateToProductDetails;
 
   _ViewModel();
 
-  _ViewModel.build(
-      {this.productResponse,
-      this.navigateToCart,
-      this.updateSelectedCategory,
-      this.freeFormItemsList,
-      this.loadingStatus,
-      this.selectedCategory,
-      this.products,
-      this.addToCart,
-      this.removeFromCart,
-      this.subCategories,
-      this.localCartListing,
-      this.getProducts,
-      this.productTempListing,
-      this.updateTempProductList,
-      this.updateProductList,
-      this.selectedMerchant,
-      this.selectedSubCategory,
-      this.navigateToProductSearch})
-      : super(equals: [
+  _ViewModel.build({
+    this.productResponse,
+    this.navigateToCart,
+    this.updateSelectedCategory,
+    this.freeFormItemsList,
+    this.loadingStatus,
+    this.selectedCategory,
+    this.products,
+    this.addToCart,
+    this.removeFromCart,
+    this.subCategories,
+    this.localCartListing,
+    this.getProducts,
+    this.productTempListing,
+    this.updateTempProductList,
+    this.updateProductList,
+    this.selectedMerchant,
+    this.selectedSubCategory,
+    this.navigateToProductSearch,
+    this.updateSelectedProduct,
+    this.navigateToProductDetails,
+  }) : super(equals: [
           products,
           localCartListing,
           selectedMerchant,
@@ -520,6 +525,12 @@ class _ViewModel extends BaseModel<AppState> {
         updateProductList: (list) {
           dispatch(UpdateProductListingDataAction(listingData: list));
         },
+        updateSelectedProduct: (selectedProduct) {
+          dispatch(UpdateSelectedProductAction(selectedProduct));
+        },
+         navigateToProductDetails: () {
+          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
+        },
         navigateToProductSearch: () {
           dispatch(ClearSearchResultProductsAction());
           dispatch(
@@ -557,8 +568,11 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
         model: _ViewModel(),
         builder: (context, snapshot) {
           bool isOutOfStock = widget.item.inStock;
-          return IgnorePointer(
-            ignoring: !isOutOfStock,
+          return GestureDetector(
+            onTap: () {
+              snapshot.updateSelectedProduct(widget.item);
+              snapshot.navigateToProductDetails();
+            },
             child: Row(
               children: <Widget>[
                 Container(
@@ -582,60 +596,63 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: <Widget>[
-                      ColorFiltered(
-                        child: widget.item.images == null
-                            ? Padding(
-                                padding: const EdgeInsets.all(25.0),
-                                child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: "",
-                                    placeholder: (context, url) =>
-                                        CupertinoActivityIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Center(
-                                          child: Icon(
-                                            Icons.image,
-                                            size: 30,
-                                          ),
-                                        )),
-                              )
-                            : widget.item.images.length > 0
-                                ? Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: CachedNetworkImage(
-                                        height: 500.0,
-                                        fit: BoxFit.cover,
-                                        imageUrl: widget.item?.images?.first
-                                                ?.photoUrl ??
-                                            "",
-                                        placeholder: (context, url) =>
-                                            CupertinoActivityIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Center(
-                                              child: Icon(
-                                                Icons.image,
-                                                size: 30,
-                                              ),
-                                            )),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.all(25.0),
-                                    child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: "",
-                                        placeholder: (context, url) =>
-                                            CupertinoActivityIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Center(
-                                              child: Icon(
-                                                Icons.image,
-                                                size: 30,
-                                              ),
-                                            )),
-                                  ),
-                        colorFilter: ColorFilter.mode(
-                            !isOutOfStock ? Colors.grey : Colors.transparent,
-                            BlendMode.saturation),
+                      Hero(
+                        tag: widget.item.productName,
+                        child: ColorFiltered(
+                          child: widget.item.images == null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(25.0),
+                                  child: CachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      imageUrl: "",
+                                      placeholder: (context, url) =>
+                                          CupertinoActivityIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Center(
+                                            child: Icon(
+                                              Icons.image,
+                                              size: 30,
+                                            ),
+                                          )),
+                                )
+                              : widget.item.images.length > 0
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: CachedNetworkImage(
+                                          height: 500.0,
+                                          fit: BoxFit.cover,
+                                          imageUrl: widget.item?.images?.first
+                                                  ?.photoUrl ??
+                                              "",
+                                          placeholder: (context, url) =>
+                                              CupertinoActivityIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Center(
+                                                child: Icon(
+                                                  Icons.image,
+                                                  size: 30,
+                                                ),
+                                              )),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(25.0),
+                                      child: CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: "",
+                                          placeholder: (context, url) =>
+                                              CupertinoActivityIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Center(
+                                                child: Icon(
+                                                  Icons.image,
+                                                  size: 30,
+                                                ),
+                                              )),
+                                    ),
+                          colorFilter: ColorFilter.mode(
+                              !isOutOfStock ? Colors.grey : Colors.transparent,
+                              BlendMode.saturation),
+                        ),
                       ),
                       !isOutOfStock
                           ? Positioned(
@@ -717,9 +734,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                               ],
                             ),
                             CSStepper(
-                              backgroundColor: !isOutOfStock
-                                  ? Color(0xffb1b1b1)
-                                  : AppColors.icColors,
+                              fillColor: !isOutOfStock ? false : true,
                               addButtonAction: () {
                                 if (widget.item.skus.isNotEmpty &&
                                     widget.item.skus.length > 1) {
@@ -796,7 +811,6 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
               child: SkuBottomSheet(
                 product: product,
                 storeName: storeName,
-                productIndex: productIndex,
               ),
             ));
   }

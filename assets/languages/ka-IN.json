@@ -190,8 +190,11 @@
     "order_id": "ಆರ್ಡರ್ ಐಡಿ",
     "call": "ಬೆಂಬಲವನ್ನು ಕರೆ ಮಾಡಿ",
     "no_contact": "ಯಾವುದೇ ಸಂಪರ್ಕ ವಿವರಗಳು ಲಭ್ಯವಿಲ್ಲ"
-
+    
+  },
+  "product_details": {
+    "options_available": "Options available",
+    "product_information": "Product Information",
+    "similar_products": "Similar Products"
   }
-
-
 }

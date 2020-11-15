@@ -12,6 +12,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -159,6 +160,17 @@ class MyAppBase extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
+        builder: (context, child) {
+          SizeConfig().init(context);
+
+          ///The [theme] accepts a value of type [ThemeData].
+          ///The default value is [AppThemeData.lightThemeData].
+          ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
+          return Theme(
+            data: AppThemeData.lightThemeData,
+            child: child,
+          );
+        },
         navigatorObservers: [NavigationHandler.routeObserver],
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
@@ -168,10 +180,6 @@ class MyAppBase extends StatelessWidget {
         supportedLocales: EasyLocalization.of(context).supportedLocales,
         locale: EasyLocalization.of(context).locale,
         debugShowCheckedModeBanner: false,
-        ///The [theme] accepts a value of type [ThemeData].
-        ///The default value is [AppThemeData.lightThemeData].
-        ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
-        theme: AppThemeData.lightThemeData,
         home: UserExceptionDialog<AppState>(
           child: MyApp(),
           onShowUserExceptionDialog: (context, excpn) {

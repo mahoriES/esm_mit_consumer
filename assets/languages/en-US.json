@@ -123,7 +123,7 @@
     "phone": "Shop phone number",
     "recommend": "Recommend"
   },
-
+  
   "screen_order": {
     "made_payment": "Mark Paid",
     "title": "Orders",
@@ -132,7 +132,7 @@
     "total": "Total amount",
     "not_found": "No Order Found",
     "empty_content": "Look like you haven’t order anything yet Lets start !",
-
+   
     "completed": "Completed",
     "complete": "Complete",
     "confirmed": "Confirmed",
@@ -140,7 +140,7 @@
     "re_order": "Re-Order",
     "payment": "Payment",
     "update_order": "Update Order",
-
+   
     "missing": "Missing Items",
     "please_pay": "Please pay your bill amount to the merchant directly using Cash, Card or UPI",
     "rate": "Rate us",
@@ -242,6 +242,11 @@
     "approved": "Payment received by merchant",
     "pending": "Payment not done",
     "rejected": "Payment not done"
+  },
+  "product_details": {
+    "options_available": "Options available",
+    "product_information": "Product Information",
+    "similar_products": "Similar Products"
   }
-
+  
 }

@@ -15,13 +15,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 ///can add multiple quantities of each variation
 class SkuBottomSheet extends StatefulWidget {
   final String storeName;
-  final int productIndex;
   final Product product;
 
   const SkuBottomSheet({
     Key key,
     @required this.storeName,
-    @required this.productIndex,
     @required this.product,
   })  : assert(product != null, 'The product cannot be null'),
         super(key: key);
@@ -104,7 +102,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                     if (widget.product.skus[index].inStock)
                       return buildCustomizableItem(
                         title: widget.product.productName,
-           
+
                         specificationName:
                             widget.product.skus[index].variationOptions.weight,
                         price: (widget.product.skus[index].basePrice / 100)

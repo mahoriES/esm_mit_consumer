@@ -2,7 +2,7 @@
 
   "common": {
     "closed": "மூடப்பட்டது",
-      "view_store": "கடடடை காண் க"
+    "view_store": "கடடடை காண் க"
   },
 
   "screen_language": {
@@ -193,7 +193,12 @@
     "call": "அழைப்பு ஆதரவு",
     "no_contact": "தொடர்பு விவரங்கள் எதுவும் கிடைக்கவில்லை"
 
+  },
+  "product_details": {
+    "options_available": "விருப்பத்தேர்வுகள் உள்ளன",
+    "product_information": "விளைபொருள் விபரங்கள்",
+    "similar_products": "ஒருவகைப்பட்ட தயாரிப்புகள்"
   }
 
-
+  
 }
