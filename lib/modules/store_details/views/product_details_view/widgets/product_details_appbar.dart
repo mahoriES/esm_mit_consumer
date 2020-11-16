@@ -1,6 +1,6 @@
-// import 'package:eSamudaay/utilities/link_sharing_service.dart';
+import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
-// import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -44,13 +44,13 @@ class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
           icon: Icon(Icons.share),
           iconSize: 30.toFont,
           onPressed: () async {
-            // DynamicLinkParameters linkParameters =
-            //     LinkSharingService().createProductLink(
-            //   productId: productId,
-            //   businessId: businessId,
-            //   storeName: subTitle,
-            // );
-            // await LinkSharingService().shareLink(parameters: linkParameters);
+            DynamicLinkParameters linkParameters =
+                LinkSharingService().createProductLink(
+              productId: productId,
+              businessId: businessId,
+              storeName: subTitle,
+            );
+            await LinkSharingService().shareLink(parameters: linkParameters);
           },
         ),
       ],

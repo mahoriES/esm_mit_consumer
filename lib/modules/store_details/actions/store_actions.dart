@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class GetSubCatalogAction extends ReduxAction<AppState> {
   GetSubCatalogAction();
@@ -192,5 +196,52 @@ class UpdateProductVariantAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(productState: state.productState.copyWith());
+  }
+}
+
+class GetProductDetailsByID extends ReduxAction<AppState> {
+  final String productId;
+  final String businessId;
+  GetProductDetailsByID({@required this.productId, @required this.businessId});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+      url: ApiURL.getVideoDetails(businessId, productId),
+      params: null,
+      requestType: RequestType.get,
+    );
+    if (response.status == ResponseStatus.error404) {
+      Fluttertoast.showToast(msg: 'Product Not Found');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else if (response.status == ResponseStatus.error500) {
+      Fluttertoast.showToast(msg: 'Something went wrong');
+      throw 'Something went wrong : ${response.data['message']}';
+    } else {
+      Product responseModel = Product.fromJson(response.data);
+
+      if (responseModel != null) {
+        DynamicLinkService().isLinkPathValid = true;
+        return state.copyWith(
+          productState: state.productState.copyWith(
+            selectedProductForDetails: responseModel,
+          ),
+        );
+      }
+    }
+    return null;
+  }
+
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    super.after();
   }
 }

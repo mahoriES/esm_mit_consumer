@@ -14,7 +14,7 @@ class AppThemeData {
   static final Color _darkFocusColor = AppColors.solidWhite.withOpacity(0.12);
 
   static ThemeData lightThemeData =
-  themeData(defaultColorScheme, _lightFocusColor);
+      themeData(defaultColorScheme, _lightFocusColor);
 
   ///The [darkThemeData] variable holds the [ThemeData] instance for dark mode
   ///
@@ -33,13 +33,15 @@ class AppThemeData {
     return ThemeData(
       ///The [primarySwatch] requires an AccentColor, hence this shall be changes later, when that is available
       primarySwatch: Colors.purple,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
+      // splashColor: Colors.transparent,
+      // highlightColor: Colors.transparent,
       fontFamily: 'JTLeonor',
+      textTheme: _textTheme,
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         color: AppColors.solidWhite,
         brightness: Brightness.light,
+        iconTheme: IconThemeData(color: colorScheme.secondary),
       ),
     );
   }

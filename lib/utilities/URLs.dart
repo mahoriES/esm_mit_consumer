@@ -29,4 +29,6 @@ class ApiURL {
   static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
   static const imageUpload = "$baseURL" + "api/v1/media/photo/";
   static const getVideoFeed = baseURL + 'api/v1/feed/';
+  static final getVideoDetails = (String businessId, String productId) =>
+      baseURL + "api/v1/businesses/$businessId/catalog/products/$productId";
 }
