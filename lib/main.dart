@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:eSamudaay/themes/eSamudaay_theme_data.dart';
+import 'package:eSamudaay/themes/themes.dart';
 
 import 'utilities/size_config.dart';
 
@@ -159,35 +159,39 @@ class MyAppBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      child: MaterialApp(
-        builder: (context, child) {
-          SizeConfig().init(context);
+      // wrapping material app with store connector to listen to themeData update.
+      child: StoreConnector<AppState, CustomThemes>(
+        converter: (Store<AppState> store) => store.state.customTheme,
+        builder: (context, customTheme) => MaterialApp(
+          builder: (context, child) {
+            SizeConfig().init(context);
 
-          ///The [theme] accepts a value of type [ThemeData].
-          ///The default value is [AppThemeData.lightThemeData].
-          ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
-          return Theme(
-            data: AppThemeData.lightThemeData,
-            child: child,
-          );
-        },
-        navigatorObservers: [NavigationHandler.routeObserver],
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          EasyLocalization.of(context).delegate,
-        ],
-        supportedLocales: EasyLocalization.of(context).supportedLocales,
-        locale: EasyLocalization.of(context).locale,
-        debugShowCheckedModeBanner: false,
-        home: UserExceptionDialog<AppState>(
-          child: MyApp(),
-          onShowUserExceptionDialog: (context, excpn) {
-            print('sdas');
+            ///The [theme] accepts a value of type [ThemeData].
+            ///The default value is [AppThemeData.lightThemeData].
+            ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
+            return Theme(
+              data: customTheme.themeData,
+              child: child,
+            );
           },
+          navigatorObservers: [NavigationHandler.routeObserver],
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            EasyLocalization.of(context).delegate,
+          ],
+          supportedLocales: EasyLocalization.of(context).supportedLocales,
+          locale: EasyLocalization.of(context).locale,
+          debugShowCheckedModeBanner: false,
+          home: UserExceptionDialog<AppState>(
+            child: MyApp(),
+            onShowUserExceptionDialog: (context, excpn) {
+              print('sdas');
+            },
+          ),
+          navigatorKey: NavigationHandler.navigatorKey,
+          routes: SetupRoutes.routes,
         ),
-        navigatorKey: NavigationHandler.navigatorKey,
-        routes: SetupRoutes.routes,
       ),
     );
   }
