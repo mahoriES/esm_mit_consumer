@@ -51,6 +51,25 @@ class CustomDivider extends StatelessWidget {
   }
 }
 
+class AnimatedCustomDivider extends AnimatedWidget {
+
+  final Animation<double> scalingUnitaryValue;
+
+  const AnimatedCustomDivider({@required this.scalingUnitaryValue}) : super(listenable: scalingUnitaryValue);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: AppSizes.widgetPadding.toHeight,
+            horizontal: (1-scalingUnitaryValue.value) * SizeConfig.screenWidth + AppSizes.widgetPadding.toWidth),
+        child: Container(
+          height: 1,
+          color: AppColors.offWhitish,
+        ));
+  }
+}
+
 class OTPField extends StatefulWidget {
   /// Number of the OTP Fields
   final int length;

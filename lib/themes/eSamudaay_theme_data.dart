@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/colors.dart';
-import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 
 class AppThemeData {
@@ -35,10 +34,11 @@ class AppThemeData {
       primarySwatch: Colors.purple,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
+      textTheme: _textTheme,
       fontFamily: 'JTLeonor',
       appBarTheme: AppBarTheme(
         elevation: 0.0,
-        color: AppColors.solidWhite,
+        color: colorScheme.background,
         brightness: Brightness.light,
       ),
     );
@@ -68,18 +68,18 @@ class AppThemeData {
   ///With [defaultColorScheme] and [darkModeColorScheme] specified
   ///you may obtain the appropriate [ThemeData] by passing the required [ColorScheme] value as the function parameter.
 
-  static final TextTheme _textTheme = TextTheme(
+  static const TextTheme _textTheme = TextTheme(
     headline6: TextStyle(
         color: AppColors.black,
-        fontSize: AppSizes.itemHeadingFontSize.toFont,
+        fontSize: AppSizes.itemHeadingFontSize,
         fontWeight: _medium),
     subtitle1: TextStyle(
         color: AppColors.blackTwo,
-        fontSize: AppSizes.itemSubtitle1FontSize.toFont,
+        fontSize: AppSizes.itemSubtitle1FontSize,
         fontWeight: _regular),
     subtitle2: TextStyle(
         color: AppColors.blackTwo,
-        fontSize: AppSizes.itemSubtitle2FontSize.toFont,
+        fontSize: AppSizes.itemSubtitle2FontSize,
         fontWeight: _regular),
     caption: TextStyle(
         color: AppColors.black,
@@ -87,11 +87,11 @@ class AppThemeData {
         fontWeight: _regular),
     bodyText1: TextStyle(
         color: AppColors.blueBerry,
-        fontSize: AppSizes.bodyText1FontSize.toFont,
+        fontSize: AppSizes.bodyText1FontSize,
         fontWeight: _regular),
     bodyText2: TextStyle(
         color: AppColors.warmGrey,
-        fontSize: AppSizes.bodyText2FontSize.toFont,
+        fontSize: AppSizes.bodyText2FontSize,
         fontWeight: _regular),
   );
 }

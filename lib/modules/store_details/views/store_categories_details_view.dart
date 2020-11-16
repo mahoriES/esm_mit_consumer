@@ -6,6 +6,8 @@ import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
+import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
@@ -45,28 +47,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
         return Future.value(true);
       },
       child: Scaffold(
-          appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: AppColors.icColors,
-                ),
-                onPressed: () async {
-                  List<Business> merchants =
-                      await CartDataSource.getListOfMerchants();
-                  if (merchants.isNotEmpty &&
-                      merchants.first.businessId !=
-                          store
-                              .state.productState.selectedMerchant.businessId) {
-                    var localMerchant = merchants.first;
-                    store.dispatch(UpdateSelectedMerchantAction(
-                        selectedMerchant: localMerchant));
-                  }
-                  Navigator.pop(context);
-                }),
-          ),
           body: StoreConnector<AppState, _ViewModel>(
               model: _ViewModel(),
               onInit: (store) {
@@ -110,13 +90,47 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              right: 20, left: 20),
+                                              right: 10, left: 10, top: 15),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
+                                              BusinessTitleTile(
+                                                businessName: "Marlin  Arts",
+                                                businessSubtitle: snapshot.selectedMerchant.description,
+                                                isDeliveryAvailable: true,
+                                                isOpen: true,
+                                                businessImageUrl: snapshot
+                                                    .selectedMerchant
+                                                    .images
+                                                    .first
+                                                    .photoUrl,
+                                                onBookmarkMerchant: null,
+                                                onBackPressed: () async {
+                                                  List<Business> merchants =
+                                                      await CartDataSource
+                                                          .getListOfMerchants();
+                                                  if (merchants.isNotEmpty &&
+                                                      merchants.first
+                                                              .businessId !=
+                                                          store
+                                                              .state
+                                                              .productState
+                                                              .selectedMerchant
+                                                              .businessId) {
+                                                    var localMerchant =
+                                                        merchants.first;
+                                                    store.dispatch(
+                                                        UpdateSelectedMerchantAction(
+                                                            selectedMerchant:
+                                                                localMerchant));
+                                                  }
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                              SizedBox(height: AppSizes.separatorPadding,),
                                               Padding(
                                                 padding:
                                                     EdgeInsets.only(bottom: 20),
@@ -161,31 +175,39 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                                 children: [
                                                   Expanded(
                                                     flex: 70,
-                                                    child: Hero(
-                                                      tag: snapshot
-                                                          .selectedMerchant
-                                                          ?.businessName,
-                                                      child: Text(
-                                                        snapshot.selectedMerchant
-                                                                ?.businessName ??
-                                                            "",
-                                                        style: const TextStyle(
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .none,
-                                                            color: const Color(
-                                                                0xff000000),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 22.0),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        showDetailsPopup(
+                                                            snapshot);
+                                                      },
+                                                      child: Hero(
+                                                        tag: snapshot
+                                                            .selectedMerchant
+                                                            ?.businessName,
+                                                        child: Text(
+                                                          snapshot.selectedMerchant
+                                                                  ?.businessName ??
+                                                              "",
+                                                          style: const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                              color: const Color(
+                                                                  0xff000000),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontFamily:
+                                                                  "Avenir-Medium",
+                                                              fontStyle:
+                                                                  FontStyle
+                                                                      .normal,
+                                                              fontSize: 22.0),
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -546,7 +568,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                   snapshot.navigateToCart();
                                 },
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -654,8 +676,24 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
     );
   }
 
+  void showDetailsPopup(_ViewModel snapshot) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return BusinessDetailsPopup(
+              merchantPhoneNumber:
+                  snapshot.selectedMerchant.phones?.first ?? '',
+              businessTitle: snapshot.selectedMerchant.businessName ?? '',
+              businessSubtitle: snapshot.selectedMerchant.description,
+              businessPrettyAddress:
+                  snapshot.selectedMerchant.address?.prettyAddress ?? '',
+              merchantBusinessImageUrl:
+                  snapshot.selectedMerchant.images.first.photoUrl,
+              isDeliveryAvailable: snapshot.selectedMerchant.hasDelivery);
+        });
+  }
+
   Widget buildWhatsappButtonForContactingMerchant(String telephone) {
-    if (telephone.substring(0, 3) != "+91") telephone = "+91" + telephone;
     return IconButton(
       icon: SizedBox(
           height: AppSizes.productItemIconSize,
@@ -665,13 +703,12 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
             fit: BoxFit.contain,
           )),
       onPressed: () {
-        launch('tel:$telephone');
+        launch('tel:${telephone.formatPhoneNumber}');
       },
     );
   }
 
   Widget buildPhoneButtonForContactingMerchant(String telephone) {
-    if (telephone.substring(0, 3) != "+91") telephone = "+91" + telephone;
     return IconButton(
       icon: SizedBox(
         height: AppSizes.productItemIconSize,
@@ -684,10 +721,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
       onPressed: () {
         if (Platform.isIOS) {
           launch(
-              "whatsapp://wa.me/$telephone/?text=${Uri.parse('Message from eSamudaay.')}");
+              "whatsapp://wa.me/${telephone.formatPhoneNumber}/?text=${Uri.parse('Message from eSamudaay.')}");
         } else {
           launch(
-              "whatsapp://send?phone=$telephone&text=${Uri.parse('Message from eSamudaay.')}");
+              "whatsapp://send?phone=${telephone.formatPhoneNumber}&text=${Uri.parse('Message from eSamudaay.')}");
         }
       },
     );
@@ -859,5 +896,12 @@ class _ViewModel extends BaseModel<AppState> {
             dispatch(NavigateAction.pushNamed('/CartView'));
           }
         });
+  }
+}
+
+extension StringUtils on String {
+  String get formatPhoneNumber {
+    if (this.length > 3 && this.substring(0, 3) != "+91") return "+91" + this;
+    return this;
   }
 }
