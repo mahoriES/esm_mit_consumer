@@ -528,7 +528,7 @@ class _ViewModel extends BaseModel<AppState> {
         updateSelectedProduct: (selectedProduct) {
           dispatch(UpdateSelectedProductAction(selectedProduct));
         },
-         navigateToProductDetails: () {
+        navigateToProductDetails: () {
           dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
         },
         navigateToProductSearch: () {
@@ -733,46 +733,49 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                       ),
                               ],
                             ),
-                            CSStepper(
-                              fillColor: !isOutOfStock ? false : true,
-                              addButtonAction: () {
-                                if (widget.item.skus.isNotEmpty &&
-                                    widget.item.skus.length > 1) {
-                                  handleActionForMultipleSkus(
-                                      product: widget.item,
-                                      storeName: store.state.productState
-                                          .selectedMerchant.businessName,
-                                      productIndex: widget.index);
-                                  return;
-                                }
+                            IgnorePointer(
+                              ignoring: !widget.item.inStock,
+                              child: CSStepper(
+                                fillColor: !isOutOfStock ? false : true,
+                                addButtonAction: () {
+                                  if (widget.item.skus.isNotEmpty &&
+                                      widget.item.skus.length > 1) {
+                                    handleActionForMultipleSkus(
+                                        product: widget.item,
+                                        storeName: store.state.productState
+                                            .selectedMerchant.businessName,
+                                        productIndex: widget.index);
+                                    return;
+                                  }
 
-                                widget.item.count =
-                                    ((widget.item?.count ?? 0) + 1)
-                                        .clamp(0, double.nan);
-                                snapshot.addToCart(widget.item, context);
-                              },
-                              removeButtonAction: () {
-                                if (widget.item.skus.isNotEmpty &&
-                                    widget.item.skus.length > 1) {
-                                  handleActionForMultipleSkus(
-                                      product: widget.item,
-                                      storeName: store.state.productState
-                                          .selectedMerchant.businessName,
-                                      productIndex: widget.index);
-                                  return;
-                                }
-                                widget.item.count =
-                                    ((widget.item?.count ?? 0) - 1)
-                                        .clamp(0, double.nan);
-                                snapshot.removeFromCart(widget.item);
-                              },
-                              value: getTotalItemCount(
-                                          widget.item.productId, snapshot) ==
-                                      0
-                                  ? tr("new_changes.add")
-                                  : getTotalItemCount(
-                                          widget.item.productId, snapshot)
-                                      .toString(),
+                                  widget.item.count =
+                                      ((widget.item?.count ?? 0) + 1)
+                                          .clamp(0, double.nan);
+                                  snapshot.addToCart(widget.item, context);
+                                },
+                                removeButtonAction: () {
+                                  if (widget.item.skus.isNotEmpty &&
+                                      widget.item.skus.length > 1) {
+                                    handleActionForMultipleSkus(
+                                        product: widget.item,
+                                        storeName: store.state.productState
+                                            .selectedMerchant.businessName,
+                                        productIndex: widget.index);
+                                    return;
+                                  }
+                                  widget.item.count =
+                                      ((widget.item?.count ?? 0) - 1)
+                                          .clamp(0, double.nan);
+                                  snapshot.removeFromCart(widget.item);
+                                },
+                                value: getTotalItemCount(
+                                            widget.item.productId, snapshot) ==
+                                        0
+                                    ? tr("new_changes.add")
+                                    : getTotalItemCount(
+                                            widget.item.productId, snapshot)
+                                        .toString(),
+                              ),
                             ),
                           ],
                         ),

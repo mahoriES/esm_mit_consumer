@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 ///It is used to increment or decrement the selected quantity of any item
 
 class CSStepper extends StatelessWidget {
+  
   final String value;
   final Function addButtonAction;
   final Function removeButtonAction;

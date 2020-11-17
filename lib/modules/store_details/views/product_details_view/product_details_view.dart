@@ -79,7 +79,12 @@ class ProductDetailsView extends StatelessWidget {
                     SizedBox(width: 8.toWidth),
                     Flexible(
                       flex: 1,
-                      child: Center(child: ProductCountWidget()),
+                      child: Center(
+                        child: IgnorePointer(
+                          ignoring: !selectedProduct.inStock,
+                          child: ProductCountWidget(),
+                        ),
+                      ),
                     ),
                   ],
                 ),
