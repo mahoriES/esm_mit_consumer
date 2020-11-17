@@ -20,6 +20,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+
+import 'utilities/size_config.dart';
 
 // Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
 final _kTestingCrashlytics = true;
@@ -51,6 +54,7 @@ void main() async {
   }, (error, stackTrace) {
     debugPrint('runZonedGuarded: Caught Error -> $error in root zone.');
     debugPrint('Stacktrace -> $stackTrace');
+
     /// Whenever an error occurs, call the `recordError` function. This sends
     /// it submits a Crashlytics report of a caught error.
     FirebaseCrashlytics.instance.recordError(error, stackTrace);
@@ -69,7 +73,7 @@ Future<void> _initializeFlutterFire() async {
     // Else only enable it in non-debug builds.
     //Could additionally extend this to allow users to opt-in or something else.
     await FirebaseCrashlytics.instance
-        .setCrashlyticsCollectionEnabled(ApiURL.baseURL==ApiURL.liveURL);
+        .setCrashlyticsCollectionEnabled(ApiURL.baseURL == ApiURL.liveURL);
   }
 
   // Pass all uncaught errors to Crashlytics.
@@ -79,9 +83,7 @@ Future<void> _initializeFlutterFire() async {
     // Forward details of this error to original handler.
     originalOnError(errorDetails);
   };
-
 }
-
 
 class MyApp extends StatefulWidget {
   @override
@@ -157,34 +159,38 @@ class MyAppBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      child: MaterialApp(
-        navigatorObservers: [NavigationHandler.routeObserver],
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          EasyLocalization.of(context).delegate,
-        ],
-        supportedLocales: EasyLocalization.of(context).supportedLocales,
-        locale: EasyLocalization.of(context).locale,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          primarySwatch: Colors.blue,
-          fontFamily: "JTLeonor",
-          appBarTheme: AppBarTheme(
-            color: Color(0xffffffff),
-            brightness: Brightness.light,
-          ),
-        ),
-        home: UserExceptionDialog<AppState>(
-          child: MyApp(),
-          onShowUserExceptionDialog: (context, excpn) {
-            print('sdas');
+      // wrapping material app with CustomTheme inherited widget to access themeData.
+      child: CustomTheme(
+        // For now defining the initial theme as LIGHT .
+        // Later it should be used from local database as per user's preference.
+        initialThemeType: THEME_TYPES.LIGHT,
+        child: MaterialApp(
+          builder: (context, child) {
+            SizeConfig().init(context);
+
+            return Theme(
+              data: CustomTheme.of(context).themeData,
+              child: child,
+            );
           },
+          navigatorObservers: [NavigationHandler.routeObserver],
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            EasyLocalization.of(context).delegate,
+          ],
+          supportedLocales: EasyLocalization.of(context).supportedLocales,
+          locale: EasyLocalization.of(context).locale,
+          debugShowCheckedModeBanner: false,
+          home: UserExceptionDialog<AppState>(
+            child: MyApp(),
+            onShowUserExceptionDialog: (context, excpn) {
+              print('sdas');
+            },
+          ),
+          navigatorKey: NavigationHandler.navigatorKey,
+          routes: SetupRoutes.routes,
         ),
-        navigatorKey: NavigationHandler.navigatorKey,
-        routes: SetupRoutes.routes,
       ),
     );
   }

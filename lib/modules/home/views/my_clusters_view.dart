@@ -77,7 +77,7 @@ class MyCirclesBottomView extends StatelessWidget {
                 Text(
                   'Select your circle',
                   style: TextStyle(
-                    fontSize: fit.t(AppSizes.itemSubtitleFontSize),
+                    fontSize: fit.t(AppSizes.itemSubtitle1FontSize),
                     fontFamily: 'Avenir',
                     fontWeight: FontWeight.w300,
                   ),
@@ -119,7 +119,7 @@ class MyCirclesBottomView extends StatelessWidget {
             vertical: AppSizes.sliverPadding/2,
           ),
           decoration: BoxDecoration(
-            color: AppColors.pureWhite,
+            color: AppColors.solidWhite,
             borderRadius: BorderRadius.all(Radius.circular(AppSizes.bottomSheetBorderRadius)),
             boxShadow: [
               BoxShadow(
@@ -134,7 +134,7 @@ class MyCirclesBottomView extends StatelessWidget {
               Text(
                 cluster.clusterName,
                 style: TextStyle(
-                  color: AppColors.blackTextColor,
+                  color: AppColors.solidBlack,
                   fontFamily: 'Avenir',
                   fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
                   fontWeight: FontWeight.w500,
@@ -146,7 +146,7 @@ class MyCirclesBottomView extends StatelessWidget {
               Text(
                 "Circle Code : " + cluster.clusterCode,
                 style: TextStyle(
-                  color: AppColors.blackTextColor,
+                  color: AppColors.solidBlack,
                   fontFamily: 'Avenir',
                   fontSize: fit.t(AppSizes.itemSubtitle2FontSize),
                   fontWeight: FontWeight.w300,

@@ -92,6 +92,8 @@ flutter:
       fonts:
         - asset: assets/font/Avenir-Book.ttf
         - asset: assets/font/Avenir-Medium.ttf
+        - asset: assets/font/Archivo-Medium.ttf
+        - asset: assets/font/Lato-Regular.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

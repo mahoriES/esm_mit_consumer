@@ -1,6 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/store.dart';
-import 'package:eSamudaay/utilities/size_cpnfig.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
