@@ -736,7 +736,9 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                             IgnorePointer(
                               ignoring: !widget.item.inStock,
                               child: CSStepper(
-                                fillColor: !isOutOfStock ? false : true,
+                                backgroundColor: !isOutOfStock
+                                    ? Color(0xffb1b1b1)
+                                    : AppColors.icColors,
                                 addButtonAction: () {
                                   if (widget.item.skus.isNotEmpty &&
                                       widget.item.skus.length > 1) {

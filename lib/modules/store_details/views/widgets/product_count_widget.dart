@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +50,9 @@ class ProductCountWidget extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) {
         return CSStepper(
-          fillColor: false,
+          backgroundColor: !snapshot.selectedProduct.inStock
+              ? Color(0xffb1b1b1)
+              : AppColors.icColors,
           addButtonAction: () {
             if (snapshot.selectedProduct.skus.isNotEmpty) {
               if (snapshot.selectedProduct.skus.length > 1) {

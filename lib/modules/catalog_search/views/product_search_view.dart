@@ -564,7 +564,9 @@ class _SearchProductListingItemViewState
                               ],
                             ),
                             CSStepper(
-                              fillColor: !isOutOfStock ? false : true,
+                              backgroundColor: !isOutOfStock
+                                  ? AppColors.offWhitish
+                                  : AppColors.icColors,
                               addButtonAction: () {
                                 if (widget.item.skus.isNotEmpty &&
                                     widget.item.skus.length > 1) {

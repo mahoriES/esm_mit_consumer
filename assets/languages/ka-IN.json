@@ -193,8 +193,9 @@
     
   },
   "product_details": {
-    "options_available": "Options available",
-    "product_information": "Product Information",
-    "similar_products": "Similar Products"
+    "options_available": "விருப்பத்தேர்வுகள் உள்ளன",
+    "product_information": "விளைபொருள் விபரங்கள்",
+    "similar_products": "ஒருவகைப்பட்ட தயாரிப்புகள்"
   }
+
 }
