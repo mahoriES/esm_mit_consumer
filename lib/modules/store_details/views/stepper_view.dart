@@ -1,4 +1,4 @@
-import 'package:eSamudaay/themes/theme_constants/theme_globals.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -8,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 ///It is used to increment or decrement the selected quantity of any item
 
 class CSStepper extends StatelessWidget {
-
   final String value;
   final Function addButtonAction;
   final Function removeButtonAction;
@@ -32,8 +31,8 @@ class CSStepper extends StatelessWidget {
       width: 73.toWidth,
       decoration: BoxDecoration(
         color: fillColor
-            ? ThemeGlobals.customColors.primaryColor
-            : ThemeGlobals.customColors.backgroundColor,
+            ? CustomTheme.of(context).colors.primaryColor
+            : CustomTheme.of(context).colors.backgroundColor,
         borderRadius: BorderRadius.circular(100),
         border: Border.all(color: AppColors.icColors),
       ),
@@ -51,20 +50,20 @@ class CSStepper extends StatelessWidget {
                     Icon(
                       Icons.add,
                       color: fillColor
-                          ? ThemeGlobals.customColors.backgroundColor
-                          : ThemeGlobals.customColors.primaryColor,
+                          ? CustomTheme.of(context).colors.backgroundColor
+                          : CustomTheme.of(context).colors.primaryColor,
                       size: 18,
                     ),
                     Text(
                       value,
                       style: TextStyle(
-                        color: fillColor
-                            ? ThemeGlobals.customColors.backgroundColor
-                            : ThemeGlobals.customColors.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: "Avenir-Medium",
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14.0),
+                          color: fillColor
+                              ? CustomTheme.of(context).colors.backgroundColor
+                              : CustomTheme.of(context).colors.primaryColor,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Avenir-Medium",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14.0),
                       textAlign: TextAlign.center,
                     ),
                     Spacer(),
@@ -84,8 +83,8 @@ class CSStepper extends StatelessWidget {
                       child: Icon(
                         Icons.remove,
                         color: fillColor
-                            ? ThemeGlobals.customColors.backgroundColor
-                            : ThemeGlobals.customColors.primaryColor,
+                            ? CustomTheme.of(context).colors.backgroundColor
+                            : CustomTheme.of(context).colors.primaryColor,
                         size: 18,
                       ),
                       width: 24,
@@ -96,13 +95,13 @@ class CSStepper extends StatelessWidget {
                   flex: 0,
                   child: Text(value,
                       style: TextStyle(
-                        color: fillColor
-                            ? ThemeGlobals.customColors.backgroundColor
-                            : ThemeGlobals.customColors.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: "Avenir-Medium",
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14.0),
+                          color: fillColor
+                              ? CustomTheme.of(context).colors.backgroundColor
+                              : CustomTheme.of(context).colors.primaryColor,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Avenir-Medium",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 14.0),
                       textAlign: TextAlign.center),
                 ),
                 Expanded(
@@ -114,8 +113,8 @@ class CSStepper extends StatelessWidget {
                       child: Icon(
                         Icons.add,
                         color: fillColor
-                            ? ThemeGlobals.customColors.backgroundColor
-                            : ThemeGlobals.customColors.primaryColor,
+                            ? CustomTheme.of(context).colors.backgroundColor
+                            : CustomTheme.of(context).colors.primaryColor,
                         size: 18,
                       ),
                       width: 24,

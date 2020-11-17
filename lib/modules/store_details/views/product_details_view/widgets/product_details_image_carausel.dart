@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
-import 'package:eSamudaay/themes/theme_constants/theme_globals.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,8 +78,10 @@ class _ProductDetailsImageCarouselState
                           elevation: 4,
                           margin: EdgeInsets.symmetric(horizontal: 4.toWidth),
                           color: index == pageController.page
-                              ? ThemeGlobals.customColors.backgroundColor
-                              : ThemeGlobals.customColors.backgroundColor
+                              ? CustomTheme.of(context).colors.backgroundColor
+                              : CustomTheme.of(context)
+                                  .colors
+                                  .backgroundColor
                                   .withOpacity(0.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.toHeight),
