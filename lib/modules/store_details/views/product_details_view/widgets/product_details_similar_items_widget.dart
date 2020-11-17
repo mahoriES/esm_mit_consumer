@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/themes/theme_constants/theme_globals.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,7 +18,7 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
       children: [
         Text(
           tr("product_details.similar_products"),
-          style: Theme.of(context).textTheme.subtitle2,
+          style: ThemeGlobals.customTextStyles.subtitle2,
         ),
         SizedBox(height: 11.toHeight),
         SingleChildScrollView(
@@ -56,17 +57,17 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
                     SizedBox(height: 11.toHeight),
                     Text(
                       "Product Name",
-                      style: Theme.of(context).textTheme.subtitle2,
+                      style: ThemeGlobals.customTextStyles.subtitle2,
                     ),
                     SizedBox(height: 4.toHeight),
                     Text(
                       "500 gm",
-                      style: Theme.of(context).textTheme.caption,
+                      style: ThemeGlobals.customTextStyles.caption,
                     ),
                     SizedBox(height: 4.toHeight),
                     Text(
                       "\u{20B9} " + "250.00",
-                      style: Theme.of(context).textTheme.caption,
+                      style: ThemeGlobals.customTextStyles.caption,
                     ),
                     SizedBox(height: 11.toHeight),
                     // CSStepper(

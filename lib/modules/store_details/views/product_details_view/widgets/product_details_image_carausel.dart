@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/themes/theme_constants/theme_globals.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,13 +38,10 @@ class _ProductDetailsImageCarouselState
       height: 282.toHeight,
       color: AppColors.greyedout,
       child: widget.images == null || widget.images.isEmpty
-          ? Hero(
-              tag: widget.productName,
-              child: Center(
-                child: Icon(
-                  Icons.image,
-                  size: 30.toFont,
-                ),
+          ? Center(
+              child: Icon(
+                Icons.image,
+                size: 30.toFont,
               ),
             )
           : Stack(
@@ -52,20 +50,15 @@ class _ProductDetailsImageCarouselState
                   controller: pageController,
                   children: List.generate(
                     widget.images.length,
-                    (index) => Hero(
-                      // hero tag should match with previous screen's hearo tag in order to perform animation.
-                      // only first image's tag is matched to avoid having more than one widgets with same tag.
-                      tag: index == 0 ? widget.productName : "$index",
-                      child: CachedNetworkImage(
-                        imageUrl: (widget.images[index]?.photoUrl ?? ""),
-                        fit: BoxFit.contain,
-                        placeholder: (context, url) =>
-                            Center(child: CupertinoActivityIndicator()),
-                        errorWidget: (context, url, error) => Center(
-                          child: Icon(
-                            Icons.image,
-                            size: 30.toFont,
-                          ),
+                    (index) => CachedNetworkImage(
+                      imageUrl: (widget.images[index]?.photoUrl ?? ""),
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) =>
+                          Center(child: CupertinoActivityIndicator()),
+                      errorWidget: (context, url, error) => Center(
+                        child: Icon(
+                          Icons.image,
+                          size: 30.toFont,
                         ),
                       ),
                     ),
@@ -85,10 +78,8 @@ class _ProductDetailsImageCarouselState
                           elevation: 4,
                           margin: EdgeInsets.symmetric(horizontal: 4.toWidth),
                           color: index == pageController.page
-                              ? Theme.of(context).colorScheme.surface
-                              : Theme.of(context)
-                                  .colorScheme
-                                  .surface
+                              ? ThemeGlobals.customColors.backgroundColor
+                              : ThemeGlobals.customColors.backgroundColor
                                   .withOpacity(0.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.toHeight),

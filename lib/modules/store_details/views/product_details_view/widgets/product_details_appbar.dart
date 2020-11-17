@@ -1,3 +1,4 @@
+import 'package:eSamudaay/themes/theme_constants/theme_globals.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -29,12 +30,12 @@ class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
         children: [
           Text(
             title,
-            style: Theme.of(context).textTheme.headline6,
+            style: ThemeGlobals.customTextStyles.headline6,
             maxLines: 1,
           ),
           Text(
             subTitle,
-            style: Theme.of(context).textTheme.caption,
+            style: ThemeGlobals.customTextStyles.caption,
             maxLines: 1,
           ),
         ],

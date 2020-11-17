@@ -1,3 +1,4 @@
+import 'package:eSamudaay/themes/theme_constants/theme_globals.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -30,7 +31,9 @@ class CSStepper extends StatelessWidget {
       height: 30.toHeight,
       width: 73.toWidth,
       decoration: BoxDecoration(
-        color: fillColor ? AppColors.icColors : AppColors.solidWhite,
+        color: fillColor
+            ? ThemeGlobals.customColors.primaryColor
+            : ThemeGlobals.customColors.backgroundColor,
         borderRadius: BorderRadius.circular(100),
         border: Border.all(color: AppColors.icColors),
       ),
@@ -47,20 +50,21 @@ class CSStepper extends StatelessWidget {
                     Spacer(),
                     Icon(
                       Icons.add,
-                      color:
-                          fillColor ? AppColors.solidWhite : AppColors.icColors,
+                      color: fillColor
+                          ? ThemeGlobals.customColors.backgroundColor
+                          : ThemeGlobals.customColors.primaryColor,
                       size: 18,
                     ),
                     Text(
                       value,
                       style: TextStyle(
-                          color: fillColor
-                              ? AppColors.solidWhite
-                              : AppColors.icColors,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14.0),
+                        color: fillColor
+                            ? ThemeGlobals.customColors.backgroundColor
+                            : ThemeGlobals.customColors.primaryColor,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14.0),
                       textAlign: TextAlign.center,
                     ),
                     Spacer(),
@@ -80,8 +84,8 @@ class CSStepper extends StatelessWidget {
                       child: Icon(
                         Icons.remove,
                         color: fillColor
-                            ? AppColors.solidWhite
-                            : AppColors.icColors,
+                            ? ThemeGlobals.customColors.backgroundColor
+                            : ThemeGlobals.customColors.primaryColor,
                         size: 18,
                       ),
                       width: 24,
@@ -92,13 +96,13 @@ class CSStepper extends StatelessWidget {
                   flex: 0,
                   child: Text(value,
                       style: TextStyle(
-                          color: fillColor
-                              ? AppColors.solidWhite
-                              : AppColors.icColors,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14.0),
+                        color: fillColor
+                            ? ThemeGlobals.customColors.backgroundColor
+                            : ThemeGlobals.customColors.primaryColor,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14.0),
                       textAlign: TextAlign.center),
                 ),
                 Expanded(
@@ -110,8 +114,8 @@ class CSStepper extends StatelessWidget {
                       child: Icon(
                         Icons.add,
                         color: fillColor
-                            ? AppColors.solidWhite
-                            : AppColors.icColors,
+                            ? ThemeGlobals.customColors.backgroundColor
+                            : ThemeGlobals.customColors.primaryColor,
                         size: 18,
                       ),
                       width: 24,

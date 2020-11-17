@@ -21,7 +21,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:eSamudaay/themes/eSamudaay_theme_data.dart';
+import 'package:eSamudaay/themes/themes.dart';
+
+import 'utilities/size_config.dart';
 
 // Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
 final _kTestingCrashlytics = true;
@@ -53,6 +55,7 @@ void main() async {
   }, (error, stackTrace) {
     debugPrint('runZonedGuarded: Caught Error -> $error in root zone.');
     debugPrint('Stacktrace -> $stackTrace');
+
     /// Whenever an error occurs, call the `recordError` function. This sends
     /// it submits a Crashlytics report of a caught error.
     FirebaseCrashlytics.instance.recordError(error, stackTrace);
@@ -71,7 +74,7 @@ Future<void> _initializeFlutterFire() async {
     // Else only enable it in non-debug builds.
     //Could additionally extend this to allow users to opt-in or something else.
     await FirebaseCrashlytics.instance
-        .setCrashlyticsCollectionEnabled(ApiURL.baseURL==ApiURL.liveURL);
+        .setCrashlyticsCollectionEnabled(ApiURL.baseURL == ApiURL.liveURL);
   }
 
   // Pass all uncaught errors to Crashlytics.
@@ -81,9 +84,7 @@ Future<void> _initializeFlutterFire() async {
     // Forward details of this error to original handler.
     originalOnError(errorDetails);
   };
-
 }
-
 
 class MyApp extends StatefulWidget {
   @override
@@ -159,35 +160,39 @@ class MyAppBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      child: MaterialApp(
-        builder: (context, child) {
-          SizeConfig().init(context);
+      // wrapping material app with store connector to listen to themeData update.
+      child: StoreConnector<AppState, CustomThemes>(
+        converter: (Store<AppState> store) => store.state.customTheme,
+        builder: (context, customTheme) => MaterialApp(
+          builder: (context, child) {
+            SizeConfig().init(context);
 
-          ///The [theme] accepts a value of type [ThemeData].
-          ///The default value is [AppThemeData.lightThemeData].
-          ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
-          return Theme(
-            data: AppThemeData.lightThemeData,
-            child: child,
-          );
-        },
-        navigatorObservers: [NavigationHandler.routeObserver],
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          EasyLocalization.of(context).delegate,
-        ],
-        supportedLocales: EasyLocalization.of(context).supportedLocales,
-        locale: EasyLocalization.of(context).locale,
-        debugShowCheckedModeBanner: false,
-        home: UserExceptionDialog<AppState>(
-          child: MyApp(),
-          onShowUserExceptionDialog: (context, excpn) {
-            print('sdas');
+            ///The [theme] accepts a value of type [ThemeData].
+            ///The default value is [AppThemeData.lightThemeData].
+            ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
+            return Theme(
+              data: customTheme.themeData,
+              child: child,
+            );
           },
+          navigatorObservers: [NavigationHandler.routeObserver],
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            EasyLocalization.of(context).delegate,
+          ],
+          supportedLocales: EasyLocalization.of(context).supportedLocales,
+          locale: EasyLocalization.of(context).locale,
+          debugShowCheckedModeBanner: false,
+          home: UserExceptionDialog<AppState>(
+            child: MyApp(),
+            onShowUserExceptionDialog: (context, excpn) {
+              print('sdas');
+            },
+          ),
+          navigatorKey: NavigationHandler.navigatorKey,
+          routes: SetupRoutes.routes,
         ),
-        navigatorKey: NavigationHandler.navigatorKey,
-        routes: SetupRoutes.routes,
       ),
     );
   }
