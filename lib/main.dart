@@ -21,7 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
-import 'package:eSamudaay/themes/themes.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 
 import 'utilities/size_config.dart';
 
@@ -160,18 +160,17 @@ class MyAppBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
       store: store,
-      // wrapping material app with store connector to listen to themeData update.
-      child: StoreConnector<AppState, CustomThemes>(
-        converter: (Store<AppState> store) => store.state.customTheme,
-        builder: (context, customTheme) => MaterialApp(
+      // wrapping material app with CustomTheme inherited widget to access themeData.
+      child: CustomTheme(
+        // For now defining the initial theme as LIGHT .
+        // Later it should be used from local database as per user's preference.
+        initialThemeType: THEME_TYPES.LIGHT,
+        child: MaterialApp(
           builder: (context, child) {
             SizeConfig().init(context);
 
-            ///The [theme] accepts a value of type [ThemeData].
-            ///The default value is [AppThemeData.lightThemeData].
-            ///You can optionally specify a new theme by providing a new scheme in the [AppThemeData] class.
             return Theme(
-              data: customTheme.themeData,
+              data: CustomTheme.of(context).themeData,
               child: child,
             );
           },
