@@ -271,7 +271,7 @@ class _CartViewState extends State<CartView> {
                                         },
                                       ),
                                     ),
-                                    MySeparator(),
+                                    CustomDivider(),
                                     FreeFormItemsView(),
                                     CustomerNoteImagePicker(),
                                     Padding(

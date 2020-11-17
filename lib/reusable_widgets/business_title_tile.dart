@@ -15,6 +15,8 @@ class BusinessTitleTile extends StatefulWidget {
   final String businessImageUrl;
   final bool isOpen;
   final Function onBackPressed;
+  final Function onContactMerchantPressed;
+  final Function onShowMerchantInfo;
 
   const BusinessTitleTile(
       {@required this.businessName,
@@ -23,6 +25,8 @@ class BusinessTitleTile extends StatefulWidget {
       @required this.businessImageUrl,
       @required this.onBookmarkMerchant,
       @required this.onBackPressed,
+      @required this.onShowMerchantInfo,
+      @required this.onContactMerchantPressed,
       this.businessSubtitle = '',
       this.businessPhoneNumber,
       this.storeTimingsDetailsString = ''});
@@ -46,21 +50,23 @@ class _BusinessTitleTileState extends State<BusinessTitleTile> with MerchantWidg
         children: [
           const SizedBox(width: AppSizes.separatorPadding,),
           GestureDetector(onTap: widget.onBackPressed, child: Icon(Icons.arrow_back_ios,color: AppColors.blueBerry,)),
-          buildMerchantDPTitle(widget.businessImageUrl),
+          GestureDetector(onTap: widget.onShowMerchantInfo,child: buildMerchantDPTitle(widget.businessImageUrl)),
           const SizedBox(width: AppSizes.separatorPadding/2,),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(widget.businessName,style: Theme.of(context).textTheme.headline6,),
-            const SizedBox(height: AppSizes.separatorPadding/2,),
-            Text(widget.businessSubtitle,overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.caption,),
-            const SizedBox(height: AppSizes.separatorPadding/2,),
-            Text(widget.storeTimingsDetailsString, overflow: TextOverflow.ellipsis,),
-          ],),),
+          GestureDetector(onTap: widget.onShowMerchantInfo,
+            child: Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(widget.businessName,style: Theme.of(context).textTheme.headline6,),
+              const SizedBox(height: AppSizes.separatorPadding/2,),
+              Text(widget.businessSubtitle,overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.caption,),
+              const SizedBox(height: AppSizes.separatorPadding/2,),
+              Text(widget.storeTimingsDetailsString, overflow: TextOverflow.ellipsis,),
+            ],),),
+          ),
           Column(children: [
             const SizedBox(height: AppSizes.separatorPadding,),
             Row(children: [
-              bookmarkActionButton(null),
+              bookmarkActionButton(widget.onBookmarkMerchant),
               const SizedBox(width: AppSizes.separatorPadding,),
-              contactMerchantActionButton(null),
+              contactMerchantActionButton(widget.onContactMerchantPressed),
             ],),
             const SizedBox(height: AppSizes.separatorPadding,),
             buildDeliveryStatus(context, widget.isDeliveryAvailable),
