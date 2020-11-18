@@ -1,3 +1,4 @@
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -45,6 +46,8 @@ class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
           icon: Icon(Icons.share),
           iconSize: 30.toFont,
           onPressed: () async {
+            LoadingDialog.show();
+
             DynamicLinkParameters linkParameters =
                 LinkSharingService().createProductLink(
               productId: productId,
@@ -52,6 +55,8 @@ class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
               storeName: subTitle,
             );
             await LinkSharingService().shareLink(parameters: linkParameters);
+
+            LoadingDialog.hide();
           },
         ),
       ],

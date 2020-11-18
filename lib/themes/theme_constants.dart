@@ -75,7 +75,7 @@ class _LightThemeColors with _AppThemeColors {
   @override
   Color get highlightColor => const Color(0xFF2ac10f); // green
   @override
-  Color get textColor1 => const Color(0xFF363636); // black
+  Color get textColor1 => const Color(0xFF363636); // dark black
   @override
   Color get textColor2 => const Color(0xFF393939); // black two
   @override
