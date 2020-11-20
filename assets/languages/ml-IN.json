@@ -195,7 +195,10 @@
   "product_details": {
     "options_available": "Options available",
     "product_information": "Product Information",
-    "similar_products": "Similar Products"
+    "similar_products": "Similar Products",
+    "item": "Item",
+    "items": "Items",
+    "taxes": "taxes"
   }
 
 

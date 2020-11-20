@@ -195,7 +195,10 @@
   "product_details": {
     "options_available": "விருப்பத்தேர்வுகள் உள்ளன",
     "product_information": "விளைபொருள் விபரங்கள்",
-    "similar_products": "ஒருவகைப்பட்ட தயாரிப்புகள்"
+    "similar_products": "ஒருவகைப்பட்ட தயாரிப்புகள்",
+    "item": "Item",
+    "items": "Items",
+    "taxes": "taxes"
   }
 
 }
