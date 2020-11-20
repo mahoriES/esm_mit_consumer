@@ -4,7 +4,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_appbar.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_image_carausel.dart';
-import 'package:eSamudaay/modules/store_details/views/widgets/product_count_widget.dart';
+import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -36,7 +36,6 @@ class ProductDetailsView extends StatelessWidget {
                 : 65.toHeight,
             duration: Duration(milliseconds: 300),
             child: BottomView(
-              storeName: snapshot.selectedMerchant?.businessName ?? "",
               height: snapshot.localCartListing.isEmpty ? 0 : 65.toHeight,
               buttonTitle: tr('cart.view_cart'),
               didPressButton: snapshot.navigateToCart,
@@ -62,7 +61,7 @@ class ProductDetailsView extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          flex: 4,
+                          flex: 3,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -70,22 +69,20 @@ class ProductDetailsView extends StatelessWidget {
                                 selectedProduct.productName,
                                 style: CustomTheme.of(context)
                                     .textStyles
-                                    .headline6,
+                                    .topTileTitle,
                               ),
                               SizedBox(height: 5.toHeight),
                               Text(
                                 selectedProduct
                                     .skus.first.variationOptions.weight,
-                                style:
-                                    CustomTheme.of(context).textStyles.caption,
+                                style: CustomTheme.of(context).textStyles.body2,
                               ),
                               SizedBox(height: 4.toHeight),
                               Text(
                                 "\u{20B9} " +
                                     (selectedProduct.skus.first.basePrice / 100)
                                         .toString(),
-                                style:
-                                    CustomTheme.of(context).textStyles.caption,
+                                style: CustomTheme.of(context).textStyles.body2,
                               ),
                               SizedBox(height: 4.toHeight),
                               if (selectedProduct.skus.length > 1) ...[
@@ -93,7 +90,7 @@ class ProductDetailsView extends StatelessWidget {
                                   tr("product_details.options_available"),
                                   style: CustomTheme.of(context)
                                       .textStyles
-                                      .menuActive,
+                                      .bottomMenu,
                                 ),
                               ],
                             ],
@@ -102,11 +99,45 @@ class ProductDetailsView extends StatelessWidget {
                         SizedBox(width: 8.toWidth),
                         Flexible(
                           flex: 1,
-                          child: Center(
-                            child: IgnorePointer(
-                              ignoring: !selectedProduct.inStock,
-                              child: ProductCountWidget(),
-                            ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              if (selectedProduct.ratingNum != 0 &&
+                                  selectedProduct.ratingVal != 0) ...[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      size: 15.toFont,
+                                      color: CustomTheme.of(context)
+                                          .colors
+                                          .primaryColor,
+                                    ),
+                                    SizedBox(width: 4.toWidth),
+                                    Text(
+                                      (selectedProduct.ratingVal /
+                                              selectedProduct.ratingNum)
+                                          .toStringAsFixed(1),
+                                      style: CustomTheme.of(context)
+                                          .textStyles
+                                          .cardTitle
+                                          .copyWith(
+                                            color: CustomTheme.of(context)
+                                                .colors
+                                                .primaryColor,
+                                          ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 8.toHeight),
+                              ],
+                              ProductCountWidget(
+                                product: selectedProduct,
+                                isSku: false,
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -116,12 +147,13 @@ class ProductDetailsView extends StatelessWidget {
                       SizedBox(height: 20.toHeight),
                       Text(
                         tr("product_details.product_information"),
-                        style: CustomTheme.of(context).textStyles.subtitle2,
+                        style:
+                            CustomTheme.of(context).textStyles.sectionHeading2,
                       ),
                       SizedBox(height: 11.toHeight),
                       Text(
                         selectedProduct.productDescription,
-                        style: CustomTheme.of(context).textStyles.caption,
+                        style: CustomTheme.of(context).textStyles.body1,
                         textAlign: TextAlign.justify,
                       ),
                     ],

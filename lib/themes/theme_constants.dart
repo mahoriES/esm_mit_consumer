@@ -7,10 +7,12 @@ abstract class _AppThemeColors {
   Color get secondaryColor;
   Color get placeHolderColor;
   Color get backgroundColor;
-  Color get highlightColor;
-  Color get textColor1;
-  Color get textColor2;
+  Color get positiveColor;
+  Color get textColor;
+  Color get textColorDarker;
   Color get disabledAreaColor;
+  Color get warningColor;
+  Color get shadowColor;
   Brightness get brightness;
 }
 
@@ -27,80 +29,102 @@ class _AppTextStyles {
   final _AppThemeColors themeColors;
   _AppTextStyles(this.themeColors);
 
-  TextStyle get headline6 => TextStyle(
-        color: themeColors.textColor1,
+  TextStyle get merchantCardTitle => TextStyle(
+        color: themeColors.primaryColor,
+        fontSize: 24.toFont,
+        fontWeight: FontWeight.w700,
+        fontFamily: _AppFontFamily.archivo,
+        height: 3.5,
+      );
+
+  TextStyle get topTileTitle => TextStyle(
+        color: themeColors.textColor,
         fontSize: 20.toFont,
         fontWeight: FontWeight.w500,
         fontFamily: _AppFontFamily.archivo,
         height: 1.1,
       );
 
-  TextStyle get subtitle1 => TextStyle(
-        color: themeColors.textColor2,
+  TextStyle get sectionHeading1 => TextStyle(
+        color: themeColors.primaryColor,
         fontSize: 16.toFont,
-        fontWeight: FontWeight.normal,
-        fontFamily: _AppFontFamily.lato,
-        height: 1.2,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.archivo,
+        height: 3.75,
       );
 
-  TextStyle get subtitleDisabled =>
-      subtitle1.copyWith(color: themeColors.disabledAreaColor);
+  TextStyle get sectionHeading2 => TextStyle(
+        color: themeColors.textColor,
+        fontSize: 16.toFont,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.18,
+      );
 
-  TextStyle get subtitle2 => subtitle1.copyWith(fontSize: 14.toFont);
+  TextStyle get cardTitle => TextStyle(
+        color: themeColors.textColor,
+        fontSize: 14.toFont,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.21,
+      );
 
-  TextStyle get caption => TextStyle(
-        color: themeColors.textColor1,
+  TextStyle get body1 => TextStyle(
+        color: themeColors.textColor,
+        fontSize: 12.toFont,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.25,
+      );
+
+  TextStyle get buttonText2 => TextStyle(
+        color: themeColors.primaryColor,
         fontSize: 10.toFont,
-        fontWeight: FontWeight.normal,
+        fontWeight: FontWeight.w700,
         fontFamily: _AppFontFamily.lato,
         height: 1.2,
       );
 
-  TextStyle get menuActive => caption.copyWith(color: themeColors.primaryColor);
+  TextStyle get body2 => TextStyle(
+        color: themeColors.textColorDarker,
+        fontSize: 10.toFont,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.2,
+      );
 
-  TextStyle get menuDefault =>
-      caption.copyWith(color: themeColors.disabledAreaColor);
+  TextStyle get bottomMenu => TextStyle(
+        color: themeColors.primaryColor,
+        fontSize: 10.toFont,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.2,
+      );
 }
 
 // extension to get colors for light theme.
 class _LightThemeColors with _AppThemeColors {
   @override
-  Color get primaryColor => const Color(0xFF5f3a9f); // blueBerry
+  Color get primaryColor => const Color(0xFF5f3a9f); // brandviolet
   @override
-  Color get secondaryColor => const Color(0xFFe1517d); // darkish Pink
+  Color get secondaryColor => const Color(0xFFe1517d); // brandpink
   @override
-  Color get placeHolderColor => const Color(0xFFe4e4e4); // greyed out
+  Color get positiveColor => const Color(0xFF2ac10f); // positivegreen
   @override
-  Color get backgroundColor => const Color(0xFFFFFFFF); // white
+  Color get textColor => const Color(0xFF363636); // dark black
   @override
-  Color get highlightColor => const Color(0xFF2ac10f); // green
+  Color get textColorDarker => const Color(0xFF000000); // pure black
   @override
-  Color get textColor1 => const Color(0xFF363636); // dark black
+  Color get disabledAreaColor => const Color(0xFF969696); // dark grey
   @override
-  Color get textColor2 => const Color(0xFF393939); // black two
+  Color get placeHolderColor => const Color(0xFFe4e4e4); // light grey
   @override
-  Color get disabledAreaColor => const Color(0xFF7c7c7c); // warm grey
+  Color get backgroundColor => const Color(0xFFFFFFFF); // pure white
   @override
-  Brightness get brightness => Brightness.light;
-}
+  Color get warningColor => const Color(0xFFfb7452); // brandorange
+  @override
+  Color get shadowColor => const Color(0x0d242424);
 
-class _DarkThemeColors with _AppThemeColors {
-  @override
-  Color get primaryColor => const Color(0xFF000000); // blueBerry
-  @override
-  Color get secondaryColor => const Color(0xFF555555); // darkish Pink
-  @override
-  Color get placeHolderColor => const Color(0xFF888888); // greyed out
-  @override
-  Color get backgroundColor => const Color(0xFFFFFFFF); // white
-  @override
-  Color get highlightColor => const Color(0xFF2ac10f); // green
-  @override
-  Color get textColor1 => const Color(0xFF363636); // black
-  @override
-  Color get textColor2 => const Color(0xFF393939); // black two
-  @override
-  Color get disabledAreaColor => const Color(0xFF7c7c7c); // warm grey
   @override
   Brightness get brightness => Brightness.light;
 }

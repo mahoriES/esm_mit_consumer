@@ -1,58 +1,24 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
-import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/repository/cart_datasourse.dart';
-import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 
-class CartCount extends StatelessWidget {
-  final Function(BuildContext context, _ViewModel count) builder;
-
-  CartCount({Key key, @required this.builder}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return StoreConnector<AppState, _ViewModel>(
-      model: _ViewModel(),
-      builder: builder,
-    );
-  }
-}
-
 class _ViewModel extends BaseModel<AppState> {
-  List<Product> cartListDataSource;
   List<Product> localCart;
   List<JITProduct> localFreeFormItems;
-  List<Charge> cartCharges;
-  double getCartTotal;
-  Function getCartTotalPrice;
-  VoidCallback navigateToCart;
-  Business selectedMerchant;
+  Function() getCartTotalPrice;
 
   _ViewModel();
 
-  _ViewModel.build(
-      {this.cartListDataSource,
-      this.cartCharges,
-      this.getCartTotalPrice,
-      this.selectedMerchant,
-      this.localFreeFormItems,
-      this.navigateToCart,
-      this.localCart,
-      this.getCartTotal})
-      : super(equals: [
-          cartListDataSource,
-          selectedMerchant,
-          cartCharges,
-          localCart,
-          getCartTotal,
-          localFreeFormItems
-        ]);
+  _ViewModel.build({
+    this.getCartTotalPrice,
+    this.localFreeFormItems,
+    this.localCart,
+  }) : super(equals: [localCart, localFreeFormItems]);
 
   bool allItemsHaveZeroQuantity(List<JITProduct> givenList) {
     for (final item in givenList) {
@@ -64,15 +30,9 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      cartListDataSource: [],
-      selectedMerchant: state.productState.selectedMerchant,
-      cartCharges: state.productState.charges,
-      //state.productState.cartListingDataSource.items,
       localCart: state.productState.localCartItems,
       localFreeFormItems: state.productState.localFreeFormCartItems,
-      navigateToCart: () {
-        dispatch(NavigateAction.pushNamed('/CartView'));
-      },
+      // TODO : optimize getCartTotalPrice.
       getCartTotalPrice: () {
         if (state.productState.localCartItems.isNotEmpty &&
             (state.productState.localFreeFormCartItems.isEmpty ||
@@ -120,20 +80,17 @@ class _ViewModel extends BaseModel<AppState> {
           return "Cart is empty";
         }
       },
-      getCartTotal: 0.0,
     );
   }
 }
 
 class BottomView extends StatefulWidget {
-  final String storeName;
   final String buttonTitle;
   final VoidCallback didPressButton;
   final double height;
 
   const BottomView({
     Key key,
-    this.storeName,
     this.didPressButton,
     this.buttonTitle,
     this.height,
@@ -147,151 +104,127 @@ class _BottomViewState extends State<BottomView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
-        model: _ViewModel(),
-        builder: (context, snapshot) {
-          return Container(
-            height: widget.height,
-            padding: EdgeInsets.only(
-              left: 16,
-              right: 14,
-            ),
-//                    margin: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x65e7eaf0),
-                  offset: Offset(0, -8),
-                  blurRadius: 15,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: CartCount(builder: (context, snapshot) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Spacer(),
-                          // TOTAL
-                          Text("cart.total",
-                                  style: const TextStyle(
-                                      color: const Color(0xff515c6f),
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: "JosefinSans",
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 10.0),
-                                  textAlign: TextAlign.left)
-                              .tr(),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          // ₹ 55.00
-                          Text(snapshot.getCartTotalPrice(),
-                              style: const TextStyle(
-                                  color: const Color(0xff515c6f),
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: "JosefinSans",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 20.0),
-                              textAlign: TextAlign.left),
-                          SizedBox(
-                            height: 3,
-                          ),
-
-                          // Organic Store
-
-                          FutureBuilder(
-                            future: CartDataSource.getListOfMerchants(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<Business>> snapshot) {
-                              return (snapshot.data == null ||
-                                      snapshot.data.isEmpty)
-                                  ? Container()
-                                  : Text(snapshot.data.first.businessName ?? "",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: const Color(0xff727c8e),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Avenir-Medium",
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 12.0),
-                                      textAlign: TextAlign.left);
-                            },
-                          ),
-
-                          Spacer(),
-                        ],
+      model: _ViewModel(),
+      builder: (context, snapshot) {
+        // this widget should be active only if there are nonZero items in the cart.
+        bool isActive = snapshot.localFreeFormItems.isNotEmpty ||
+            snapshot.localCart.isNotEmpty;
+        return Container(
+          height: widget.height,
+          decoration: BoxDecoration(
+            color: CustomTheme.of(context).colors.backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                color: CustomTheme.of(context).colors.shadowColor,
+                offset: Offset(0, -1),
+                blurRadius: 20,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 24.toWidth, right: 4.toWidth),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "${snapshot.localCart.length} ${(snapshot.localCart.length > 1 ? tr("product_details.items") : tr("product_details.item")).toUpperCase()}",
+                        style: CustomTheme.of(context)
+                            .textStyles
+                            .body1
+                            .copyWith(
+                              color:
+                                  CustomTheme.of(context).colors.positiveColor,
+                            ),
                       ),
-                    );
-                  }),
-                ),
-                Opacity(
-                  opacity: (snapshot.localFreeFormItems.isEmpty &&
-                          snapshot.localCart.isEmpty)
-                      ? 0.0
-                      : 1.0,
-                  child: InkWell(
-                    onTap: () {
-                      widget.didPressButton();
-                    },
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: Container(
-                        height: 46.toHeight,
-                        width: widget.buttonTitle == tr('cart.view_cart')
-                            ? 120
-                            : 160,
-                        decoration: BoxDecoration(
-                          color: AppColors.icColors,
-                          borderRadius: BorderRadius.circular(23),
-                        ),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Text(
-                                snapshot
-                                        .getCartTotalPrice()
-                                        .toString()
-                                        .contains("Items")
-                                    ? "SEND REQUEST"
-                                    : widget.buttonTitle,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'Avenir',
-                                  fontWeight: FontWeight.w900,
+                      SizedBox(height: 3.toHeight),
+                      Flexible(
+                        child: FittedBox(
+                          child: RichText(
+                            text: TextSpan(
+                              text: snapshot.getCartTotalPrice(),
+                              style: CustomTheme.of(context)
+                                  .textStyles
+                                  .merchantCardTitle
+                                  .copyWith(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .positiveColor,
+                                    fontSize: 20.toFont,
+                                    height: 1.35,
+                                  ),
+                              children: [
+                                TextSpan(
+                                  text: snapshot.getCartTotalPrice() ==
+                                          "Cart is empty"
+                                      ? ""
+                                      : "  + taxes",
+                                  style: CustomTheme.of(context)
+                                      .textStyles
+                                      .body1
+                                      .copyWith(
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .positiveColor,
+                                      ),
                                 ),
-                                textAlign: TextAlign.center,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: InkWell(
+                  onTap: isActive ? widget.didPressButton : null,
+                  child: Container(
+                    color: isActive
+                        ? CustomTheme.of(context).colors.positiveColor
+                        : CustomTheme.of(context).colors.disabledAreaColor,
+                    height: widget.height,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.shopping_cart_outlined,
+                          size: 24.toFont,
+                          color: CustomTheme.of(context).colors.backgroundColor,
+                        ),
+                        SizedBox(width: 15.toWidth),
+                        Text(
+                          snapshot
+                                  .getCartTotalPrice()
+                                  .toString()
+                                  .contains("Items")
+                              // TODO : Doesn't seem like a good logic
+                              ? "SEND REQUEST"
+                              : widget.buttonTitle,
+                          style: CustomTheme.of(context)
+                              .textStyles
+                              .sectionHeading2
+                              .copyWith(
+                                color: CustomTheme.of(context)
+                                    .colors
+                                    .backgroundColor,
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 5.toWidth, right: 10.toWidth),
-                                child: Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.white,
-                                  size: 12,
-                                ),
-                              )
-                            ],
-                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

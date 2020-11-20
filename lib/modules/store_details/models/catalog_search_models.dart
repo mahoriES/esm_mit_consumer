@@ -253,6 +253,9 @@ class Product {
   int count;
   PossibleVariations possibleVariations;
   List<Skus> skus;
+  int ratingVal;
+  int ratingNum;
+  bool spotlight;
 
   Product(
       {this.productId,
@@ -267,7 +270,9 @@ class Product {
       this.unitName,
       this.possibleVariations,
       this.skus,
-      this.selectedVariant});
+      this.ratingVal,
+      this.ratingNum,
+      this.spotlight});
 
   Product.fromJson(Map<String, dynamic> json) {
     selectedVariant = json['selectedVariant'];
@@ -296,6 +301,9 @@ class Product {
         skus.add(new Skus.fromJson(v));
       });
     }
+    ratingVal = json['rating_val'] ?? 0;
+    ratingNum = json['rating_num'] ?? 0;
+    spotlight = json['spotlight'];
   }
 
   Map<String, dynamic> toJson() {
@@ -307,7 +315,9 @@ class Product {
     data['product_description'] = this.productDescription;
     data['is_active'] = this.isActive;
     data['in_stock'] = this.inStock;
-    data['images'] = this.images.map((e) => e.toJson()).toList();
+    if (this.images != null) {
+      data['images'] = this.images.map((e) => e.toJson()).toList();
+    }
     data['long_description'] = this.longDescription;
     data['display_line_1'] = this.displayLine1;
     data['unit_name'] = this.unitName;
@@ -317,6 +327,9 @@ class Product {
     if (this.skus != null) {
       data['skus'] = this.skus.map((v) => v.toJson()).toList();
     }
+    data['rating_val'] = this.ratingVal;
+    data['rating_num'] = this.ratingNum;
+    data['spotlight'] = this.spotlight;
     return data;
   }
 }

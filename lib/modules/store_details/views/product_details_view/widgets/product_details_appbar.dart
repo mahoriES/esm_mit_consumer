@@ -31,12 +31,12 @@ class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
         children: [
           Text(
             title,
-            style: CustomTheme.of(context).textStyles.headline6,
+            style: CustomTheme.of(context).textStyles.topTileTitle,
             maxLines: 1,
           ),
           Text(
             subTitle,
-            style: CustomTheme.of(context).textStyles.caption,
+            style: CustomTheme.of(context).textStyles.body1,
             maxLines: 1,
           ),
         ],

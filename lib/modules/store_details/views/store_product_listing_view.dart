@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/models/loading_status.dart';
@@ -10,7 +11,6 @@ import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/modules/cart/views/cart_sku_bottom_sheet.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
@@ -350,7 +350,6 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
                         : AppSizes.cartTotalBottomViewHeight,
                     duration: Duration(milliseconds: 300),
                     child: BottomView(
-                      storeName: snapshot.selectedMerchant?.businessName ?? "",
                       height: snapshot.localCartListing.isEmpty
                           ? 0
                           : AppSizes.cartTotalBottomViewHeight,
@@ -567,7 +566,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          bool isOutOfStock = widget.item.inStock;
+          bool isInStock = widget.item.inStock;
           return GestureDetector(
             onTap: () {
               snapshot.updateSelectedProduct(widget.item);
@@ -650,11 +649,11 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                               )),
                                     ),
                           colorFilter: ColorFilter.mode(
-                              !isOutOfStock ? Colors.grey : Colors.transparent,
+                              !isInStock ? Colors.grey : Colors.transparent,
                               BlendMode.saturation),
                         ),
                       ),
-                      !isOutOfStock
+                      !isInStock
                           ? Positioned(
                               bottom: 5,
                               child: // Out of stock
@@ -696,7 +695,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 Text(
                                     "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus.first.basePrice / 100}",
                                     style: TextStyle(
-                                        color: (!isOutOfStock
+                                        color: (!isInStock
                                             ? Color(0xffc1c1c1)
                                             : Color(0xff5091cd)),
                                         fontWeight: FontWeight.w500,
@@ -733,51 +732,10 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                       ),
                               ],
                             ),
-                            IgnorePointer(
-                              ignoring: !widget.item.inStock,
-                              child: CSStepper(
-                                backgroundColor: !isOutOfStock
-                                    ? Color(0xffb1b1b1)
-                                    : AppColors.icColors,
-                                addButtonAction: () {
-                                  if (widget.item.skus.isNotEmpty &&
-                                      widget.item.skus.length > 1) {
-                                    handleActionForMultipleSkus(
-                                        product: widget.item,
-                                        storeName: store.state.productState
-                                            .selectedMerchant.businessName,
-                                        productIndex: widget.index);
-                                    return;
-                                  }
-
-                                  widget.item.count =
-                                      ((widget.item?.count ?? 0) + 1)
-                                          .clamp(0, double.nan);
-                                  snapshot.addToCart(widget.item, context);
-                                },
-                                removeButtonAction: () {
-                                  if (widget.item.skus.isNotEmpty &&
-                                      widget.item.skus.length > 1) {
-                                    handleActionForMultipleSkus(
-                                        product: widget.item,
-                                        storeName: store.state.productState
-                                            .selectedMerchant.businessName,
-                                        productIndex: widget.index);
-                                    return;
-                                  }
-                                  widget.item.count =
-                                      ((widget.item?.count ?? 0) - 1)
-                                          .clamp(0, double.nan);
-                                  snapshot.removeFromCart(widget.item);
-                                },
-                                value: getTotalItemCount(
-                                            widget.item.productId, snapshot) ==
-                                        0
-                                    ? tr("new_changes.add")
-                                    : getTotalItemCount(
-                                            widget.item.productId, snapshot)
-                                        .toString(),
-                              ),
+                            // Removed Ignore Pointer as this logic is handeled in CSStepper by isDisabled value.
+                            ProductCountWidget(
+                              product: widget.item,
+                              isSku: false,
                             ),
                           ],
                         ),
@@ -813,10 +771,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
         builder: (context) => Container(
-              child: SkuBottomSheet(
-                product: product,
-                storeName: storeName,
-              ),
+              child: SkuBottomSheet(product: product),
             ));
   }
 }

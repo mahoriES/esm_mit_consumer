@@ -18,7 +18,7 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
       children: [
         Text(
           tr("product_details.similar_products"),
-          style: CustomTheme.of(context).textStyles.subtitle2,
+          style: CustomTheme.of(context).textStyles.sectionHeading2,
         ),
         SizedBox(height: 11.toHeight),
         SingleChildScrollView(
@@ -57,17 +57,17 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
                     SizedBox(height: 11.toHeight),
                     Text(
                       "Product Name",
-                      style: CustomTheme.of(context).textStyles.subtitle2,
+                      style: CustomTheme.of(context).textStyles.cardTitle,
                     ),
                     SizedBox(height: 4.toHeight),
                     Text(
                       "500 gm",
-                      style: CustomTheme.of(context).textStyles.caption,
+                      style: CustomTheme.of(context).textStyles.body2,
                     ),
                     SizedBox(height: 4.toHeight),
                     Text(
                       "\u{20B9} " + "250.00",
-                      style: CustomTheme.of(context).textStyles.caption,
+                      style: CustomTheme.of(context).textStyles.body2,
                     ),
                     SizedBox(height: 11.toHeight),
                     // CSStepper(
