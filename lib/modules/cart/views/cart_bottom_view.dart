@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 
+// TODO : This should be a global widget.
+
 class _ViewModel extends BaseModel<AppState> {
   List<Product> localCart;
   List<JITProduct> localFreeFormItems;

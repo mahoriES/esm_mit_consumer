@@ -2,8 +2,10 @@ import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/common_methods.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:async_redux/async_redux.dart';
@@ -14,6 +16,8 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 ///Example -
 ///Milk [250ml, 500ml, 1l, 2l] shall be shown in the bottom sheet and customer
 ///can add multiple quantities of each variation
+///
+/// TODO : This should be a global widget.
 class SkuBottomSheet extends StatefulWidget {
   final Product product;
 
@@ -72,8 +76,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                       (index) => buildCustomizableItem(
                         specificationName:
                             widget.product.skus[index].variationOptions.weight,
-                        price: (widget.product.skus[index].basePrice / 100)
-                            .floor(),
+                        price: widget.product.skus[index].basePrice,
                         index: index,
                       ),
                     ),
@@ -117,7 +120,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
               SizedBox(height: 6.toHeight),
               FittedBox(
                 child: Text(
-                  '₹ ' + price.toString(),
+                  CommonMethods.priceFormat(price.toRupee),
                   style: CustomTheme.of(context).textStyles.body1,
                 ),
               ),
