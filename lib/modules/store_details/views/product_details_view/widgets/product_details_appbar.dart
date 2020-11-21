@@ -2,7 +2,6 @@ import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -48,13 +47,11 @@ class ProductDetailsAppBar extends StatelessWidget with PreferredSizeWidget {
           onPressed: () async {
             LoadingDialog.show();
 
-            DynamicLinkParameters linkParameters =
-                LinkSharingService().createProductLink(
+            await LinkSharingService().shareProductLink(
               productId: productId,
               businessId: businessId,
               storeName: subTitle,
             );
-            await LinkSharingService().shareLink(parameters: linkParameters);
 
             LoadingDialog.hide();
           },

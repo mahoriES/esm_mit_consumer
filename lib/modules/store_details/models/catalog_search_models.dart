@@ -305,6 +305,10 @@ class Product {
     ratingNum = json['rating_num'] ?? 0;
     spotlight = json['spotlight'];
   }
+  bool get hasRating => this.ratingNum != 0 && this.ratingVal != 0;
+
+  String get getRatingValue =>
+      (this.ratingVal / this.ratingNum).toStringAsFixed(1);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

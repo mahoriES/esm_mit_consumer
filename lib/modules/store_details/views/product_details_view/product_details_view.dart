@@ -7,6 +7,8 @@ import 'package:eSamudaay/modules/store_details/views/product_details_view/widge
 import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/common_methods.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +38,10 @@ class ProductDetailsView extends StatelessWidget {
                 : 65.toHeight,
             duration: Duration(milliseconds: 300),
             child: BottomView(
-              height: snapshot.localCartListing.isEmpty ? 0 : 65.toHeight,
+              height: (snapshot.localCartListing.isEmpty &&
+                      snapshot.freeFormItemsList.isEmpty)
+                  ? 0
+                  : 65.toHeight,
               buttonTitle: tr('cart.view_cart'),
               didPressButton: snapshot.navigateToCart,
             ),
@@ -79,9 +84,9 @@ class ProductDetailsView extends StatelessWidget {
                               ),
                               SizedBox(height: 4.toHeight),
                               Text(
-                                "\u{20B9} " +
-                                    (selectedProduct.skus.first.basePrice / 100)
-                                        .toString(),
+                                CommonMethods.priceFormat(
+                                  selectedProduct.skus.first.basePrice.toRupee,
+                                ),
                                 style: CustomTheme.of(context).textStyles.body2,
                               ),
                               SizedBox(height: 4.toHeight),
@@ -103,8 +108,7 @@ class ProductDetailsView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              if (selectedProduct.ratingNum != 0 &&
-                                  selectedProduct.ratingVal != 0) ...[
+                              if (selectedProduct.hasRating) ...[
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -117,9 +121,7 @@ class ProductDetailsView extends StatelessWidget {
                                     ),
                                     SizedBox(width: 4.toWidth),
                                     Text(
-                                      (selectedProduct.ratingVal /
-                                              selectedProduct.ratingNum)
-                                          .toStringAsFixed(1),
+                                      selectedProduct.getRatingValue,
                                       style: CustomTheme.of(context)
                                           .textStyles
                                           .cardTitle

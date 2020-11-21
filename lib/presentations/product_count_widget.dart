@@ -43,118 +43,34 @@ class ProductCountWidget extends StatelessWidget {
           fillColor: false,
           isDisabled:
               isSku ? !product.skus[skuIndex].inStock : !product.inStock,
-          addButtonAction: () => _onTap(
+          addButtonAction: () => snapshot.onTap(
             context: context,
-            snapshot: snapshot,
+            // snapshot: snapshot,
             isAddAction: true,
+            isSku: isSku,
+            skuIndex: skuIndex,
+            product: product,
           ),
-          removeButtonAction: () => _onTap(
+          removeButtonAction: () => snapshot.onTap(
             context: context,
-            snapshot: snapshot,
             isAddAction: false,
+            isSku: isSku,
+            skuIndex: skuIndex,
+            product: product,
           ),
           count: isSku
-              ? _getItemCountForSkus(
+              ? snapshot.getItemCountForSkus(
                   snapshot.localCartItems,
                   product,
+                  skuIndex,
                 )
-              : _getItemCountForProduct(
+              : snapshot.getItemCountForProduct(
                   snapshot.localCartItems,
                   product.productId,
                 ),
         );
       },
     );
-  }
-
-  _onTap({
-    @required BuildContext context,
-    @required _ViewModel snapshot,
-    @required bool isAddAction,
-  }) {
-    // if isSku then increment/decrement the sku count.
-    if (isSku) {
-      product.selectedVariant = skuIndex;
-      int count = _getItemCountForSkus(snapshot.localCartItems, product);
-      product.count = isAddAction
-          ? ++count
-          : count == 0
-              ? 0
-              : --count;
-      // update the cart accordingly in app state.
-      if (isAddAction)
-        snapshot.addToCart(product, context);
-      else
-        snapshot.removeFromCart(product);
-    }
-    // otherwise
-    else {
-      // if product skus are null or 0 then show error message.
-      if (product.skus?.isEmpty ?? true) {
-        Fluttertoast.showToast(msg: 'Item not available');
-      }
-      // otherwise
-      else {
-        // if there are multiple skus , show bottom sheet with sku items.
-        if (product.skus.length > 1) {
-          _handleActionForMultipleSkus(product: product, context: context);
-        }
-        // otherwise increment/decrement the product count.
-        else {
-          int count = product?.count ?? 0;
-          product.count = isAddAction
-              ? ++count
-              : count == 0
-                  ? 0
-                  : --count;
-
-          // update the cart accordingly in app state.
-          if (isAddAction)
-            snapshot.addToCart(product, context);
-          else
-            snapshot.removeFromCart(product);
-        }
-      }
-    }
-  }
-
-  int _getItemCountForSkus(List<Product> localCartItems, Product product) {
-    if (localCartItems.isEmpty) return 0;
-
-    Product prod = localCartItems.firstWhere(
-      (element) {
-        return element.productId == product.productId &&
-            element.skus[element.selectedVariant].variationOptions.weight ==
-                product.skus[skuIndex].variationOptions.weight &&
-            element.selectedVariant == skuIndex;
-      },
-      orElse: () => null,
-    );
-    return prod == null ? 0 : prod.count;
-  }
-
-  void _handleActionForMultipleSkus({
-    @required Product product,
-    @required BuildContext context,
-  }) {
-    showModalBottomSheet(
-      context: context,
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      builder: (context) => Container(
-        child: SkuBottomSheet(product: product),
-      ),
-    );
-  }
-
-  int _getItemCountForProduct(List<Product> localCartItems, int productId) {
-    int count = 0;
-    localCartItems.forEach((element) {
-      if (element.productId == productId) count += element.count;
-    });
-    return count;
   }
 }
 
@@ -181,5 +97,98 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(RemoveFromCartLocalAction(product: item));
       },
     );
+  }
+
+  void onTap({
+    @required BuildContext context,
+    @required bool isAddAction,
+    @required bool isSku,
+    @required int skuIndex,
+    @required Product product,
+  }) {
+    // if isSku then increment/decrement the sku count.
+    if (isSku) {
+      product.selectedVariant = skuIndex;
+      int count = getItemCountForSkus(localCartItems, product, skuIndex);
+      product.count = isAddAction
+          ? ++count
+          : count == 0
+              ? 0
+              : --count;
+      // update the cart accordingly in app state.
+      if (isAddAction)
+        addToCart(product, context);
+      else
+        removeFromCart(product);
+    }
+    // otherwise
+    else {
+      // if product skus are null or 0 then show error message.
+      if (product.skus?.isEmpty ?? true) {
+        Fluttertoast.showToast(msg: 'Item not available');
+      }
+      // otherwise
+      else {
+        // if there are multiple skus , show bottom sheet with sku items.
+        if (product.skus.length > 1) {
+          handleActionForMultipleSkus(product: product, context: context);
+        }
+        // otherwise increment/decrement the product count.
+        else {
+          int count = product?.count ?? 0;
+          product.count = isAddAction
+              ? ++count
+              : count == 0
+                  ? 0
+                  : --count;
+
+          // update the cart accordingly in app state.
+          if (isAddAction)
+            addToCart(product, context);
+          else
+            removeFromCart(product);
+        }
+      }
+    }
+  }
+
+  int getItemCountForSkus(
+      List<Product> localCartItems, Product product, int skuIndex) {
+    if (localCartItems.isEmpty) return 0;
+
+    Product prod = localCartItems.firstWhere(
+      (element) {
+        return element.productId == product.productId &&
+            element.skus[element.selectedVariant].variationOptions.weight ==
+                product.skus[skuIndex].variationOptions.weight &&
+            element.selectedVariant == skuIndex;
+      },
+      orElse: () => null,
+    );
+    return prod == null ? 0 : prod.count;
+  }
+
+  void handleActionForMultipleSkus({
+    @required Product product,
+    @required BuildContext context,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      builder: (context) => Container(
+        child: SkuBottomSheet(product: product),
+      ),
+    );
+  }
+
+  int getItemCountForProduct(List<Product> localCartItems, int productId) {
+    int count = 0;
+    localCartItems.forEach((element) {
+      if (element.productId == productId) count += element.count;
+    });
+    return count;
   }
 }

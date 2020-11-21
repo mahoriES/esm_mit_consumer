@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class _ProductDetailsImageCarouselState
     return Container(
       width: double.infinity,
       height: 282.toHeight,
-      color: AppColors.greyedout,
+      color: CustomTheme.of(context).colors.placeHolderColor,
       child: widget.images == null || widget.images.isEmpty
           ? Center(
               child: Icon(

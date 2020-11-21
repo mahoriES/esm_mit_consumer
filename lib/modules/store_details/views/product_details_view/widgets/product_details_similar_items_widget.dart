@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/common_methods.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +32,7 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      color: AppColors.greyedout,
+                      color: CustomTheme.of(context).colors.placeHolderColor,
                       child: CachedNetworkImage(
                         height: 109.toWidth,
                         width: 109.toWidth,
@@ -66,7 +66,7 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 4.toHeight),
                     Text(
-                      "\u{20B9} " + "250.00",
+                      CommonMethods.priceFormat(0),
                       style: CustomTheme.of(context).textStyles.body2,
                     ),
                     SizedBox(height: 11.toHeight),
