@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@Deprecated("Use CustomTheme.of(context).colors instead")
 class AppColors {
   static const mainColor = Color(0xff4093d1);
   static const darkGrey = Color(0xff989696);
@@ -28,12 +29,8 @@ class AppColors {
   static const blackTwo = const Color(0xff393939);
   static const warmGrey = const Color(0xff7c7c7c);
 
-
   static const linearGradient = LinearGradient(
       begin: Alignment(0.27639952301979065, 0.5),
       end: Alignment(0.980859398841858, 0.5),
-      colors: [
-        const Color(0xff5f3a9f),
-        const Color(0xff5f3a9f)
-      ]);
+      colors: [const Color(0xff5f3a9f), const Color(0xff5f3a9f)]);
 }
