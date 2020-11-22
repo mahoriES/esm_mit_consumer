@@ -1,13 +1,16 @@
 import 'dart:io';
-
 import 'package:async_redux/async_redux.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
+import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
+import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
+import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
+import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
@@ -21,9 +24,9 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:eSamudaay/utilities/size_config.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -50,7 +53,11 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
           body: StoreConnector<AppState, _ViewModel>(
               model: _ViewModel(),
               onInit: (store) {
+                String businessId = store.state.productState.selectedMerchant.businessId;
                 store.dispatch(GetCategoriesDetailsAction());
+                store.dispatch(GetBusinessVideosAction(businessId: businessId));
+                store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
+
               },
               builder: (context, snapshot) {
                 return ModalProgressHUD(
@@ -75,6 +82,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                 child: ListView(
                                   children: <Widget>[
                                     Column(
+                                      mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
@@ -82,12 +90,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                           padding: const EdgeInsets.only(
                                               right: 10, left: 10, top: 15),
                                           child: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               BusinessTitleTile(
+                                                isBookmarked: snapshot.selectedMerchant.isBookmarked,
                                                 businessName: snapshot
                                                         .selectedMerchant
                                                         .businessName ??
@@ -103,7 +113,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                     .images
                                                     .first
                                                     .photoUrl,
-                                                onBookmarkMerchant: null,
+                                                onBookmarkMerchant: (){snapshot.bookmarkMerchantAction();},
                                                 onBackPressed: () async {
                                                   List<Business> merchants =
                                                       await CartDataSource
@@ -130,6 +140,18 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                 onContactMerchantPressed: () {
                                                   contactMerchantAction(
                                                       snapshot);
+                                                },
+                                              ),
+                                              VideosListWidget(
+                                                videoFeedResponse:
+                                                    snapshot.videoFeedResponse,
+                                                onRefresh: () => snapshot
+                                                    .dispatch(LoadVideoFeed()),
+                                                onTapOnVideo: (videoItem) {
+                                                  snapshot.updateSelectedVideo(
+                                                      videoItem);
+                                                  snapshot
+                                                      .navigateToVideoView();
                                                 },
                                               ),
                                               SizedBox(
@@ -184,7 +206,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                             snapshot.selectedMerchant.notice !=
                                                 '')
                                           getMerchantNoteRow(
-                                              snapshot.selectedMerchant.notice)
+                                              snapshot.selectedMerchant.notice),
+                                        SpotlightItemsScroller(spotlightProducts: snapshot.spotlightItems,onAddProduct: snapshot.addToCart,onRemoveProduct: snapshot.removeFromCart,),
                                       ],
                                     ),
                                     Container(
@@ -369,6 +392,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
       String phone = snapshot.selectedMerchant.phones?.first?.formatPhoneNumber;
       if (phone == null) return;
       launch('tel:$phone');
+      Navigator.pop(context);
     }, onWhatsappAction: () {
       String phone = snapshot.selectedMerchant.phones?.first?.formatPhoneNumber;
       if (phone == null) return;
@@ -379,7 +403,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         launch(
             "whatsapp://send?phone=$phone&text=${Uri.parse('Message from eSamudaay.')}");
       }
-    });
+      Navigator.pop(context);
+    }, merchantName: snapshot.selectedMerchant.businessName);
   }
 
   void showDetailsPopup(_ViewModel snapshot) {
@@ -387,6 +412,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         context: context,
         builder: (context) {
           return BusinessDetailsPopup(
+              isMerchantBookmarked: snapshot.selectedMerchant.isBookmarked,
+              onBookmarkMerchant: ()async{await snapshot.bookmarkMerchantAction();},
               onContactMerchant: () {
                 contactMerchantAction(snapshot);
               },
@@ -404,32 +431,54 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
 }
 
 class _ViewModel extends BaseModel<AppState> {
+  Function(Product, BuildContext, int) addToCart;
+  Function(Product, int) removeFromCart;
+  Function bookmarkMerchantAction;
   Function() navigateToProductDetails;
+  Function(VideoItem) updateSelectedVideo;
   Function(CategoriesNew) updateSelectedCategory;
   Business selectedMerchant;
   List<CategoriesNew> categories;
   LoadingStatusApp loadingStatus;
   Function navigateToProductSearch;
   List<Product> localCartListing;
+  List<Product> spotlightItems;
   List<JITProduct> freeFormItemsList;
   Function navigateToCart;
   Function(BuildContext) checkForPreviouslyAddedListItems;
+  VideoFeedResponse videoFeedResponse;
+  Function onVideoTap;
+  Function loadVideoFeedForMerchant;
+  Function onRefresh;
+  Function navigateToVideoView;
 
   _ViewModel();
 
   _ViewModel.build(
       {this.navigateToProductDetails,
+      this.loadVideoFeedForMerchant,
+      this.navigateToVideoView,
       this.loadingStatus,
+      this.onVideoTap,
+      this.addToCart,
+      this.removeFromCart,  
+      this.spotlightItems,
+      this.onRefresh,
+      this.bookmarkMerchantAction,
       this.freeFormItemsList,
       this.checkForPreviouslyAddedListItems,
       this.categories,
+      this.videoFeedResponse,
       this.selectedMerchant,
+      this.updateSelectedVideo,
       this.updateSelectedCategory,
       this.navigateToProductSearch,
       this.localCartListing,
       this.navigateToCart})
       : super(equals: [
           selectedMerchant,
+          videoFeedResponse,
+          spotlightItems,
           loadingStatus,
           categories,
           localCartListing,
@@ -438,13 +487,21 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
+        spotlightItems: state.productState.spotlightItems,
+        videoFeedResponse: state.productState.videosResponse,
         freeFormItemsList: state.productState.localFreeFormCartItems,
         localCartListing: state.productState.localCartItems,
         categories: state.productState.categories,
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+        },
+        updateSelectedVideo: (video) async {
+          dispatch(UpdateSelectedVideoAction(selectedVideo: video));
+        },
+        loadVideoFeedForMerchant: () {
+          dispatch(GetBusinessVideosAction(
+              businessId: state.productState.selectedMerchant.businessId));
         },
         navigateToProductDetails: () {
           store.dispatchFuture(GetSubCatalogAction()).whenComplete(() {
@@ -454,8 +511,36 @@ class _ViewModel extends BaseModel<AppState> {
             );
           });
         },
+        bookmarkMerchantAction: () async {
+          if (state.productState.selectedMerchant.isBookmarked)
+            await dispatchFuture(UnBookmarkBusinessAction(businessId: state.productState.selectedMerchant.businessId));
+          else
+            await dispatchFuture(BookmarkBusinessAction(businessId: state.productState.selectedMerchant.businessId));
+          debugPrint('After the action completes this is the flag -> ${state.productState.selectedMerchant.isBookmarked}');
+        },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
+        },
+        addToCart: (item, context, index) {
+          if (!item.skus[index].inStock) {
+            Fluttertoast.showToast(msg: 'Item not in stock!');
+            return;
+          }
+          item.selectedVariant = index;
+          int count = getCountOfExistingSpotlightItemInCart(item, index);
+          item.count = count + 1;
+          dispatch(AddToCartLocalAction(product: item, context: context));
+        },
+        removeFromCart: (item, index) {
+          if (!item.skus[index].inStock) {
+            Fluttertoast.showToast(msg: 'Item not in stock!');
+            return;
+          }
+          item.selectedVariant = index;
+          int count = getCountOfExistingSpotlightItemInCart(item, index);
+          if (count == 0) return;
+          item.count = count - 1;
+          dispatch(RemoveFromCartLocalAction(product: item));
         },
         loadingStatus: state.authState.loadingStatus,
         selectedMerchant: state.productState.selectedMerchant,
@@ -464,6 +549,9 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(
             NavigateAction.pushNamed('/productSearch'),
           );
+        },
+        navigateToVideoView: () {
+          dispatch(NavigateAction.pushNamed("/videoPlayer"));
         },
         checkForPreviouslyAddedListItems: (context) async {
           var merchant = await CartDataSource.getListOfMerchants();
@@ -536,6 +624,29 @@ class _ViewModel extends BaseModel<AppState> {
             dispatch(NavigateAction.pushNamed('/CartView'));
           }
         });
+  }
+
+  int getCountOfExistingSpotlightItemInCart(Product product, int index) {
+    if (state.productState.localCartItems.isEmpty)
+      return 0;
+    else {
+      Product prod;
+      try {
+        prod = state.productState.localCartItems.firstWhere(
+              (element) =>
+          element.productId == product.productId &&
+              element.skus[element.selectedVariant].variationOptions.weight ==
+                  product.skus[index].variationOptions.weight &&
+              element.selectedVariant == index,
+        );
+      } catch (e) {
+        return 0;
+      }
+      if (prod == null)
+        return 0;
+      else
+        return prod.count;
+    }
   }
 }
 

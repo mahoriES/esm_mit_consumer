@@ -156,9 +156,8 @@ flutter:
     - assets/images/notepad.png
     - assets/images/refresh_1.png
     - assets/images/HeaderImage.png
-    - assets/images/call.png
     - assets/images/whatsapp.png
-
+    - assets/images/category_placeholder.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

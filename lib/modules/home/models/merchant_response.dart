@@ -37,6 +37,7 @@ class Business {
   String businessName;
   String itemsCount;
   bool isOpen;
+  bool isBookmarked;
   AddressNew address;
   String description;
   List<Photo> images;
@@ -52,6 +53,7 @@ class Business {
       {this.businessId,
       this.businessName,
       this.isOpen,
+      this.isBookmarked,
       this.itemsCount,
       this.address,
       this.description,
@@ -63,6 +65,7 @@ class Business {
   Business.fromJson(Map<String, dynamic> json) {
     itemsCount = json['items_count'];
     businessId = json['business_id'];
+    isBookmarked = json['bookmark'];
     businessName = json['business_name'];
     description = json['description'];
     isOpen = json['is_open'];
@@ -86,6 +89,7 @@ class Business {
     data['business_id'] = this.businessId;
     data['business_name'] = this.businessName;
     data['description'] = this.description;
+    data['bookmark'] = this.isBookmarked;
     data['is_open'] = this.isOpen;
     data['items_count'] = this.itemsCount;
     if (this.address != null) {

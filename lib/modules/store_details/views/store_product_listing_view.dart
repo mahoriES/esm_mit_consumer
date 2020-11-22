@@ -495,7 +495,6 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
         freeFormItemsList: state.productState.localFreeFormCartItems,
         addToCart: (item, context) {

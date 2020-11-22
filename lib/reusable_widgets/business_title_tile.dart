@@ -17,6 +17,7 @@ class BusinessTitleTile extends StatefulWidget {
   final Function onBackPressed;
   final Function onContactMerchantPressed;
   final Function onShowMerchantInfo;
+  final bool isBookmarked;
 
   const BusinessTitleTile(
       {@required this.businessName,
@@ -25,6 +26,7 @@ class BusinessTitleTile extends StatefulWidget {
       @required this.businessImageUrl,
       @required this.onBookmarkMerchant,
       @required this.onBackPressed,
+      @required this.isBookmarked,
       @required this.onShowMerchantInfo,
       @required this.onContactMerchantPressed,
       this.businessSubtitle = '',
@@ -64,7 +66,7 @@ class _BusinessTitleTileState extends State<BusinessTitleTile> with MerchantWidg
           Column(children: [
             const SizedBox(height: AppSizes.separatorPadding,),
             Row(children: [
-              bookmarkActionButton(widget.onBookmarkMerchant),
+              bookmarkActionButton(widget.onBookmarkMerchant, widget.isBookmarked),
               const SizedBox(width: AppSizes.separatorPadding,),
               contactMerchantActionButton(widget.onContactMerchantPressed),
             ],),

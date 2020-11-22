@@ -131,8 +131,7 @@ class APIManager {
         )
             .then((res) {
           debugPrint(res.toString(), wrapWidth: 1024);
-
-          if (res.data["statusCode"] == 450) {
+          if (res.statusCode == 450) {
             store.dispatch(UserExceptionAction(
               "Session expired, Please login to continue..",
             ));
@@ -152,9 +151,6 @@ class APIManager {
           } else {
             return ResponseModel(res.data, ResponseStatus.success200);
           }
-        }).catchError((error) {
-          print(error);
-          return ResponseModel(null, ResponseStatus.error500);
         });
 
 //        final Directory dir = new Directory('$appDocPath/cookies');

@@ -3,6 +3,7 @@ import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/foundation.dart';
@@ -17,12 +18,14 @@ class ProductState {
   final bool currentOrderIsPickUp;
   final bool searchForProductsComplete;
   final List<Product> localCartItems;
+  final List<Product> spotlightItems;
   final List<JITProduct> localFreeFormCartItems;
   final List<Charge> charges;
   final List<String> customerNoteImages;
   final CategoriesNew selectedCategory;
   final CategoriesNew selectedSubCategory;
   final PlaceOrderResponse placeOrderResponse;
+  final VideoFeedResponse videosResponse;
   final Business selectedMerchant;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
@@ -35,6 +38,7 @@ class ProductState {
   ProductState({
     @required this.localCartItems,
     @required this.charges,
+    @required this.spotlightItems,
     @required this.customerNoteImages,
     @required this.localFreeFormCartItems,
     @required this.searchForProductsComplete,
@@ -46,6 +50,7 @@ class ProductState {
     @required this.productListingTempDataSource,
     @required this.selectedMerchant,
     @required this.searchResults,
+    @required this.videosResponse,
     @required this.productListingDataSource,
     @required this.supportOrder,
     @required this.subCategories,
@@ -61,6 +66,7 @@ class ProductState {
         customerNoteImages: [],
         localFreeFormCartItems: [],
         upiApps: [],
+        videosResponse: VideoFeedResponse(count: 0, results: [],),
         productResponse: CatalogSearchResponse(),
         searchForProductsComplete: false,
         selectedCluster: null,
@@ -70,6 +76,7 @@ class ProductState {
         supportOrder: "",
         getOrderListResponse: GetOrderListResponse(results: []),
         localCartItems: [],
+        spotlightItems: [],
         searchResults: [],
         selectedMerchant: null,
         productListingTempDataSource: [],
@@ -85,9 +92,11 @@ class ProductState {
       {List<Product> productListingDataSource,
       List<Product> productListingTempDataSource,
       bool searchForProductsComplete,
+      VideoFeedResponse videosResponse,
       List<String> customerNoteImages,
       List<Product> searchResultProducts,
       List<Product> localCartItems,
+      List<Product> spotlightItems,
       List<JITProduct> localFreeFormCartItems,
       List<CategoriesNew> categories,
       List<CategoriesNew> subCategories,
@@ -104,7 +113,9 @@ class ProductState {
       CatalogSearchResponse productResponse,
       Cluster selectedCluster}) {
     return ProductState(
+        spotlightItems: spotlightItems ?? this.spotlightItems,
         customerNoteImages: customerNoteImages ?? this.customerNoteImages,
+        videosResponse: videosResponse ?? this.videosResponse,
         searchForProductsComplete:
             searchForProductsComplete ?? this.searchForProductsComplete,
         upiApps: upiApps ?? this.upiApps,

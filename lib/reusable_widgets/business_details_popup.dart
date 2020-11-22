@@ -1,4 +1,4 @@
-import 'package:eSamudaay/themes/eSamudaay_theme_data.dart';
+import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -16,9 +16,13 @@ class BusinessDetailsPopup extends StatefulWidget {
   final String merchantBusinessImageUrl;
   final String merchantPhoneNumber;
   final Function onContactMerchant;
+  final bool isMerchantBookmarked;
+  final Function onBookmarkMerchant;
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
+       @required this.onBookmarkMerchant,
+       @required this.isMerchantBookmarked,
        @required this.onContactMerchant,
       @required this.businessPrettyAddress,
       @required this.merchantBusinessImageUrl,
@@ -58,10 +62,10 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(alignment: Alignment.topCenter,
       child: Padding(
         padding:
-            const EdgeInsets.symmetric(horizontal: AppSizes.separatorPadding),
+            const EdgeInsets.symmetric(horizontal: AppSizes.separatorPadding,vertical: AppSizes.widgetPadding*2),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(9),
           child: Container(
@@ -104,7 +108,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildMerchantTitleRowWithActions(widget.businessTitle),
+                      buildMerchantTitleRowWithActions(widget.businessTitle, widget.onBookmarkMerchant, widget.isMerchantBookmarked),
                       Row(
                         children: [
                           Expanded(
@@ -158,7 +162,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
     );
   }
 
-  Widget buildMerchantTitleRowWithActions(String businessName) {
+  Widget buildMerchantTitleRowWithActions(String businessName, Function onBookmark, bool isBookmarked) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Row(
@@ -176,7 +180,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  bookmarkActionButton(null),
+                  bookmarkActionButton(onBookmark, isBookmarked),
                   shareActionButton(null),
                 ],
               ),
@@ -270,6 +274,10 @@ mixin MerchantWidgetElementsProviderMixin {
     );
   }
 
+  Widget get placeHolderImage {
+    return Image.asset('assets/images/category_placeholder.png',fit: BoxFit.cover,);
+  }
+
   Widget buildBusinessCategoryTile(
       {Function onTap,
       String categoryName,
@@ -286,6 +294,8 @@ mixin MerchantWidgetElementsProviderMixin {
               Positioned.fill(
                   child: CachedNetworkImage(
                 imageUrl: imageUrl,
+                errorWidget: (_,__,___) => placeHolderImage,
+                placeholder: (_,__) => placeHolderImage,
                 fit: BoxFit.cover,
               )),
               Positioned.fill(
@@ -328,14 +338,8 @@ mixin MerchantWidgetElementsProviderMixin {
     );
   }
 
-  Widget bookmarkActionButton(Function onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Icon(
-        Icons.bookmark,
-        color: AppColors.blueBerry.withOpacity(0.3),
-      ),
-    );
+  Widget bookmarkActionButton(Function onTap, bool isBookmarked) {
+    return BookmarkButton(isBookmarked: isBookmarked, onTap: onTap,);
   }
 
   void showContactMerchantDialog(BuildContext context, {Function onCallAction, Function onWhatsappAction, String merchantName}) {
@@ -343,16 +347,18 @@ mixin MerchantWidgetElementsProviderMixin {
         context: context,
         elevation: 3.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(9),topRight: Radius.circular(9)),
         ),
         builder: (context) => Container(
           child: new Wrap(
             children: <Widget>[
               new ListTile(
                   title: new Text('Call $merchantName'),
+                  leading: const Icon(Icons.call,size: 33,),
                   onTap: onCallAction),
               new ListTile(
                 title: new Text('Whatsapp $merchantName'),
+                leading: Image.asset('assets/images/whatsapp.png'),
                 onTap: onWhatsappAction,
               ),
             ],
