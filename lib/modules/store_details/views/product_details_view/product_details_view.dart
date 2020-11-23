@@ -7,7 +7,6 @@ import 'package:eSamudaay/modules/store_details/views/product_details_view/widge
 import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/common_methods.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -51,8 +50,8 @@ class ProductDetailsView extends StatelessWidget {
               Hero(
                 tag: selectedProduct.productName,
                 child: ProductDetailsImageCarousel(
-                  selectedProduct.productName,
-                  selectedProduct.images,
+                  productName: selectedProduct.productName,
+                  images: selectedProduct.images,
                 ),
               ),
               Container(
@@ -84,9 +83,8 @@ class ProductDetailsView extends StatelessWidget {
                               ),
                               SizedBox(height: 4.toHeight),
                               Text(
-                                CommonMethods.priceFormat(
-                                  selectedProduct.skus.first.basePrice.toRupee,
-                                ),
+                                selectedProduct.skus.first.basePrice
+                                    .paisaToRupee.withRupeePrefix,
                                 style: CustomTheme.of(context).textStyles.body2,
                               ),
                               SizedBox(height: 4.toHeight),

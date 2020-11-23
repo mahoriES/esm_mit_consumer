@@ -2,7 +2,6 @@ import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/common_methods.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
@@ -120,7 +119,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
               SizedBox(height: 6.toHeight),
               FittedBox(
                 child: Text(
-                  CommonMethods.priceFormat(price.toRupee),
+                  price.paisaToRupee.withRupeePrefix,
                   style: CustomTheme.of(context).textStyles.body1,
                 ),
               ),

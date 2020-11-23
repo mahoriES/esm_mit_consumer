@@ -36,16 +36,17 @@ class ProductCountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDisabled =
+        isSku ? !product.skus[skuIndex].inStock : !product.inStock;
+
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       builder: (context, snapshot) {
         return CSStepper(
           fillColor: false,
-          isDisabled:
-              isSku ? !product.skus[skuIndex].inStock : !product.inStock,
+          isDisabled: isDisabled,
           addButtonAction: () => snapshot.onTap(
             context: context,
-            // snapshot: snapshot,
             isAddAction: true,
             isSku: isSku,
             skuIndex: skuIndex,
@@ -60,14 +61,9 @@ class ProductCountWidget extends StatelessWidget {
           ),
           count: isSku
               ? snapshot.getItemCountForSkus(
-                  snapshot.localCartItems,
-                  product,
-                  skuIndex,
-                )
+                  snapshot.localCartItems, product, skuIndex)
               : snapshot.getItemCountForProduct(
-                  snapshot.localCartItems,
-                  product.productId,
-                ),
+                  snapshot.localCartItems, product.productId),
         );
       },
     );

@@ -4,6 +4,11 @@ extension StringExtension on String {
   }
 }
 
-extension ToRupee on int {
-  double get toRupee => this == null ? 0 : this / 100;
+extension ConvertPaisaToRupee on int {
+  double get paisaToRupee => this == null ? 0 : this / 100;
+}
+
+extension AddRupeePrefix on num {
+  String get withRupeePrefix =>
+      this == null ? "NA" : "\u{20B9} ${this?.toStringAsFixed(2)}";
 }

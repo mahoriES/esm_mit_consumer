@@ -32,4 +32,10 @@ class StringConstants {
       'https://esamudaay.com?businessId=$businessId&productId=$productId';
   static const packageName = 'com.esamudaay.customer';
   static const appStoreId = '1532727652';
+  static final linkPreviewTitle = (String storeName) =>
+      'Hello! You can now order online from $storeName using this link.';
+  static const linkPreviewMessage =
+      'You can pay online using GooglePay, PayTM, PhonePe, UPI apps or Cash on delivery.';
+  static const esamudaayLogoUrl =
+      'https://lh3.googleusercontent.com/b5-o56HDsZhnCfYavGxGcfZHmZp51AzbzXQXllZ19FlVyIwhMI9i0fFuTu_9oe1MYlQ=s180';
 }

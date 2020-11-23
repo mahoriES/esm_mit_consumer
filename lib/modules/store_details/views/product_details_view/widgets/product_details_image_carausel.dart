@@ -8,8 +8,11 @@ import 'package:flutter/material.dart';
 class ProductDetailsImageCarousel extends StatefulWidget {
   final String productName;
   final List<Photo> images;
-  ProductDetailsImageCarousel(this.productName, this.images, {Key key})
-      : super(key: key);
+  ProductDetailsImageCarousel({
+    @required this.productName,
+    @required this.images,
+    Key key,
+  }) : super(key: key);
 
   @override
   _ProductDetailsImageCarouselState createState() =>

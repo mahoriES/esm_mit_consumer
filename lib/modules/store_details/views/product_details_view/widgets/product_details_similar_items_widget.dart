@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/common_methods.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,7 +66,7 @@ class ProductDetailsSimilarItemsWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 4.toHeight),
                     Text(
-                      CommonMethods.priceFormat(0),
+                      0.withRupeePrefix,
                       style: CustomTheme.of(context).textStyles.body2,
                     ),
                     SizedBox(height: 11.toHeight),

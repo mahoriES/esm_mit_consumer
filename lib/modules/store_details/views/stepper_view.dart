@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+// TODO : This should a local component in product_count_widget.
+
 ///CSStepper class represents the stepper button being used in the app
 ///It is used to increment or decrement the selected quantity of any item
 

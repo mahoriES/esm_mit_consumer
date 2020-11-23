@@ -31,14 +31,9 @@ class LinkSharingService {
       iosParameters: _iosParameters,
       // socialMetaTagParameters are used as preview when this link is shared.
       socialMetaTagParameters: SocialMetaTagParameters(
-        title:
-            'Hello! You can now order online from $storeName using this link.',
-        description:
-            'You can pay online using GooglePay, PayTM, PhonePe, UPI apps or Cash on delivery.',
-        //  this url refers to the esamudaay logo.
-        imageUrl: Uri.parse(
-          'https://lh3.googleusercontent.com/b5-o56HDsZhnCfYavGxGcfZHmZp51AzbzXQXllZ19FlVyIwhMI9i0fFuTu_9oe1MYlQ=s180',
-        ),
+        title: StringConstants.linkPreviewTitle(storeName),
+        description: StringConstants.linkPreviewMessage,
+        imageUrl: Uri.parse(StringConstants.esamudaayLogoUrl),
       ),
     );
 
