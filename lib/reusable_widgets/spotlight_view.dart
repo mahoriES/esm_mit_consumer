@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -42,6 +43,8 @@ class SpotlightTile extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: imageUrl,
                   placeholder: (_, __) => CircularProgressIndicator(),
+                  errorWidget: (_, __, ___) =>
+                      Image.asset('assets/images/shop1.png'),
                 )),
           ),
           SizedBox(
@@ -50,6 +53,7 @@ class SpotlightTile extends StatelessWidget {
           Text(
             itemName,
             maxLines: 1,
+            style: CustomTheme.of(context).textStyles.subtitle2,
             overflow: TextOverflow.ellipsis,
           ),
           SizedBox(
@@ -59,6 +63,16 @@ class SpotlightTile extends StatelessWidget {
             quantityDescription,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            style: CustomTheme.of(context).textStyles.caption,
+          ),
+          SizedBox(
+            height: AppSizes.separatorPadding / 2,
+          ),
+          Text(
+            "₹ "+price,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: CustomTheme.of(context).textStyles.caption,
           ),
           SizedBox(
             height: AppSizes.separatorPadding,
@@ -92,33 +106,47 @@ class SpotlightItemsScroller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint('Rebuilding the spotlight section');
-    return Container(
-      width: SizeConfig.screenWidth,
-      height: SizeConfig.screenWidth * 0.56,
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.widgetPadding,
-          vertical: AppSizes.separatorPadding),
-      child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          physics: ClampingScrollPhysics(),
-          itemBuilder: (context, index) {
-            Product product = spotlightProducts[index];
-            return SpotlightTile(
-                product: product,
-                itemName: product.productName,
-                imageUrl: product.images.first.photoUrl,
-                price: (product.skus.first.basePrice / 100).toStringAsFixed(2),
-                quantityDescription: product.skus.first.variationOptions.weight,
-                decrementQuantityAction: onRemoveProduct,
-                incrementQuantityAction: onAddProduct,
-                itemQuantity: product.count == 0
-                    ? tr("new_changes.add")
-                    : product.count.toString());
-          },
-          separatorBuilder: (_, __) => SizedBox(
-                width: AppSizes.widgetPadding,
-              ),
-          itemCount: spotlightProducts.length),
+    if (spotlightProducts.isEmpty) return SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: AppSizes.widgetPadding,),
+        Padding(padding: const EdgeInsets.only(left: AppSizes.widgetPadding),
+          child: Text(
+            tr('store_home.spotlight'),
+            style: CustomTheme.of(context).textStyles.subtitle1.copyWith(fontSize: 18.toFont),
+          ),
+        ),
+        Container(
+          height: SizeConfig.screenWidth * 0.64,
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.widgetPadding,
+              vertical: AppSizes.separatorPadding),
+          child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: ClampingScrollPhysics(),
+              itemBuilder: (context, index) {
+                Product product = spotlightProducts[index];
+                return SpotlightTile(
+                    product: product,
+                    itemName: product.productName,
+                    imageUrl: product.images.first.photoUrl,
+                    price: (product.skus.first.basePrice / 100).toStringAsFixed(2),
+                    quantityDescription: product.skus.first.variationOptions.weight,
+                    decrementQuantityAction: onRemoveProduct,
+                    incrementQuantityAction: onAddProduct,
+                    itemQuantity: product.count == 0
+                        ? tr("new_changes.add")
+                        : product.count.toString());
+              },
+              separatorBuilder: (_, __) => SizedBox(
+                    width: AppSizes.widgetPadding,
+                  ),
+              itemCount: spotlightProducts.length),
+        ),
+      ],
     );
   }
+
+
 }

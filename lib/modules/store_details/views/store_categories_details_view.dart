@@ -11,6 +11,7 @@ import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dar
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
@@ -27,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -50,314 +52,312 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         return Future.value(true);
       },
       child: Scaffold(
-          body: StoreConnector<AppState, _ViewModel>(
-              model: _ViewModel(),
-              onInit: (store) {
-                String businessId = store.state.productState.selectedMerchant.businessId;
-                store.dispatch(GetCategoriesDetailsAction());
-                store.dispatch(GetBusinessVideosAction(businessId: businessId));
-                store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
-
-              },
-              builder: (context, snapshot) {
-                return ModalProgressHUD(
-                  progressIndicator: Card(
-                    child: Image.asset(
-                      'assets/images/indicator.gif',
-                      height: 75,
-                      width: 75,
-                    ),
-                  ),
-                  inAsyncCall:
-                      snapshot.loadingStatus == LoadingStatusApp.loading,
-                  child: Container(
-                    color: AppColors.solidWhite,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Positioned.fill(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ListView(
+        body: StoreConnector<AppState, _ViewModel>(
+          model: _ViewModel(),
+          onInit: (store) {
+            String businessId =
+                store.state.productState.selectedMerchant.businessId;
+            store.dispatch(GetCategoriesDetailsAction());
+            store.dispatch(GetBusinessVideosAction(businessId: businessId));
+            store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
+          },
+          builder: (context, snapshot) {
+            return ModalProgressHUD(
+              progressIndicator: Card(
+                child: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
+                ),
+              ),
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
+              child: Container(
+                color: AppColors.solidWhite,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned.fill(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ListView(
+                              children: <Widget>[
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 10, left: 10, top: 15),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              BusinessTitleTile(
-                                                isBookmarked: snapshot.selectedMerchant.isBookmarked,
-                                                businessName: snapshot
-                                                        .selectedMerchant
-                                                        .businessName ??
-                                                    '',
-                                                businessSubtitle: snapshot
-                                                        .selectedMerchant
-                                                        .description ??
-                                                    '',
-                                                isDeliveryAvailable: true,
-                                                isOpen: true,
-                                                businessImageUrl: snapshot
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 10, left: 10, top: 15),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          BusinessTitleTile(
+                                            isBookmarked: snapshot
+                                                .selectedMerchant.isBookmarked,
+                                            businessName: snapshot
+                                                    .selectedMerchant
+                                                    .businessName ??
+                                                '',
+                                            businessSubtitle: snapshot
+                                                    .selectedMerchant
+                                                    .description ??
+                                                '',
+                                            isDeliveryAvailable: true,
+                                            isOpen: true,
+                                            businessImageUrl: snapshot
                                                     .selectedMerchant
                                                     .images
-                                                    .first
-                                                    .photoUrl,
-                                                onBookmarkMerchant: (){snapshot.bookmarkMerchantAction();},
-                                                onBackPressed: () async {
-                                                  List<Business> merchants =
-                                                      await CartDataSource
-                                                          .getListOfMerchants();
-                                                  if (merchants.isNotEmpty &&
-                                                      merchants.first
-                                                              .businessId !=
-                                                          store
-                                                              .state
-                                                              .productState
-                                                              .selectedMerchant
-                                                              .businessId) {
-                                                    var localMerchant =
-                                                        merchants.first;
-                                                    store.dispatch(
-                                                        UpdateSelectedMerchantAction(
-                                                            selectedMerchant:
-                                                                localMerchant));
-                                                  }
-                                                  Navigator.pop(context);
-                                                },
-                                                onShowMerchantInfo: () =>
-                                                    showDetailsPopup(snapshot),
-                                                onContactMerchantPressed: () {
-                                                  contactMerchantAction(
-                                                      snapshot);
-                                                },
-                                              ),
-                                              VideosListWidget(
-                                                videoFeedResponse:
-                                                    snapshot.videoFeedResponse,
-                                                onRefresh: () => snapshot
-                                                    .dispatch(LoadVideoFeed()),
-                                                onTapOnVideo: (videoItem) {
-                                                  snapshot.updateSelectedVideo(
-                                                      videoItem);
-                                                  snapshot
-                                                      .navigateToVideoView();
-                                                },
-                                              ),
-                                              SizedBox(
-                                                height:
-                                                    AppSizes.separatorPadding,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 20),
-                                                child: Container(
-                                                  child: Hero(
-                                                    tag: 'herotag',
-                                                    child: TextField(
-                                                      onTap: () {
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                FocusNode());
-                                                        snapshot
-                                                            .navigateToProductSearch();
-                                                      },
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText:
-                                                            'Search ${snapshot.selectedMerchant?.businessName}...',
-                                                        prefixIcon: Icon(
-                                                          Icons.search_rounded,
-                                                          color: AppColors
-                                                              .blueBerry,
-                                                        ),
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: AppColors
-                                                                  .greyedout),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                                    .isNotEmpty
+                                                ? snapshot.selectedMerchant
+                                                    .images.first.photoUrl
+                                                : "",
+                                            onBookmarkMerchant: () {
+                                              snapshot.bookmarkMerchantAction();
+                                            },
+                                            onBackPressed: () async {
+                                              List<Business> merchants =
+                                                  await CartDataSource
+                                                      .getListOfMerchants();
+                                              if (merchants.isNotEmpty &&
+                                                  merchants.first.businessId !=
+                                                      store
+                                                          .state
+                                                          .productState
+                                                          .selectedMerchant
+                                                          .businessId) {
+                                                var localMerchant =
+                                                    merchants.first;
+                                                store.dispatch(
+                                                    UpdateSelectedMerchantAction(
+                                                        selectedMerchant:
+                                                            localMerchant));
+                                              }
+                                              Navigator.pop(context);
+                                            },
+                                            onShowMerchantInfo: () =>
+                                                showDetailsPopup(snapshot),
+                                            onContactMerchantPressed: () {
+                                              contactMerchantAction(snapshot);
+                                            },
                                           ),
-                                        ),
-
-                                        ///Show the optional merchant note added by the merchant to inform
-                                        ///customers regarding any current development e.g. orders will be delayed etc.
-                                        if (snapshot.selectedMerchant.notice !=
-                                                null &&
-                                            snapshot.selectedMerchant.notice !=
-                                                '')
-                                          getMerchantNoteRow(
-                                              snapshot.selectedMerchant.notice),
-                                        SpotlightItemsScroller(spotlightProducts: snapshot.spotlightItems,onAddProduct: snapshot.addToCart,onRemoveProduct: snapshot.removeFromCart,),
-                                      ],
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          top: 10, bottom: 20),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 10),
-                                              child: Text(
-                                                "shop.item_category",
-                                                style: TextStyle(
-                                                  color: Color(0xff151515),
-                                                  fontSize: 18,
-                                                  fontFamily: 'Avenir-Medium',
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ).tr(),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.only(top: 20),
-                                              child: GridView.builder(
-                                                padding: EdgeInsets.zero,
-                                                primary: false,
-                                                gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                                        crossAxisCount: 3,
-                                                        crossAxisSpacing: 12.0,
-                                                        mainAxisSpacing: 10.0,
-                                                        childAspectRatio: 1),
-                                                itemBuilder: (context, index) {
-                                                  return buildBusinessCategoryTile(
-                                                      onTap: () {
-                                                        snapshot.updateSelectedCategory(
-                                                            snapshot.categories[
-                                                                index]);
-                                                        snapshot
-                                                            .navigateToProductDetails();
-                                                      },
-                                                      imageUrl: snapshot
-                                                              .categories[index]
-                                                              .images
-                                                              .isEmpty
-                                                          ? ""
-                                                          : snapshot
-                                                              .categories[index]
-                                                              .images
-                                                              .first
-                                                              .photoUrl,
-                                                      tileWidth: 75,
-                                                      categoryName: snapshot
-                                                              .categories[index]
-                                                              .categoryName ??
-                                                          '');
+                                          VideosListWidget(
+                                            videoFeedResponse:
+                                                snapshot.videoFeedResponse,
+                                            onRefresh: () => snapshot
+                                                .dispatch(LoadVideoFeed()),
+                                            onTapOnVideo: (videoItem) {
+                                              snapshot.updateSelectedVideo(
+                                                  videoItem);
+                                              snapshot.navigateToVideoView();
+                                            },
+                                          ),
+                                          SizedBox(
+                                            height: AppSizes.widgetPadding,
+                                          ),
+                                          Container(
+                                            child: Hero(
+                                              tag: 'herotag',
+                                              child: TextField(
+                                                onTap: () {
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          FocusNode());
+                                                  snapshot
+                                                      .navigateToProductSearch();
                                                 },
-                                                itemCount:
-                                                    snapshot.categories.length,
-                                                shrinkWrap: true,
-                                                physics:
-                                                    ClampingScrollPhysics(),
+                                                decoration: InputDecoration(
+                                                  hintText: tr(
+                                                      'store_home.search_hint'),
+                                                  hintStyle:
+                                                      CustomTheme.of(context)
+                                                          .themeData
+                                                          .textTheme
+                                                          .subtitle1
+                                                          .copyWith(
+                                                              color: AppColors
+                                                                  .darkGrey),
+                                                  prefixIcon: Icon(
+                                                    Icons.search_rounded,
+                                                    color: AppColors.blueBerry,
+                                                  ),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: AppColors
+                                                            .greyedout),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 0),
+                                                ),
                                               ),
                                             ),
-                                            SizedBox(
-                                              height: AppSizes.widgetPadding,
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(
+                                            height: AppSizes.widgetPadding,
+                                          ),
+                                        ],
                                       ),
                                     ),
+
+                                    ///Show the optional merchant note added by the merchant to inform
+                                    ///customers regarding any current development e.g. orders will be delayed etc.
+                                    if (snapshot.selectedMerchant.notice !=
+                                            null &&
+                                        snapshot.selectedMerchant.notice != '')
+                                      getMerchantNoteRow(
+                                          snapshot.selectedMerchant.notice),
+                                    SpotlightItemsScroller(
+                                      spotlightProducts:
+                                          snapshot.spotlightItems,
+                                      onAddProduct: snapshot.addToCart,
+                                      onRemoveProduct: snapshot.removeFromCart,
+                                    ),
                                   ],
                                 ),
-                              ),
-                              AnimatedContainer(
-                                height: (snapshot.localCartListing.isEmpty &&
-                                        snapshot.freeFormItemsList.isEmpty)
-                                    ? 0
-                                    : AppSizes.cartTotalBottomViewHeight,
-                                duration: Duration(milliseconds: 300),
-                                child: BottomView(
-                                  storeName:
-                                      snapshot.selectedMerchant?.businessName ??
-                                          "",
-                                  height: snapshot.localCartListing.isEmpty
-                                      ? 0
-                                      : AppSizes.cartTotalBottomViewHeight,
-                                  buttonTitle: tr('cart.view_cart').toString(),
-                                  didPressButton: () {
-                                    snapshot.navigateToCart();
-                                  },
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSizes.widgetPadding),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        "shop.item_category",
+                                        style: CustomTheme.of(context)
+                                            .textStyles
+                                            .subtitle1
+                                            .copyWith(fontSize: 18.toFont,color: const Color(0xff5f3a9f)),
+                                      ).tr(),
+                                      SizedBox(
+                                        height: AppSizes.widgetPadding,
+                                      ),
+                                      Container(
+                                        child: GridView.builder(
+                                          padding: EdgeInsets.zero,
+                                          primary: false,
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 3,
+                                                  crossAxisSpacing: 12.0,
+                                                  mainAxisSpacing: 10.0,
+                                                  childAspectRatio: 1),
+                                          itemBuilder: (context, index) {
+                                            return buildBusinessCategoryTile(
+                                                context, onTap: () {
+                                              snapshot.updateSelectedCategory(
+                                                  snapshot.categories[index]);
+                                              snapshot
+                                                  .navigateToProductDetails();
+                                            },
+                                                imageUrl: snapshot
+                                                        .categories[index]
+                                                        .images
+                                                        .isEmpty
+                                                    ? ""
+                                                    : snapshot.categories[index]
+                                                        .images.first.photoUrl,
+                                                tileWidth: 75.toWidth,
+                                                categoryName: snapshot
+                                                        .categories[index]
+                                                        .categoryName ??
+                                                    '');
+                                          },
+                                          itemCount: snapshot.categories.length,
+                                          shrinkWrap: true,
+                                          physics: ClampingScrollPhysics(),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: AppSizes.widgetPadding * 4,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          child: AnimatedContainer(
+                          AnimatedContainer(
+                            height: (snapshot.localCartListing.isEmpty &&
+                                    snapshot.freeFormItemsList.isEmpty)
+                                ? 0
+                                : AppSizes.cartTotalBottomViewHeight,
                             duration: Duration(milliseconds: 300),
-                            padding: EdgeInsets.only(
-                                bottom: (snapshot.localCartListing.isEmpty &&
-                                        snapshot.freeFormItemsList.isEmpty)
-                                    ? AppSizes.separatorPadding
-                                    : AppSizes.cartTotalBottomViewHeight +
-                                        AppSizes.separatorPadding),
-                            child: GestureDetector(
-                              onTap: () {
-                                snapshot
-                                    .checkForPreviouslyAddedListItems(context);
+                            child: BottomView(
+                              storeName:
+                                  snapshot.selectedMerchant?.businessName ?? "",
+                              height: snapshot.localCartListing.isEmpty
+                                  ? 0
+                                  : AppSizes.cartTotalBottomViewHeight,
+                              buttonTitle: tr('cart.view_cart').toString(),
+                              didPressButton: () {
+                                snapshot.navigateToCart();
                               },
-                              child: Container(
-                                padding:
-                                    EdgeInsets.all(AppSizes.separatorPadding),
-                                decoration: BoxDecoration(
-                                  color: AppColors.hotPink,
-                                  borderRadius: BorderRadius.circular(
-                                      AppSizes.productItemBorderRadius),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        padding: EdgeInsets.only(
+                            bottom: (snapshot.localCartListing.isEmpty &&
+                                    snapshot.freeFormItemsList.isEmpty)
+                                ? AppSizes.separatorPadding
+                                : AppSizes.cartTotalBottomViewHeight +
+                                    AppSizes.separatorPadding),
+                        child: GestureDetector(
+                          onTap: () {
+                            snapshot.checkForPreviouslyAddedListItems(context);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(AppSizes.separatorPadding),
+                            decoration: BoxDecoration(
+                              color: AppColors.hotPink,
+                              borderRadius: BorderRadius.circular(
+                                  AppSizes.productItemBorderRadius),
+                            ),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/images/notepad.png',
+                                  color: AppColors.solidWhite,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/notepad.png',
-                                      color: AppColors.solidWhite,
-                                    ),
-                                    SizedBox(width: AppSizes.separatorPadding),
-                                    Text(
-                                      'List Items',
-                                      style: TextStyle(
-                                          fontFamily: "Avenir-Medium",
-                                          color: AppColors.solidWhite),
-                                    ),
-                                  ],
+                                SizedBox(width: AppSizes.separatorPadding),
+                                Text(
+                                  'List Items',
+                                  style: TextStyle(
+                                      fontFamily: "Avenir-Medium",
+                                      color: AppColors.solidWhite),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              })),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
+  }
+
+  Widget get productsLabel {
+    return Text(tr('store_home.products'));
   }
 
   Widget getMerchantNoteRow(String note) {
@@ -375,10 +375,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
               child: Text(
                 note.formatCustomerNote,
                 textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontSize: AppSizes.itemSubtitle3FontSize,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.solidWhite),
+                style: CustomTheme.of(context).textStyles.caption.copyWith(color: AppColors.solidWhite),
               ),
             ),
           ),
@@ -413,18 +410,20 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         builder: (context) {
           return BusinessDetailsPopup(
               isMerchantBookmarked: snapshot.selectedMerchant.isBookmarked,
-              onBookmarkMerchant: ()async{await snapshot.bookmarkMerchantAction();},
+              onBookmarkMerchant: () async {
+                await snapshot.bookmarkMerchantAction();
+              },
               onContactMerchant: () {
                 contactMerchantAction(snapshot);
               },
-              merchantPhoneNumber:
-                  snapshot.selectedMerchant.phones?.first ?? '',
+              merchantPhoneNumber: snapshot.selectedMerchant.phones.isNotEmpty ?
+                  snapshot.selectedMerchant?.phones?.first : 'Not Available',
               businessTitle: snapshot.selectedMerchant.businessName ?? '',
               businessSubtitle: snapshot.selectedMerchant.description,
               businessPrettyAddress:
                   snapshot.selectedMerchant.address?.prettyAddress ?? '',
-              merchantBusinessImageUrl:
-                  snapshot.selectedMerchant.images.first.photoUrl,
+              merchantBusinessImageUrl: snapshot.selectedMerchant.images.isNotEmpty ?
+                  snapshot.selectedMerchant.images.first.photoUrl : '',
               isDeliveryAvailable: snapshot.selectedMerchant.hasDelivery);
         });
   }
@@ -461,7 +460,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.loadingStatus,
       this.onVideoTap,
       this.addToCart,
-      this.removeFromCart,  
+      this.removeFromCart,
       this.spotlightItems,
       this.onRefresh,
       this.bookmarkMerchantAction,
@@ -513,10 +512,13 @@ class _ViewModel extends BaseModel<AppState> {
         },
         bookmarkMerchantAction: () async {
           if (state.productState.selectedMerchant.isBookmarked)
-            await dispatchFuture(UnBookmarkBusinessAction(businessId: state.productState.selectedMerchant.businessId));
+            await dispatchFuture(UnBookmarkBusinessAction(
+                businessId: state.productState.selectedMerchant.businessId));
           else
-            await dispatchFuture(BookmarkBusinessAction(businessId: state.productState.selectedMerchant.businessId));
-          debugPrint('After the action completes this is the flag -> ${state.productState.selectedMerchant.isBookmarked}');
+            await dispatchFuture(BookmarkBusinessAction(
+                businessId: state.productState.selectedMerchant.businessId));
+          debugPrint(
+              'After the action completes this is the flag -> ${state.productState.selectedMerchant.isBookmarked}');
         },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
@@ -633,8 +635,8 @@ class _ViewModel extends BaseModel<AppState> {
       Product prod;
       try {
         prod = state.productState.localCartItems.firstWhere(
-              (element) =>
-          element.productId == product.productId &&
+          (element) =>
+              element.productId == product.productId &&
               element.skus[element.selectedVariant].variationOptions.weight ==
                   product.skus[index].variationOptions.weight &&
               element.selectedVariant == index,

@@ -177,8 +177,6 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       debugPrint('Just got 200 now will change the status of bookmark');
       Business selectedMerchant = state.productState.selectedMerchant;
-//      List<Business> merchants = state.homePageState.merchants;
-//      merchants[state.homePageState.currentIndex].isBookmarked = true;
       debugPrint('Before setting this to true');
       selectedMerchant.isBookmarked = true;
       debugPrint('After setting this to true');

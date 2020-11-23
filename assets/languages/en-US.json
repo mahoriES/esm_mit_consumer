@@ -75,9 +75,9 @@
 
   "shop": {
     "delivery_ok" : "Delivery Available",
-    "delivery_no" : "Delivery Not Available",
+    "delivery_no" : "Store Pickup",
     "home_delivery_order": "Home Delivery",
-    "item_category": "Item Categories",
+    "item_category": "Products",
     "pickup_order": "Pickup Order"
   },
 
@@ -114,6 +114,14 @@
     "alert_data": "Are you sure ! do you want to logout?",
     "cancel": "Cancel",
     "circles": "My Circles"
+  },
+
+  "store_home": {
+    "spotlight": "Spotlight",
+    "products": "Products",
+    "offers": "Best Offers",
+    "search_hint": "Search for item",
+    "see_more": "See More"
   },
 
   "screen_recommended": {

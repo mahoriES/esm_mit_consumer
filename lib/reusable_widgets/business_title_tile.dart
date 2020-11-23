@@ -54,14 +54,16 @@ class _BusinessTitleTileState extends State<BusinessTitleTile> with MerchantWidg
           GestureDetector(onTap: widget.onBackPressed, child: Icon(Icons.arrow_back_ios,color: AppColors.blueBerry,)),
           GestureDetector(onTap: widget.onShowMerchantInfo,child: buildMerchantDPTitle(widget.businessImageUrl)),
           const SizedBox(width: AppSizes.separatorPadding/2,),
-          GestureDetector(onTap: widget.onShowMerchantInfo,
-            child: Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(widget.businessName,style: Theme.of(context).textTheme.headline6,),
-              const SizedBox(height: AppSizes.separatorPadding/2,),
-              Text(widget.businessSubtitle,overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.caption,),
-              const SizedBox(height: AppSizes.separatorPadding/2,),
-              Text(widget.storeTimingsDetailsString, overflow: TextOverflow.ellipsis,),
-            ],),),
+          Expanded(
+            child: GestureDetector(onTap: widget.onShowMerchantInfo,
+              child: Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(widget.businessName,style: Theme.of(context).textTheme.headline6,overflow: TextOverflow.ellipsis,),
+                const SizedBox(height: AppSizes.separatorPadding/2,),
+                Text(widget.businessSubtitle,overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.caption,),
+                const SizedBox(height: AppSizes.separatorPadding/2,),
+                Text(widget.storeTimingsDetailsString, overflow: TextOverflow.ellipsis,),
+              ],),),
+            ),
           ),
           Column(children: [
             const SizedBox(height: AppSizes.separatorPadding,),
@@ -94,6 +96,7 @@ class _BusinessTitleTileState extends State<BusinessTitleTile> with MerchantWidg
                 clipBehavior: Clip.antiAlias,
                 decoration: const ShapeDecoration(shape: CircleBorder()),
                 child: CachedNetworkImage(
+                  errorWidget: (_,__,___)=>Image.asset('assets/images/shop1.png'),
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
                 ),

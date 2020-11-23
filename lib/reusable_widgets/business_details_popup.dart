@@ -1,4 +1,5 @@
 import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -21,9 +22,9 @@ class BusinessDetailsPopup extends StatefulWidget {
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
-       @required this.onBookmarkMerchant,
-       @required this.isMerchantBookmarked,
-       @required this.onContactMerchant,
+      @required this.onBookmarkMerchant,
+      @required this.isMerchantBookmarked,
+      @required this.onContactMerchant,
       @required this.businessPrettyAddress,
       @required this.merchantBusinessImageUrl,
       @required this.isDeliveryAvailable,
@@ -62,10 +63,12 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
 
   @override
   Widget build(BuildContext context) {
-    return Align(alignment: Alignment.topCenter,
+    return Align(
+      alignment: Alignment.topCenter,
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppSizes.separatorPadding,vertical: AppSizes.widgetPadding*2),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.separatorPadding,
+            vertical: AppSizes.widgetPadding * 2),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(9),
           child: Container(
@@ -74,17 +77,23 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Stack(
-                  overflow: Overflow.visible,
+                  overflow: Overflow.clip,
                   children: [
                     Align(
                       alignment: Alignment.center,
                       child: Column(
                         children: [
-                          CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: widget.merchantBusinessImageUrl,
-                            placeholder: (_, __) =>
-                                const CircularProgressIndicator(),
+                          InteractiveViewer(
+                            child: CachedNetworkImage(
+                              height: 258.toHeight,
+                              width: double.maxFinite,
+                              fit: BoxFit.cover,
+                              imageUrl: widget.merchantBusinessImageUrl,
+                              placeholder: (_, __) =>
+                                  const CircularProgressIndicator(),
+                              errorWidget: (_, __, ___) =>
+                                  Image.asset('assets/images/shop1.png'),
+                            ),
                           ),
                           SizedBox(
                             height: 0.1 * SizeConfig.screenWidth +
@@ -108,7 +117,10 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildMerchantTitleRowWithActions(widget.businessTitle, widget.onBookmarkMerchant, widget.isMerchantBookmarked),
+                      buildMerchantTitleRowWithActions(
+                          widget.businessTitle,
+                          widget.onBookmarkMerchant,
+                          widget.isMerchantBookmarked),
                       Row(
                         children: [
                           Expanded(
@@ -139,7 +151,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                                     context, widget.isDeliveryAvailable),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                       AnimatedCustomDivider(
@@ -147,7 +159,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                       buildMerchantAddressRow(
                           context,
                           widget.businessPrettyAddress,
-                          widget.merchantPhoneNumber, widget.onContactMerchant),
+                          widget.merchantPhoneNumber,
+                          widget.onContactMerchant),
                       const SizedBox(
                         height: AppSizes.widgetPadding,
                       ),
@@ -162,7 +175,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
     );
   }
 
-  Widget buildMerchantTitleRowWithActions(String businessName, Function onBookmark, bool isBookmarked) {
+  Widget buildMerchantTitleRowWithActions(
+      String businessName, Function onBookmark, bool isBookmarked) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Row(
@@ -230,7 +244,7 @@ mixin AppLogoVariationProviderMixin {
               color: AppColors.solidWhite,
               shadows: [
                 BoxShadow(
-                    color: Color(0xff6ea597be),
+                    color: const Color(0xff6ea597be),
                     blurRadius: 20.0,
                     spreadRadius: 0.0,
                     offset: Offset(0, 6))
@@ -261,12 +275,13 @@ mixin MerchantWidgetElementsProviderMixin {
                   AssetImage('assets/images/delivery.png'),
                   color: Colors.green,
                 )
-              : const AssetImage('assets/images/no_delivery.png'),
+              : const Icon(Icons.store,color: AppColors.orange,),
+          SizedBox(width: 3.toWidth,),
           Text(deliveryStatus ? tr("shop.delivery_ok") : tr("shop.delivery_no"),
               style: Theme.of(context)
                   .textTheme
                   .caption
-                  .copyWith(color: AppColors.green),
+                  .copyWith(color: deliveryStatus ? AppColors.green : AppColors.orange, fontSize: 10),
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left),
         ],
@@ -275,17 +290,21 @@ mixin MerchantWidgetElementsProviderMixin {
   }
 
   Widget get placeHolderImage {
-    return Image.asset('assets/images/category_placeholder.png',fit: BoxFit.cover,);
+    return Image.asset(
+      'assets/images/category_placeholder.png',
+      fit: BoxFit.cover,
+    );
   }
 
-  Widget buildBusinessCategoryTile(
+  Widget buildBusinessCategoryTile(BuildContext context,
       {Function onTap,
       String categoryName,
       String imageUrl,
       double tileWidth}) {
     return GestureDetector(
       onTap: onTap,
-      child: ClipRRect(borderRadius: BorderRadius.circular(4),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(4),
         child: SizedBox(
           width: tileWidth,
           height: tileWidth,
@@ -294,22 +313,28 @@ mixin MerchantWidgetElementsProviderMixin {
               Positioned.fill(
                   child: CachedNetworkImage(
                 imageUrl: imageUrl,
-                errorWidget: (_,__,___) => placeHolderImage,
-                placeholder: (_,__) => placeHolderImage,
+                errorWidget: (_, __, ___) => placeHolderImage,
+                placeholder: (_, __) => placeHolderImage,
                 fit: BoxFit.cover,
               )),
               Positioned.fill(
-                  child: FractionallySizedBox(
-                alignment: Alignment.bottomCenter,
-                widthFactor: 1.0,
-                heightFactor: 0.16,
-                child: Container(
-                  width: tileWidth,
-                  color: Color(0xffe6ffffff),
-                  padding: EdgeInsets.symmetric(vertical: 2),
-                  child: Center(child: Text(categoryName)),
+                child: FractionallySizedBox(
+                  alignment: Alignment.bottomCenter,
+                  widthFactor: 1.0,
+                  heightFactor: 0.20,
+                  child: Container(
+                    width: tileWidth,
+                    color: const Color(0xffe6ffffff),
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    child: Center(
+                      child: Text(
+                        categoryName,
+                        style: CustomTheme.of(context).textStyles.caption,
+                      ),
+                    ),
+                  ),
                 ),
-              )),
+              ),
             ],
           ),
         ),
@@ -339,35 +364,48 @@ mixin MerchantWidgetElementsProviderMixin {
   }
 
   Widget bookmarkActionButton(Function onTap, bool isBookmarked) {
-    return BookmarkButton(isBookmarked: isBookmarked, onTap: onTap,);
+    return BookmarkButton(
+      isBookmarked: isBookmarked,
+      onTap: onTap,
+    );
   }
 
-  void showContactMerchantDialog(BuildContext context, {Function onCallAction, Function onWhatsappAction, String merchantName}) {
+  void showContactMerchantDialog(BuildContext context,
+      {Function onCallAction, Function onWhatsappAction, String merchantName}) {
     showModalBottomSheet(
         context: context,
         elevation: 3.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(9),topRight: Radius.circular(9)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(9), topRight: Radius.circular(9)),
         ),
         builder: (context) => Container(
-          child: new Wrap(
-            children: <Widget>[
-              new ListTile(
-                  title: new Text('Call $merchantName'),
-                  leading: const Icon(Icons.call,size: 33,),
-                  onTap: onCallAction),
-              new ListTile(
-                title: new Text('Whatsapp $merchantName'),
-                leading: Image.asset('assets/images/whatsapp.png'),
-                onTap: onWhatsappAction,
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      title: new Text(
+                        'Call $merchantName',
+                        style: CustomTheme.of(context).textStyles.subtitle2,
+                      ),
+                      leading: const Icon(
+                        Icons.call,
+                        size: 25,
+                        color: AppColors.green,
+                      ),
+                      onTap: onCallAction),
+                  new ListTile(
+                    title: new Text('Whatsapp $merchantName',
+                        style: CustomTheme.of(context).textStyles.subtitle2),
+                    leading: SizedBox(height: 25.toHeight,width: 25.toWidth,child: Image.asset('assets/images/whatsapp.png')),
+                    onTap: onWhatsappAction,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
+            ));
   }
 
-  Widget buildMerchantAddressRow(
-      BuildContext context, String address, String phoneNumber, Function onContactMerchant) {
+  Widget buildMerchantAddressRow(BuildContext context, String address,
+      String phoneNumber, Function onContactMerchant) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Material(
@@ -395,12 +433,14 @@ mixin MerchantWidgetElementsProviderMixin {
             const SizedBox(
               width: AppSizes.separatorPadding,
             ),
-            Text(phoneNumber.formatPhoneNumber,
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle2
-                    .copyWith(color: AppColors.blueBerry),
-                textAlign: TextAlign.left),
+            GestureDetector(onTap: onContactMerchant,
+              child: Text(phoneNumber.formatPhoneNumber,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      .copyWith(color: AppColors.blueBerry),
+                  textAlign: TextAlign.left),
+            ),
           ],
         ),
       ),
