@@ -192,7 +192,7 @@
     "add": "Add",
     "shop_closed": "The Shop is Closed",
     "choose_one": "please select Delivery / Pickup",
-    "clear_info": "Items from other store will be cleared. Would you like to continue.",
+    "clear_info": "Items from other store will be cleared. Would you like to continue?",
     "continue": "Continue",
     "order_id": "Order Id",
     "call": "Call Support",
@@ -249,7 +249,8 @@
     "similar_products": "Similar Products",
     "item": "Item",
     "items": "Items",
-    "taxes": "taxes"
+    "taxes": "taxes",
+    "replace_cart_items": "Replace Cart Items?"
   }
 
 }
