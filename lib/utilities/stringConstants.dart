@@ -27,6 +27,9 @@ const thirdPartyId = "5d730376-72ed-478c-8d5e-1a3a6aee9815";
 // TODO : move the existing strings in StringConstants class .
 class StringConstants {
   static const sharingLinkPrefix = 'https://esamudaay.page.link';
+  static final businessSharingLinkUrl = (
+      {String businessId}) =>
+  'https://esamudaay.com?businessId=$businessId';
   static final productSharingLinkUrl = (
           {String productId, String businessId}) =>
       'https://esamudaay.com?businessId=$businessId&productId=$productId';

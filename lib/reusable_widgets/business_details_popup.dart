@@ -1,4 +1,5 @@
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -20,6 +21,7 @@ class BusinessDetailsPopup extends StatefulWidget {
   final Function onContactMerchant;
   final bool isMerchantBookmarked;
   final Function onBookmarkMerchant;
+  final Function onShareMerchant;
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
@@ -30,6 +32,7 @@ class BusinessDetailsPopup extends StatefulWidget {
       @required this.merchantBusinessImageUrl,
       @required this.isDeliveryAvailable,
       @required this.merchantPhoneNumber,
+      @required this.onShareMerchant,
       this.businessSubtitle = ''});
 
   @override
@@ -45,7 +48,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
   @override
   void initState() {
     _controller =
-        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 200), vsync: this);
     separatorPaddingAnimation =
         Tween<double>(begin: 0, end: 1).animate(_controller);
     appLogoScaleAnimation = CurvedAnimation(
@@ -72,50 +75,47 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
             vertical: AppSizes.widgetPadding * 2),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(9),
-          child: Container(
-            color: AppColors.solidWhite,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Stack(
-                  overflow: Overflow.clip,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          InteractiveViewer(
-                            child: CachedNetworkImage(
-                              height: 258.toHeight,
-                              width: double.maxFinite,
-                              fit: BoxFit.cover,
-                              imageUrl: widget.merchantBusinessImageUrl,
-                              placeholder: (_, __) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (_, __, ___) =>
-                                  Image.asset('assets/images/shop1.png'),
+          child: Material(
+            child: Container(
+              color: AppColors.solidWhite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Stack(
+                    overflow: Overflow.clip,
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            InteractiveViewer(
+                              child: CachedNetworkImage(
+                                height: 258.toHeight,
+                                width: double.maxFinite,
+                                fit: BoxFit.cover,
+                                imageUrl: widget.merchantBusinessImageUrl,
+                                errorWidget: (_, __, ___) =>
+                                    Image.asset('assets/images/shop1.png'),
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 0.1 * SizeConfig.screenWidth +
-                                AppSizes.widgetPadding,
-                          ),
-                        ],
+                            SizedBox(
+                              height: 0.1 * SizeConfig.screenWidth +
+                                  AppSizes.widgetPadding,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      left: AppSizes.widgetPadding,
-                      bottom:
-                          SizeConfig.screenWidth * 0.1 - AppSizes.widgetPadding,
-                      child: eSamudaayAnimatedLogo(
-                          animation: appLogoScaleAnimation,
-                          scaledHeight: SizeConfig.screenWidth * 0.2),
-                    ),
-                  ],
-                ),
-                Container(
-                  color: AppColors.solidWhite,
-                  child: Column(
+                      Positioned(
+                        left: AppSizes.widgetPadding,
+                        bottom:
+                            SizeConfig.screenWidth * 0.1 - AppSizes.widgetPadding,
+                        child: eSamudaayAnimatedLogo(
+                            animation: appLogoScaleAnimation,
+                            scaledHeight: SizeConfig.screenWidth * 0.2),
+                      ),
+                    ],
+                  ),
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildMerchantTitleRowWithActions(
@@ -131,12 +131,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                                   top: AppSizes.separatorPadding),
                               child: Text(
                                 widget.businessSubtitle,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    .copyWith(
-                                        fontSize: 16.toFont,
-                                        fontWeight: FontWeight.w500),
+                                style: CustomTheme.of(context).textStyles.sectionHeading2,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -167,8 +162,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -176,29 +171,27 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
     );
   }
 
-  Widget buildMerchantTitleRowWithActions(
-      String businessName, Function onBookmark, bool isBookmarked) {
+  Widget buildMerchantTitleRowWithActions(String businessName,
+      Function onBookmark, bool isBookmarked) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             flex: 80,
             child: Text(businessName,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    fontSize: 28.toFont, fontWeight: FontWeight.bold)),
+                style: CustomTheme.of(context).textStyles.merchantCardTitle,
+                textAlign: TextAlign.start,),
           ),
           Expanded(
             flex: 20,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  bookmarkActionButton(onBookmark, isBookmarked),
-                  shareActionButton(null),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                bookmarkActionButton(onBookmark, isBookmarked),
+                shareActionButton(widget.onShareMerchant),
+              ],
             ),
           ),
         ],

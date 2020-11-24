@@ -1,4 +1,7 @@
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 
 //TODO: Work in progress will require changes from another PR to get this done
@@ -15,10 +18,39 @@ class HighlightCatalogItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(children: [
-        Text(actionButtonTitle),
-      ],),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          vertical: AppSizes.separatorPadding),
+      child: Container(
+        child: Column(
+          children: [
+            ListView.separated(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return ProductListingItemView(
+                  imageLink: productList[index].images.isNotEmpty
+                      ? productList[index].images?.first?.photoUrl ?? ""
+                      : "",
+                  item: productList[index],
+                  index: 0,
+                );
+              },
+              itemCount: productList.length,
+              separatorBuilder: (context, index) => SizedBox(
+                height: AppSizes.separatorPadding,
+              ),
+            ),
+            SizedBox(height: AppSizes.widgetPadding,),
+            GestureDetector(
+                onTap: onTapActionButton,
+                child: Text(
+                  actionButtonTitle,
+                  style: CustomTheme.of(context).textStyles.buttonText2.copyWith(fontSize: 14),
+                )),
+          ],
+        ),
+      ),
     );
   }
 }

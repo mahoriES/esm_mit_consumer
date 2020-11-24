@@ -565,7 +565,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          bool isInStock = widget.item.inStock;
+          bool isInStock = widget.item.inStock ?? true;
           return GestureDetector(
             onTap: () {
               snapshot.updateSelectedProduct(widget.item);

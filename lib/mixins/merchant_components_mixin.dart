@@ -26,10 +26,8 @@ mixin MerchantWidgetElementsProviderMixin {
               : const Icon(Icons.store,color: AppColors.orange,),
           SizedBox(width: 3.toWidth,),
           Text(deliveryStatus ? tr("shop.delivery_ok") : tr("shop.delivery_no"),
-              style: Theme.of(context)
-                  .textTheme
-                  .caption
-                  .copyWith(color: deliveryStatus ? AppColors.green : AppColors.orange, fontSize: 10),
+              style: CustomTheme.of(context).textStyles.body1
+                  .copyWith(color: deliveryStatus ? AppColors.green : AppColors.orange),
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left),
         ],
@@ -170,10 +168,7 @@ mixin MerchantWidgetElementsProviderMixin {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(address,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle2
-                        .copyWith(color: AppColors.blueBerry),
+                    style: CustomTheme.of(context).textStyles.sectionHeading1,
                     textAlign: TextAlign.left),
               ),
             ),
@@ -183,10 +178,7 @@ mixin MerchantWidgetElementsProviderMixin {
             ),
             GestureDetector(onTap: onContactMerchant,
               child: Text(phoneNumber.formatPhoneNumber,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2
-                      .copyWith(color: AppColors.blueBerry),
+                  style: CustomTheme.of(context).textStyles.sectionHeading1,
                   textAlign: TextAlign.left),
             ),
           ],

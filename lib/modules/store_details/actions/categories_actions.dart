@@ -30,14 +30,14 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
     else {
       var responseModel = CategoryResponse.fromJson(response.data);
 
-      if (responseModel.categories.isNotEmpty &&
-          responseModel.categories.length == 1) {
+      if (responseModel.categories.length <= 1) {
         dispatch(GetProductsForJustOneCategoryAction());
         return null;
       }
 
       return state.copyWith(
           productState: state.productState.copyWith(
+        singleCategoryFewProducts: [],
         categories: responseModel.categories,
       ));
     }
@@ -218,7 +218,7 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
             0,
             responseModel.results.length < 5
                 ? responseModel.results.length
-                : 5);
+                : 5).toList();
       }
 
       ///Preparing a list of first few products for the single category from the fetched items and initialising

@@ -46,7 +46,6 @@ class SpotlightTile extends StatelessWidget {
                 width: imageSide,
                 child: CachedNetworkImage(
                   imageUrl: imageUrl,
-                  placeholder: (_, __) => CircularProgressIndicator(),
                   errorWidget: (_, __, ___) =>
                       Image.asset('assets/images/shop1.png'),
                 )),

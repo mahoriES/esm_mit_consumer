@@ -16,6 +16,25 @@ class LinkSharingService {
     minimumVersion: "1.0.9",
   );
 
+  Future<void>shareBusinessLink({@required String businessId, @required String storeName}) async {
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+      uriPrefix: StringConstants.sharingLinkPrefix,
+      link: Uri.parse(StringConstants.businessSharingLinkUrl(
+        businessId: businessId,
+      )),
+      androidParameters: _androidParameters,
+      iosParameters: _iosParameters,
+      // socialMetaTagParameters are used as preview when this link is shared.
+      socialMetaTagParameters: SocialMetaTagParameters(
+        title: StringConstants.linkPreviewTitle(storeName),
+        description: StringConstants.linkPreviewMessage,
+        imageUrl: Uri.parse(StringConstants.esamudaayLogoUrl),
+      ),
+    );
+
+    await _shareLink(parameters: parameters);
+  }
+
   Future<void> shareProductLink({
     @required String productId,
     @required String businessId,
