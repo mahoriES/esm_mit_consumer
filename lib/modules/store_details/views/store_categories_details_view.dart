@@ -535,9 +535,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView> {
                                   : AppSizes.cartTotalBottomViewHeight,
                               duration: Duration(milliseconds: 300),
                               child: BottomView(
-                                storeName:
-                                    snapshot.selectedMerchant?.businessName ??
-                                        "",
                                 height: snapshot.localCartListing.isEmpty
                                     ? 0
                                     : AppSizes.cartTotalBottomViewHeight,

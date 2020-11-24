@@ -16,6 +16,7 @@ import 'package:eSamudaay/modules/orders/views/support.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
+import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/presentations/alert.dart';
@@ -46,7 +47,16 @@ class SetupRoutes {
       "/payment": (BuildContext context) => Payments(),
       "/circles": (BuildContext context) => CirclePicker(),
       "/productSearch": (BuildContext context) => MerchantProductsSearchView(),
+      RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
+          ProductDetailsView(),
       '/videoPlayer': (BuildContext context) => VideoPlayerScreen(),
     };
   }
+}
+
+// Creating a new class tp contain the route names as constant string variable.
+// this makes it easier to use various route names in diffrent files.
+// Haven't changed the existing routenames yet, but let's use this utility to create new screens from now on.
+class RouteNames {
+  static const PRODUCT_DETAILS = "/productDeails";
 }

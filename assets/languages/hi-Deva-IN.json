@@ -194,7 +194,13 @@
     "call": "समर्थन को डायल करें",
     "no_contact": "कोई संपर्क विवरण उपलब्ध नहीं है।"
 
+  },
+  "product_details": {
+    "options_available": "विकल्प उपलब्ध हैं",
+    "product_information": "उत्पाद विवरण",
+    "similar_products": "मिलते जुलते प्रोडक्ट्स",
+    "item": "Item",
+    "items": "Items",
+    "taxes": "taxes"
   }
-
-
 }
