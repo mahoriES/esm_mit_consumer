@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
+import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -56,7 +57,7 @@ class SpotlightTile extends StatelessWidget {
           Text(
             itemName,
             maxLines: 1,
-            style: CustomTheme.of(context).textStyles.subtitle2,
+            style: CustomTheme.of(context).textStyles.cardTitle,
             overflow: TextOverflow.ellipsis,
           ),
           SizedBox(
@@ -66,7 +67,7 @@ class SpotlightTile extends StatelessWidget {
             quantityDescription,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: CustomTheme.of(context).textStyles.caption,
+            style: CustomTheme.of(context).textStyles.body2,
           ),
           SizedBox(
             height: AppSizes.separatorPadding / 2,
@@ -75,27 +76,18 @@ class SpotlightTile extends StatelessWidget {
             "₹ "+price,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: CustomTheme.of(context).textStyles.caption,
+            style: CustomTheme.of(context).textStyles.body2,
           ),
           SizedBox(
             height: AppSizes.separatorPadding,
           ),
-          CSStepper(
-            value: itemQuantity,
-            addButtonAction: () {
-              incrementQuantityAction(product, context, 0);
-            },
-            removeButtonAction: () {
-              decrementQuantityAction(product, 0);
-            },
-          ),
+          ProductCountWidget(product: product,isSku: true,skuIndex: 0,),
         ],
       ),
     );
   }
 }
 
-//
 class SpotlightItemsScroller extends StatelessWidget {
   final List<Product> spotlightProducts;
   final Function onAddProduct;
@@ -117,7 +109,7 @@ class SpotlightItemsScroller extends StatelessWidget {
         Padding(padding: const EdgeInsets.only(left: AppSizes.widgetPadding),
           child: Text(
             tr('store_home.spotlight'),
-            style: CustomTheme.of(context).textStyles.subtitle1.copyWith(fontSize: 18.toFont),
+            style: CustomTheme.of(context).textStyles.sectionHeading2.copyWith(fontSize: 18),
           ),
         ),
         Container(
@@ -150,6 +142,4 @@ class SpotlightItemsScroller extends StatelessWidget {
       ],
     );
   }
-
-
 }

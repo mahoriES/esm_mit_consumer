@@ -77,7 +77,7 @@ mixin MerchantWidgetElementsProviderMixin {
                     child: Center(
                       child: Text(
                         categoryName,
-                        style: CustomTheme.of(context).textStyles.caption,
+                        style: CustomTheme.of(context).textStyles.body2,
                       ),
                     ),
                   ),
@@ -133,7 +133,7 @@ mixin MerchantWidgetElementsProviderMixin {
               new ListTile(
                   title: new Text(
                     'Call $merchantName',
-                    style: CustomTheme.of(context).textStyles.subtitle2,
+                    style: CustomTheme.of(context).textStyles.cardTitle,
                   ),
                   leading: const Icon(
                     Icons.call,
@@ -143,7 +143,7 @@ mixin MerchantWidgetElementsProviderMixin {
                   onTap: onCallAction),
               new ListTile(
                 title: new Text('Whatsapp $merchantName',
-                    style: CustomTheme.of(context).textStyles.subtitle2),
+                    style: CustomTheme.of(context).textStyles.cardTitle),
                 leading: SizedBox(height: 25.toHeight,width: 25.toWidth,child: Image.asset('assets/images/whatsapp.png')),
                 onTap: onWhatsappAction,
               ),

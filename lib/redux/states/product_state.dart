@@ -35,6 +35,7 @@ class ProductState {
   final Cluster selectedCluster;
   final CatalogSearchResponse productResponse;
   final List<ApplicationMeta> upiApps;
+  final Product selectedProductForDetails;
 
   ProductState({
     @required this.localCartItems,
@@ -61,11 +62,13 @@ class ProductState {
     @required this.productResponse,
     @required this.selectedSubCategory,
     @required this.searchResultProducts,
+    @required this.selectedProductForDetails,
   });
 
   factory ProductState.initial() {
     return new ProductState(
         customerNoteImages: [],
+        selectedProductForDetails: null,
         localFreeFormCartItems: [],
         upiApps: [],
         videosResponse: VideoFeedResponse(count: 0, results: [],),
@@ -115,6 +118,7 @@ class ProductState {
       String supportOrder,
       bool currentOrderIsPickUp,
       CatalogSearchResponse productResponse,
+      Product selectedProductForDetails,
       Cluster selectedCluster}) {
     return ProductState(
         spotlightItems: spotlightItems ?? this.spotlightItems,
@@ -145,6 +149,7 @@ class ProductState {
         subCategories: subCategories ?? this.subCategories,
         selectedSubCategory: selectedSubCategory ?? this.selectedSubCategory,
         currentOrderIsPickUp:
-            currentOrderIsPickUp ?? this.currentOrderIsPickUp);
+            currentOrderIsPickUp ?? this.currentOrderIsPickUp,
+        selectedProductForDetails: selectedProductForDetails ?? this.selectedProductForDetails);
   }
 }

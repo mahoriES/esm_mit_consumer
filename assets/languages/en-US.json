@@ -87,7 +87,7 @@
 
   "cart": {
     "title": "Cart",
-    "view_cart": "VIEW ITEMS",
+    "view_cart": "View Cart",
     "total": "TOTAL",
     "payment_details": "Payment Details",
     "total_amount": "Total amount",
@@ -250,6 +250,14 @@
     "approved": "Payment received by merchant",
     "pending": "Payment not done",
     "rejected": "Payment not done"
+  },
+  "product_details": {
+    "options_available": "Options available",
+    "product_information": "Product Information",
+    "similar_products": "Similar Products",
+    "item": "Item",
+    "items": "Items",
+    "taxes": "taxes"
   }
 
 }

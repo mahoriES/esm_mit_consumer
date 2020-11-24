@@ -235,8 +235,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                         "shop.item_category",
                                         style: CustomTheme.of(context)
                                             .textStyles
-                                            .subtitle1
-                                            .copyWith(fontSize: 18.toFont,color: const Color(0xff5f3a9f)),
+                                            .sectionHeading2
+                                            .copyWith(fontSize: 18,color: const Color(0xff5f3a9f)),
                                       ).tr(),
                                       SizedBox(
                                         height: AppSizes.widgetPadding,
@@ -293,8 +293,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                 : AppSizes.cartTotalBottomViewHeight,
                             duration: Duration(milliseconds: 300),
                             child: BottomView(
-                              storeName:
-                                  snapshot.selectedMerchant?.businessName ?? "",
                               height: snapshot.localCartListing.isEmpty
                                   ? 0
                                   : AppSizes.cartTotalBottomViewHeight,
@@ -376,7 +374,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
               child: Text(
                 note.formatCustomerNote,
                 textAlign: TextAlign.left,
-                style: CustomTheme.of(context).textStyles.caption.copyWith(color: AppColors.solidWhite),
+                style: CustomTheme.of(context).textStyles.buttonText2.copyWith(color: AppColors.solidWhite),
               ),
             ),
           ),

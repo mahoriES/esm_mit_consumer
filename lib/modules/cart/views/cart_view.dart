@@ -17,7 +17,6 @@ import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
-import 'package:eSamudaay/utilities/charges_name.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -171,10 +170,11 @@ class _CartViewState extends State<CartView> {
                                                               .spaceBetween,
                                                       children: <Widget>[
                                                         CSStepper(
-                                                          value: snapshot
+                                                          isDisabled: false,
+                                                          fillColor: true,
+                                                          count: snapshot
                                                               .localCart[index]
-                                                              .count
-                                                              .toString(),
+                                                              .count,
                                                           addButtonAction: () {
                                                             var item = snapshot
                                                                     .localCart[
@@ -850,7 +850,6 @@ class _CartViewState extends State<CartView> {
                               ),
                             ),
                             BottomView(
-                              storeName: snapshot.selectedMerchant.businessName,
                               buttonTitle: tr('cart.confirm_order'),
                               height: 80,
                               didPressButton: () async {

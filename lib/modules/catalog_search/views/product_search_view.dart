@@ -8,9 +8,8 @@ import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
+import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -279,9 +278,6 @@ class _MerchantProductsSearchViewState
                                   : AppSizes.cartTotalBottomViewHeight,
                               duration: Duration(milliseconds: 300),
                               child: BottomView(
-                                storeName:
-                                    snapshot.selectedMerchant?.businessName ??
-                                        "",
                                 height: snapshot.localCartListing.isEmpty
                                     ? 0
                                     : AppSizes.cartTotalBottomViewHeight,
@@ -396,9 +392,9 @@ class _SearchProductListingItemViewState
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          bool isOutOfStock = widget.item.inStock;
+          bool isInStock = widget.item.inStock;
           return IgnorePointer(
-            ignoring: !isOutOfStock,
+            ignoring: !isInStock,
             child: Row(
               children: <Widget>[
                 Container(
@@ -478,10 +474,10 @@ class _SearchProductListingItemViewState
                                             )),
                                   ),
                         colorFilter: ColorFilter.mode(
-                            !isOutOfStock ? Colors.grey : Colors.transparent,
+                            !isInStock ? Colors.grey : Colors.transparent,
                             BlendMode.saturation),
                       ),
-                      !isOutOfStock
+                      !isInStock
                           ? Positioned(
                               bottom: 5,
                               child: // Out of stock
@@ -524,7 +520,7 @@ class _SearchProductListingItemViewState
                                 Text(
                                     "₹ ${widget.item.skus.isEmpty ? 0 : widget.item.skus.first.basePrice / 100}",
                                     style: TextStyle(
-                                        color: (!isOutOfStock
+                                        color: (!isInStock
                                             ? AppColors.offWhitish
                                             : AppColors.lightBlue),
                                         fontWeight: FontWeight.w500,
@@ -563,48 +559,9 @@ class _SearchProductListingItemViewState
                                       ),
                               ],
                             ),
-                            CSStepper(
-                              backgroundColor: !isOutOfStock
-                                  ? AppColors.offWhitish
-                                  : AppColors.icColors,
-                              addButtonAction: () {
-                                if (widget.item.skus.isNotEmpty &&
-                                    widget.item.skus.length > 1) {
-                                  handleActionForMultipleSkus(
-                                      product: widget.item,
-                                      storeName: store.state.productState
-                                          .selectedMerchant.businessName,
-                                      productIndex: widget.index);
-                                  return;
-                                }
-
-                                widget.item.count =
-                                    ((widget.item?.count ?? 0) + 1)
-                                        .clamp(0, double.nan);
-                                snapshot.addToCart(widget.item, context);
-                              },
-                              removeButtonAction: () {
-                                if (widget.item.skus.isNotEmpty &&
-                                    widget.item.skus.length > 1) {
-                                  handleActionForMultipleSkus(
-                                      product: widget.item,
-                                      storeName: store.state.productState
-                                          .selectedMerchant.businessName,
-                                      productIndex: widget.index);
-                                  return;
-                                }
-                                widget.item.count =
-                                    ((widget.item?.count ?? 0) - 1)
-                                        .clamp(0, double.nan);
-                                snapshot.removeFromCart(widget.item);
-                              },
-                              value: getTotalItemCount(
-                                          widget.item.productId, snapshot) ==
-                                      0
-                                  ? tr("new_changes.add")
-                                  : getTotalItemCount(
-                                          widget.item.productId, snapshot)
-                                      .toString(),
+                            ProductCountWidget(
+                              product: widget.item,
+                              isSku: false,
                             ),
                           ],
                         ),
@@ -641,11 +598,7 @@ class _SearchProductListingItemViewState
               Radius.circular(AppSizes.bottomSheetBorderRadius)),
         ),
         builder: (context) => Container(
-              child: SkuBottomSheet(
-                product: product,
-                storeName: storeName,
-                productIndex: productIndex,
-              ),
+              child: SkuBottomSheet(product: product),
             ));
   }
 }
