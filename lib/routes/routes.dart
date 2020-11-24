@@ -16,9 +16,9 @@ import 'package:eSamudaay/modules/orders/views/support.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
+import 'package:eSamudaay/modules/store_details/views/product_catalog/product_catalog.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_product_listing_view.dart';
 import 'package:eSamudaay/presentations/alert.dart';
 import 'package:flutter/material.dart';
 
@@ -34,9 +34,9 @@ class SetupRoutes {
       "/CartView": (BuildContext context) => CartView(),
       "/AccountsView": (BuildContext context) => AccountsView(),
       "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
-      "/StoreProductListingView": (BuildContext context) =>
-          StoreProductListingView(),
-      "/ProductSearchView": (BuildContext context) => ProductSearchView(),
+      RouteNames.PRODUCT_CATALOGUE: (BuildContext context) =>
+          ProductCatalogView(),
+      RouteNames.PRODUCT_SEARCH: (BuildContext context) => ProductSearchView(),
       "/OrdersView": (BuildContext context) => OrdersView(),
       "/SMAlertView": (BuildContext context) => SMAlertView(),
       "/Support": (BuildContext context) => Support(),
@@ -59,4 +59,6 @@ class SetupRoutes {
 // Haven't changed the existing routenames yet, but let's use this utility to create new screens from now on.
 class RouteNames {
   static const PRODUCT_DETAILS = "/productDeails";
+  static const PRODUCT_CATALOGUE = "/StoreProductListingView";
+  static const PRODUCT_SEARCH = "/ProductSearchView";
 }
