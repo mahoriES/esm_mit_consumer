@@ -14,6 +14,7 @@ class ProductState {
   final List<Product> productListingDataSource;
   final List<Product> productListingTempDataSource;
   final List<Product> searchResultProducts;
+  final List<Product> singleCategoryFewProducts;
   final List<Merchants> searchResults;
   final bool currentOrderIsPickUp;
   final bool searchForProductsComplete;
@@ -38,6 +39,7 @@ class ProductState {
   ProductState({
     @required this.localCartItems,
     @required this.charges,
+    @required this.singleCategoryFewProducts,
     @required this.spotlightItems,
     @required this.customerNoteImages,
     @required this.localFreeFormCartItems,
@@ -82,6 +84,7 @@ class ProductState {
         productListingTempDataSource: [],
         productListingDataSource: [],
         searchResultProducts: [],
+        singleCategoryFewProducts: [],
         selectedCategory: null,
         selectedSubCategory: null,
         placeOrderResponse: null,
@@ -95,6 +98,7 @@ class ProductState {
       VideoFeedResponse videosResponse,
       List<String> customerNoteImages,
       List<Product> searchResultProducts,
+      List<Product> singleCategoryFewProducts,
       List<Product> localCartItems,
       List<Product> spotlightItems,
       List<JITProduct> localFreeFormCartItems,
@@ -120,6 +124,7 @@ class ProductState {
             searchForProductsComplete ?? this.searchForProductsComplete,
         upiApps: upiApps ?? this.upiApps,
         productResponse: productResponse ?? this.productResponse,
+        singleCategoryFewProducts: singleCategoryFewProducts ?? this.singleCategoryFewProducts,
         charges: charges ?? this.charges,
         selectedCluster: selectedCluster ?? this.selectedCluster,
         searchResults: searchResults ?? this.searchResults,

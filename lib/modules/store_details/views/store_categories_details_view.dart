@@ -29,6 +29,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -442,6 +443,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToProductSearch;
   List<Product> localCartListing;
   List<Product> spotlightItems;
+  List<Product> singleCategoryFewProducts;
   List<JITProduct> freeFormItemsList;
   Function navigateToCart;
   Function(BuildContext) checkForPreviouslyAddedListItems;
@@ -460,6 +462,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.loadingStatus,
       this.onVideoTap,
       this.addToCart,
+      this.singleCategoryFewProducts,
       this.removeFromCart,
       this.spotlightItems,
       this.onRefresh,
@@ -481,12 +484,14 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatus,
           categories,
           localCartListing,
+          singleCategoryFewProducts,
           freeFormItemsList,
         ]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+        singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
         spotlightItems: state.productState.spotlightItems,
         videoFeedResponse: state.productState.videosResponse,
         freeFormItemsList: state.productState.localFreeFormCartItems,
@@ -654,6 +659,7 @@ class _ViewModel extends BaseModel<AppState> {
 
 extension StringUtils on String {
   String get formatPhoneNumber {
+    if (int.tryParse(this)==null)return this;
     if (this.length > 3 && this.substring(0, 3) != "+91") return "+91" + this;
     return this;
   }

@@ -9,6 +9,7 @@ import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dar
 import 'package:eSamudaay/modules/store_details/models/categories_models.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,7 +21,7 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
     var response = await APIManager.shared.request(
         url:
             "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
-        params: {"": ""},
+        params: null,
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
@@ -28,6 +29,12 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       var responseModel = CategoryResponse.fromJson(response.data);
+
+      if (responseModel.categories.isNotEmpty &&
+          responseModel.categories.length == 1) {
+        dispatch(GetProductsForJustOneCategoryAction());
+        return null;
+      }
 
       return state.copyWith(
           productState: state.productState.copyWith(
@@ -161,7 +168,6 @@ class GetBusinessSpotlightItems extends ReduxAction<AppState> {
 }
 
 class BookmarkBusinessAction extends ReduxAction<AppState> {
-
   final String businessId;
 
   BookmarkBusinessAction({@required this.businessId});
@@ -181,9 +187,8 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       selectedMerchant.isBookmarked = true;
       debugPrint('After setting this to true');
       return state.copyWith(
-        productState: state.productState.copyWith(
-            selectedMerchant: selectedMerchant
-        ),
+        productState:
+            state.productState.copyWith(selectedMerchant: selectedMerchant),
       );
     }
     return null;
@@ -193,11 +198,62 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+}
 
+class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    String businessId = state.productState.selectedMerchant.businessId;
+    var response = await APIManager.shared.request(
+      params: null,
+      requestType: RequestType.get,
+      url: ApiURL.getBusinessesUrl + businessId + "/catalog/products",
+    );
+
+    if (response.status == ResponseStatus.success200) {
+      var responseModel = CatalogSearchResponse.fromJson(response.data);
+      List<Product> items = [];
+      if (responseModel.results.isNotEmpty) {
+        items = responseModel.results.getRange(
+            0,
+            responseModel.results.length < 5
+                ? responseModel.results.length
+                : 5);
+      }
+
+      ///Preparing a list of first few products for the single category from the fetched items and initialising
+      ///the selected quantity for each [product] to zero.
+      var products = items.map((item) {
+        item.count = 0;
+        return item;
+      }).toList();
+
+      ///Getting the list of all items currently persisted in the local cart
+      ///data source, since products might have been already added to cart by customer
+      List<Product> allCartItems = await CartDataSource.getListOfCartWith();
+
+      ///Initialising the selected SKU for each product (in the fetched product
+      ///list) and if the item has already been added to the local cart, then
+      ///updating it's quantity to that in the local cart.
+      products.forEach((item) {
+        item.selectedVariant = 0;
+        allCartItems.forEach((localCartItem) {
+          if (item.productId == localCartItem.productId) {
+            item.count = localCartItem.count;
+          }
+        });
+      });
+
+      return state.copyWith(
+          productState: state.productState.copyWith(
+        singleCategoryFewProducts: products,
+      ));
+    }
+    return null;
+  }
 }
 
 class UnBookmarkBusinessAction extends ReduxAction<AppState> {
-
   final String businessId;
 
   UnBookmarkBusinessAction({@required this.businessId});
@@ -214,9 +270,8 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
       Business selectedMerchant = state.productState.selectedMerchant;
       selectedMerchant.isBookmarked = false;
       return state.copyWith(
-        productState: state.productState.copyWith(
-          selectedMerchant: selectedMerchant
-        ),
+        productState:
+            state.productState.copyWith(selectedMerchant: selectedMerchant),
       );
     }
     return null;
@@ -226,5 +281,4 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-
 }

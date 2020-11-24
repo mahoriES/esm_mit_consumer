@@ -4,6 +4,11 @@ import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
+
+///The [BusinessTitleTile] is the top header shown on the business landing page.
+///It contains the basic store info, alongwith options to contact, bookmark the business.
+///Tapping on it will show a popup with more details viz. address, business images etc.
 
 class BusinessTitleTile extends StatefulWidget {
   final String businessName;

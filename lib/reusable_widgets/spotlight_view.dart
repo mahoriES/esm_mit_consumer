@@ -7,6 +7,9 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+///The [SpotlightTile] class implements the item to shown in the horizontal carousel for the
+///spotlight items.
+
 class SpotlightTile extends StatelessWidget {
   final String imageUrl;
   final String itemName;
