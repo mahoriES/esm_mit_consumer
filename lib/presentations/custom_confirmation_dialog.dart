@@ -1,15 +1,15 @@
-import 'package:eSamudaay/presentations/icon_button.dart';
+import 'package:eSamudaay/presentations/custom_icon_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
-class CustomDialog extends StatelessWidget {
+class CustomConfirmationDialog extends StatelessWidget {
   final String title;
   final String message;
   final String positiveButtonText;
   final String negativeButtonText;
   final Function positiveAction;
-  const CustomDialog({
+  const CustomConfirmationDialog({
     @required this.title,
     @required this.message,
     @required this.positiveAction,

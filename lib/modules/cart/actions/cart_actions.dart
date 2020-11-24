@@ -7,7 +7,7 @@ import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/custom_dialog.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
@@ -70,7 +70,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          child: CustomDialog(
+          child: CustomConfirmationDialog(
             title: tr("product_details.replace_cart_items"),
             message: tr('new_changes.clear_info'),
             positiveButtonText: tr('new_changes.continue'),
