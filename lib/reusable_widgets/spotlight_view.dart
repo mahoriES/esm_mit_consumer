@@ -20,12 +20,14 @@ class SpotlightTile extends StatelessWidget {
   final Function decrementQuantityAction;
   final Function incrementQuantityAction;
   final Product product;
+  final Function onTapItemImage;
 
   const SpotlightTile(
       {@required this.itemName,
       @required this.product,
       @required this.imageUrl,
       @required this.price,
+      @required this.onTapItemImage,
       @required this.quantityDescription,
       @required this.decrementQuantityAction,
       @required this.incrementQuantityAction,
@@ -39,16 +41,21 @@ class SpotlightTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: SizedBox(
-                height: imageSide,
-                width: imageSide,
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  errorWidget: (_, __, ___) =>
-                      Image.asset('assets/images/shop1.png'),
-                )),
+          GestureDetector(
+            onTap: () {
+              onTapItemImage(product);
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: SizedBox(
+                  height: imageSide,
+                  width: imageSide,
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    errorWidget: (_, __, ___) =>
+                        Image.asset('assets/images/shop1.png'),
+                  )),
+            ),
           ),
           SizedBox(
             height: AppSizes.separatorPadding,
@@ -72,7 +79,7 @@ class SpotlightTile extends StatelessWidget {
             height: AppSizes.separatorPadding / 2,
           ),
           Text(
-            "₹ "+price,
+            "₹ " + price,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: CustomTheme.of(context).textStyles.body2,
@@ -80,7 +87,11 @@ class SpotlightTile extends StatelessWidget {
           SizedBox(
             height: AppSizes.separatorPadding,
           ),
-          ProductCountWidget(product: product,isSku: true,skuIndex: 0,),
+          ProductCountWidget(
+            product: product,
+            isSku: true,
+            skuIndex: 0,
+          ),
         ],
       ),
     );
@@ -91,10 +102,12 @@ class SpotlightItemsScroller extends StatelessWidget {
   final List<Product> spotlightProducts;
   final Function onAddProduct;
   final Function onRemoveProduct;
+  final Function onImageTap;
 
   const SpotlightItemsScroller(
       {@required this.spotlightProducts,
       @required this.onAddProduct,
+      @required this.onImageTap,
       @required this.onRemoveProduct});
 
   @override
@@ -104,11 +117,17 @@ class SpotlightItemsScroller extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: AppSizes.widgetPadding,),
-        Padding(padding: const EdgeInsets.only(left: AppSizes.widgetPadding),
+        SizedBox(
+          height: AppSizes.widgetPadding,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: AppSizes.widgetPadding),
           child: Text(
             tr('store_home.spotlight'),
-            style: CustomTheme.of(context).textStyles.sectionHeading2.copyWith(fontSize: 18),
+            style: CustomTheme.of(context)
+                .textStyles
+                .sectionHeading2
+                .copyWith(fontSize: 18),
           ),
         ),
         Container(
@@ -123,10 +142,13 @@ class SpotlightItemsScroller extends StatelessWidget {
                 Product product = spotlightProducts[index];
                 return SpotlightTile(
                     product: product,
+                    onTapItemImage: onImageTap,
                     itemName: product.productName,
                     imageUrl: product.images.first.photoUrl,
-                    price: (product.skus.first.basePrice / 100).toStringAsFixed(2),
-                    quantityDescription: product.skus.first.variationOptions.weight,
+                    price:
+                        (product.skus.first.basePrice / 100).toStringAsFixed(2),
+                    quantityDescription:
+                        product.skus.first.variationOptions.weight,
                     decrementQuantityAction: onRemoveProduct,
                     incrementQuantityAction: onAddProduct,
                     itemQuantity: product.count == 0

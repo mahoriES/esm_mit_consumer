@@ -1,3 +1,4 @@
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -7,6 +8,8 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 ///The [BusinessDetailsPopup] class implements the card-like widget which is shown as a modal popup
 ///when the [BusinessTitleTile] is tapped.
@@ -20,12 +23,14 @@ class BusinessDetailsPopup extends StatefulWidget {
   final String merchantPhoneNumber;
   final Function onContactMerchant;
   final bool isMerchantBookmarked;
+  final LocationPoint locationPoint;
   final Function onBookmarkMerchant;
   final Function onShareMerchant;
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
       @required this.onBookmarkMerchant,
+      @required this.locationPoint,
       @required this.isMerchantBookmarked,
       @required this.onContactMerchant,
       @required this.businessPrettyAddress,
@@ -107,8 +112,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                       ),
                       Positioned(
                         left: AppSizes.widgetPadding,
-                        bottom:
-                            SizeConfig.screenWidth * 0.1 - AppSizes.widgetPadding,
+                        bottom: SizeConfig.screenWidth * 0.1 -
+                            AppSizes.widgetPadding,
                         child: eSamudaayAnimatedLogo(
                             animation: appLogoScaleAnimation,
                             scaledHeight: SizeConfig.screenWidth * 0.2),
@@ -131,7 +136,9 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                                   top: AppSizes.separatorPadding),
                               child: Text(
                                 widget.businessSubtitle,
-                                style: CustomTheme.of(context).textStyles.sectionHeading2,
+                                style: CustomTheme.of(context)
+                                    .textStyles
+                                    .sectionHeading2,
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -156,7 +163,10 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                           context,
                           widget.businessPrettyAddress,
                           widget.merchantPhoneNumber,
-                          widget.onContactMerchant),
+                          widget.onContactMerchant, () {
+                        openMap(widget.locationPoint.lat ?? 0.0,
+                            widget.locationPoint.lon ?? 0.0);
+                      }),
                       const SizedBox(
                         height: AppSizes.widgetPadding,
                       ),
@@ -171,8 +181,18 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
     );
   }
 
-  Widget buildMerchantTitleRowWithActions(String businessName,
-      Function onBookmark, bool isBookmarked) {
+  static Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl =
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      Fluttertoast.showToast(msg: "Couldn't open Map!");
+    }
+  }
+
+  Widget buildMerchantTitleRowWithActions(
+      String businessName, Function onBookmark, bool isBookmarked) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Row(
@@ -180,9 +200,11 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
         children: [
           Expanded(
             flex: 80,
-            child: Text(businessName,
-                style: CustomTheme.of(context).textStyles.merchantCardTitle,
-                textAlign: TextAlign.start,),
+            child: Text(
+              businessName,
+              style: CustomTheme.of(context).textStyles.merchantCardTitle,
+              textAlign: TextAlign.start,
+            ),
           ),
           Expanded(
             flex: 20,

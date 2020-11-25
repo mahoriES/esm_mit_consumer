@@ -42,44 +42,96 @@ class BusinessTitleTile extends StatefulWidget {
   _BusinessTitleTileState createState() => _BusinessTitleTileState();
 }
 
-class _BusinessTitleTileState extends State<BusinessTitleTile> with MerchantWidgetElementsProviderMixin {
+class _BusinessTitleTileState extends State<BusinessTitleTile>
+    with MerchantWidgetElementsProviderMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(
-          top: AppSizes.separatorPadding, bottom: AppSizes.separatorPadding,right: AppSizes.separatorPadding,),
+        top: AppSizes.separatorPadding,
+        bottom: AppSizes.separatorPadding,
+        right: AppSizes.separatorPadding,
+      ),
       decoration: BoxDecoration(
         color: AppColors.solidWhite,
-        boxShadow: const [BoxShadow(color: AppColors.greyedout,blurRadius: 6.0, offset: Offset(0, 3))],
+        boxShadow: const [
+          BoxShadow(
+              color: AppColors.greyedout, blurRadius: 6.0, offset: Offset(0, 3))
+        ],
         borderRadius: BorderRadius.circular(9.0),
       ),
       child: Row(
         children: [
-          const SizedBox(width: AppSizes.separatorPadding,),
-          GestureDetector(onTap: widget.onBackPressed, child: Icon(Icons.arrow_back_ios,color: AppColors.blueBerry,)),
-          GestureDetector(onTap: widget.onShowMerchantInfo,child: buildMerchantDPTitle(widget.businessImageUrl)),
-          const SizedBox(width: AppSizes.separatorPadding/2,),
+          const SizedBox(
+            width: AppSizes.separatorPadding,
+          ),
+          GestureDetector(
+              onTap: widget.onBackPressed,
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: AppColors.blueBerry,
+              )),
+          GestureDetector(
+              onTap: widget.onShowMerchantInfo,
+              child: buildMerchantDPTitle(widget.businessImageUrl)),
+          const SizedBox(
+            width: AppSizes.separatorPadding / 2,
+          ),
           Expanded(
-            child: GestureDetector(onTap: widget.onShowMerchantInfo,
-              child: Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(widget.businessName,style: Theme.of(context).textTheme.headline6,overflow: TextOverflow.ellipsis,),
-                const SizedBox(height: AppSizes.separatorPadding/2,),
-                Text(widget.businessSubtitle,overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.caption,),
-                const SizedBox(height: AppSizes.separatorPadding/2,),
-                Text(widget.storeTimingsDetailsString, overflow: TextOverflow.ellipsis,),
-              ],),),
+            child: GestureDetector(
+              onTap: widget.onShowMerchantInfo,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.businessName,
+                    style: Theme.of(context).textTheme.headline6,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(
+                    height: AppSizes.separatorPadding / 2,
+                  ),
+                  Text(
+                    widget.businessSubtitle,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                  const SizedBox(
+                    height: AppSizes.separatorPadding / 2,
+                  ),
+                  Text(
+                    widget.storeTimingsDetailsString,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ),
-          Column(children: [
-            const SizedBox(height: AppSizes.separatorPadding,),
-            Row(children: [
-              bookmarkActionButton(widget.onBookmarkMerchant, widget.isBookmarked),
-              const SizedBox(width: AppSizes.separatorPadding,),
-              contactMerchantActionButton(widget.onContactMerchantPressed),
-            ],),
-            const SizedBox(height: AppSizes.separatorPadding,),
-            buildDeliveryStatus(context, widget.isDeliveryAvailable),
-          ],),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: AppSizes.separatorPadding,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  bookmarkActionButton(
+                      widget.onBookmarkMerchant, widget.isBookmarked),
+                  const SizedBox(
+                    width: AppSizes.separatorPadding,
+                  ),
+                  contactMerchantActionButton(widget.onContactMerchantPressed),
+                ],
+              ),
+              const SizedBox(
+                height: AppSizes.separatorPadding,
+              ),
+              buildDeliveryStatus(context, widget.isDeliveryAvailable),
+            ],
+          ),
         ],
       ),
     );
@@ -101,7 +153,8 @@ class _BusinessTitleTileState extends State<BusinessTitleTile> with MerchantWidg
                 clipBehavior: Clip.antiAlias,
                 decoration: const ShapeDecoration(shape: CircleBorder()),
                 child: CachedNetworkImage(
-                  errorWidget: (_,__,___)=>Image.asset('assets/images/shop1.png'),
+                  errorWidget: (_, __, ___) =>
+                      Image.asset('assets/images/shop1.png'),
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
                 ),

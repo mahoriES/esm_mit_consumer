@@ -1,6 +1,16 @@
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 
-@Deprecated("Use CustomTheme.of(context).colors instead")
+///Removing the deprecation of this class. This class SHOULD NOT BE USED for Text Widgets,
+///
+///however, this shall be used for background, foreground, other decoration properties.
+///
+///It provides the benefit of using the [const] constructor, hence when rebuilding the widget tree,
+///
+///widgets using this won't be rebuilt and we get performance gain. Similarly goes for [AppSizes] class.
+///
+//TODO: Remove colors which are no longer required post implementation of the new designs, and which pertain only to text colors.
+
 class AppColors {
   static const mainColor = Color(0xff4093d1);
   static const darkGrey = Color(0xff989696);

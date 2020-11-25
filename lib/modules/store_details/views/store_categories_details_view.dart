@@ -12,6 +12,7 @@ import 'package:eSamudaay/modules/store_details/views/highlight_catalog_item_vie
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -165,12 +166,12 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                 snapshot.navigateToVideoView();
                                               },
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: AppSizes.widgetPadding,
                                             ),
                                             Container(
                                               child: Hero(
-                                                tag: 'herotag',
+                                                tag: 'toSearchScreen',
                                                 child: TextField(
                                                   onTap: () {
                                                     FocusScope.of(context)
@@ -182,36 +183,40 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                   decoration: InputDecoration(
                                                     hintText: tr(
                                                         'store_home.search_hint'),
-                                                    hintStyle:
-                                                        CustomTheme.of(context)
-                                                            .themeData
-                                                            .textTheme
-                                                            .subtitle1
-                                                            .copyWith(
-                                                                color: AppColors
-                                                                    .darkGrey),
-                                                    prefixIcon: Icon(
+                                                    hintStyle: CustomTheme.of(
+                                                            context)
+                                                        .themeData
+                                                        .textTheme
+                                                        .subtitle1
+                                                        .copyWith(
+                                                            color: CustomTheme
+                                                                    .of(context)
+                                                                .colors
+                                                                .disabledAreaColor),
+                                                    prefixIcon: const Icon(
                                                       Icons.search_rounded,
                                                       color:
                                                           AppColors.blueBerry,
                                                     ),
                                                     enabledBorder:
                                                         OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: AppColors
-                                                              .greyedout),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                              color: AppColors
+                                                                  .greyedout),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5),
                                                     ),
                                                     contentPadding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets
+                                                                .symmetric(
                                                             vertical: 0),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: AppSizes.widgetPadding,
                                             ),
                                           ],
@@ -227,6 +232,11 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                         getMerchantNoteRow(
                                             snapshot.selectedMerchant.notice),
                                       SpotlightItemsScroller(
+                                        onImageTap: (Product item) {
+                                          snapshot.updateSelectedProduct(item);
+                                          snapshot
+                                              .navigateToProductDetailsPage();
+                                        },
                                         spotlightProducts:
                                             snapshot.spotlightItems,
                                         onAddProduct: snapshot.addToCart,
@@ -242,7 +252,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        SizedBox(
+                                        const SizedBox(
                                           height: AppSizes.separatorPadding,
                                         ),
                                         Text(
@@ -253,13 +263,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               .copyWith(
                                                   fontSize: 18,
                                                   color:
-                                                      const Color(0xff5f3a9f)),
+                                                      CustomTheme.of(context).colors.primaryColor),
                                         ).tr(),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: AppSizes.widgetPadding,
                                         ),
                                         buildCategoriesGrid(snapshot),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: AppSizes.widgetPadding * 4,
                                         ),
                                       ],
@@ -303,8 +313,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                   .checkForPreviouslyAddedListItems(context);
                             },
                             child: Container(
-                              padding:
-                                  EdgeInsets.all(AppSizes.separatorPadding),
+                              padding: const EdgeInsets.all(
+                                  AppSizes.separatorPadding),
                               decoration: BoxDecoration(
                                 color: AppColors.hotPink,
                                 borderRadius: BorderRadius.circular(
@@ -316,12 +326,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                     'assets/images/notepad.png',
                                     color: AppColors.solidWhite,
                                   ),
-                                  SizedBox(width: AppSizes.separatorPadding),
+                                  const SizedBox(
+                                      width: AppSizes.separatorPadding),
                                   Text(
                                     'List Items',
-                                    style: TextStyle(
-                                        fontFamily: "Avenir-Medium",
-                                        color: AppColors.solidWhite),
+                                    style: CustomTheme.of(context).textStyles.body1.copyWith(
+                                      height: 1,color: CustomTheme.of(context).colors.backgroundColor
+                                    ),
                                   ),
                                 ],
                               ),
@@ -338,10 +349,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         ),
       ),
     );
-  }
-
-  Widget get productsLabel {
-    return Text(tr('store_home.products'));
   }
 
   Widget buildProductsListView(_ViewModel snapshot) {
@@ -407,7 +414,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                 style: CustomTheme.of(context)
                     .textStyles
                     .buttonText2
-                    .copyWith(color: AppColors.solidWhite),
+                    .copyWith(color: CustomTheme.of(context).colors.backgroundColor),
               ),
             ),
           ),
@@ -441,6 +448,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         context: context,
         builder: (context) {
           return BusinessDetailsPopup(
+              locationPoint: snapshot.selectedMerchant.address.locationPoint,
               onShareMerchant: () async {
                 LinkSharingService().shareBusinessLink(
                     businessId: snapshot.selectedMerchant.businessId,
@@ -491,15 +499,19 @@ class _ViewModel extends BaseModel<AppState> {
   Function loadVideoFeedForMerchant;
   Function onRefresh;
   Function navigateToVideoView;
+  Function(Product) updateSelectedProduct;
+  Function navigateToProductDetailsPage;
 
   _ViewModel();
 
   _ViewModel.build(
       {this.navigateToProductDetails,
       this.loadVideoFeedForMerchant,
+      this.updateSelectedProduct,
       this.navigateToVideoView,
       this.loadingStatus,
       this.onVideoTap,
+      this.navigateToProductDetailsPage,
       this.addToCart,
       this.singleCategoryFewProducts,
       this.removeFromCart,
@@ -595,6 +607,12 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(
             NavigateAction.pushNamed('/productSearch'),
           );
+        },
+        updateSelectedProduct: (selectedProduct) {
+          dispatch(UpdateSelectedProductAction(selectedProduct));
+        },
+        navigateToProductDetailsPage: () {
+          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
         },
         navigateToVideoView: () {
           dispatch(NavigateAction.pushNamed("/videoPlayer"));

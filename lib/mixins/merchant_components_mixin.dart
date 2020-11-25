@@ -20,14 +20,19 @@ mixin MerchantWidgetElementsProviderMixin {
         children: [
           deliveryStatus
               ? const ImageIcon(
-            AssetImage('assets/images/delivery.png'),
-            color: Colors.green,
-          )
-              : const Icon(Icons.store,color: AppColors.orange,),
-          SizedBox(width: 3.toWidth,),
+                  AssetImage('assets/images/delivery.png'),
+                  color: Colors.green,
+                )
+              : const Icon(
+                  Icons.store,
+                  color: AppColors.orange,
+                ),
+          SizedBox(
+            width: 3.toWidth,
+          ),
           Text(deliveryStatus ? tr("shop.delivery_ok") : tr("shop.delivery_no"),
-              style: CustomTheme.of(context).textStyles.body1
-                  .copyWith(color: deliveryStatus ? AppColors.green : AppColors.orange),
+              style: CustomTheme.of(context).textStyles.body1.copyWith(
+                  color: deliveryStatus ? AppColors.green : AppColors.orange),
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left),
         ],
@@ -44,9 +49,9 @@ mixin MerchantWidgetElementsProviderMixin {
 
   Widget buildBusinessCategoryTile(BuildContext context,
       {Function onTap,
-        String categoryName,
-        String imageUrl,
-        double tileWidth}) {
+      String categoryName,
+      String imageUrl,
+      double tileWidth}) {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
@@ -58,11 +63,11 @@ mixin MerchantWidgetElementsProviderMixin {
             children: [
               Positioned.fill(
                   child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    errorWidget: (_, __, ___) => placeHolderImage,
-                    placeholder: (_, __) => placeHolderImage,
-                    fit: BoxFit.cover,
-                  )),
+                imageUrl: imageUrl,
+                errorWidget: (_, __, ___) => placeHolderImage,
+                placeholder: (_, __) => placeHolderImage,
+                fit: BoxFit.cover,
+              )),
               Positioned.fill(
                 child: FractionallySizedBox(
                   alignment: Alignment.bottomCenter,
@@ -93,6 +98,7 @@ mixin MerchantWidgetElementsProviderMixin {
       onTap: onTap,
       child: const Icon(
         Icons.phone_outlined,
+        // ignore: deprecated_member_use_from_same_package
         color: AppColors.blueBerry,
         size: 22,
       ),
@@ -100,12 +106,13 @@ mixin MerchantWidgetElementsProviderMixin {
   }
 
   Widget shareActionButton(Function onShare) {
-    return GestureDetector(
-      onTap: onShare,
-      child: const Icon(
-        Icons.share,
-        color: AppColors.blueBerry,
-      ),
+    return Material(
+      child: InkWell(
+          onTap: onShare,
+          child: const Icon(
+            Icons.share,
+            color: AppColors.blueBerry,
+          )),
     );
   }
 
@@ -126,44 +133,47 @@ mixin MerchantWidgetElementsProviderMixin {
               topLeft: Radius.circular(9), topRight: Radius.circular(9)),
         ),
         builder: (context) => Container(
-          child: new Wrap(
-            children: <Widget>[
-              new ListTile(
-                  title: new Text(
-                    'Call $merchantName',
-                    style: CustomTheme.of(context).textStyles.cardTitle,
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      title: new Text(
+                        'Call $merchantName',
+                        style: CustomTheme.of(context).textStyles.cardTitle,
+                      ),
+                      leading: const Icon(
+                        Icons.call,
+                        size: 25,
+                        color: AppColors.green,
+                      ),
+                      onTap: onCallAction),
+                  new ListTile(
+                    title: new Text('Whatsapp $merchantName',
+                        style: CustomTheme.of(context).textStyles.cardTitle),
+                    leading: SizedBox(
+                        height: 25.toHeight,
+                        width: 25.toWidth,
+                        child: Image.asset('assets/images/whatsapp.png')),
+                    onTap: onWhatsappAction,
                   ),
-                  leading: const Icon(
-                    Icons.call,
-                    size: 25,
-                    color: AppColors.green,
-                  ),
-                  onTap: onCallAction),
-              new ListTile(
-                title: new Text('Whatsapp $merchantName',
-                    style: CustomTheme.of(context).textStyles.cardTitle),
-                leading: SizedBox(height: 25.toHeight,width: 25.toWidth,child: Image.asset('assets/images/whatsapp.png')),
-                onTap: onWhatsappAction,
+                ],
               ),
-            ],
-          ),
-        ));
+            ));
   }
 
   Widget buildMerchantAddressRow(BuildContext context, String address,
-      String phoneNumber, Function onContactMerchant) {
+      String phoneNumber, Function onContactMerchant, Function onOpenMap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Material(
         type: MaterialType.transparency,
         child: Row(
           children: <Widget>[
-            const ImageIcon(
+            InkWell(onTap: onOpenMap,child: const ImageIcon(
               AssetImage(
                 'assets/images/location2.png',
               ),
               color: AppColors.blueBerry,
-            ),
+            ),),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8),
@@ -176,7 +186,8 @@ mixin MerchantWidgetElementsProviderMixin {
             const SizedBox(
               width: AppSizes.separatorPadding,
             ),
-            GestureDetector(onTap: onContactMerchant,
+            GestureDetector(
+              onTap: onContactMerchant,
               child: Text(phoneNumber.formatPhoneNumber,
                   style: CustomTheme.of(context).textStyles.sectionHeading1,
                   textAlign: TextAlign.left),

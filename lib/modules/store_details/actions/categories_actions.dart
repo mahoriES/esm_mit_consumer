@@ -12,6 +12,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
         url:
-            "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
+             "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
         params: null,
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -67,33 +68,6 @@ class RemoveCategoryAction extends ReduxAction<AppState> {
   }
 }
 
-class GetCategoriesAction extends ReduxAction<AppState> {
-  final String merchantId;
-
-  GetCategoriesAction({this.merchantId});
-
-  @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.getCategories,
-        params: {"merchantID": merchantId},
-        requestType: RequestType.post);
-    if (response.data['statusCode'] == 200) {
-      GetCategoriesResponse responseModel =
-          GetCategoriesResponse.fromJson(response.data);
-    } else {
-      Fluttertoast.showToast(msg: response.data['status']);
-    }
-
-    return state.copyWith(authState: state.authState.copyWith());
-  }
-
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-}
-
 class GetBusinessVideosAction extends ReduxAction<AppState> {
   final String businessId;
 
@@ -138,8 +112,9 @@ class GetBusinessSpotlightItems extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
+    //getBusinessesUrl + businessId + "/catalog/products"
     var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl + businessId + "/catalog/products",
+        url: ApiURL.getProductsListUrl(businessId),
         params: {"spotlight": true},
         requestType: RequestType.get);
 
@@ -157,6 +132,8 @@ class GetBusinessSpotlightItems extends ReduxAction<AppState> {
 
       return state.copyWith(
           productState: state.productState.copyWith(spotlightItems: products));
+    } else {
+      Fluttertoast.showToast(msg: response.data['status']);
     }
     return null;
   }
@@ -190,6 +167,8 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
         productState:
             state.productState.copyWith(selectedMerchant: selectedMerchant),
       );
+    } else {
+      Fluttertoast.showToast(msg: response.data['status']);
     }
     return null;
   }
@@ -248,6 +227,8 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
           productState: state.productState.copyWith(
         singleCategoryFewProducts: products,
       ));
+    } else {
+      Fluttertoast.showToast(msg: response.data['status']);
     }
     return null;
   }
@@ -273,6 +254,8 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
         productState:
             state.productState.copyWith(selectedMerchant: selectedMerchant),
       );
+    } else {
+      Fluttertoast.showToast(msg: response.data['status']);
     }
     return null;
   }

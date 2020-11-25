@@ -31,4 +31,6 @@ class ApiURL {
   static const getVideoFeed = baseURL + 'api/v1/feed/';
   static final getVideoDetails = (String businessId, String productId) =>
       baseURL + "api/v1/businesses/$businessId/catalog/products/$productId";
+  static final getProductsListUrl = (String businessId) =>
+      baseURL + "api/v1/businesses/" + businessId + "/catalog/products";
 }
