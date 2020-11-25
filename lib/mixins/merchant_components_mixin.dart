@@ -110,6 +110,7 @@ mixin MerchantWidgetElementsProviderMixin {
 
   Widget shareActionButton(Function onShare) {
     return Material(
+      type: MaterialType.transparency,
       child: InkWell(
           onTap: onShare,
           child: const Icon(

@@ -58,7 +58,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
         Tween<double>(begin: 0, end: 1).animate(_controller);
     appLogoScaleAnimation = CurvedAnimation(
       parent: Tween<double>(begin: 0.0, end: 1.0).animate(_controller),
-      curve: Curves.elasticOut,
+      curve: Curves.linear,
     );
     _controller.forward();
     super.initState();
