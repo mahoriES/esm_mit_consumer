@@ -76,11 +76,14 @@ mixin MerchantWidgetElementsProviderMixin {
                   child: Container(
                     width: tileWidth,
                     color: const Color(0xffe6ffffff),
-                    padding: EdgeInsets.symmetric(vertical: 2),
+                    padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Center(
                       child: Text(
                         categoryName,
+                        maxLines: 1,
                         style: CustomTheme.of(context).textStyles.body2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),

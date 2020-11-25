@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class StoreProductListingView extends StatefulWidget {
   @override
@@ -170,32 +171,29 @@ class _StoreProductListingViewState extends State<StoreProductListingView>
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10, left: 20, right: 20, bottom: 20),
+                    padding: EdgeInsets.only(
+                        top: 10.toHeight, left: 20.toWidth, right: 20.toWidth, bottom: 20.toHeight),
                     child: Material(
-                      child: Hero(
-                        tag: 'toSearchScreen',
-                        child: new TextField(
-                          onTap: () {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            snapshot.navigateToProductSearch();
-                          },
-                          controller: _controller,
-                          decoration: new InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.search,
+                      child: TextField(
+                        onTap: () {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          snapshot.navigateToProductSearch();
+                        },
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppColors.icColors,
+                          ),
+                          suffixIcon: Icon(
+                            Icons.navigate_next,
+                            color: AppColors.icColors,
+                          ),
+                          hintText: tr('product_list.search_placeholder'),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: new BorderSide(
                               color: AppColors.icColors,
-                            ),
-                            suffixIcon: Icon(
-                              Icons.navigate_next,
-                              color: AppColors.icColors,
-                            ),
-                            hintText: tr('product_list.search_placeholder'),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: new BorderSide(
-                                color: AppColors.icColors,
-                              ),
                             ),
                           ),
                         ),

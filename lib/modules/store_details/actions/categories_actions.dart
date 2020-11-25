@@ -32,10 +32,12 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
       var responseModel = CategoryResponse.fromJson(response.data);
 
       if (responseModel.categories.length <= 1) {
-        dispatch(GetProductsForJustOneCategoryAction());
-        return null;
+        await dispatchFuture(GetProductsForJustOneCategoryAction());
+        return state.copyWith(
+            productState: state.productState.copyWith(
+              categories: responseModel.categories,
+            ));
       }
-
       return state.copyWith(
           productState: state.productState.copyWith(
         singleCategoryFewProducts: [],
