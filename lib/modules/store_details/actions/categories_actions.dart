@@ -21,7 +21,7 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
         url:
-             "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
+            "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
         params: null,
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -35,8 +35,8 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
         await dispatchFuture(GetProductsForJustOneCategoryAction());
         return state.copyWith(
             productState: state.productState.copyWith(
-              categories: responseModel.categories,
-            ));
+          categories: responseModel.categories,
+        ));
       }
       return state.copyWith(
           productState: state.productState.copyWith(
@@ -158,16 +158,13 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       params: null,
       requestType: RequestType.post,
     );
-    debugPrint('For succes bookmark this is the code ${response.status}');
     if (response.status == ResponseStatus.success200) {
-      debugPrint('Just got 200 now will change the status of bookmark');
-      Business selectedMerchant = state.productState.selectedMerchant;
-      debugPrint('Before setting this to true');
-      selectedMerchant.isBookmarked = true;
-      debugPrint('After setting this to true');
+      Business copiedMerchantFromState =
+          Business.clone(state.productState.selectedMerchant);
+      copiedMerchantFromState.isBookmarked = true;
       return state.copyWith(
-        productState:
-            state.productState.copyWith(selectedMerchant: selectedMerchant),
+        productState: state.productState
+            .copyWith(selectedMerchant: copiedMerchantFromState),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
@@ -195,11 +192,13 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
       var responseModel = CatalogSearchResponse.fromJson(response.data);
       List<Product> items = [];
       if (responseModel.results.isNotEmpty) {
-        items = responseModel.results.getRange(
-            0,
-            responseModel.results.length < 5
-                ? responseModel.results.length
-                : 5).toList();
+        items = responseModel.results
+            .getRange(
+                0,
+                responseModel.results.length < 5
+                    ? responseModel.results.length
+                    : 5)
+            .toList();
       }
 
       ///Preparing a list of first few products for the single category from the fetched items and initialising
@@ -250,11 +249,12 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
     );
 
     if (response.status == ResponseStatus.success200) {
-      Business selectedMerchant = state.productState.selectedMerchant;
-      selectedMerchant.isBookmarked = false;
+      Business copiedMerchantFromState =
+          Business.clone(state.productState.selectedMerchant);
+      copiedMerchantFromState.isBookmarked = true;
       return state.copyWith(
-        productState:
-            state.productState.copyWith(selectedMerchant: selectedMerchant),
+        productState: state.productState
+            .copyWith(selectedMerchant: copiedMerchantFromState),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['status']);

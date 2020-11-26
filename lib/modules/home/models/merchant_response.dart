@@ -104,6 +104,21 @@ class Business {
     data['has_delivery'] = this.hasDelivery;
     return data;
   }
+
+  Business.clone(Business business) : this(
+      businessId: business.businessId ?? null,
+      isBookmarked: business.isBookmarked ?? null,
+      businessName: business.businessName ?? null,
+      itemsCount: business.itemsCount ?? null,
+      isOpen: business.isOpen ?? null,
+      address: business.address ?? null,
+      description: business.description ?? null,
+      images: business.images ?? null,
+      notice: business.notice,
+      hasDelivery: business.hasDelivery,
+      phones: business.phones ?? null,
+  );
+
 }
 
 class AddressNew {

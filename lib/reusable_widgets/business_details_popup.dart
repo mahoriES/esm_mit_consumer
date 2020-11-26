@@ -164,8 +164,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                           widget.businessPrettyAddress,
                           widget.merchantPhoneNumber,
                           widget.onContactMerchant, () {
-                        openMap(widget.locationPoint.lat ?? 0.0,
-                            widget.locationPoint.lon ?? 0.0);
+                        openMap(widget.locationPoint?.lat,
+                            widget.locationPoint?.lon);
                       }),
                       const SizedBox(
                         height: AppSizes.widgetPadding,
@@ -182,12 +182,16 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
   }
 
   static Future<void> openMap(double latitude, double longitude) async {
+    if (latitude == null || longitude == null) {
+      Fluttertoast.showToast(msg: "Couldn't open Map!");
+      return;
+    }
     String googleUrl =
         'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
     if (await canLaunch(googleUrl)) {
       await launch(googleUrl);
     } else {
-      Fluttertoast.showToast(msg: "Couldn't open Map!");
+      Fluttertoast.showToast(msg: "Error launching map!");
     }
   }
 

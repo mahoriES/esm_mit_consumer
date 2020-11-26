@@ -448,7 +448,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         context: context,
         builder: (context) {
           return BusinessDetailsPopup(
-              locationPoint: snapshot.selectedMerchant.address.locationPoint,
+              locationPoint: snapshot.selectedMerchant.address?.locationPoint ?? null,
               onShareMerchant: () async {
                 LinkSharingService().shareBusinessLink(
                     businessId: snapshot.selectedMerchant.businessId,

@@ -108,7 +108,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     fit.init(width: MediaQuery.of(context).size.width);
-    SizeConfig().init(context);
+    //SizeConfig().init(context);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

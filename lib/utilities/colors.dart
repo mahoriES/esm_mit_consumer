@@ -38,6 +38,8 @@ class AppColors {
   static const black = const Color(0xff363636);
   static const blackTwo = const Color(0xff393939);
   static const warmGrey = const Color(0xff7c7c7c);
+  static const categoryTileTextUnderlay = const Color(0xffe6ffffff);
+  static const appLogoShadowColor = const Color(0xff6ea597be);
 
   static const linearGradient = LinearGradient(
       begin: Alignment(0.27639952301979065, 0.5),

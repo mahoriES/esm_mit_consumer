@@ -124,41 +124,40 @@ class APIManager {
         }
         break;
       case RequestType.post:
-        return await dio
-            .post(
-          url,
-          data: params,
-        )
-            .then((res) {
-          debugPrint(res.toString(), wrapWidth: 1024);
-          if (res.statusCode == 450) {
-            store.dispatch(UserExceptionAction(
-              "Session expired, Please login to continue..",
-            ));
-            store.dispatch(CheckTokenAction());
-            UserManager.deleteUser();
+        try {
+          return await dio
+              .post(
+            url,
+            data: params,
+          )
+              .then((res) {
+            debugPrint(res.toString(), wrapWidth: 1024);
+            if (res.statusCode == 450) {
+              store.dispatch(UserExceptionAction(
+                "Session expired, Please login to continue..",
+              ));
+              store.dispatch(CheckTokenAction());
+              UserManager.deleteUser();
 
-            store.dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
-          }
-          if (res.statusCode == 400) {
-            return ResponseModel(res.data, ResponseStatus.error404);
-          } else if (res.statusCode >= 500) {
-            return ResponseModel(res.data, ResponseStatus.error500);
-          } else if (res.statusCode == 401) {
-            return ResponseModel(res.data, ResponseStatus.error401);
-          } else if (res.statusCode == 429) {
-            return ResponseModel(res.data, ResponseStatus.error404);
-          } else {
-            return ResponseModel(res.data, ResponseStatus.success200);
-          }
-        });
-
-//        final Directory dir = new Directory('$appDocPath/cookies');
-//        await dir.create();
-//        final cookiePath = dir.path;
-//        var cookieJar = PersistCookieJar(dir: cookiePath);
-//        data = DioComputeParams(dio: dio, params: params, url: url);
-//        return await compute(postRequest, [params, url, cookieJar]);
+              store.dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
+            }
+            if (res.statusCode == 400) {
+              return ResponseModel(res.data, ResponseStatus.error404);
+            } else if (res.statusCode >= 500) {
+              return ResponseModel(res.data, ResponseStatus.error500);
+            } else if (res.statusCode == 401) {
+              return ResponseModel(res.data, ResponseStatus.error401);
+            } else if (res.statusCode == 429) {
+              return ResponseModel(res.data, ResponseStatus.error404);
+            } else {
+              return ResponseModel(res.data, ResponseStatus.success200);
+            }
+          });
+        } catch (e) {
+          print(e);
+          return ResponseModel(null, ResponseStatus.error500);
+        }
+        break;
       case RequestType.patch:
         try {
           return await dio.patch(url, data: params).then((response) {

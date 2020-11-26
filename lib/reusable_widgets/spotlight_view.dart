@@ -57,7 +57,7 @@ class SpotlightTile extends StatelessWidget {
                   )),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: AppSizes.separatorPadding,
           ),
           Text(
@@ -66,7 +66,7 @@ class SpotlightTile extends StatelessWidget {
             style: CustomTheme.of(context).textStyles.cardTitle,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(
+          const SizedBox(
             height: AppSizes.separatorPadding / 2,
           ),
           Text(
@@ -75,7 +75,7 @@ class SpotlightTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: CustomTheme.of(context).textStyles.body2,
           ),
-          SizedBox(
+          const SizedBox(
             height: AppSizes.separatorPadding / 2,
           ),
           Text(
@@ -84,13 +84,12 @@ class SpotlightTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: CustomTheme.of(context).textStyles.body2,
           ),
-          SizedBox(
+          const SizedBox(
             height: AppSizes.separatorPadding,
           ),
           ProductCountWidget(
             product: product,
-            isSku: true,
-            skuIndex: 0,
+            isSku: false,
           ),
         ],
       ),
@@ -112,7 +111,6 @@ class SpotlightItemsScroller extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Rebuilding the spotlight section');
     if (spotlightProducts.isEmpty) return SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +153,7 @@ class SpotlightItemsScroller extends StatelessWidget {
                         ? tr("new_changes.add")
                         : product.count.toString());
               },
-              separatorBuilder: (_, __) => SizedBox(
+              separatorBuilder: (_, __) => const SizedBox(
                     width: AppSizes.widgetPadding,
                   ),
               itemCount: spotlightProducts.length),

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class BookmarkButton extends StatefulWidget {
 
   final Function onTap;
-  bool isBookmarked;
+  final bool isBookmarked;
 
   BookmarkButton({@required this.onTap, @required this.isBookmarked});
 
@@ -19,6 +19,7 @@ class _BookmarkButtonState extends State<BookmarkButton>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> _animation;
+  bool isBookmarked;
 
   @override
   void initState() {
@@ -33,8 +34,10 @@ class _BookmarkButtonState extends State<BookmarkButton>
         //By reversing the _controller we go back from the shrank icon to its original size
         if (status == AnimationStatus.completed) _controller.reverse();
       });
+    //If we get a value from the parent widget regarding the bookmark status so we assign the same to the local variable of the state
+    isBookmarked = widget.isBookmarked;
     //The assignment below guards from the case, when the current bookmark status is not specified in the constructor
-    if (widget.isBookmarked==null)widget.isBookmarked=false;
+    if (this.isBookmarked==null)this.isBookmarked=false;
     super.initState();
   }
 
@@ -50,13 +53,13 @@ class _BookmarkButtonState extends State<BookmarkButton>
       onTap: () {
         widget.onTap();
         //When the bookmark button is tapped, we toggle the status while the animations continues
-        widget.isBookmarked = !widget.isBookmarked;
+        this.isBookmarked = !this.isBookmarked;
         _controller.forward();
       },
       child: Transform.scale(scale: _animation.value,
         child: Icon(
           Icons.bookmark,
-          color: widget.isBookmarked ? AppColors.blueBerry : AppColors.blueBerry.withOpacity(0.3),
+          color: this.isBookmarked ? AppColors.blueBerry : AppColors.blueBerry.withOpacity(0.3),
         ),
       ),
     ),);

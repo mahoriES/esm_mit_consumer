@@ -21,14 +21,14 @@ mixin MerchantWidgetElementsProviderMixin {
           deliveryStatus
               ? const ImageIcon(
                   AssetImage('assets/images/delivery.png'),
-                  color: Colors.green,
+                  color: AppColors.green,
                 )
               : const Icon(
                   Icons.store,
                   color: AppColors.orange,
                 ),
-          SizedBox(
-            width: 3.toWidth,
+          const SizedBox(
+            width: 3,
           ),
           Text(deliveryStatus ? tr("shop.delivery_ok") : tr("shop.delivery_no"),
               style: CustomTheme.of(context).textStyles.body1.copyWith(
@@ -75,7 +75,7 @@ mixin MerchantWidgetElementsProviderMixin {
                   heightFactor: 0.20,
                   child: Container(
                     width: tileWidth,
-                    color: const Color(0xffe6ffffff),
+                    color: AppColors.categoryTileTextUnderlay,
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Center(
                       child: Text(
@@ -101,7 +101,6 @@ mixin MerchantWidgetElementsProviderMixin {
       onTap: onTap,
       child: const Icon(
         Icons.phone_outlined,
-        // ignore: deprecated_member_use_from_same_package
         color: AppColors.blueBerry,
         size: 22,
       ),
@@ -172,18 +171,26 @@ mixin MerchantWidgetElementsProviderMixin {
         type: MaterialType.transparency,
         child: Row(
           children: <Widget>[
-            InkWell(onTap: onOpenMap,child: const ImageIcon(
-              AssetImage(
-                'assets/images/location2.png',
+            InkWell(
+              onTap: onOpenMap,
+              child: const ImageIcon(
+                AssetImage(
+                  'assets/images/location2.png',
+                ),
+                color: AppColors.blueBerry,
               ),
-              color: AppColors.blueBerry,
-            ),),
+            ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: Text(address,
-                    style: CustomTheme.of(context).textStyles.sectionHeading1,
-                    textAlign: TextAlign.left),
+              child: GestureDetector(
+                onTap: onOpenMap,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: AppSizes.separatorPadding / 2,
+                      right: AppSizes.separatorPadding / 2),
+                  child: Text(address,
+                      style: CustomTheme.of(context).textStyles.sectionHeading1,
+                      textAlign: TextAlign.left),
+                ),
               ),
             ),
             contactMerchantActionButton(onContactMerchant),
@@ -214,9 +221,9 @@ mixin AppLogoVariationProviderMixin {
             decoration: const ShapeDecoration(
               color: AppColors.solidWhite,
               shadows: [
-                BoxShadow(
-                    color: const Color(0xff6ea597be),
-                    blurRadius: 20.0,
+                const BoxShadow(
+                    color: AppColors.appLogoShadowColor,
+                    blurRadius: AppSizes.widgetPadding,
                     spreadRadius: 0.0,
                     offset: Offset(0, 6))
               ],
