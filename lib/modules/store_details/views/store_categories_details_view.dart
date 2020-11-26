@@ -27,6 +27,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -103,9 +104,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             BusinessTitleTile(
-                                              isBookmarked: snapshot
-                                                  .selectedMerchant
-                                                  .isBookmarked,
                                               businessName: snapshot
                                                       .selectedMerchant
                                                       .businessName ??
@@ -124,10 +122,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                   ? snapshot.selectedMerchant
                                                       .images.first.photoUrl
                                                   : "",
-                                              onBookmarkMerchant: () {
-                                                snapshot
-                                                    .bookmarkMerchantAction();
-                                              },
                                               onBackPressed: () async {
                                                 List<Business> merchants =
                                                     await CartDataSource
@@ -262,8 +256,9 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               .sectionHeading2
                                               .copyWith(
                                                   fontSize: 18,
-                                                  color:
-                                                      CustomTheme.of(context).colors.primaryColor),
+                                                  color: CustomTheme.of(context)
+                                                      .colors
+                                                      .primaryColor),
                                         ).tr(),
                                         const SizedBox(
                                           height: AppSizes.widgetPadding,
@@ -330,9 +325,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                       width: AppSizes.separatorPadding),
                                   Text(
                                     'List Items',
-                                    style: CustomTheme.of(context).textStyles.body1.copyWith(
-                                      height: 1,color: CustomTheme.of(context).colors.backgroundColor
-                                    ),
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .body1
+                                        .copyWith(
+                                            height: 1,
+                                            color: CustomTheme.of(context)
+                                                .colors
+                                                .backgroundColor),
                                   ),
                                 ],
                               ),
@@ -366,6 +366,9 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   }
 
   Widget buildCategoriesGrid(_ViewModel snapshot) {
+    if (snapshot.singleCategoryFewProducts.isEmpty &&
+        (snapshot.categories.isEmpty || snapshot.categories.length == 1))
+      return Center(child: CupertinoActivityIndicator());
     if ((snapshot.categories.isEmpty || snapshot.categories.length == 1) &&
         snapshot.singleCategoryFewProducts.isNotEmpty)
       return buildProductsListView(snapshot);
@@ -411,10 +414,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
               child: Text(
                 note.formatCustomerNote,
                 textAlign: TextAlign.left,
-                style: CustomTheme.of(context)
-                    .textStyles
-                    .buttonText2
-                    .copyWith(color: CustomTheme.of(context).colors.backgroundColor),
+                style: CustomTheme.of(context).textStyles.buttonText2.copyWith(
+                    color: CustomTheme.of(context).colors.backgroundColor),
               ),
             ),
           ),
@@ -448,15 +449,12 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         context: context,
         builder: (context) {
           return BusinessDetailsPopup(
-              locationPoint: snapshot.selectedMerchant.address?.locationPoint ?? null,
+              locationPoint:
+                  snapshot.selectedMerchant.address?.locationPoint ?? null,
               onShareMerchant: () async {
                 LinkSharingService().shareBusinessLink(
                     businessId: snapshot.selectedMerchant.businessId,
                     storeName: snapshot.selectedMerchant.businessName);
-              },
-              isMerchantBookmarked: snapshot.selectedMerchant.isBookmarked,
-              onBookmarkMerchant: () async {
-                await snapshot.bookmarkMerchantAction();
               },
               onContactMerchant: () {
                 contactMerchantAction(snapshot);
@@ -480,7 +478,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
 class _ViewModel extends BaseModel<AppState> {
   Function(Product, BuildContext, int) addToCart;
   Function(Product, int) removeFromCart;
-  Function bookmarkMerchantAction;
   Function() navigateToProductDetails;
   Function(VideoItem) updateSelectedVideo;
   Function(CategoriesNew) updateSelectedCategory;
@@ -517,7 +514,6 @@ class _ViewModel extends BaseModel<AppState> {
       this.removeFromCart,
       this.spotlightItems,
       this.onRefresh,
-      this.bookmarkMerchantAction,
       this.freeFormItemsList,
       this.checkForPreviouslyAddedListItems,
       this.categories,
@@ -565,16 +561,6 @@ class _ViewModel extends BaseModel<AppState> {
               NavigateAction.pushNamed('/StoreProductListingView'),
             );
           });
-        },
-        bookmarkMerchantAction: () async {
-          if (state.productState.selectedMerchant.isBookmarked)
-            await dispatchFuture(UnBookmarkBusinessAction(
-                businessId: state.productState.selectedMerchant.businessId));
-          else
-            await dispatchFuture(BookmarkBusinessAction(
-                businessId: state.productState.selectedMerchant.businessId));
-          debugPrint(
-              'After the action completes this is the flag -> ${state.productState.selectedMerchant.isBookmarked}');
         },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));

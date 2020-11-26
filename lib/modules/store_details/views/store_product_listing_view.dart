@@ -710,7 +710,7 @@ class _ProductListingItemViewState extends State<ProductListingItemView> {
                                 widget.item.skus.length == 1
                                     ? Text(
                                         widget.item.skus.first.variationOptions
-                                            .weight,
+                                            .weight ?? '',
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w300,

@@ -119,13 +119,6 @@ mixin MerchantWidgetElementsProviderMixin {
     );
   }
 
-  Widget bookmarkActionButton(Function onTap, bool isBookmarked) {
-    return BookmarkButton(
-      isBookmarked: isBookmarked,
-      onTap: onTap,
-    );
-  }
-
   void showContactMerchantDialog(BuildContext context,
       {Function onCallAction, Function onWhatsappAction, String merchantName}) {
     showModalBottomSheet(

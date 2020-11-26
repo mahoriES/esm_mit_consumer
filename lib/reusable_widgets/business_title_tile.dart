@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -13,7 +14,6 @@ import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
 class BusinessTitleTile extends StatefulWidget {
   final String businessName;
   final String businessSubtitle;
-  final Function onBookmarkMerchant;
   final String storeTimingsDetailsString;
   final String businessPhoneNumber;
   final bool isDeliveryAvailable;
@@ -22,16 +22,13 @@ class BusinessTitleTile extends StatefulWidget {
   final Function onBackPressed;
   final Function onContactMerchantPressed;
   final Function onShowMerchantInfo;
-  final bool isBookmarked;
 
   const BusinessTitleTile(
       {@required this.businessName,
       @required this.isDeliveryAvailable,
       @required this.isOpen,
       @required this.businessImageUrl,
-      @required this.onBookmarkMerchant,
       @required this.onBackPressed,
-      @required this.isBookmarked,
       @required this.onShowMerchantInfo,
       @required this.onContactMerchantPressed,
       this.businessSubtitle = '',
@@ -118,8 +115,7 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  bookmarkActionButton(
-                      widget.onBookmarkMerchant, widget.isBookmarked),
+                  const BookmarkButton(),
                   const SizedBox(
                     width: AppSizes.separatorPadding,
                   ),

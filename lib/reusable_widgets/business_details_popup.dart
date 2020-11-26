@@ -1,4 +1,5 @@
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -22,16 +23,12 @@ class BusinessDetailsPopup extends StatefulWidget {
   final String merchantBusinessImageUrl;
   final String merchantPhoneNumber;
   final Function onContactMerchant;
-  final bool isMerchantBookmarked;
   final LocationPoint locationPoint;
-  final Function onBookmarkMerchant;
   final Function onShareMerchant;
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
-      @required this.onBookmarkMerchant,
       @required this.locationPoint,
-      @required this.isMerchantBookmarked,
       @required this.onContactMerchant,
       @required this.businessPrettyAddress,
       @required this.merchantBusinessImageUrl,
@@ -124,9 +121,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildMerchantTitleRowWithActions(
-                          widget.businessTitle,
-                          widget.onBookmarkMerchant,
-                          widget.isMerchantBookmarked),
+                          widget.businessTitle,),
                       Row(
                         children: [
                           Expanded(
@@ -196,9 +191,9 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
   }
 
   Widget buildMerchantTitleRowWithActions(
-      String businessName, Function onBookmark, bool isBookmarked) {
+      String businessName) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -215,7 +210,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                bookmarkActionButton(onBookmark, isBookmarked),
+                const BookmarkButton(),
                 shareActionButton(widget.onShareMerchant),
               ],
             ),

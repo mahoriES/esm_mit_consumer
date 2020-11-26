@@ -162,7 +162,22 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       Business copiedMerchantFromState =
           Business.clone(state.productState.selectedMerchant);
       copiedMerchantFromState.isBookmarked = true;
+
+      List<Business> updatedHomeMerchants = [];
+      for (final index
+          in Iterable<int>.generate(state.homePageState.merchants.length)
+              .toList()) {
+        if (index ==
+            state.homePageState.merchants
+                .indexOf(state.productState.selectedMerchant))
+          updatedHomeMerchants.add(copiedMerchantFromState);
+        else
+          updatedHomeMerchants.add(state.homePageState.merchants[index]);
+      }
+
       return state.copyWith(
+        homePageState:
+            state.homePageState.copyWith(merchants: updatedHomeMerchants),
         productState: state.productState
             .copyWith(selectedMerchant: copiedMerchantFromState),
       );
@@ -251,8 +266,23 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       Business copiedMerchantFromState =
           Business.clone(state.productState.selectedMerchant);
-      copiedMerchantFromState.isBookmarked = true;
+      copiedMerchantFromState.isBookmarked = false;
+
+      List<Business> updatedHomeMerchants = [];
+      for (final index
+          in Iterable<int>.generate(state.homePageState.merchants.length)
+              .toList()) {
+        if (index ==
+            state.homePageState.merchants
+                .indexOf(state.productState.selectedMerchant))
+          updatedHomeMerchants.add(copiedMerchantFromState);
+        else
+          updatedHomeMerchants.add(state.homePageState.merchants[index]);
+      }
+
       return state.copyWith(
+        homePageState:
+            state.homePageState.copyWith(merchants: updatedHomeMerchants),
         productState: state.productState
             .copyWith(selectedMerchant: copiedMerchantFromState),
       );
