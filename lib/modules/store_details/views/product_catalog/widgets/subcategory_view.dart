@@ -38,7 +38,7 @@ class SubCategoryView extends StatelessWidget {
                   )
                 :
                 // for dynamic categories, check if there are nonzero subcategories.
-                snapshot.subCategoriesList.isEmpty
+                snapshot.subCategoriesList?.isEmpty ?? true
                     ? Center(
                         child: Text("No Items Found"),
                       )

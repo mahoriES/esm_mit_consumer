@@ -77,8 +77,8 @@ class ProductDetailsView extends StatelessWidget {
                               ),
                               SizedBox(height: 5.toHeight),
                               Text(
-                                selectedProduct
-                                        .skus.first.variationOptions?.weight ??
+                                selectedProduct.skus?.first?.variationOptions
+                                        ?.weight ??
                                     "",
                                 style: CustomTheme.of(context).textStyles.body2,
                               ),

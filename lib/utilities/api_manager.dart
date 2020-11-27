@@ -11,10 +11,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+//TODO: Will need to add logic to handle throttling (429 response) and convey that to the user accordingly
+
 class APIManager {
   static var shared = APIManager();
   static beginRequest() {}
-//  DioComputeParams data;
 
   static Future<ResponseModel> postRequest(List params) async {
     Dio dio = new Dio(new BaseOptions(
@@ -27,8 +28,6 @@ class APIManager {
       },
       responseType: ResponseType.json,
     ));
-//    dio.head(params[1]);
-//    dio.interceptors.add(CookieManager(params.last));
     dio.interceptors.add(LogInterceptor(
       responseBody: true,
       request: true,
@@ -124,45 +123,40 @@ class APIManager {
         }
         break;
       case RequestType.post:
-        return await dio
-            .post(
-          url,
-          data: params,
-        )
-            .then((res) {
-          debugPrint(res.toString(), wrapWidth: 1024);
+        try {
+          return await dio
+              .post(
+            url,
+            data: params,
+          )
+              .then((res) {
+            debugPrint(res.toString(), wrapWidth: 1024);
+            if (res.statusCode == 450) {
+              store.dispatch(UserExceptionAction(
+                "Session expired, Please login to continue..",
+              ));
+              store.dispatch(CheckTokenAction());
+              UserManager.deleteUser();
 
-          if (res.data["statusCode"] == 450) {
-            store.dispatch(UserExceptionAction(
-              "Session expired, Please login to continue..",
-            ));
-            store.dispatch(CheckTokenAction());
-            UserManager.deleteUser();
-
-            store.dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
-          }
-          if (res.statusCode == 400) {
-            return ResponseModel(res.data, ResponseStatus.error404);
-          } else if (res.statusCode >= 500) {
-            return ResponseModel(res.data, ResponseStatus.error500);
-          } else if (res.statusCode == 401) {
-            return ResponseModel(res.data, ResponseStatus.error401);
-          } else if (res.statusCode == 429) {
-            return ResponseModel(res.data, ResponseStatus.error404);
-          } else {
-            return ResponseModel(res.data, ResponseStatus.success200);
-          }
-        }).catchError((error) {
-          print(error);
+              store.dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
+            }
+            if (res.statusCode == 400) {
+              return ResponseModel(res.data, ResponseStatus.error404);
+            } else if (res.statusCode >= 500) {
+              return ResponseModel(res.data, ResponseStatus.error500);
+            } else if (res.statusCode == 401) {
+              return ResponseModel(res.data, ResponseStatus.error401);
+            } else if (res.statusCode == 429) {
+              return ResponseModel(res.data, ResponseStatus.error404);
+            } else {
+              return ResponseModel(res.data, ResponseStatus.success200);
+            }
+          });
+        } catch (e) {
+          print(e);
           return ResponseModel(null, ResponseStatus.error500);
-        });
-
-//        final Directory dir = new Directory('$appDocPath/cookies');
-//        await dir.create();
-//        final cookiePath = dir.path;
-//        var cookieJar = PersistCookieJar(dir: cookiePath);
-//        data = DioComputeParams(dio: dio, params: params, url: url);
-//        return await compute(postRequest, [params, url, cookieJar]);
+        }
+        break;
       case RequestType.patch:
         try {
           return await dio.patch(url, data: params).then((response) {

@@ -12,3 +12,8 @@ extension AddRupeePrefix on num {
   String get withRupeePrefix =>
       this == null ? "NA" : "\u{20B9} ${this?.toStringAsFixed(2)}";
 }
+
+extension AddRupeePrefixForStringifiedPrice on String {
+  String get withRupeePrefix =>
+      this == null ? "NA" : "\u{20B9} $this";
+}

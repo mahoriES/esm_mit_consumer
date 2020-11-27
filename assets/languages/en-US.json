@@ -1,15 +1,11 @@
 {
-
   "common": {
     "closed": "Closed",
     "view_store": "View Store"
   },
-
   "screen_language": {
     "title": "Choose your Preferred Language"
-
   },
-
   "screen_phone": {
     "get_otp": "Get OTP",
     "hint_text": "Type your mobile number",
@@ -21,7 +17,6 @@
     "sign_up": "Sign Up",
     "login": "Login"
   },
-
   "screen_otp": {
     "get_otp": "Get OTP",
     "resend_otp": "Resend OTP",
@@ -33,7 +28,6 @@
       "plz_verify_otp": "Please enter OTP"
     }
   },
-
   "screen_register": {
     "title": "Complete your registration",
     "address": {
@@ -54,7 +48,6 @@
       "empty_error": "Please enter your full name."
     }
   },
-
   "screen_home": {
     "tab_bar": {
       "store": "STORES",
@@ -64,27 +57,22 @@
       "account": "ACCOUNT"
     },
     "store_near_you": "Stores Near you"
-
   },
-
   "screen_search": {
     "search": "Search",
-    "search_tag" : "Search for products",
+    "search_tag": "Search for products",
     "search_product_not_found": "Sorry, no match found for "
   },
-
   "shop": {
-    "delivery_ok" : "Delivery Available",
-    "delivery_no" : "Delivery Not Available",
+    "delivery_ok": "Delivery Available",
+    "delivery_no": "Store Pickup",
     "home_delivery_order": "Home Delivery",
-    "item_category": "Item Categories",
+    "item_category": "Products",
     "pickup_order": "Pickup Order"
   },
-
   "product_list": {
-    "search_placeholder" : "Search for item"
+    "search_placeholder": "Search for item"
   },
-
   "cart": {
     "title": "Cart",
     "view_cart": "View Cart",
@@ -101,10 +89,9 @@
     "empty_cart": "Empty Cart",
     "empty_hint": "Look like you haven't added anything to your cart yet",
     "please_collect": "Please collect order from the store when its ready",
-    "customize" : "+ Customize"
+    "customize": "+ Customize"
   },
-
-  "screen_account":{
+  "screen_account": {
     "title": "Account",
     "profile": "Profile",
     "recommend": "Recommend A Store",
@@ -115,7 +102,16 @@
     "cancel": "Cancel",
     "circles": "My Circles"
   },
-
+  "store_home": {
+    "spotlight": "Spotlight",
+    "products": "Products",
+    "offers": "Best Offers",
+    "search_hint": "Search for item",
+    "see_more": "See More",
+    "error_map": "Error launching map!",
+    "no_location": "Location details unavailable!",
+    "no_category": "No Category Available!"
+  },
   "screen_recommended": {
     "title": "Recommend A Store",
     "name": "Shop Name",
@@ -123,7 +119,6 @@
     "phone": "Shop phone number",
     "recommend": "Recommend"
   },
-
   "screen_order": {
     "made_payment": "Mark Paid",
     "title": "Orders",
@@ -132,7 +127,6 @@
     "total": "Total amount",
     "not_found": "No Order Found",
     "empty_content": "Look like you haven’t order anything yet Lets start !",
-
     "completed": "Completed",
     "complete": "Complete",
     "confirmed": "Confirmed",
@@ -140,7 +134,6 @@
     "re_order": "Re-Order",
     "payment": "Payment",
     "update_order": "Update Order",
-
     "missing": "Missing Items",
     "please_pay": "Please pay your bill amount to the merchant directly using Cash, Card or UPI",
     "rate": "Rate us",
@@ -155,7 +148,7 @@
     "not_available": "Merchant updated",
     "pending": "Pending confirmation",
     "accept_order": "Accept order",
-    "on_the_way" : "On the way",
+    "on_the_way": "On the way",
     "processing": "Processing",
     "empty_pro": "Empty",
     "ready_pickup": "Ready for pickup",
@@ -165,27 +158,25 @@
     "merchant_notify_text": "This will send a notification to Merchant. Merchant may approve or reject the payment. Are you sure you want to send payment confirmation to merchant?",
     "Cancel": "Cancel",
     "Confirm": "Confirm",
-    "made_my_payment" : "Mark Paid",
-    "Pay_via_upi" : "Pay via UPI",
-    "Paid_at" : "approved payment at"
+    "made_my_payment": "Mark Paid",
+    "Pay_via_upi": "Pay via UPI",
+    "Paid_at": "approved payment at"
   },
-
   "screen_support": {
     "title": "Support",
-    "issue":"select issues",
-    "the_order":"Merchant is not confirming the order",
-    "my_order":"Cancel my order",
-    "delayed?":"Why is my order delayed?",
-    "Leakage":"Leakage in the order",
-    "Items_are":"Items are missing in the order",
-    "Wrong_order":"Wrong order delivered",
-    "spoilt":"Items are stale or spoilt",
-    "not_received":"Order not received",
+    "issue": "select issues",
+    "the_order": "Merchant is not confirming the order",
+    "my_order": "Cancel my order",
+    "delayed?": "Why is my order delayed?",
+    "Leakage": "Leakage in the order",
+    "Items_are": "Items are missing in the order",
+    "Wrong_order": "Wrong order delivered",
+    "spoilt": "Items are stale or spoilt",
+    "not_received": "Order not received",
     "submit": "Submit",
     "type_hint": "Type in your text",
     "select_issue_error": "Please select an issue."
   },
-
   "new_changes": {
     "offline": "You are offline. Please check your internet connection",
     "add_more": "Add more",
@@ -197,16 +188,14 @@
     "order_id": "Order Id",
     "call": "Call Support",
     "no_contact": "No contact details available."
-
   },
   "charges_name": {
-    "packing" : "Packing Charges",
+    "packing": "Packing Charges",
     "extra": "Extra Charges",
     "service": "Service Charges",
     "other": "Other Charges",
     "delivery": "Delivery Charges"
   },
-
   "order_statuses_title": {
     "created": "Order Received",
     "order_updated": "Awaiting your approval",
@@ -220,7 +209,6 @@
     "order_delivered": "Order Delivered",
     "order_picked_customer": "Order Picked Up"
   },
-
   "order_statuses_subtitle": {
     "created": "It is under process by the store",
     "order_updated": "Please approve the updates done by the merchant",
@@ -236,7 +224,6 @@
     "order_delivered": "Enjoy your order",
     "order_picked_customer": "Thanks for picking up your order. Enjoy your order!"
   },
-
   "payment_statuses": {
     "initiated": "Waiting for merchant to confirm payment",
     "approved": "Payment received by merchant",
@@ -251,5 +238,4 @@
     "items": "Items",
     "taxes": "taxes"
   }
-
 }

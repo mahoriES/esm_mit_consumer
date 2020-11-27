@@ -197,9 +197,21 @@ class GetAllProducts extends ReduxAction<AppState> {
         _responseModel.results = existingProducts + _responseModel.results;
       }
 
+      // List<Product> firstFiveProducts = [];
+      // if (_responseModel.results.isNotEmpty) {
+      //   firstFiveProducts = _responseModel.results
+      //       .getRange(
+      //           0,
+      //           _responseModel.results.length < 5
+      //               ? _responseModel.results.length
+      //               : 5)
+      //       .toList();
+      // }
+
       return state.copyWith(
           productState: state.productState.copyWith(
         allProductsForMerchant: _responseModel,
+        // singleCategoryFewProducts: firstFiveProducts,
       ));
     }
   }

@@ -3,6 +3,7 @@ import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/foundation.dart';
@@ -14,15 +15,18 @@ import 'package:upi_pay/upi_pay.dart';
 class ProductState {
   final List<Product> productListingDataSource;
   final List<Product> searchResultProducts;
+  final List<Product> singleCategoryFewProducts;
   final List<Merchants> searchResults;
   final bool currentOrderIsPickUp;
   final bool searchForProductsComplete;
   final List<Product> localCartItems;
+  final List<Product> spotlightItems;
   final List<JITProduct> localFreeFormCartItems;
   final List<Charge> charges;
   final List<String> customerNoteImages;
   final CategoriesNew selectedCategory;
   final PlaceOrderResponse placeOrderResponse;
+  final VideoFeedResponse videosResponse;
   final Business selectedMerchant;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
@@ -38,6 +42,8 @@ class ProductState {
   ProductState({
     @required this.localCartItems,
     @required this.charges,
+    @required this.singleCategoryFewProducts,
+    @required this.spotlightItems,
     @required this.customerNoteImages,
     @required this.localFreeFormCartItems,
     @required this.searchForProductsComplete,
@@ -48,6 +54,7 @@ class ProductState {
     @required this.selectedCategory,
     @required this.selectedMerchant,
     @required this.searchResults,
+    @required this.videosResponse,
     @required this.productListingDataSource,
     @required this.supportOrder,
     @required this.categories,
@@ -84,6 +91,12 @@ class ProductState {
       subCategoryIdToProductData: {},
       isLoadingMore: {},
       allProductsForMerchant: null,
+      videosResponse: VideoFeedResponse(
+        count: 0,
+        results: [],
+      ),
+      spotlightItems: [],
+      singleCategoryFewProducts: [],
     );
   }
 
@@ -110,6 +123,9 @@ class ProductState {
     Map<int, CatalogSearchResponse> subCategoryIdToProductData,
     Map<int, bool> isLoadingMore,
     CatalogSearchResponse allProductsForMerchant,
+    VideoFeedResponse videosResponse,
+    List<Product> singleCategoryFewProducts,
+    List<Product> spotlightItems,
   }) {
     return ProductState(
       customerNoteImages: customerNoteImages ?? this.customerNoteImages,
@@ -141,6 +157,10 @@ class ProductState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       allProductsForMerchant:
           allProductsForMerchant ?? this.allProductsForMerchant,
+      spotlightItems: spotlightItems ?? this.spotlightItems,
+      videosResponse: videosResponse ?? this.videosResponse,
+      singleCategoryFewProducts:
+          singleCategoryFewProducts ?? this.singleCategoryFewProducts,
     );
   }
 }

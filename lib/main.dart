@@ -12,6 +12,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -21,8 +22,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-
-import 'utilities/size_config.dart';
 
 // Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
 final _kTestingCrashlytics = true;

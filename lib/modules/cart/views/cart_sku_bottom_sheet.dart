@@ -107,12 +107,13 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
       children: [
         Flexible(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FittedBox(
                 child: Text(
-                  specificationName,
+                  specificationName ?? ' ',
                   style: CustomTheme.of(context).textStyles.body1,
                 ),
               ),

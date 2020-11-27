@@ -25,7 +25,6 @@ class _VideosViewState extends State<VideosListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
 
     if (widget.videoFeedResponse.results.length == 0) {
       return Container();

@@ -109,19 +109,6 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     tr('screen_home.tab_bar.store'),
                   ),
                 ),
-//                BottomNavigationBarItem(
-//                  icon: ImageIcon(
-//                    AssetImage('assets/images/search_icon.png'),
-//                    color: Colors.black,
-//                  ),
-//                  activeIcon: ImageIcon(
-//                    AssetImage('assets/images/search_icon.png'),
-//                    color: AppColors.mainColor,
-//                  ),
-//                  title: new Text(
-//                    tr('screen_home.tab_bar.search'),
-//                  ),
-//                ),
                 BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage('assets/images/path338.png'),

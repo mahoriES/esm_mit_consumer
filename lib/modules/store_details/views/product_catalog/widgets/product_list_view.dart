@@ -11,34 +11,48 @@ import 'product_tile.dart';
 
 class ProductListView extends StatelessWidget {
   final int subCategoryIndex;
+  final bool showFewProductsOnly;
   const ProductListView({
     @required this.subCategoryIndex,
+    this.showFewProductsOnly = false,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        "ProductListView => index : $subCategoryIndex bool : $showFewProductsOnly");
+
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       builder: (context, snapshot) {
         // If data is loaded and the list is still empty then show no items found.
         // TODO : This should be handeled on backend in future.
         if (!snapshot.isAlreadyLoadingMore(subCategoryIndex) &&
-            snapshot.productsList(subCategoryIndex).isEmpty) {
+            snapshot
+                .productsList(subCategoryIndex, showFewProductsOnly)
+                .isEmpty) {
           return Center(
             child: Text("No Items Found"),
           );
         }
         return ListView.separated(
             physics: NeverScrollableScrollPhysics(),
-            itemCount: snapshot.productsList(subCategoryIndex).length,
+            itemCount: snapshot
+                .productsList(subCategoryIndex, showFewProductsOnly)
+                .length,
             shrinkWrap: true,
             separatorBuilder: (context, productIndex) =>
                 SizedBox(height: 16.toHeight),
             itemBuilder: (context, productIndex) {
               // If the 3rd last element of list is in view then load more data is triggered.
-              if (productIndex ==
-                  snapshot.productsList(subCategoryIndex).length - 3) {
+              if (!showFewProductsOnly &&
+                  productIndex ==
+                      snapshot
+                              .productsList(
+                                  subCategoryIndex, showFewProductsOnly)
+                              .length -
+                          3) {
                 return VisibilityDetector(
                   key: new UniqueKey(),
                   onVisibilityChanged: (info) {
@@ -48,18 +62,21 @@ class ProductListView extends StatelessWidget {
                     }
                   },
                   child: ProductTile(
-                    product:
-                        snapshot.productsList(subCategoryIndex)[productIndex],
+                    product: snapshot.productsList(
+                        subCategoryIndex, showFewProductsOnly)[productIndex],
                     navigateToDetails: () => snapshot.navigateToProductDetails(
-                      snapshot.productsList(subCategoryIndex)[productIndex],
+                      snapshot.productsList(
+                          subCategoryIndex, showFewProductsOnly)[productIndex],
                     ),
                   ),
                 );
               }
               return ProductTile(
-                product: snapshot.productsList(subCategoryIndex)[productIndex],
+                product: snapshot.productsList(
+                    subCategoryIndex, showFewProductsOnly)[productIndex],
                 navigateToDetails: () => snapshot.navigateToProductDetails(
-                  snapshot.productsList(subCategoryIndex)[productIndex],
+                  snapshot.productsList(
+                      subCategoryIndex, showFewProductsOnly)[productIndex],
                 ),
               );
             });
@@ -75,6 +92,7 @@ class _ViewModel extends BaseModel<AppState> {
   Map<int, bool> isLoadingMore;
   Map<int, CatalogSearchResponse> productListMap;
   Function(Product) navigateToProductDetails;
+  List<Product> singleCategoryFewProducts;
 
   _ViewModel();
 
@@ -85,6 +103,7 @@ class _ViewModel extends BaseModel<AppState> {
     this.isLoadingMore,
     this.productListMap,
     this.navigateToProductDetails,
+    this.singleCategoryFewProducts,
   }) : super(equals: [
           isLoadingMore,
           subCategoryList,
@@ -95,9 +114,10 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       subCategoryList: state.productState.categoryIdToSubCategoryData[
-              state.productState.selectedCategory.categoryId] ??
+              state.productState.selectedCategory?.categoryId] ??
           [],
       allProducts: state.productState.allProductsForMerchant,
+      singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
       isLoadingMore: state.productState.isLoadingMore,
       productListMap: state.productState.subCategoryIdToProductData,
       fetchProducts: (int subCategoryIndex) {
@@ -129,7 +149,9 @@ class _ViewModel extends BaseModel<AppState> {
     );
   }
 
-  List<Product> productsList(int subCategoryIndex) {
+  List<Product> productsList(int subCategoryIndex, bool showFewProductsOnly) {
+    if (showFewProductsOnly) return singleCategoryFewProducts;
+
     if (subCategoryIndex == CustomCategoryForAllProducts().categoryId)
       return allProducts?.results ?? [];
 

@@ -788,6 +788,9 @@ class _ViewModel extends BaseModel<AppState> {
       loadVideoFeed: () {
         dispatch(LoadVideoFeed());
       },
+      updateSelectedVideo: (video) {
+        dispatch(UpdateSelectedVideoAction(selectedVideo: video));
+      },
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed('/CartView'));
       },
@@ -816,9 +819,6 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(NavigateAction.pushNamed("/circles"));
       },
       currentIndex: state.homePageState.currentIndex,
-      updateSelectedVideo: (video) async {
-        dispatch(UpdateSelectedVideoAction(selectedVideo: video));
-      },
       navigateToVideoView: () {
         dispatch(NavigateAction.pushNamed("/videoPlayer"));
       },
