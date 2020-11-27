@@ -11,6 +11,8 @@ import 'package:eSamudaay/modules/store_details/views/store_details_view/store_c
 ///The [MerchantWidgetElementsProviderMixin] provides the common widgets shared among components dealing
 ///with the business pages.
 
+//TODO: This shall be refactored to use classes instead of Widget functions for more flexibility
+
 mixin MerchantWidgetElementsProviderMixin {
   Widget buildDeliveryStatus(BuildContext context, bool deliveryStatus) {
     return Material(

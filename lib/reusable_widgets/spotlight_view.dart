@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
 import 'package:eSamudaay/presentations/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 ///The [SpotlightTile] class implements the item to shown in the horizontal carousel for the
 ///spotlight items.
@@ -79,7 +79,7 @@ class SpotlightTile extends StatelessWidget {
             height: AppSizes.separatorPadding / 2,
           ),
           Text(
-            "₹ " + price,
+            price.withRupeePrefix,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: CustomTheme.of(context).textStyles.body2,

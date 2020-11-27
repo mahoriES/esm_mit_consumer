@@ -11,10 +11,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+//TODO: Will need to add logic to handle throttling (429 response) and convey that to the user accordingly
+
 class APIManager {
   static var shared = APIManager();
   static beginRequest() {}
-//  DioComputeParams data;
 
   static Future<ResponseModel> postRequest(List params) async {
     Dio dio = new Dio(new BaseOptions(
@@ -27,8 +28,6 @@ class APIManager {
       },
       responseType: ResponseType.json,
     ));
-//    dio.head(params[1]);
-//    dio.interceptors.add(CookieManager(params.last));
     dio.interceptors.add(LogInterceptor(
       responseBody: true,
       request: true,

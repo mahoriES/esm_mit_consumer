@@ -3,6 +3,8 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
+//TODO: This class is shared between consumer and merchant apps, so need to be wrapped into a package to use in common
+
 class LinkSharingService {
   AndroidParameters _androidParameters = AndroidParameters(
     packageName: StringConstants.packageName,
