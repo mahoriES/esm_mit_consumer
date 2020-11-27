@@ -4,6 +4,9 @@ import 'package:flutter/widgets.dart';
 
 const Duration _kExpand = Duration(milliseconds: 200);
 
+// ExpansionTile doesn't allow us to access the toggle method by key.
+// So created a slightly diffrent widget CustomExpansionTile to avoid this problem.
+
 class CustomExpansionTile extends StatefulWidget {
   const CustomExpansionTile({
     Key key,

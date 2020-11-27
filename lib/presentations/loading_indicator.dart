@@ -1,6 +1,7 @@
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
+// We can modify this widget when new design is available for the same.
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({Key key}) : super(key: key);
 

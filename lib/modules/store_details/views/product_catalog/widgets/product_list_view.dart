@@ -36,7 +36,7 @@ class ProductListView extends StatelessWidget {
             separatorBuilder: (context, productIndex) =>
                 SizedBox(height: 16.toHeight),
             itemBuilder: (context, productIndex) {
-              // If the 3rd last element of list is in view then load more data is available.
+              // If the 3rd last element of list is in view then load more data is triggered.
               if (productIndex ==
                   snapshot.productsList(subCategoryIndex).length - 3) {
                 return VisibilityDetector(

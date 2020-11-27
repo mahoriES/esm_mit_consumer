@@ -36,7 +36,9 @@ class SubCategoryView extends StatelessWidget {
                       ],
                     ],
                   )
-                : snapshot.subCategoriesList.isEmpty
+                :
+                // for dynamic categories, check if there are nonzero subcategories.
+                snapshot.subCategoriesList.isEmpty
                     ? Center(
                         child: Text("No Items Found"),
                       )
@@ -52,7 +54,7 @@ class SubCategoryView extends StatelessWidget {
                           CategoriesNew _currentSubCategory =
                               snapshot.subCategoriesList[subCategoryIndex];
 
-                          return SubCategoryTile(
+                          return _SubCategoryHeaderTile(
                             subCategoryIndex: subCategoryIndex,
                             categoryName: _currentSubCategory.categoryName,
                             getProducts: () =>
@@ -68,12 +70,12 @@ class SubCategoryView extends StatelessWidget {
   }
 }
 
-class SubCategoryTile extends StatefulWidget {
+class _SubCategoryHeaderTile extends StatefulWidget {
   final int subCategoryIndex;
   final String categoryName;
   final Function() getProducts;
   final bool isCurrentSubcategoryLodingMore;
-  SubCategoryTile({
+  _SubCategoryHeaderTile({
     @required this.subCategoryIndex,
     @required this.categoryName,
     @required this.getProducts,
@@ -85,7 +87,7 @@ class SubCategoryTile extends StatefulWidget {
   _SubCategoryTileState createState() => _SubCategoryTileState();
 }
 
-class _SubCategoryTileState extends State<SubCategoryTile> {
+class _SubCategoryTileState extends State<_SubCategoryHeaderTile> {
   final GlobalKey<CustomExpansionTileState> expansionTileKey =
       new GlobalKey<CustomExpansionTileState>();
 
