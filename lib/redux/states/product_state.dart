@@ -9,9 +9,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:upi_pay/upi_pay.dart';
 
+// TODO : seperate the catalogue and cart state variables.
+
 class ProductState {
   final List<Product> productListingDataSource;
-  final List<Product> productListingTempDataSource;
   final List<Product> searchResultProducts;
   final List<Merchants> searchResults;
   final bool currentOrderIsPickUp;
@@ -21,17 +22,18 @@ class ProductState {
   final List<Charge> charges;
   final List<String> customerNoteImages;
   final CategoriesNew selectedCategory;
-  final CategoriesNew selectedSubCategory;
   final PlaceOrderResponse placeOrderResponse;
   final Business selectedMerchant;
   final GetOrderListResponse getOrderListResponse;
   final String supportOrder;
   final List<CategoriesNew> categories;
-  final List<CategoriesNew> subCategories;
   final Cluster selectedCluster;
-  final CatalogSearchResponse productResponse;
   final List<ApplicationMeta> upiApps;
   final Product selectedProductForDetails;
+  final Map<int, List<CategoriesNew>> categoryIdToSubCategoryData;
+  final Map<int, CatalogSearchResponse> subCategoryIdToProductData;
+  final Map<int, bool> isLoadingMore;
+  final CatalogSearchResponse allProductsForMerchant;
 
   ProductState({
     @required this.localCartItems,
@@ -44,18 +46,18 @@ class ProductState {
     @required this.placeOrderResponse,
     @required this.getOrderListResponse,
     @required this.selectedCategory,
-    @required this.productListingTempDataSource,
     @required this.selectedMerchant,
     @required this.searchResults,
     @required this.productListingDataSource,
     @required this.supportOrder,
-    @required this.subCategories,
     @required this.categories,
     @required this.currentOrderIsPickUp,
-    @required this.productResponse,
-    @required this.selectedSubCategory,
     @required this.searchResultProducts,
     @required this.selectedProductForDetails,
+    @required this.categoryIdToSubCategoryData,
+    @required this.subCategoryIdToProductData,
+    @required this.isLoadingMore,
+    @required this.allProductsForMerchant,
   });
 
   factory ProductState.initial() {
@@ -63,38 +65,36 @@ class ProductState {
       customerNoteImages: [],
       localFreeFormCartItems: [],
       upiApps: [],
-      productResponse: CatalogSearchResponse(),
       searchForProductsComplete: false,
       selectedCluster: null,
       charges: [],
       categories: [],
-      subCategories: [],
       supportOrder: "",
       getOrderListResponse: GetOrderListResponse(results: []),
       localCartItems: [],
       searchResults: [],
       selectedMerchant: null,
-      productListingTempDataSource: [],
       productListingDataSource: [],
       searchResultProducts: [],
       selectedCategory: null,
-      selectedSubCategory: null,
       placeOrderResponse: null,
       currentOrderIsPickUp: false,
       selectedProductForDetails: null,
+      categoryIdToSubCategoryData: {},
+      subCategoryIdToProductData: {},
+      isLoadingMore: {},
+      allProductsForMerchant: null,
     );
   }
 
   ProductState copyWith({
     List<Product> productListingDataSource,
-    List<Product> productListingTempDataSource,
     bool searchForProductsComplete,
     List<String> customerNoteImages,
     List<Product> searchResultProducts,
     List<Product> localCartItems,
     List<JITProduct> localFreeFormCartItems,
     List<CategoriesNew> categories,
-    List<CategoriesNew> subCategories,
     List<Merchants> searchResults,
     List<Charge> charges,
     List<ApplicationMeta> upiApps,
@@ -102,26 +102,25 @@ class ProductState {
     PlaceOrderResponse placeOrderResponse,
     GetOrderListResponse getOrderListResponse,
     CategoriesNew selectedCategory,
-    CategoriesNew selectedSubCategory,
     String supportOrder,
     bool currentOrderIsPickUp,
-    CatalogSearchResponse productResponse,
     Cluster selectedCluster,
     Product selectedProductForDetails,
+    Map<int, List<CategoriesNew>> categoryIdToSubCategoryData,
+    Map<int, CatalogSearchResponse> subCategoryIdToProductData,
+    Map<int, bool> isLoadingMore,
+    CatalogSearchResponse allProductsForMerchant,
   }) {
     return ProductState(
       customerNoteImages: customerNoteImages ?? this.customerNoteImages,
       searchForProductsComplete:
           searchForProductsComplete ?? this.searchForProductsComplete,
       upiApps: upiApps ?? this.upiApps,
-      productResponse: productResponse ?? this.productResponse,
       charges: charges ?? this.charges,
       selectedCluster: selectedCluster ?? this.selectedCluster,
       searchResults: searchResults ?? this.searchResults,
       getOrderListResponse: getOrderListResponse ?? this.getOrderListResponse,
       placeOrderResponse: placeOrderResponse ?? this.placeOrderResponse,
-      productListingTempDataSource:
-          productListingTempDataSource ?? this.productListingTempDataSource,
       localCartItems: localCartItems ?? this.localCartItems,
       localFreeFormCartItems:
           localFreeFormCartItems ?? this.localFreeFormCartItems,
@@ -132,11 +131,16 @@ class ProductState {
       selectedCategory: selectedCategory ?? this.selectedCategory,
       supportOrder: supportOrder ?? this.supportOrder,
       categories: categories ?? this.categories,
-      subCategories: subCategories ?? this.subCategories,
-      selectedSubCategory: selectedSubCategory ?? this.selectedSubCategory,
       currentOrderIsPickUp: currentOrderIsPickUp ?? this.currentOrderIsPickUp,
       selectedProductForDetails:
           selectedProductForDetails ?? this.selectedProductForDetails,
+      categoryIdToSubCategoryData:
+          categoryIdToSubCategoryData ?? this.categoryIdToSubCategoryData,
+      subCategoryIdToProductData:
+          subCategoryIdToProductData ?? this.subCategoryIdToProductData,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      allProductsForMerchant:
+          allProductsForMerchant ?? this.allProductsForMerchant,
     );
   }
 }

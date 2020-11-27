@@ -1,5 +1,7 @@
 //Login
 
+import 'package:flutter/material.dart';
+
 class ApiURL {
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
   static const liveURL = "https://api.esamudaay.com/";
@@ -18,7 +20,7 @@ class ApiURL {
   static const updateOrderUrl = "Customer/v4/updateOrders";
   static const getOrderTaxUrl = "Customer/v4/populateOrderCharges";
   static const getOrderListUrl = "Customer/v4/getOrders";
-  static const getCategories = "api/v1/businesses/";
+
   static const searchURL = "Customer/v4/search";
   static const reviewOrderURL = "Review/addReview";
   static const supportURL = "Support/raiseSupportTicket";
@@ -31,4 +33,11 @@ class ApiURL {
   static const getVideoFeed = baseURL + 'api/v1/feed/';
   static final getVideoDetails = (String businessId, String productId) =>
       baseURL + "api/v1/businesses/$businessId/catalog/products/$productId";
+  static final getAllProducts = (String businessId) =>
+      baseURL + "api/v1/businesses/$businessId/catalog/products";
+  static final getCategories =
+      (String businessId) => "api/v1/businesses/$businessId/catalog/categories";
+  static final getProductsForSubcategory = (
+          {@required String businessId, @required String subCategoryId}) =>
+      "api/v1/businesses/$businessId/catalog/categories/$subCategoryId/products";
 }

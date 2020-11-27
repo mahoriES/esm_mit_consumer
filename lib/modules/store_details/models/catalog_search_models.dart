@@ -1,27 +1,27 @@
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
-class CatalogSearchRequest {
-  String merchantID;
-  List<String> categoryIDs;
+// class CatalogSearchRequest {
+//   String merchantID;
+//   List<String> categoryIDs;
 
-  CatalogSearchRequest({this.merchantID, this.categoryIDs});
+//   CatalogSearchRequest({this.merchantID, this.categoryIDs});
 
-  CatalogSearchRequest.fromJson(Map<String, dynamic> json) {
-    merchantID = json['merchantID'];
-    categoryIDs = json['categoryIDs'].cast<String>();
-  }
+//   CatalogSearchRequest.fromJson(Map<String, dynamic> json) {
+//     merchantID = json['merchantID'];
+//     categoryIDs = json['categoryIDs'].cast<String>();
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.merchantID != null) {
-      data['merchantID'] = this.merchantID;
-    }
-    if (this.categoryIDs != null) {
-      data['categoryIDs'] = this.categoryIDs;
-    }
-    return data;
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     if (this.merchantID != null) {
+//       data['merchantID'] = this.merchantID;
+//     }
+//     if (this.categoryIDs != null) {
+//       data['categoryIDs'] = this.categoryIDs;
+//     }
+//     return data;
+//   }
+// }
 
 //class CatalogSearchResponse {
 //  List<Catalog> catalog;

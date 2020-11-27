@@ -50,6 +50,7 @@ class SizeConfig {
   }
 
   double getFontRatio(double val) {
+    return val;
     double res = (val / refWidth);
     double temp = 0.0;
     if (screenWidth < screenHeight) {

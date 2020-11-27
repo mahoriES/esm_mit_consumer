@@ -578,7 +578,8 @@ class StoresListView extends StatelessWidget {
           color: const Color(0xffffffff)),
       child: Row(
         children: [
-          Expanded(flex: 40,
+          Expanded(
+            flex: 40,
             child: Container(
               width: SizeConfig.screenWidth / 3,
               height: SizeConfig.screenWidth / 3,
@@ -617,7 +618,8 @@ class StoresListView extends StatelessWidget {
               ),
             ),
           ), // Astore Groceries
-          Expanded(flex: 60,
+          Expanded(
+            flex: 60,
             child: Padding(
               padding: EdgeInsets.only(left: AppSizes.minorTopPadding * 5),
               child: Column(
@@ -663,8 +665,7 @@ class StoresListView extends StatelessWidget {
                               )
                             : shopClosed
                                 ? Image.asset('assets/images/group236.png')
-                                : Image.asset(
-                                    'assets/images/no_delivery.png'),
+                                : Image.asset('assets/images/no_delivery.png'),
                       ),
                       Text(
                           deliveryStatus
@@ -703,8 +704,7 @@ class StoresListView extends StatelessWidget {
                                       fontWeight: FontWeight.w300,
                                       fontFamily: "Avenir-Medium",
                                       fontStyle: FontStyle.normal,
-                                      fontSize:
-                                          AppSizes.itemSubtitle3FontSize),
+                                      fontSize: AppSizes.itemSubtitle3FontSize),
                                   textAlign: TextAlign.left)
                               .tr(),
                         )),
@@ -795,7 +795,7 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
       },
       navigateToStoreDetailsPage: () {
-        dispatch(RemoveCategoryAction());
+        dispatch(ResetCatalogueAction());
         dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
       },
       navigateToAddAddressPage: () {

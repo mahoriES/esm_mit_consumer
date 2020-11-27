@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
@@ -13,111 +12,213 @@ import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class GetSubCatalogAction extends ReduxAction<AppState> {
-  GetSubCatalogAction();
-
+class GetSubCategoriesAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    var id = state.productState.selectedCategory.categoryId;
+    int categoryId = state.productState.selectedCategory.categoryId;
+    String businessId = state.productState.selectedMerchant.businessId;
+
+    // If the subCategory data has already loaded once
+    // then no need to trigger the api again.
+    if (state.productState.categoryIdToSubCategoryData
+        .containsKey(categoryId)) {
+      return null;
+    }
+
     var response = await APIManager.shared.request(
-        url:
-            "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
-        params: {"parent_category_id": "$id"},
-        requestType: RequestType.get);
+      url: ApiURL.getCategories(businessId),
+      params: SubCategoryRequestData(parentCategoryId: categoryId).toJson(),
+      requestType: RequestType.get,
+    );
+
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
       var responseModel = CategoryResponse.fromJson(response.data);
-      dispatch(UpdateSelectedSubCategoryAction(
-          selectedSubCategory: responseModel.categories.length > 0
-              ? responseModel.categories.first
-              : null));
+
+      // We are maintaining a map categoryIdToSubCategoryData , to cache the already loaded subCategories to avoid unnecessary Api calls.
+      // update the map data for respective category and then update the app state.
+      Map<int, List<CategoriesNew>> updatedSubCategoryMap =
+          new Map.from(state.productState.categoryIdToSubCategoryData);
+      updatedSubCategoryMap[categoryId] = responseModel.categories;
+
       return state.copyWith(
-          productState: state.productState
-              .copyWith(subCategories: responseModel.categories));
+        productState: state.productState.copyWith(
+          categoryIdToSubCategoryData: updatedSubCategoryMap,
+        ),
+      );
     }
   }
 
   @override
-  FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-    return super.before();
-  }
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   @override
-  void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-    super.after();
-  }
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
-class GetCatalogDetailsAction extends ReduxAction<AppState> {
-  final String query;
-  final String url;
+class GetProductsForSubCategory extends ReduxAction<AppState> {
+  final String filter;
+  final String urlForNextPageResponse;
+  final CategoriesNew selectedSubCategory;
 
-  GetCatalogDetailsAction({this.query, this.url});
+  GetProductsForSubCategory({
+    @required this.selectedSubCategory,
+    this.filter,
+    this.urlForNextPageResponse,
+  });
 
   @override
   FutureOr<AppState> reduce() async {
+    // If the call is not made for loadMore and the data has already loaded once
+    // then no need to trigger the api again.
+    if (urlForNextPageResponse == null &&
+        state.productState.subCategoryIdToProductData
+            .containsKey(selectedSubCategory.categoryId)) {
+      return null;
+    }
+
+    String businessId = state.productState.selectedMerchant.businessId;
+
     var response = await APIManager.shared.request(
-        url: url == null
-            ? "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories/${state.productState.selectedSubCategory.categoryId}/products"
-            : url,
-        params: query == null ? {"": ""} : {"filter": query},
-        requestType: RequestType.get);
+      url: urlForNextPageResponse == null
+          ? ApiURL.getProductsForSubcategory(
+              businessId: businessId,
+              subCategoryId: selectedSubCategory.categoryId.toString(),
+            )
+          : urlForNextPageResponse,
+      params: SubCategoryProductsRequestData(filter: filter).toJson(),
+      requestType: RequestType.get,
+    );
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      var responseModel = CatalogSearchResponse.fromJson(response.data);
-      var items = responseModel.results;
+      CatalogSearchResponse responseModel =
+          CatalogSearchResponse.fromJson(response.data);
 
-      var products = items.map((f) {
-        f.count = 0;
-        return f;
-      }).toList();
+      // Fetch the local cart items.
+      List<Product> localCartItems = await CartDataSource.getListOfCartWith();
 
-      List<Product> allCartItems = await CartDataSource.getListOfCartWith();
-
-      products.forEach((item) {
+      // check if any of these product items are already added in cart.
+      // if yes updated the item count for the same.
+      responseModel.results.forEach((item) {
         item.selectedVariant = 0;
-        allCartItems.forEach((localCartItem) {
+        item.count = 0;
+        localCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
             item.count = localCartItem.count;
           }
         });
       });
 
-      if (url != null) {
-        var totalProduct =
-            state.productState.productResponse.results + products;
-        products = totalProduct;
-        responseModel.results = products;
-      } else {}
+      if (urlForNextPageResponse != null) {
+        List<Product> existingProducts = state.productState
+            .subCategoryIdToProductData[selectedSubCategory.categoryId].results;
+        responseModel.results = existingProducts + responseModel.results;
+      }
+
+      // We are maintaining a map subCategoryIdToProductData , to cache the already loaded products list to avoid unnecessary Api calls.
+      // update the map data for respective subCategiry and then update the app state.
+      Map<int, CatalogSearchResponse> updatedProductListMap =
+          new Map.from(state.productState.subCategoryIdToProductData);
+      updatedProductListMap[selectedSubCategory.categoryId] = responseModel;
 
       return state.copyWith(
-          productState: state.productState.copyWith(
-              productListingDataSource: products,
-              productResponse: responseModel));
+        productState: state.productState.copyWith(
+          subCategoryIdToProductData: updatedProductListMap,
+        ),
+      );
     }
   }
 
   @override
-  FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() =>
+      dispatch(UpdateLoadMoreStatus(true, selectedSubCategory.categoryId));
 
-    return super.before();
+  @override
+  void after() =>
+      dispatch(UpdateLoadMoreStatus(false, selectedSubCategory.categoryId));
+}
+
+class GetAllProducts extends ReduxAction<AppState> {
+  final String urlForNextPageResponse;
+
+  GetAllProducts({this.urlForNextPageResponse});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    // If the call is not made for loadMore and the data has already loaded once
+    // then no need to trigger the api again.
+    if (urlForNextPageResponse == null &&
+        state.productState.allProductsForMerchant != null) {
+      return null;
+    }
+
+    var response = await APIManager.shared.request(
+      url: urlForNextPageResponse == null
+          ? ApiURL.getAllProducts(
+              state.productState.selectedMerchant.businessId)
+          : urlForNextPageResponse,
+      params: null,
+      requestType: RequestType.get,
+    );
+
+    if (response.status == ResponseStatus.error404)
+      throw UserException(response.data['message']);
+    else if (response.status == ResponseStatus.error500)
+      throw UserException('Something went wrong');
+    else {
+      CatalogSearchResponse _responseModel =
+          CatalogSearchResponse.fromJson(response.data);
+
+      // Fetch the local cart items.
+      List<Product> _allCartItems = await CartDataSource.getListOfCartWith();
+
+      // check if any of these product items are already added in cart.
+      // if yes updated the item count for the same.
+      _responseModel.results.forEach((item) {
+        item.selectedVariant = 0;
+        item.count = 0;
+        _allCartItems.forEach((localCartItem) {
+          if (item.productId == localCartItem.productId) {
+            item.count = localCartItem.count;
+          }
+        });
+      });
+
+      if (urlForNextPageResponse != null) {
+        List<Product> existingProducts =
+            state.productState.allProductsForMerchant.results;
+        _responseModel.results = existingProducts + _responseModel.results;
+      }
+
+      return state.copyWith(
+          productState: state.productState.copyWith(
+        allProductsForMerchant: _responseModel,
+      ));
+    }
   }
 
   @override
-  void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-    super.after();
-  }
+  void before() => urlForNextPageResponse == null
+      ? dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading))
+      : dispatch(UpdateLoadMoreStatus(
+          true,
+          CustomCategoryForAllProducts().categoryId,
+        ));
+
+  @override
+  void after() => urlForNextPageResponse == null
+      ? dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success))
+      : dispatch(UpdateLoadMoreStatus(
+          false,
+          CustomCategoryForAllProducts().categoryId,
+        ));
 }
 
 class UpdateSelectedCategoryAction extends ReduxAction<AppState> {
@@ -128,24 +229,30 @@ class UpdateSelectedCategoryAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-        productState: state.productState.copyWith(
-            selectedCategory: selectedCategory,
-            productListingTempDataSource: []));
+      productState: state.productState.copyWith(
+        selectedCategory: selectedCategory,
+      ),
+    );
   }
 }
 
-class UpdateSelectedSubCategoryAction extends ReduxAction<AppState> {
-  final CategoriesNew selectedSubCategory;
+class UpdateLoadMoreStatus extends ReduxAction<AppState> {
+  final bool isLoadingMore;
+  final int subCategoryId;
 
-  UpdateSelectedSubCategoryAction({this.selectedSubCategory});
+  UpdateLoadMoreStatus(this.isLoadingMore, this.subCategoryId);
 
   @override
   FutureOr<AppState> reduce() {
+    // We are maintaining a map isLoadingMore , to remember which product lists are loading more at the same time
+    Map<int, bool> updatedLoadingMoreMap =
+        new Map.from(state.productState.isLoadingMore);
+    updatedLoadingMoreMap[subCategoryId] = isLoadingMore;
+
     return state.copyWith(
-        productState: state.productState.copyWith(
-            selectedSubCategory: selectedSubCategory,
-            productListingTempDataSource: [],
-            productListingDataSource: []));
+      productState:
+          state.productState.copyWith(isLoadingMore: updatedLoadingMoreMap),
+    );
   }
 }
 
@@ -162,18 +269,18 @@ class UpdateSelectedProductAction extends ReduxAction<AppState> {
   }
 }
 
-class UpdateProductListingTempDataAction extends ReduxAction<AppState> {
-  final List<Product> listingData;
+// class UpdateProductListingTempDataAction extends ReduxAction<AppState> {
+//   final List<Product> listingData;
 
-  UpdateProductListingTempDataAction({this.listingData});
+//   UpdateProductListingTempDataAction({this.listingData});
 
-  @override
-  FutureOr<AppState> reduce() {
-    return state.copyWith(
-        productState: state.productState
-            .copyWith(productListingTempDataSource: listingData));
-  }
-}
+//   @override
+//   FutureOr<AppState> reduce() {
+//     return state.copyWith(
+//         productState: state.productState
+//             .copyWith(productListingTempDataSource: listingData));
+//   }
+// }
 
 class UpdateProductListingDataAction extends ReduxAction<AppState> {
   final List<Product> listingData;
@@ -188,16 +295,16 @@ class UpdateProductListingDataAction extends ReduxAction<AppState> {
   }
 }
 
-class UpdateProductVariantAction extends ReduxAction<AppState> {
-  final int index;
+// class UpdateProductVariantAction extends ReduxAction<AppState> {
+//   final int index;
 
-  UpdateProductVariantAction({this.index});
+//   UpdateProductVariantAction({this.index});
 
-  @override
-  FutureOr<AppState> reduce() {
-    return state.copyWith(productState: state.productState.copyWith());
-  }
-}
+//   @override
+//   FutureOr<AppState> reduce() {
+//     return state.copyWith(productState: state.productState.copyWith());
+//   }
+// }
 
 class GetProductDetailsByID extends ReduxAction<AppState> {
   final String productId;
@@ -233,15 +340,9 @@ class GetProductDetailsByID extends ReduxAction<AppState> {
   }
 
   @override
-  FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-    return super.before();
-  }
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   @override
-  void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-    super.after();
-  }
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }

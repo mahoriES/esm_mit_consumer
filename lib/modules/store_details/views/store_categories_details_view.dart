@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
@@ -767,7 +766,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
         },
         navigateToProductDetails: () {
-          store.dispatchFuture(GetSubCatalogAction()).whenComplete(() {
+          store.dispatchFuture(GetSubCategoriesAction()).whenComplete(() {
             dispatch(UpdateProductListingDataAction(listingData: []));
             dispatch(
               NavigateAction.pushNamed('/StoreProductListingView'),

@@ -1,3 +1,40 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+class SubCategoryRequestData {
+  int parentCategoryId;
+
+  SubCategoryRequestData({@required this.parentCategoryId});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "parent_category_id": "${this.parentCategoryId}",
+    };
+  }
+}
+
+class SubCategoryProductsRequestData {
+  String filter;
+
+  SubCategoryProductsRequestData({this.filter});
+
+  Map<String, dynamic> toJson() {
+    if (filter == null) return null;
+    return {
+      "filter": "${this.filter}",
+    };
+  }
+}
+
+// In order to follow the same flow for all tabs in category menu,
+// Created a custom category object for "All" tab.
+// assigning category id = -1 , as this won't be a valid id for any other category
+// so there won't be any conflict about two categories having same id.
+class CustomCategoryForAllProducts extends CategoriesNew {
+  @override
+  int get categoryId => -1;
+}
+
 class CategoryResponse {
   List<CategoriesNew> categories;
 
