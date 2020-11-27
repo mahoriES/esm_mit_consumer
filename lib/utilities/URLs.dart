@@ -1,5 +1,7 @@
 //Login
 
+import 'package:eSamudaay/utilities/api_manager.dart';
+
 class ApiURL {
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
   static const liveURL = "https://api.esamudaay.com/";
@@ -32,5 +34,7 @@ class ApiURL {
   static final getVideoDetails = (String businessId, String productId) =>
       baseURL + "api/v1/businesses/$businessId/catalog/products/$productId";
   static final getProductsListUrl = (String businessId) =>
-      baseURL + "api/v1/businesses/" + businessId + "/catalog/products";
+      baseURL + getBusinessesUrl + businessId + "/catalog/products";
+  static final getBookmarkBusinessUrl = (String businessId) =>
+      baseURL + getBusinessesUrl + "/$businessId/bookmark";
 }

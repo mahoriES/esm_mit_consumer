@@ -40,6 +40,8 @@ class StoreDetailsView extends StatefulWidget {
   _StoreDetailsViewState createState() => _StoreDetailsViewState();
 }
 
+//TODO: Reduce the size of this classes by moving around widget components
+
 class _StoreDetailsViewState extends State<StoreDetailsView>
     with MerchantWidgetElementsProviderMixin {
   @override

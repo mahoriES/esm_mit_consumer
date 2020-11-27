@@ -4,7 +4,6 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 
-//TODO: Work in progress will require changes from another PR to get this done
 
 class HighlightCatalogItems extends StatelessWidget {
   final List<Product> productList;

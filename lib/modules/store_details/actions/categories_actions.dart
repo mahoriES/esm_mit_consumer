@@ -114,7 +114,6 @@ class GetBusinessSpotlightItems extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-    //getBusinessesUrl + businessId + "/catalog/products"
     var response = await APIManager.shared.request(
         url: ApiURL.getProductsListUrl(businessId),
         params: {"spotlight": true},
@@ -154,7 +153,7 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-      url: ApiURL.getBusinessesUrl + "/$businessId/bookmark",
+      url: ApiURL.getBookmarkBusinessUrl(businessId),
       params: null,
       requestType: RequestType.post,
     );
@@ -200,14 +199,14 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
     var response = await APIManager.shared.request(
       params: null,
       requestType: RequestType.get,
-      url: ApiURL.getBusinessesUrl + businessId + "/catalog/products",
+      url: ApiURL.getProductsListUrl(businessId),
     );
 
     if (response.status == ResponseStatus.success200) {
       var responseModel = CatalogSearchResponse.fromJson(response.data);
-      List<Product> items = [];
+      List<Product> firstFiveProducts = [];
       if (responseModel.results.isNotEmpty) {
-        items = responseModel.results
+        firstFiveProducts = responseModel.results
             .getRange(
                 0,
                 responseModel.results.length < 5
@@ -218,7 +217,7 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
 
       ///Preparing a list of first few products for the single category from the fetched items and initialising
       ///the selected quantity for each [product] to zero.
-      var products = items.map((item) {
+      var preparedProductsForSingleCategory = firstFiveProducts.map((item) {
         item.count = 0;
         return item;
       }).toList();
@@ -230,7 +229,7 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
       ///Initialising the selected SKU for each product (in the fetched product
       ///list) and if the item has already been added to the local cart, then
       ///updating it's quantity to that in the local cart.
-      products.forEach((item) {
+      preparedProductsForSingleCategory.forEach((item) {
         item.selectedVariant = 0;
         allCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
@@ -241,7 +240,7 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
 
       return state.copyWith(
           productState: state.productState.copyWith(
-        singleCategoryFewProducts: products,
+        singleCategoryFewProducts: preparedProductsForSingleCategory,
       ));
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
@@ -258,7 +257,7 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-      url: ApiURL.getBusinessesUrl + "/$businessId/bookmark",
+      url: ApiURL.getBookmarkBusinessUrl(businessId),
       params: null,
       requestType: RequestType.delete,
     );
