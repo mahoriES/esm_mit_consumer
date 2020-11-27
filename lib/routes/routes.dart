@@ -16,7 +16,7 @@ import 'package:eSamudaay/modules/orders/views/support.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
-import 'package:eSamudaay/modules/store_details/views/product_catalog/product_catalog.dart';
+import 'package:eSamudaay/modules/store_details/views/product_catalog_view/product_catalog.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/store_categories_details_view.dart';
 import 'package:eSamudaay/presentations/alert.dart';

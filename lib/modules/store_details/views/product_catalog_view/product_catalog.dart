@@ -2,9 +2,8 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
-import 'package:eSamudaay/modules/store_details/views/product_catalog/widgets/catalogue_menu.dart';
-import 'package:eSamudaay/modules/store_details/views/product_catalog/widgets/product_list_view.dart';
-import 'package:eSamudaay/modules/store_details/views/product_catalog/widgets/search_component.dart';
+import 'package:eSamudaay/modules/store_details/views/product_catalog_view/widgets/catalogue_menu.dart';
+import 'package:eSamudaay/modules/store_details/views/widgets/product_list_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -12,6 +11,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'widgets/search_component.dart';
 import 'widgets/subcategory_view.dart';
 
 class ProductCatalogView extends StatefulWidget {

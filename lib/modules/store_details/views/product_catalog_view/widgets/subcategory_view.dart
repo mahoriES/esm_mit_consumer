@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
-import 'package:eSamudaay/modules/store_details/views/product_catalog/widgets/product_list_view.dart';
+import 'package:eSamudaay/modules/store_details/views/widgets/product_list_view.dart';
 import 'package:eSamudaay/presentations/custom_expansion_tile.dart';
 import 'package:eSamudaay/presentations/loading_indicator.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
