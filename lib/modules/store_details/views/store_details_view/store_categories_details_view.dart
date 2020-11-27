@@ -356,13 +356,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   Widget buildProductsListView(_ViewModel snapshot) {
     return HighlightCatalogItems(
         productList: snapshot.singleCategoryFewProducts,
-        actionButtonTitle: "See More",
+        actionButtonTitle: tr('store_home.see_more'),
         onTapActionButton: () {
           if (snapshot.categories.isNotEmpty) {
             snapshot.updateSelectedCategory(snapshot.categories[0]);
             snapshot.navigateToProductDetails();
           } else {
-            Fluttertoast.showToast(msg: 'No Category Available!');
+            Fluttertoast.showToast(msg: tr('store_home.no_category'));
           }
         });
   }

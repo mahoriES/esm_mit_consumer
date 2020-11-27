@@ -78,7 +78,7 @@
     "delivery_no" : "Store Pickup",
     "home_delivery_order": "Home Delivery",
     "item_category": "Products",
-    "pickup_order": "Pickup Order"
+    "pickup_order": "Pickup Order",
   },
 
   "product_list": {
@@ -121,7 +121,10 @@
     "products": "Products",
     "offers": "Best Offers",
     "search_hint": "Search for item",
-    "see_more": "See More"
+    "see_more": "See More",
+    "error_map": "Error launching map!",
+    "no_location": "Location details unavailable!",
+    "no_category": "No Category Available!"
   },
 
   "screen_recommended": {
