@@ -163,4 +163,50 @@ class ProductState {
           singleCategoryFewProducts ?? this.singleCategoryFewProducts,
     );
   }
+
+  // The problem with copyWith function is that we can not set any value to null
+  // as it has null check and assigns previous value in this case.
+  //
+  // When switching between merchants, the cached product lists must be reset to null
+  // created reset method for the same.
+  // This can be modified to be more generic in future as needed.
+
+  ProductState reset({
+    @required List<CategoriesNew> categories,
+    @required Map<int, List<CategoriesNew>> categoryIdToSubCategoryData,
+    @required Map<int, CatalogSearchResponse> subCategoryIdToProductData,
+    @required Map<int, bool> isLoadingMore,
+    @required CatalogSearchResponse allProductsForMerchant,
+  }) {
+    return ProductState(
+      // update these values
+      categories: [],
+      categoryIdToSubCategoryData: {},
+      subCategoryIdToProductData: {},
+      isLoadingMore: {},
+      allProductsForMerchant: null,
+
+      // These values should not change.
+      customerNoteImages: this.customerNoteImages,
+      searchForProductsComplete: this.searchForProductsComplete,
+      upiApps: this.upiApps,
+      charges: this.charges,
+      selectedCluster: this.selectedCluster,
+      searchResults: this.searchResults,
+      getOrderListResponse: this.getOrderListResponse,
+      placeOrderResponse: this.placeOrderResponse,
+      localCartItems: this.localCartItems,
+      localFreeFormCartItems: this.localFreeFormCartItems,
+      searchResultProducts: this.searchResultProducts,
+      selectedMerchant: this.selectedMerchant,
+      productListingDataSource: this.productListingDataSource,
+      selectedCategory: this.selectedCategory,
+      supportOrder: this.supportOrder,
+      currentOrderIsPickUp: this.currentOrderIsPickUp,
+      selectedProductForDetails: this.selectedProductForDetails,
+      spotlightItems: this.spotlightItems,
+      videosResponse: this.videosResponse,
+      singleCategoryFewProducts: this.singleCategoryFewProducts,
+    );
+  }
 }

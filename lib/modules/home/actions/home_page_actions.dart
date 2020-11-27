@@ -241,17 +241,15 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() {
-    dispatch(ResetCatalogueAction());
     return state.copyWith(
         productState: state.productState.copyWith(
-      selectedMerchant: selectedMerchant,
-      spotlightItems: [],
-      singleCategoryFewProducts: [],
-      videosResponse: VideoFeedResponse(
-        count: 0,
-        results: [],
-      ),
-      categories: [],
-    ));
+            selectedMerchant: selectedMerchant,
+            spotlightItems: [],
+            singleCategoryFewProducts: [],
+            videosResponse: VideoFeedResponse(
+              count: 0,
+              results: [],
+            ),
+            categories: []));
   }
 }

@@ -59,7 +59,7 @@ class ResetCatalogueAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-      productState: state.productState.copyWith(
+      productState: state.productState.reset(
         categories: [],
         categoryIdToSubCategoryData: {},
         subCategoryIdToProductData: {},
