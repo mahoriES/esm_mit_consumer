@@ -34,7 +34,6 @@ class _AppTextStyles {
         fontSize: 24.toFont,
         fontWeight: FontWeight.w700,
         fontFamily: _AppFontFamily.archivo,
-        height: 3.5,
       );
 
   TextStyle get topTileTitle => TextStyle(
@@ -50,7 +49,6 @@ class _AppTextStyles {
         fontSize: 16.toFont,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.archivo,
-        height: 3.75,
       );
 
   TextStyle get sectionHeading2 => TextStyle(

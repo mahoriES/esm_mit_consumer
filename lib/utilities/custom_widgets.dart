@@ -51,6 +51,30 @@ class CustomDivider extends StatelessWidget {
   }
 }
 
+///This class [AnimatedCustomDivider] will paint a fine horizontal streak (separator) in an
+///animated fashion. Starting from the center, and then expanding horizontally in either direction
+
+class AnimatedCustomDivider extends AnimatedWidget {
+  final Animation<double> scalingUnitaryValue;
+
+  const AnimatedCustomDivider({@required this.scalingUnitaryValue})
+      : super(listenable: scalingUnitaryValue);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: AppSizes.widgetPadding,
+            horizontal:
+                (1 - scalingUnitaryValue.value) * SizeConfig.screenWidth +
+                    AppSizes.widgetPadding),
+        child: Container(
+          height: 1,
+          color: AppColors.offWhitish,
+        ));
+  }
+}
+
 class OTPField extends StatefulWidget {
   /// Number of the OTP Fields
   final int length;

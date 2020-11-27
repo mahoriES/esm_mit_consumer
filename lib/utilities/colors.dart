@@ -1,6 +1,9 @@
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 
-@Deprecated("Use CustomTheme.of(context).colors instead")
+@Deprecated('Use CustomTheme.of(context).colors to get appropriate colors depending on selected theme')
+//TODO: Will be getting of this and using CustomTheme to get the appropriate values
+
 class AppColors {
   static const mainColor = Color(0xff4093d1);
   static const darkGrey = Color(0xff989696);
@@ -28,6 +31,8 @@ class AppColors {
   static const black = const Color(0xff363636);
   static const blackTwo = const Color(0xff393939);
   static const warmGrey = const Color(0xff7c7c7c);
+  static const categoryTileTextUnderlay = const Color(0xffe6ffffff);
+  static const appLogoShadowColor = const Color(0xff6ea597be);
 
   static const linearGradient = LinearGradient(
       begin: Alignment(0.27639952301979065, 0.5),
