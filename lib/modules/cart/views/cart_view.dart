@@ -14,7 +14,7 @@ import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/jit_catalog/views/free_form_items_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_categories_details_view.dart';
+import 'package:eSamudaay/modules/store_details/views/store_details_view/store_categories_details_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/colors.dart';
