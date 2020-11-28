@@ -9,7 +9,7 @@ import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/no_items_view.dart';
+import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
@@ -679,12 +679,12 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   int getCountOfExistingSpotlightItemInCart(Product product, int index) {
-    if (state.productState.localCartItems.isEmpty)
+    if (localCartListing.isEmpty)
       return 0;
     else {
       Product prod;
       try {
-        prod = state.productState.localCartItems.firstWhere(
+        prod = localCartListing.firstWhere(
           (element) =>
               element.productId == product.productId &&
               element.skus[element.selectedVariant].variationOptions.weight ==
@@ -702,15 +702,13 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   bool get showNoProductsWidget {
-    return state.homePageState.loadingStatus == LoadingStatusApp.success &&
-        state.productState.singleCategoryFewProducts.isEmpty &&
-        (state.productState.categories.isEmpty ||
-            state.productState.categories.length == 1);
+    return loadingStatus == LoadingStatusApp.success &&
+        singleCategoryFewProducts.isEmpty &&
+        (categories.isEmpty || categories.length == 1);
   }
 
   bool get showFirstFewProducts {
-    return (state.productState.categories.isEmpty ||
-            state.productState.categories.length == 1) &&
-        state.productState.singleCategoryFewProducts.isNotEmpty;
+    return (categories.isEmpty || categories.length == 1) &&
+        singleCategoryFewProducts.isNotEmpty;
   }
 }
