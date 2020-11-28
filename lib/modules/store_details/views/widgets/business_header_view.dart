@@ -17,8 +17,10 @@ import 'package:eSamudaay/utilities/size_config.dart';
 
 class BusinessHeaderView extends StatelessWidget {
   final bool showDescription;
+  final bool resetMerchantOnBack;
   const BusinessHeaderView({
     this.showDescription = true,
+    @required this.resetMerchantOnBack,
     Key key,
   }) : super(key: key);
 
@@ -39,13 +41,15 @@ class BusinessHeaderView extends StatelessWidget {
               ? snapshot.selectedMerchant.images.first.photoUrl
               : "",
           onBackPressed: () async {
-            List<Business> merchants =
-                await CartDataSource.getListOfMerchants();
-            if (merchants.isNotEmpty &&
-                merchants.first.businessId !=
-                    snapshot.selectedMerchant.businessId) {
-              var localMerchant = merchants.first;
-              snapshot.updateSelectedMerchant(localMerchant);
+            if (resetMerchantOnBack) {
+              List<Business> merchants =
+                  await CartDataSource.getListOfMerchants();
+              if (merchants.isNotEmpty &&
+                  merchants.first.businessId !=
+                      snapshot.selectedMerchant.businessId) {
+                var localMerchant = merchants.first;
+                snapshot.updateSelectedMerchant(localMerchant);
+              }
             }
             Navigator.pop(context);
           },

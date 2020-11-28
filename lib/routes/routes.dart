@@ -36,7 +36,7 @@ class SetupRoutes {
       "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
       RouteNames.PRODUCT_CATALOGUE: (BuildContext context) =>
           ProductCatalogView(),
-      RouteNames.PRODUCT_SEARCH: (BuildContext context) => ProductSearchView(),
+      "/ProductSearchView": (BuildContext context) => ProductSearchView(),
       "/OrdersView": (BuildContext context) => OrdersView(),
       "/SMAlertView": (BuildContext context) => SMAlertView(),
       "/Support": (BuildContext context) => Support(),
@@ -46,7 +46,8 @@ class SetupRoutes {
       "/onBoarding": (BuildContext context) => OnboardingWidget(),
       "/payment": (BuildContext context) => Payments(),
       "/circles": (BuildContext context) => CirclePicker(),
-      "/productSearch": (BuildContext context) => MerchantProductsSearchView(),
+      RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
+          MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
           ProductDetailsView(),
       '/videoPlayer': (BuildContext context) => VideoPlayerScreen(),
@@ -60,5 +61,5 @@ class SetupRoutes {
 class RouteNames {
   static const PRODUCT_DETAILS = "/productDeails";
   static const PRODUCT_CATALOGUE = "/StoreProductListingView";
-  static const PRODUCT_SEARCH = "/ProductSearchView";
+  static const PRODUCT_SEARCH = "/productSearch";
 }

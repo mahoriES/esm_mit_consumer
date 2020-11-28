@@ -1,7 +1,10 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
+import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/product_catalog_view/widgets/catalogue_menu.dart';
 import 'package:eSamudaay/modules/store_details/views/widgets/business_header_view.dart';
 import 'package:eSamudaay/modules/store_details/views/widgets/product_list_view.dart';
@@ -62,7 +65,9 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  BusinessHeaderView(),
+                  BusinessHeaderView(
+                    resetMerchantOnBack: false,
+                  ),
                   SizedBox(height: 22.toHeight),
                   SearchComponent(
                     placeHolder: tr('product_list.search_placeholder'),
@@ -85,21 +90,32 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
                   ]
                   // If there are zero categpries the show all product list directly.
                   else ...[
-                    Column(
-                      children: [
-                        ProductListView(
-                          subCategoryIndex:
-                              CustomCategoryForAllProducts().categoryId,
-                        ),
-                        if (snapshot.isLoadingMore[
-                                CustomCategoryForAllProducts().categoryId] ??
-                            false) ...[
-                          CupertinoActivityIndicator(),
-                        ],
-                      ],
-                    )
+                    ProductListView(
+                      subCategoryIndex:
+                          CustomCategoryForAllProducts().categoryId,
+                    ),
+                    if (snapshot.isLoadingMore[
+                            CustomCategoryForAllProducts().categoryId] ??
+                        false) ...[
+                      CupertinoActivityIndicator(),
+                    ]
                   ],
                 ],
+              ),
+            ),
+            bottomSheet: AnimatedContainer(
+              height: (snapshot.localCartListing.isEmpty &&
+                      snapshot.freeFormItemsList.isEmpty)
+                  ? 0
+                  : 65.toHeight,
+              duration: Duration(milliseconds: 300),
+              child: BottomView(
+                height: (snapshot.localCartListing.isEmpty &&
+                        snapshot.freeFormItemsList.isEmpty)
+                    ? 0
+                    : 65.toHeight,
+                buttonTitle: tr('cart.view_cart'),
+                didPressButton: snapshot.navigateToCart,
               ),
             ),
           ),
@@ -114,8 +130,10 @@ class _ViewModel extends BaseModel<AppState> {
   List<CategoriesNew> categories;
   LoadingStatusApp loadingStatus;
   Map<int, bool> isLoadingMore;
-
   Function(int) updateSelectedCategory;
+  Function navigateToCart;
+  List<Product> localCartListing;
+  List<JITProduct> freeFormItemsList;
 
   _ViewModel();
 
@@ -125,13 +143,20 @@ class _ViewModel extends BaseModel<AppState> {
     this.loadingStatus,
     this.updateSelectedCategory,
     this.isLoadingMore,
+    this.navigateToCart,
+    this.freeFormItemsList,
+    this.localCartListing,
   }) : super(equals: [loadingStatus, isLoadingMore]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      navigateToSearchView: () =>
-          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH)),
+      navigateToSearchView: () {
+        dispatch(ClearSearchResultProductsAction());
+        dispatch(
+          NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH),
+        );
+      },
       categories: state.productState.categories ?? [],
       loadingStatus: state.authState.loadingStatus,
       isLoadingMore: state.productState.isLoadingMore,
@@ -147,6 +172,11 @@ class _ViewModel extends BaseModel<AppState> {
             ? dispatch(GetSubCategoriesAction())
             : dispatch(GetAllProducts());
       },
+      freeFormItemsList: state.productState.localFreeFormCartItems,
+      navigateToCart: () {
+        dispatch(NavigateAction.pushNamed('/CartView'));
+      },
+      localCartListing: state.productState.localCartItems,
     );
   }
 }

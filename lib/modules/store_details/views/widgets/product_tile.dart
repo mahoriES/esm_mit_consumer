@@ -27,24 +27,21 @@ class ProductTile extends StatelessWidget {
               onTap: navigateToDetails,
               child: Row(
                 children: [
-                  Hero(
-                    tag: product.productName,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: Container(
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Container(
+                      height: 100.toHeight,
+                      width: 100.toHeight,
+                      color: CustomTheme.of(context).colors.placeHolderColor,
+                      child: CachedNetworkImage(
+                        imageUrl: product.firstImageUrl,
                         height: 100.toHeight,
                         width: 100.toHeight,
-                        color: CustomTheme.of(context).colors.placeHolderColor,
-                        child: CachedNetworkImage(
-                          imageUrl: product.firstImageUrl,
-                          height: 100.toHeight,
-                          width: 100.toHeight,
-                          placeholder: (context, url) =>
-                              CupertinoActivityIndicator(),
-                          errorWidget: (context, url, error) => Icon(
-                            Icons.image,
-                            size: 30.toFont,
-                          ),
+                        placeholder: (context, url) =>
+                            CupertinoActivityIndicator(),
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.image,
+                          size: 30.toFont,
                         ),
                       ),
                     ),
@@ -61,6 +58,8 @@ class ProductTile extends StatelessWidget {
                           Text(
                             product.productName,
                             style: CustomTheme.of(context).textStyles.cardTitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: 5.toHeight),
                           Text(
