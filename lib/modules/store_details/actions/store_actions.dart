@@ -38,7 +38,7 @@ class GetSubCategoriesAction extends ReduxAction<AppState> {
     else {
       var responseModel = CategoryResponse.fromJson(response.data);
 
-      // We are maintaining a map categoryIdToSubCategoryData , to cache the already loaded subCategories to avoid unnecessary Api calls.
+      // We are maintaining a map categoryIdToSubCategoryData to cache the already loaded subCategories, to avoid unnecessary Api calls.
       // update the map data for respective category and then update the app state.
       Map<int, List<CategoriesNew>> updatedSubCategoryMap =
           new Map.from(state.productState.categoryIdToSubCategoryData);
@@ -116,13 +116,14 @@ class GetProductsForSubCategory extends ReduxAction<AppState> {
         });
       });
 
+      // If action was triggered to load_more then append existingProducts in new data list.
       if (urlForNextPageResponse != null) {
         List<Product> existingProducts = state.productState
             .subCategoryIdToProductData[selectedSubCategory.categoryId].results;
         responseModel.results = existingProducts + responseModel.results;
       }
 
-      // We are maintaining a map subCategoryIdToProductData , to cache the already loaded products list to avoid unnecessary Api calls.
+      // We are maintaining a map subCategoryIdToProductData to cache the already loaded products list, to avoid unnecessary Api calls.
       // update the map data for respective subCategiry and then update the app state.
       Map<int, CatalogSearchResponse> updatedProductListMap =
           new Map.from(state.productState.subCategoryIdToProductData);
@@ -191,27 +192,16 @@ class GetAllProducts extends ReduxAction<AppState> {
         });
       });
 
+      // If action was triggered to load_more then append existingProducts in new data list.
       if (urlForNextPageResponse != null) {
         List<Product> existingProducts =
             state.productState.allProductsForMerchant.results;
         _responseModel.results = existingProducts + _responseModel.results;
       }
 
-      // List<Product> firstFiveProducts = [];
-      // if (_responseModel.results.isNotEmpty) {
-      //   firstFiveProducts = _responseModel.results
-      //       .getRange(
-      //           0,
-      //           _responseModel.results.length < 5
-      //               ? _responseModel.results.length
-      //               : 5)
-      //       .toList();
-      // }
-
       return state.copyWith(
           productState: state.productState.copyWith(
         allProductsForMerchant: _responseModel,
-        // singleCategoryFewProducts: firstFiveProducts,
       ));
     }
   }
@@ -256,7 +246,7 @@ class UpdateLoadMoreStatus extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() {
-    // We are maintaining a map isLoadingMore , to remember which product lists are loading more at the same time
+    // We are maintaining a map isLoadingMore , to remember which product lists are loading data at the same time
     Map<int, bool> updatedLoadingMoreMap =
         new Map.from(state.productState.isLoadingMore);
     updatedLoadingMoreMap[subCategoryId] = isLoadingMore;
@@ -281,19 +271,6 @@ class UpdateSelectedProductAction extends ReduxAction<AppState> {
   }
 }
 
-// class UpdateProductListingTempDataAction extends ReduxAction<AppState> {
-//   final List<Product> listingData;
-
-//   UpdateProductListingTempDataAction({this.listingData});
-
-//   @override
-//   FutureOr<AppState> reduce() {
-//     return state.copyWith(
-//         productState: state.productState
-//             .copyWith(productListingTempDataSource: listingData));
-//   }
-// }
-
 class UpdateProductListingDataAction extends ReduxAction<AppState> {
   final List<Product> listingData;
 
@@ -306,17 +283,6 @@ class UpdateProductListingDataAction extends ReduxAction<AppState> {
             state.productState.copyWith(productListingDataSource: listingData));
   }
 }
-
-// class UpdateProductVariantAction extends ReduxAction<AppState> {
-//   final int index;
-
-//   UpdateProductVariantAction({this.index});
-
-//   @override
-//   FutureOr<AppState> reduce() {
-//     return state.copyWith(productState: state.productState.copyWith());
-//   }
-// }
 
 class GetProductDetailsByID extends ReduxAction<AppState> {
   final String productId;

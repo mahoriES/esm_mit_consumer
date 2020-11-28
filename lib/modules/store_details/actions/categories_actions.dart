@@ -192,7 +192,7 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
-// TODO : merge this action with GetAllProducts.
+// TODO : Modify this action to update allProductsList also, so that same api is not called twice.
 class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {

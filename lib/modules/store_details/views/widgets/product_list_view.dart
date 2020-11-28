@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/presentations/empty_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -32,9 +33,7 @@ class ProductListView extends StatelessWidget {
             snapshot
                 .productsList(subCategoryIndex, showFewProductsOnly)
                 .isEmpty) {
-          return Center(
-            child: Text("No Items Found"),
-          );
+          return NoItemsFoundView();
         }
         return ListView.separated(
             physics: NeverScrollableScrollPhysics(),

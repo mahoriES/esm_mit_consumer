@@ -16,6 +16,8 @@ import 'package:url_launcher/url_launcher.dart';
 ///The [BusinessDetailsPopup] class implements the card-like widget which is shown as a modal popup
 ///when the [BusinessTitleTile] is tapped.
 
+// TODO : Wrap this widget with Store connector to avoid passing so much data as argument.
+
 class BusinessDetailsPopup extends StatefulWidget {
   final String businessTitle;
   final String businessSubtitle;
@@ -122,7 +124,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildMerchantTitleRowWithActions(
-                          widget.businessTitle,),
+                        widget.businessTitle,
+                      ),
                       Row(
                         children: [
                           Expanded(
@@ -191,8 +194,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
     }
   }
 
-  Widget buildMerchantTitleRowWithActions(
-      String businessName) {
+  Widget buildMerchantTitleRowWithActions(String businessName) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.widgetPadding),
       child: Row(
