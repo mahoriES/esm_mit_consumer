@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
@@ -65,83 +66,52 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
     if (merchant.isNotEmpty) {
       if (merchant.first.businessId !=
           state.productState.selectedMerchant.businessId) {
+        // TODO : this logic should be written in view part
         showDialog(
-            context: context,
-            child: AlertDialog(
-              title: Text("E-samudaay"),
-              content: Text(
-                'new_changes.clear_info',
-                style: const TextStyle(
-                    color: const Color(0xff6f6d6d),
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir-Medium",
-                    fontStyle: FontStyle.normal,
-                    fontSize: 16.0),
-              ).tr(),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'screen_account.cancel',
-                    style: const TextStyle(
-                        color: const Color(0xff6f6d6d),
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir-Medium",
-                        fontStyle: FontStyle.normal,
-                        fontSize: 16.0),
-                  ).tr(),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                FlatButton(
-                  child: Text(
-                    'new_changes.continue',
-                    style: const TextStyle(
-                        color: const Color(0xff6f6d6d),
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Avenir-Medium",
-                        fontStyle: FontStyle.normal,
-                        fontSize: 16.0),
-                  ).tr(),
-                  onPressed: () async {
-                    await CartDataSource.deleteAllMerchants();
-                    await CartDataSource.deleteAll();
-                    await CartDataSource.insertToMerchants(
-                        business: state.productState.selectedMerchant);
-                    bool isInCart = await CartDataSource.isAvailableInCart(
-                        id: product.productId.toString(),
-                        variation: product.skus[product.selectedVariant]
-                            .variationOptions.weight);
-                    if (isInCart) {
-                      await CartDataSource.update(
-                          product,
-                          product.skus[product.selectedVariant].variationOptions
-                              .weight);
-                    } else {
-                      await CartDataSource.insert(
-                          product: product,
-                          variation: product.skus[product.selectedVariant]
-                              .variationOptions.weight);
-                    }
-                    List<Product> allCartNewList = [];
-                    List<Product> allCartItems =
-                        state.productState.productListingDataSource;
-                    allCartItems.forEach((value) {
-                      if (value.productId == product.productId) {
-                        value.count = product.count;
-                      }
-                      allCartNewList.add(value);
-                    });
-                    var localCartItems =
-                        await CartDataSource.getListOfCartWith();
-                    Navigator.pop(context);
-                    dispatch(UpdateProductListingDataAction(
-                        listingData: allCartNewList));
-                    dispatch(UpdateCartListAction(localCart: localCartItems));
-                  },
-                )
-              ],
-            ));
+          context: context,
+          barrierDismissible: false,
+          child: CustomConfirmationDialog(
+            title: tr("product_details.replace_cart_items"),
+            message: tr('new_changes.clear_info'),
+            positiveButtonText: tr('new_changes.continue'),
+            negativeButtonText: tr("screen_account.cancel"),
+            positiveAction: () async {
+              await CartDataSource.deleteAllMerchants();
+              await CartDataSource.deleteAll();
+              await CartDataSource.insertToMerchants(
+                  business: state.productState.selectedMerchant);
+              bool isInCart = await CartDataSource.isAvailableInCart(
+                  id: product.productId.toString(),
+                  variation: product
+                      .skus[product.selectedVariant].variationOptions.weight);
+              if (isInCart) {
+                await CartDataSource.update(
+                    product,
+                    product
+                        .skus[product.selectedVariant].variationOptions.weight);
+              } else {
+                await CartDataSource.insert(
+                    product: product,
+                    variation: product
+                        .skus[product.selectedVariant].variationOptions.weight);
+              }
+              List<Product> allCartNewList = [];
+              List<Product> allCartItems =
+                  state.productState.productListingDataSource;
+              allCartItems.forEach((value) {
+                if (value.productId == product.productId) {
+                  value.count = product.count;
+                }
+                allCartNewList.add(value);
+              });
+              var localCartItems = await CartDataSource.getListOfCartWith();
+              Navigator.pop(context);
+              dispatch(
+                  UpdateProductListingDataAction(listingData: allCartNewList));
+              dispatch(UpdateCartListAction(localCart: localCartItems));
+            },
+          ),
+        );
       } else {
         await CartDataSource.deleteAllMerchants();
         await CartDataSource.insertToMerchants(
