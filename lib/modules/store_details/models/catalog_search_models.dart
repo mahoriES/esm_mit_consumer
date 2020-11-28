@@ -1,4 +1,5 @@
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 // class CatalogSearchRequest {
 //   String merchantID;
@@ -305,10 +306,23 @@ class Product {
     ratingNum = json['rating_num'] ?? 0;
     spotlight = json['spotlight'];
   }
+
   bool get hasRating => this.ratingNum != 0 && this.ratingVal != 0;
 
   String get getRatingValue =>
       (this.ratingVal / this.ratingNum).toStringAsFixed(1);
+
+  Skus get _firstSku =>
+      this.skus == null || this.skus.isEmpty ? null : this.skus.first;
+
+  String get firstSkuWeight => _firstSku?.variationOptions?.weight ?? "";
+
+  String get firstSkuPrice =>
+      _firstSku?.basePrice?.paisaToRupee?.withRupeePrefix;
+
+  String get firstImageUrl => this.images == null || this.images.isEmpty
+      ? ""
+      : (this.images.first?.photoUrl ?? "");
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

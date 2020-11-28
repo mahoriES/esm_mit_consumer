@@ -362,11 +362,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         productList: snapshot.singleCategoryFewProducts,
         actionButtonTitle: tr('store_home.see_more'),
         onTapActionButton: () {
-          if (snapshot.categories.isNotEmpty) {
-            snapshot.updateSelectedCategory(snapshot.categories[0]);
-          } else {
-            snapshot.updateSelectedCategory(CustomCategoryForAllProducts());
-          }
+          snapshot.updateSelectedCategory(CustomCategoryForAllProducts());
           snapshot.navigateToProductDetails();
         });
   }
@@ -552,6 +548,9 @@ class _ViewModel extends BaseModel<AppState> {
         categories: state.productState.categories,
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+          category is CustomCategoryForAllProducts
+              ? dispatch(GetAllProducts())
+              : dispatch(GetSubCategoriesAction());
         },
         updateSelectedVideo: (video) async {
           dispatch(UpdateSelectedVideoAction(selectedVideo: video));
@@ -561,12 +560,7 @@ class _ViewModel extends BaseModel<AppState> {
               businessId: state.productState.selectedMerchant.businessId));
         },
         navigateToProductDetails: () {
-          store.dispatchFuture(GetSubCategoriesAction()).whenComplete(() {
-            dispatch(UpdateProductListingDataAction(listingData: []));
-            dispatch(
-              NavigateAction.pushNamed('/StoreProductListingView'),
-            );
-          });
+          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
         },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));

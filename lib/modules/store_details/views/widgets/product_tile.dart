@@ -6,7 +6,6 @@ import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eSamudaay/utilities/extensions.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
@@ -37,10 +36,7 @@ class ProductTile extends StatelessWidget {
                         width: 100.toHeight,
                         color: CustomTheme.of(context).colors.placeHolderColor,
                         child: CachedNetworkImage(
-                          imageUrl:
-                              product.images == null || product.images.isEmpty
-                                  ? ""
-                                  : product.images?.first?.photoUrl,
+                          imageUrl: product.firstImageUrl,
                           height: 100.toHeight,
                           width: 100.toHeight,
                           placeholder: (context, url) =>
@@ -68,14 +64,12 @@ class ProductTile extends StatelessWidget {
                           ),
                           SizedBox(height: 5.toHeight),
                           Text(
-                            product.skus.first.variationOptions?.weight ?? "",
+                            product.firstSkuWeight,
                             style: CustomTheme.of(context).textStyles.body2,
                           ),
                           SizedBox(height: 4.toHeight),
                           Text(
-                            product.skus.first?.basePrice?.paisaToRupee
-                                    ?.withRupeePrefix ??
-                                "",
+                            product.firstSkuPrice,
                             style: CustomTheme.of(context).textStyles.body2,
                           ),
                           SizedBox(height: 4.toHeight),

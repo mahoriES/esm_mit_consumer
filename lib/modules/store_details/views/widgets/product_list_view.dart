@@ -1,8 +1,9 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/empty_view.dart';
+import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -29,10 +30,8 @@ class ProductListView extends StatelessWidget {
       builder: (context, snapshot) {
         // If data is loaded and the list is still empty then show no items found.
         // TODO : This should be handeled on backend in future.
-        if (!snapshot.isAlreadyLoadingMore(subCategoryIndex) &&
-            snapshot
-                .productsList(subCategoryIndex, showFewProductsOnly)
-                .isEmpty) {
+
+        if (snapshot.noItemsFound(subCategoryIndex, showFewProductsOnly)) {
           return NoItemsFoundView();
         }
         return ListView.separated(
@@ -92,6 +91,7 @@ class _ViewModel extends BaseModel<AppState> {
   Map<int, CatalogSearchResponse> productListMap;
   Function(Product) navigateToProductDetails;
   List<Product> singleCategoryFewProducts;
+  LoadingStatusApp loadingStatus;
 
   _ViewModel();
 
@@ -103,10 +103,12 @@ class _ViewModel extends BaseModel<AppState> {
     this.productListMap,
     this.navigateToProductDetails,
     this.singleCategoryFewProducts,
+    this.loadingStatus,
   }) : super(equals: [
           isLoadingMore,
           subCategoryList,
           allProducts,
+          loadingStatus,
         ]);
 
   @override
@@ -116,6 +118,7 @@ class _ViewModel extends BaseModel<AppState> {
               state.productState.selectedCategory?.categoryId] ??
           [],
       allProducts: state.productState.allProductsForMerchant,
+      loadingStatus: state.authState.loadingStatus,
       singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
       isLoadingMore: state.productState.isLoadingMore,
       productListMap: state.productState.subCategoryIdToProductData,
@@ -146,6 +149,14 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
       },
     );
+  }
+
+  bool get isLoading => loadingStatus == LoadingStatusApp.loading;
+
+  bool noItemsFound(int subCategoryIndex, bool showFewProductsOnly) {
+    return !isLoading &&
+        !isAlreadyLoadingMore(subCategoryIndex) &&
+        productsList(subCategoryIndex, showFewProductsOnly).isEmpty;
   }
 
   List<Product> productsList(int subCategoryIndex, bool showFewProductsOnly) {

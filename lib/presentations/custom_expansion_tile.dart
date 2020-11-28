@@ -143,7 +143,10 @@ class CustomExpansionTileState extends State<CustomExpansionTile>
               trailing: widget.trailing ??
                   RotationTransition(
                     turns: _iconTurns,
-                    child: const Icon(Icons.expand_more),
+                    child: Icon(
+                      Icons.expand_more,
+                      color: CustomTheme.of(context).colors.textColor,
+                    ),
                   ),
             ),
           ),

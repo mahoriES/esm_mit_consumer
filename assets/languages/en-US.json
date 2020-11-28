@@ -153,7 +153,7 @@
     "empty_pro": "Empty",
     "ready_pickup": "Ready for pickup",
     "pickup": "Pick Up",
-    "empty_pro_hint": "Look like there is no item to show",
+    "empty_pro_hint": "Looks like there is no item to show",
     "Confirm_Payment": "Confirm Payment",
     "merchant_notify_text": "This will send a notification to Merchant. Merchant may approve or reject the payment. Are you sure you want to send payment confirmation to merchant?",
     "Cancel": "Cancel",
