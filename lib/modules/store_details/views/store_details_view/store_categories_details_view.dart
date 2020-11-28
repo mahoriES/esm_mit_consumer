@@ -63,11 +63,12 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         child: Scaffold(
           body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
-            onInit: (store) async{
+            onInit: (store) async {
               String businessId =
                   store.state.productState.selectedMerchant.businessId;
               await store.dispatchFuture(GetCategoriesDetailsAction());
-              await store.dispatchFuture(GetBusinessVideosAction(businessId: businessId));
+              await store.dispatchFuture(
+                  GetBusinessVideosAction(businessId: businessId));
               store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
             },
             builder: (context, snapshot) {
@@ -369,13 +370,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   }
 
   Widget buildCategoriesGrid(_ViewModel snapshot) {
-    if (snapshot.loadingStatus==LoadingStatusApp.success && snapshot.singleCategoryFewProducts.isEmpty &&
-        (snapshot.categories.isEmpty || snapshot.categories.length == 1)) {
-      return const NoItemsFoundView();
-    }
-    if ((snapshot.categories.isEmpty || snapshot.categories.length == 1) &&
-        snapshot.singleCategoryFewProducts.isNotEmpty)
-      return buildProductsListView(snapshot);
+    if (snapshot.showNoProductsWidget) return const NoItemsFoundView();
+    if (snapshot.showFirstFewProducts) return buildProductsListView(snapshot);
     return Container(
       child: GridView.builder(
         padding: EdgeInsets.zero,
@@ -701,6 +697,19 @@ class _ViewModel extends BaseModel<AppState> {
       else
         return prod.count;
     }
+  }
+
+  bool get showNoProductsWidget {
+    return state.homePageState.loadingStatus == LoadingStatusApp.success &&
+        state.productState.singleCategoryFewProducts.isEmpty &&
+        (state.productState.categories.isEmpty ||
+            state.productState.categories.length == 1);
+  }
+
+  bool get showFirstFewProducts {
+    return (state.productState.categories.isEmpty ||
+            state.productState.categories.length == 1) &&
+        state.productState.singleCategoryFewProducts.isNotEmpty;
   }
 }
 
