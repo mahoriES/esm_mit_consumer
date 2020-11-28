@@ -363,7 +363,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         actionButtonTitle: tr('store_home.see_more'),
         onTapActionButton: () {
           snapshot.updateSelectedCategory(CustomCategoryForAllProducts());
-          snapshot.navigateToProductDetails();
+          snapshot.navigateToProductCatalog();
         });
   }
 
@@ -386,7 +386,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         itemBuilder: (context, index) {
           return buildBusinessCategoryTile(context, onTap: () {
             snapshot.updateSelectedCategory(snapshot.categories[index]);
-            snapshot.navigateToProductDetails();
+            snapshot.navigateToProductCatalog();
           },
               imageUrl: snapshot.categories[index].images.isEmpty
                   ? ""
@@ -480,7 +480,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
 class _ViewModel extends BaseModel<AppState> {
   Function(Product, BuildContext, int) addToCart;
   Function(Product, int) removeFromCart;
-  Function() navigateToProductDetails;
+  Function() navigateToProductCatalog;
   Function(VideoItem) updateSelectedVideo;
   Function(CategoriesNew) updateSelectedCategory;
   Business selectedMerchant;
@@ -504,7 +504,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   _ViewModel.build(
-      {this.navigateToProductDetails,
+      {this.navigateToProductCatalog,
       this.loadVideoFeedForMerchant,
       this.updateSelectedProduct,
       this.navigateToVideoView,
@@ -559,7 +559,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(GetBusinessVideosAction(
               businessId: state.productState.selectedMerchant.businessId));
         },
-        navigateToProductDetails: () {
+        navigateToProductCatalog: () {
           dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
         },
         navigateToCart: () {
