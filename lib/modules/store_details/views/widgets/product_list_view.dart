@@ -14,8 +14,10 @@ import 'product_tile.dart';
 class ProductListView extends StatelessWidget {
   final int subCategoryIndex;
   final bool showFewProductsOnly;
+  final bool isScrollable;
   const ProductListView({
     @required this.subCategoryIndex,
+    @required this.isScrollable,
     this.showFewProductsOnly = false,
     Key key,
   }) : super(key: key);
@@ -35,7 +37,9 @@ class ProductListView extends StatelessWidget {
           return NoItemsFoundView();
         }
         return ListView.separated(
-            physics: NeverScrollableScrollPhysics(),
+            physics: isScrollable
+                ? AlwaysScrollableScrollPhysics()
+                : NeverScrollableScrollPhysics(),
             itemCount: snapshot
                 .productsList(subCategoryIndex, showFewProductsOnly)
                 .length,

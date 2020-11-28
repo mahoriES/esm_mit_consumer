@@ -52,6 +52,22 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
       // increment the indexOfSelectedCategory by 1 to jump to the right tab.
       initialIndex: indexOfSelectedCategory + 1,
     );
+
+    // add listener to update the category on scroll.
+    _tabController.addListener(() {
+      if (_tabController.index != _tabController.previousIndex) {
+        store.dispatch(
+          UpdateSelectedCategoryAction(
+            selectedCategory: _tabController.index > 0
+                ? store.state.productState.categories[_tabController.index - 1]
+                : CustomCategoryForAllProducts(),
+          ),
+        );
+        _tabController.index > 0
+            ? store.dispatch(GetSubCategoriesAction())
+            : store.dispatch(GetAllProducts());
+      }
+    });
   }
 
   @override
@@ -62,46 +78,59 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
       builder: (context, snapshot) {
         return SafeArea(
           child: Scaffold(
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  BusinessHeaderView(
-                    resetMerchantOnBack: false,
+            body: Column(
+              children: [
+                BusinessHeaderView(
+                  resetMerchantOnBack: false,
+                ),
+                SizedBox(height: 22.toHeight),
+                SearchComponent(
+                  placeHolder: tr('product_list.search_placeholder'),
+                  isEnabled: false,
+                  onTapIfDisabled: snapshot.navigateToSearchView,
+                ),
+                SizedBox(height: 22.toHeight),
+                // If there is atleast one category available.
+                // then show top catalague menu and subcategory view.
+                if (snapshot.categories.isNotEmpty) ...[
+                  CatalogueMenuComponent(
+                    categories: snapshot.categories,
+                    tabController: _tabController,
+                    updateCategory: (i) =>
+                        snapshot.updateSelectedCategory(i - 1),
                   ),
                   SizedBox(height: 22.toHeight),
-                  SearchComponent(
-                    placeHolder: tr('product_list.search_placeholder'),
-                    isEnabled: false,
-                    onTapIfDisabled: snapshot.navigateToSearchView,
-                  ),
-                  SizedBox(height: 22.toHeight),
-                  // If there is atleast one category available.
-                  // then show top catalague menu and subcatehory view.
-                  if (snapshot.categories.isNotEmpty) ...[
-                    CatalogueMenuComponent(
-                      categories: snapshot.categories,
-                      tabController: _tabController,
-                      updateCategory: (i) =>
-                          snapshot.updateSelectedCategory(i - 1),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: List.generate(
+                        snapshot.categories.length + 1,
+                        (index) => SubCategoryView(
+                          categoryId: index > 0
+                              ? snapshot.categories[index - 1].categoryId
+                              : CustomCategoryForAllProducts().categoryId,
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 22.toHeight),
-                    SubCategoryView(),
-                    SizedBox(height: 22.toHeight),
-                  ]
-                  // If there are zero categpries the show all product list directly.
-                  else ...[
-                    ProductListView(
+                  ),
+                  SizedBox(height: 22.toHeight),
+                ]
+                // If there are zero categpries the show all product list directly.
+                else ...[
+                  Expanded(
+                    child: ProductListView(
                       subCategoryIndex:
                           CustomCategoryForAllProducts().categoryId,
+                      isScrollable: true,
                     ),
-                    if (snapshot.isLoadingMore[
-                            CustomCategoryForAllProducts().categoryId] ??
-                        false) ...[
-                      CupertinoActivityIndicator(),
-                    ]
-                  ],
+                  ),
+                  if (snapshot.isLoadingMore[
+                          CustomCategoryForAllProducts().categoryId] ??
+                      false) ...[
+                    CupertinoActivityIndicator(),
+                  ]
                 ],
-              ),
+              ],
             ),
             bottomSheet: AnimatedContainer(
               height: (snapshot.localCartListing.isEmpty &&
@@ -146,7 +175,12 @@ class _ViewModel extends BaseModel<AppState> {
     this.navigateToCart,
     this.freeFormItemsList,
     this.localCartListing,
-  }) : super(equals: [loadingStatus, isLoadingMore]);
+  }) : super(equals: [
+          loadingStatus,
+          isLoadingMore,
+          freeFormItemsList,
+          localCartListing,
+        ]);
 
   @override
   BaseModel fromStore() {

@@ -25,6 +25,7 @@ class HighlightCatalogItems extends StatelessWidget {
             ProductListView(
               subCategoryIndex: CustomCategoryForAllProducts().categoryId,
               showFewProductsOnly: true,
+              isScrollable: false,
             ),
             SizedBox(
               height: AppSizes.widgetPadding,

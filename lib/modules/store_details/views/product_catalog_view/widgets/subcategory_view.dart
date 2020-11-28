@@ -13,6 +13,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SubCategoryView extends StatelessWidget {
+  final int categoryId;
+  SubCategoryView({@required this.categoryId});
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
@@ -20,50 +23,55 @@ class SubCategoryView extends StatelessWidget {
       builder: (context, snapshot) {
         debugPrint("is Loading More => ${snapshot.isLoadingMore}");
 
-        return snapshot.loadingStatus == LoadingStatusApp.loading
-            ? LoadingIndicator()
-            : snapshot.selectedCategory is CustomCategoryForAllProducts
-                ?
-                // If selected category is "All", then show all of the products list view irrespectve of any subcategory.
-                Column(
-                    children: [
-                      ProductListView(
-                        subCategoryIndex: snapshot.selectedCategory.categoryId,
-                      ),
-                      if (snapshot.isLoadingMore[
-                              snapshot.selectedCategory.categoryId] ??
-                          false) ...[
-                        CupertinoActivityIndicator(),
-                      ],
-                    ],
-                  )
-                :
-                // for dynamic categories, check if there are nonzero subcategories.
-                snapshot.subCategoriesList?.isEmpty ?? true
-                    ? NoItemsFoundView()
+        return snapshot.selectedCategory.categoryId != categoryId
+            ? Container()
+            : snapshot.loadingStatus == LoadingStatusApp.loading
+                ? LoadingIndicator()
+                : snapshot.selectedCategory is CustomCategoryForAllProducts
+                    ?
+                    // If selected category is "All", then show all of the products list view irrespectve of any subcategory.
+                    Column(
+                        children: [
+                          Expanded(
+                            child: ProductListView(
+                              subCategoryIndex:
+                                  snapshot.selectedCategory.categoryId,
+                              isScrollable: true,
+                            ),
+                          ),
+                          if (snapshot.isLoadingMore[
+                                  snapshot.selectedCategory.categoryId] ??
+                              false) ...[
+                            CupertinoActivityIndicator(),
+                          ],
+                        ],
+                      )
                     :
-                    // otherwise show product list wrapped with respective subcategories.
-                    ListView.separated(
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.subCategoriesList.length,
-                        shrinkWrap: true,
-                        separatorBuilder: (context, subCategoryIndex) =>
-                            SizedBox(height: 8.toHeight),
-                        itemBuilder: (context, subCategoryIndex) {
-                          CategoriesNew _currentSubCategory =
-                              snapshot.subCategoriesList[subCategoryIndex];
+                    // for dynamic categories, check if there are nonzero subcategories.
+                    snapshot.subCategoriesList?.isEmpty ?? true
+                        ? NoItemsFoundView()
+                        :
+                        // otherwise show product list wrapped with respective subcategories.
+                        ListView.separated(
+                            itemCount: snapshot.subCategoriesList.length,
+                            shrinkWrap: true,
+                            separatorBuilder: (context, subCategoryIndex) =>
+                                SizedBox(height: 8.toHeight),
+                            itemBuilder: (context, subCategoryIndex) {
+                              CategoriesNew _currentSubCategory =
+                                  snapshot.subCategoriesList[subCategoryIndex];
 
-                          return _SubCategoryHeaderTile(
-                            subCategoryIndex: subCategoryIndex,
-                            categoryName: _currentSubCategory.categoryName,
-                            getProducts: () =>
-                                snapshot.getProducts(_currentSubCategory),
-                            isCurrentSubcategoryLodingMore:
-                                snapshot.isCurrentSubcategoryLodingMore(
-                                    subCategoryIndex),
+                              return _SubCategoryHeaderTile(
+                                subCategoryIndex: subCategoryIndex,
+                                categoryName: _currentSubCategory.categoryName,
+                                getProducts: () =>
+                                    snapshot.getProducts(_currentSubCategory),
+                                isCurrentSubcategoryLodingMore:
+                                    snapshot.isCurrentSubcategoryLodingMore(
+                                        subCategoryIndex),
+                              );
+                            },
                           );
-                        },
-                      );
       },
     );
   }
@@ -114,7 +122,10 @@ class _SubCategoryTileState extends State<_SubCategoryHeaderTile> {
       },
       children: [
         SizedBox(height: 12.toHeight),
-        ProductListView(subCategoryIndex: widget.subCategoryIndex),
+        ProductListView(
+          subCategoryIndex: widget.subCategoryIndex,
+          isScrollable: false,
+        ),
         if (widget.isCurrentSubcategoryLodingMore) ...[
           CupertinoActivityIndicator(),
         ],
