@@ -237,5 +237,8 @@
     "item": "Item",
     "items": "Items",
     "taxes": "taxes"
+  },
+  "product_catalog": {
+    "All": "All"
   }
 }

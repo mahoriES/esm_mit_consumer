@@ -1,6 +1,7 @@
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CatalogueMenuComponent extends StatelessWidget {
@@ -34,8 +35,9 @@ class CatalogueMenuComponent extends StatelessWidget {
           categories.length + 1,
           (index) => Tab(
             child: FittedBox(
-              child:
-                  Text(index == 0 ? "All" : categories[index - 1].categoryName),
+              child: Text(index == 0
+                  ? tr("product_catalog.All")
+                  : categories[index - 1].categoryName),
             ),
           ),
         ),
