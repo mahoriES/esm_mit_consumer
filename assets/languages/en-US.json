@@ -78,7 +78,7 @@
     "delivery_no" : "Store Pickup",
     "home_delivery_order": "Home Delivery",
     "item_category": "Products",
-    "pickup_order": "Pickup Order",
+    "pickup_order": "Pickup Order"
   },
 
   "product_list": {

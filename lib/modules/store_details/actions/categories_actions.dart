@@ -247,6 +247,12 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
     }
     return null;
   }
+
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+
 }
 
 class UnBookmarkBusinessAction extends ReduxAction<AppState> {

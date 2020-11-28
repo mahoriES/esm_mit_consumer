@@ -9,6 +9,7 @@ import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
+import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/no_items_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
@@ -62,11 +63,11 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         child: Scaffold(
           body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
-            onInit: (store) {
+            onInit: (store) async{
               String businessId =
                   store.state.productState.selectedMerchant.businessId;
-              store.dispatch(GetCategoriesDetailsAction());
-              store.dispatch(GetBusinessVideosAction(businessId: businessId));
+              await store.dispatchFuture(GetCategoriesDetailsAction());
+              await store.dispatchFuture(GetBusinessVideosAction(businessId: businessId));
               store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
             },
             builder: (context, snapshot) {
@@ -368,9 +369,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   }
 
   Widget buildCategoriesGrid(_ViewModel snapshot) {
-    if (snapshot.singleCategoryFewProducts.isEmpty &&
-        (snapshot.categories.isEmpty || snapshot.categories.length == 1))
-      return Center(child: CupertinoActivityIndicator());
+    if (snapshot.loadingStatus==LoadingStatusApp.success && snapshot.singleCategoryFewProducts.isEmpty &&
+        (snapshot.categories.isEmpty || snapshot.categories.length == 1)) {
+      return const NoItemsFoundView();
+    }
     if ((snapshot.categories.isEmpty || snapshot.categories.length == 1) &&
         snapshot.singleCategoryFewProducts.isNotEmpty)
       return buildProductsListView(snapshot);
