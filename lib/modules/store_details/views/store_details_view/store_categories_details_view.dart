@@ -34,6 +34,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -353,6 +354,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
       ),
     );
   }
+
+  // TODO : move these methods to view model.
 
   Widget buildProductsListView(_ViewModel snapshot) {
     return HighlightCatalogItems(
@@ -700,21 +703,5 @@ class _ViewModel extends BaseModel<AppState> {
       else
         return prod.count;
     }
-  }
-}
-
-extension StringUtils on String {
-  String get formatPhoneNumber {
-    if (int.tryParse(this) == null) return this;
-    if (this.length > 3 && this.substring(0, 3) != "+91") return "+91" + this;
-    return this;
-  }
-
-  String get formatCustomerNote {
-    if (this.length > 127) {
-      //Note is modified here if length is beyond 127 characters
-      return this.substring(0, 128) + '..';
-    } else
-      return this;
   }
 }

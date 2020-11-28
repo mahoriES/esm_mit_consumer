@@ -3,6 +3,7 @@ import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/views/product_catalog_view/widgets/catalogue_menu.dart';
+import 'package:eSamudaay/modules/store_details/views/widgets/business_header_view.dart';
 import 'package:eSamudaay/modules/store_details/views/widgets/product_list_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
@@ -56,49 +57,50 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
       model: _ViewModel(),
       onInit: onInit,
       builder: (context, snapshot) {
-        return Scaffold(
-          // TODO : app bar should be used from merchant main view.
-          appBar: AppBar(),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 22.toHeight),
-                SearchComponent(
-                  placeHolder: tr('product_list.search_placeholder'),
-                  isEnabled: false,
-                  onTapIfDisabled: snapshot.navigateToSearchView,
-                ),
-                SizedBox(height: 22.toHeight),
-                // If there is atleast one category available.
-                // then show top catalague menu and subcatehory view.
-                if (snapshot.categories.isNotEmpty) ...[
-                  CatalogueMenuComponent(
-                    categories: snapshot.categories,
-                    tabController: _tabController,
-                    updateCategory: (i) =>
-                        snapshot.updateSelectedCategory(i - 1),
+        return SafeArea(
+          child: Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  BusinessHeaderView(),
+                  SizedBox(height: 22.toHeight),
+                  SearchComponent(
+                    placeHolder: tr('product_list.search_placeholder'),
+                    isEnabled: false,
+                    onTapIfDisabled: snapshot.navigateToSearchView,
                   ),
                   SizedBox(height: 22.toHeight),
-                  SubCategoryView(),
-                  SizedBox(height: 22.toHeight),
-                ]
-                // If there are zero categpries the show all product list directly.
-                else ...[
-                  Column(
-                    children: [
-                      ProductListView(
-                        subCategoryIndex:
-                            CustomCategoryForAllProducts().categoryId,
-                      ),
-                      if (snapshot.isLoadingMore[
-                              CustomCategoryForAllProducts().categoryId] ??
-                          false) ...[
-                        CupertinoActivityIndicator(),
+                  // If there is atleast one category available.
+                  // then show top catalague menu and subcatehory view.
+                  if (snapshot.categories.isNotEmpty) ...[
+                    CatalogueMenuComponent(
+                      categories: snapshot.categories,
+                      tabController: _tabController,
+                      updateCategory: (i) =>
+                          snapshot.updateSelectedCategory(i - 1),
+                    ),
+                    SizedBox(height: 22.toHeight),
+                    SubCategoryView(),
+                    SizedBox(height: 22.toHeight),
+                  ]
+                  // If there are zero categpries the show all product list directly.
+                  else ...[
+                    Column(
+                      children: [
+                        ProductListView(
+                          subCategoryIndex:
+                              CustomCategoryForAllProducts().categoryId,
+                        ),
+                        if (snapshot.isLoadingMore[
+                                CustomCategoryForAllProducts().categoryId] ??
+                            false) ...[
+                          CupertinoActivityIndicator(),
+                        ],
                       ],
-                    ],
-                  )
+                    )
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         );
