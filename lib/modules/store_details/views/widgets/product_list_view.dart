@@ -87,6 +87,7 @@ class ProductListView extends StatelessWidget {
   }
 }
 
+// TODO : try to pass subcategoryIndex as an argument in viewModel to avoid passing it in every getter/functioon individually.
 class _ViewModel extends BaseModel<AppState> {
   Function(int) fetchProducts;
   List<CategoriesNew> subCategoryList;

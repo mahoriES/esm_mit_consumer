@@ -23,10 +23,12 @@ class SubCategoryView extends StatelessWidget {
       builder: (context, snapshot) {
         debugPrint("is Loading More => ${snapshot.isLoadingMore}");
 
+        // TODO : move this check to model as isCurrentcategoySelected
         return snapshot.selectedCategory.categoryId != categoryId
             ? Container()
             : snapshot.loadingStatus == LoadingStatusApp.loading
                 ? LoadingIndicator()
+                // TODO : move this check to model as is CurrentCategoryAll
                 : snapshot.selectedCategory is CustomCategoryForAllProducts
                     ?
                     // If selected category is "All", then show all of the products list view irrespectve of any subcategory.
@@ -35,6 +37,7 @@ class SubCategoryView extends StatelessWidget {
                           Expanded(
                             child: ProductListView(
                               subCategoryIndex:
+                                  // TODO : move this to model as getCategoryId
                                   snapshot.selectedCategory.categoryId,
                               isScrollable: true,
                             ),
@@ -47,6 +50,7 @@ class SubCategoryView extends StatelessWidget {
                         ],
                       )
                     :
+                    // TODO : move this to model as isSubCategoryEmpty
                     // for dynamic categories, check if there are nonzero subcategories.
                     snapshot.subCategoriesList?.isEmpty ?? true
                         ? NoItemsFoundView()

@@ -15,6 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 class GetSubCategoriesAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
+    // TODO : these variables should be final
     int categoryId = state.productState.selectedCategory.categoryId;
     String businessId = state.productState.selectedMerchant.businessId;
 
@@ -80,7 +81,7 @@ class GetProductsForSubCategory extends ReduxAction<AppState> {
             .containsKey(selectedSubCategory.categoryId)) {
       return null;
     }
-
+    // TODO : these variables should be final
     String businessId = state.productState.selectedMerchant.businessId;
 
     var response = await APIManager.shared.request(
@@ -102,6 +103,7 @@ class GetProductsForSubCategory extends ReduxAction<AppState> {
           CatalogSearchResponse.fromJson(response.data);
 
       // Fetch the local cart items.
+      // TODO : these variables should be final
       List<Product> localCartItems = await CartDataSource.getListOfCartWith();
 
       // check if any of these product items are already added in cart.
@@ -177,6 +179,7 @@ class GetAllProducts extends ReduxAction<AppState> {
       CatalogSearchResponse _responseModel =
           CatalogSearchResponse.fromJson(response.data);
 
+      // TODO : these variables should be final
       // Fetch the local cart items.
       List<Product> _allCartItems = await CartDataSource.getListOfCartWith();
 

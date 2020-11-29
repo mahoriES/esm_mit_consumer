@@ -84,6 +84,7 @@ class _ViewModel extends BaseModel<AppState> {
     );
   }
 
+  // TODO : not a good idea to keep this in model. Move to view.
   void showDetailsPopup(BuildContext context) {
     showDialog(
       context: context,
@@ -116,6 +117,7 @@ class _ViewModel extends BaseModel<AppState> {
     );
   }
 
+  // TODO : not a good idea to keep this in model. Move to view.
   void contactMerchantAction(BuildContext context) {
     showModalBottomSheet(
       context: context,

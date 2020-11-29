@@ -38,6 +38,7 @@ class CatalogueMenuComponent extends StatelessWidget {
               child: Text(index == 0
                   ? tr("product_catalog.All")
                   : categories[index - 1].categoryName),
+              // TODO : Add null check for categoryName
             ),
           ),
         ),
