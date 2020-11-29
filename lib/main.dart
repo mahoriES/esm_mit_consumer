@@ -23,8 +23,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 
-import 'utilities/size_config.dart';
-
 // Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
 final _kTestingCrashlytics = true;
 
@@ -108,7 +106,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     fit.init(width: MediaQuery.of(context).size.width);
-    //SizeConfig().init(context);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

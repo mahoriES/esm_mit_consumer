@@ -73,7 +73,7 @@ class DynamicLinkService {
     await store
         .dispatchFuture(SelectMerchantDetailsByID(businessId: businessId));
     if (isLinkPathValid) {
-      store.dispatch(RemoveCategoryAction());
+      store.dispatch(ResetCatalogueAction());
       String _routeName = '/StoreDetailsView';
       if (NavigationHandler.navigationStack.contains(_routeName)) {
         store.dispatch(NavigateAction.popUntil(_routeName));

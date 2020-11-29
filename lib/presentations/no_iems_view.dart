@@ -1,11 +1,13 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 
 class NoItemsFoundView extends StatelessWidget {
   const NoItemsFoundView({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -27,7 +29,7 @@ class NoItemsFoundView extends StatelessWidget {
               bottom: 20.toHeight,
               right: SizeConfig.screenWidth * 0.15,
               child: Image.asset(
-                'assets/images/path338.png',
+                ImagePathConstants.emptyBagImage,
                 fit: BoxFit.cover,
               ),
             ),

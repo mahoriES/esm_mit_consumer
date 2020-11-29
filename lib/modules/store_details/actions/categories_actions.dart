@@ -6,7 +6,6 @@ import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/models/categories_models.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
@@ -20,10 +19,10 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url:
-            "api/v1/businesses/${state.productState.selectedMerchant.businessId}/catalog/categories",
-        params: null,
-        requestType: RequestType.get);
+      url: ApiURL.getCategories(state.productState.selectedMerchant.businessId),
+      params: null,
+      requestType: RequestType.get,
+    );
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
     else if (response.status == ResponseStatus.error500)
@@ -47,26 +46,27 @@ class GetCategoriesDetailsAction extends ReduxAction<AppState> {
   }
 
   @override
-  FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-    return super.before();
-  }
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   @override
-  void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-    super.after();
-  }
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
-class RemoveCategoryAction extends ReduxAction<AppState> {
+// when switching to some merchant details page.
+// Already cached data of products must be cleared.
+class ResetCatalogueAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-        productState: state.productState.copyWith(
-      categories: [],
-    ));
+      productState: state.productState.reset(
+        categories: [],
+        categoryIdToSubCategoryData: {},
+        subCategoryIdToProductData: {},
+        isLoadingMore: {},
+        allProductsForMerchant: null,
+      ),
+    );
   }
 }
 
@@ -192,6 +192,7 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
+// TODO : Modify this action to update allProductsList also, so that same api is not called twice.
 class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {

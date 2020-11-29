@@ -9,7 +9,7 @@ import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/no_items_view.dart';
+import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
@@ -35,6 +35,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 class StoreDetailsView extends StatefulWidget {
   @override
@@ -118,6 +119,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                   '',
                                               isDeliveryAvailable: snapshot
                                                   .selectedMerchant.hasDelivery,
+                                              // TODO : is Open value should be dynamic.
                                               isOpen: true,
                                               businessImageUrl: snapshot
                                                       .selectedMerchant
@@ -355,17 +357,19 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
     );
   }
 
+  // TODO : move these methods to view model.
+
   Widget buildProductsListView(_ViewModel snapshot) {
     return HighlightCatalogItems(
         productList: snapshot.singleCategoryFewProducts,
         actionButtonTitle: tr('store_home.see_more'),
         onTapActionButton: () {
           if (snapshot.categories.isNotEmpty) {
-            snapshot.updateSelectedCategory(snapshot.categories[0]);
-            snapshot.navigateToProductDetails();
+            snapshot.updateSelectedCategory(snapshot.categories.first);
           } else {
-            Fluttertoast.showToast(msg: tr('store_home.no_category'));
+            snapshot.updateSelectedCategory(CustomCategoryForAllProducts());
           }
+          snapshot.navigateToProductCatalog();
         });
   }
 
@@ -384,7 +388,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         itemBuilder: (context, index) {
           return buildBusinessCategoryTile(context, onTap: () {
             snapshot.updateSelectedCategory(snapshot.categories[index]);
-            snapshot.navigateToProductDetails();
+            snapshot.navigateToProductCatalog();
           },
               imageUrl: snapshot.categories[index].images.isEmpty
                   ? ""
@@ -478,7 +482,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
 class _ViewModel extends BaseModel<AppState> {
   Function(Product, BuildContext, int) addToCart;
   Function(Product, int) removeFromCart;
-  Function() navigateToProductDetails;
+  Function() navigateToProductCatalog;
   Function(VideoItem) updateSelectedVideo;
   Function(CategoriesNew) updateSelectedCategory;
   Business selectedMerchant;
@@ -502,7 +506,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   _ViewModel.build(
-      {this.navigateToProductDetails,
+      {this.navigateToProductCatalog,
       this.loadVideoFeedForMerchant,
       this.updateSelectedProduct,
       this.navigateToVideoView,
@@ -543,9 +547,12 @@ class _ViewModel extends BaseModel<AppState> {
         videoFeedResponse: state.productState.videosResponse,
         freeFormItemsList: state.productState.localFreeFormCartItems,
         localCartListing: state.productState.localCartItems,
-        categories: state.productState.categories,
+        categories: state.productState?.categories ?? [],
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+          category is CustomCategoryForAllProducts
+              ? dispatch(GetAllProducts())
+              : dispatch(GetSubCategoriesAction());
         },
         updateSelectedVideo: (video) async {
           dispatch(UpdateSelectedVideoAction(selectedVideo: video));
@@ -554,13 +561,8 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(GetBusinessVideosAction(
               businessId: state.productState.selectedMerchant.businessId));
         },
-        navigateToProductDetails: () {
-          store.dispatchFuture(GetSubCatalogAction()).whenComplete(() {
-            dispatch(UpdateProductListingDataAction(listingData: []));
-            dispatch(
-              NavigateAction.pushNamed('/StoreProductListingView'),
-            );
-          });
+        navigateToProductCatalog: () {
+          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
         },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
@@ -591,7 +593,7 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToProductSearch: () {
           dispatch(ClearSearchResultProductsAction());
           dispatch(
-            NavigateAction.pushNamed('/productSearch'),
+            NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH),
           );
         },
         updateSelectedProduct: (selectedProduct) {
@@ -677,12 +679,12 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   int getCountOfExistingSpotlightItemInCart(Product product, int index) {
-    if (state.productState.localCartItems.isEmpty)
+    if (localCartListing.isEmpty)
       return 0;
     else {
       Product prod;
       try {
-        prod = state.productState.localCartItems.firstWhere(
+        prod = localCartListing.firstWhere(
           (element) =>
               element.productId == product.productId &&
               element.skus[element.selectedVariant].variationOptions.weight ==
@@ -700,31 +702,13 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   bool get showNoProductsWidget {
-    return state.homePageState.loadingStatus == LoadingStatusApp.success &&
-        state.productState.singleCategoryFewProducts.isEmpty &&
-        (state.productState.categories.isEmpty ||
-            state.productState.categories.length == 1);
+    return loadingStatus == LoadingStatusApp.success &&
+        singleCategoryFewProducts.isEmpty &&
+        (categories.isEmpty || categories.length == 1);
   }
 
   bool get showFirstFewProducts {
-    return (state.productState.categories.isEmpty ||
-            state.productState.categories.length == 1) &&
-        state.productState.singleCategoryFewProducts.isNotEmpty;
-  }
-}
-
-extension StringUtils on String {
-  String get formatPhoneNumber {
-    if (int.tryParse(this) == null) return this;
-    if (this.length > 3 && this.substring(0, 3) != "+91") return "+91" + this;
-    return this;
-  }
-
-  String get formatCustomerNote {
-    if (this.length > 127) {
-      //Note is modified here if length is beyond 127 characters
-      return this.substring(0, 128) + '..';
-    } else
-      return this;
+    return (categories.isEmpty || categories.length == 1) &&
+        singleCategoryFewProducts.isNotEmpty;
   }
 }

@@ -11,6 +11,8 @@ import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
 ///It contains the basic store info, alongwith options to contact, bookmark the business.
 ///Tapping on it will show a popup with more details viz. address, business images etc.
 
+// TODO : Wrap this widget with Store connector to avoid passing so much data.
+
 class BusinessTitleTile extends StatefulWidget {
   final String businessName;
   final String businessSubtitle;

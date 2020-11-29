@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:eSamudaay/modules/store_details/views/store_details_view/store_categories_details_view.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 ///The [MerchantWidgetElementsProviderMixin] provides the common widgets shared among components dealing
 ///with the business pages.
