@@ -342,12 +342,18 @@ class _ProfileViewState extends State<ProfileView> {
                     Fluttertoast.showToast(msg: "Please enter a valid address");
                     return;
                   }
+                  String pincode = "";
+                  _pickedAddress.addressComponents.forEach((element) {
+                    if (element.types.contains("postal_code")) {
+                      pincode = element.longName;
+                    }
+                  });
                   _addressRequest = AddressRequest(
                     addressName: nameController.text,
                     lat: _latitude,
                     lon: _longitude,
                     prettyAddress: addressController.text,
-                    geoAddr: GeoAddr(pincode: ""),
+                    geoAddr: GeoAddr(pincode: pincode),
                   );
                 }
                 snapshot.profileUpdate(
