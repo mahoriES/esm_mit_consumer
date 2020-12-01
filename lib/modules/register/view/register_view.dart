@@ -30,7 +30,7 @@ class _RegistrationState extends State<Registration> {
   TextEditingController addressController = TextEditingController();
   TextEditingController pinCodeController =
       TextEditingController(text: 'UDUPI01');
-  String latitude, longitude;
+  PickResult _pickedAddress;
   String selectedCircle = 'UDUPI01';
   @override
   Widget build(BuildContext context) {
@@ -161,89 +161,80 @@ class _RegistrationState extends State<Registration> {
         child: TextInputBG(
           child: Padding(
             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  child: TextFormField(
-                      maxLines: null,
-                      // enableInteractiveSelection: false,
-                      validator: (value) {
-                        if (value.isEmpty) return null;
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlacePicker(
+                        apiKey: Keys.googleAPIkey,
+                        onPlacePicked: (result) {
+                          print(result?.formattedAddress);
+                          if (result?.formattedAddress != null) {
+                            addressController.text = result?.formattedAddress;
+                          }
+                          _pickedAddress = result;
+                          print(result.adrAddress);
+                          Navigator.of(context).pop();
+                        },
+                        useCurrentLocation: true,
+                        autocompleteTypes: ["geocode"],
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                          maxLines: null,
+                          enabled: false,
+                          validator: (value) {
+                            if (value.isEmpty) return null;
 //                                          if (value.length < 10) {
 //                                            return tr(
 //                                                'screen_register.address.empty_error');
 //                                            return null;
 //                                          }
-                        return null;
-                      },
-                      autovalidate: true,
-                      controller: addressController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: tr('screen_register.address.title'),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      style: const TextStyle(
-                          color: const Color(0xff1a1a1a),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 13.0),
-                      textAlign: TextAlign.center),
-                ),
-                Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlacePicker(
-                            apiKey: Keys.googleAPIkey, // Put YOUR OWN KEY here.
-                            onPlacePicked: (result) {
-                              // Handle the result in your way
-                              print(result?.formattedAddress);
-                              // print(result?.a);
-                              if (result?.formattedAddress != null) {
-                                addressController.text =
-                                    result?.formattedAddress;
-                              }
-//                                                if (result?.postalCode !=
-//                                                    null) {
-//                                                  pinCodeController.text =
-//                                                      result?.postalCode;
-//                                                }
-                              latitude =
-                                  result.geometry.location.lat.toString();
-                              longitude =
-                                  result.geometry.location.lng.toString();
-                              print(result.adrAddress);
-                              Navigator.of(context).pop();
-                            },
-//                                              initialPosition: HomePage.kInitialPosition,
-                            useCurrentLocation: true,
+                            return null;
+                          },
+                          autovalidate: true,
+                          controller: addressController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            hintText: tr('screen_register.address.title'),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                           ),
-                        ),
-                      );
-                    },
-                    child: Icon(
+                          style: const TextStyle(
+                              color: const Color(0xff1a1a1a),
+                              fontWeight: FontWeight.w400,
+                              fontFamily: "Avenir-Medium",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 13.0),
+                          textAlign: TextAlign.center),
+                    ),
+                    Icon(
                       Icons.add_location,
                       color: AppColors.icColors,
-                    ),
-                  ),
-                )
-              ],
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
 
-      SizedBox(height: 30,),
+      SizedBox(
+        height: 30,
+      ),
 
       //location
       //Register_but
@@ -269,16 +260,27 @@ class _RegistrationState extends State<Registration> {
 //                    msg: tr('screen_register.pin_code.title'));
 //              }
               else {
+                AddressRequest _addressRequest;
+
+                double _latitude = _pickedAddress.geometry.location.lat;
+                double _longitude = _pickedAddress.geometry.location.lng;
+                if (_latitude == null || _longitude == null) {
+                  Fluttertoast.showToast(msg: "Please enter a valid address");
+                  return;
+                }
+                _addressRequest = AddressRequest(
+                  addressName: nameController.text,
+                  lat: _latitude,
+                  lon: _longitude,
+                  prettyAddress: addressController.text,
+                  geoAddr: GeoAddr(pincode: ""),
+                );
+
                 snapshot.updateCustomerDetails(
-                    CustomerDetailsRequest(
-                        profileName: nameController.text,
-                        role: "CUSTOMER"),
-                    AddressRequest(
-                        addressName: nameController.text,
-                        lat: double.parse(latitude ?? "0"),
-                        lon: double.parse(longitude ?? "0"),
-                        prettyAddress: addressController.text,
-                        geoAddr: GeoAddr(pincode: "")));
+                  CustomerDetailsRequest(
+                      profileName: nameController.text, role: "CUSTOMER"),
+                  _addressRequest,
+                );
               }
             } else {
               Fluttertoast.showToast(msg: "All fields are required");
@@ -326,7 +328,6 @@ class _RegistrationState extends State<Registration> {
           ),
         ),
       ),
-
     ];
   }
 
