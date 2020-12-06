@@ -24,10 +24,10 @@ class UserManager {
         return user != null;
       });
 
-  Future<bool> isAddressEntered() async =>
-      await getAddressStatus().then((value) {
-        return value != null;
-      });
+  // Future<bool> isAddressEntered() async =>
+  //     await getAddressStatus().then((value) {
+  //       return value != null;
+  //     });
 
   Future<bool> isSkipPressed() async => await getSkipStatus().then((value) {
         return value != null && value == true;
@@ -60,16 +60,16 @@ class UserManager {
     await prefs.setBool(skipKey, status);
   }
 
-  static Future<bool> getAddressStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool value = prefs.getBool(addressKey);
-    return value;
-  }
+  // static Future<bool> getAddressStatus() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool value = prefs.getBool(addressKey);
+  //   return value;
+  // }
 
-  static Future<void> saveAddressStatus({status: bool}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(addressKey, status);
-  }
+  // static Future<void> saveAddressStatus({status: bool}) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setBool(addressKey, status);
+  // }
 
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -78,12 +78,16 @@ class UserManager {
     return value;
   }
 
-  static Future<Address> getAddress() async {
+  static Future<List<AddressResponse>> getAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String value = prefs.getString(userAddressKey);
     if (value == null) return null;
-    Address address = Address.fromJson(jsonDecode(value));
-    return address;
+    List list = jsonDecode(value);
+    List<AddressResponse> addressResponse = [];
+    list.forEach((element) {
+      addressResponse.add(AddressResponse.fromJson(element));
+    });
+    return addressResponse;
   }
 
   static Future<void> saveToken({token: String}) async {
@@ -120,12 +124,12 @@ class UserManager {
     return res;
   }
 
-  Future<int> update() async {
-    var dbClient = await DatabaseManager().db;
-    dbClient.rawUpdate(
-      "User",
-    );
-  }
+  // Future<int> update() async {
+  //   var dbClient = await DatabaseManager().db;
+  //   dbClient.rawUpdate(
+  //     "User",
+  //   );
+  // }
 }
 
 var userManager = UserManager();

@@ -1,3 +1,7 @@
+class AddressTags {
+  static const List<String> tagList = ["Home", "Work", "Other"];
+}
+
 class AddressRequest {
   String addressName;
   String prettyAddress;
@@ -33,35 +37,44 @@ class AddressRequest {
 
 class GeoAddr {
   String pincode;
+  String city;
+  String landmark;
+  String house;
 
-  GeoAddr({this.pincode});
+  GeoAddr({this.pincode, this.city, this.house, this.landmark});
 
   GeoAddr.fromJson(Map<String, dynamic> json) {
     pincode = json['pincode'];
+    city = json['city'];
+    landmark = json['landmark'];
+    house = json['house'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['pincode'] = this.pincode;
+    data['city'] = this.city;
+    data['landmark'] = this.landmark;
+    data['house'] = this.house;
     return data;
   }
 }
 
-class Address {
+class AddressResponse {
   String addressId;
   String addressName;
   String prettyAddress;
   LocationPoint locationPoint;
   GeoAddr geoAddr;
 
-  Address(
+  AddressResponse(
       {this.addressId,
       this.addressName,
       this.prettyAddress,
       this.locationPoint,
       this.geoAddr});
 
-  Address.fromJson(Map<String, dynamic> json) {
+  AddressResponse.fromJson(Map<String, dynamic> json) {
     addressId = json['address_id'];
     addressName = json['address_name'];
     prettyAddress = json['pretty_address'];

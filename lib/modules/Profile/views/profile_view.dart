@@ -11,13 +11,11 @@ import 'package:eSamudaay/modules/address/models/addess_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
-import 'package:eSamudaay/utilities/keys.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
@@ -31,17 +29,8 @@ class _ProfileViewState extends State<ProfileView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
-  PickResult _pickedAddress;
   File _image;
   final picker = ImagePicker();
-  Address address;
-
-  getAddress(_ViewModel snapshot) async {
-    address = await UserManager.getAddress();
-    if (address != null) {
-      addressController.text = address.prettyAddress;
-    } else {}
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +40,11 @@ class _ProfileViewState extends State<ProfileView> {
           model: _ViewModel(),
           builder: (context, snapshot) {
             if (snapshot.loadingStatus != LoadingStatusApp.loading) {
-              getAddress(snapshot);
+              if (snapshot.userAddress != null &&
+                  snapshot.userAddress.isNotEmpty) {
+                addressController.text =
+                    snapshot.userAddress?.first?.prettyAddress ?? "";
+              }
             }
 
             nameController.text = snapshot.user.profileName;
@@ -247,27 +240,7 @@ class _ProfileViewState extends State<ProfileView> {
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<Null>(
-                      builder: (context) => PlacePicker(
-                        apiKey: Keys.googleAPIkey,
-                        onPlacePicked: (result) {
-                          print(result?.formattedAddress);
-                          if (result?.formattedAddress != null) {
-                            addressController.text = result?.formattedAddress;
-                          }
-                          _pickedAddress = result;
-                          print(result.adrAddress);
-                          Navigator.of(context).pop();
-                        },
-                        useCurrentLocation: true,
-                        autocompleteTypes: ["geocode"],
-                      ),
-                    ),
-                  );
-                },
+                onTap: snapshot.navigateToAddressView,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -334,32 +307,8 @@ class _ProfileViewState extends State<ProfileView> {
                 Fluttertoast.showToast(
                     msg: tr('screen_phone.valid_phone_error_message'));
               } else {
-                AddressRequest _addressRequest;
-                if (addressController.text != address.prettyAddress) {
-                  double _latitude = _pickedAddress.geometry.location.lat;
-                  double _longitude = _pickedAddress.geometry.location.lng;
-                  if (_latitude == null || _longitude == null) {
-                    Fluttertoast.showToast(msg: "Please enter a valid address");
-                    return;
-                  }
-                  String pincode = "";
-                  _pickedAddress.addressComponents.forEach((element) {
-                    if (element.types.contains("postal_code")) {
-                      pincode = element.longName;
-                    }
-                  });
-                  _addressRequest = AddressRequest(
-                    addressName: nameController.text,
-                    lat: _latitude,
-                    lon: _longitude,
-                    prettyAddress: addressController.text,
-                    geoAddr: GeoAddr(pincode: pincode),
-                  );
-                }
                 snapshot.profileUpdate(
                   _image,
-                  _addressRequest,
-                  address.addressId,
                 );
               }
             } else {
@@ -485,24 +434,26 @@ class _ViewModel extends BaseModel<AppState> {
   Function() getAddress;
   Data user;
   LoadingStatusApp loadingStatus;
-  Function(File image, AddressRequest address, String addressID) profileUpdate;
+  Function(File image) profileUpdate;
   Function navigateToHomePage;
   bool isPhoneNumberValid;
   String userPhone;
   String userName;
-  String userAddress;
+  List<AddressResponse> userAddress;
+  VoidCallback navigateToAddressView;
 
-  _ViewModel.build(
-      {this.navigateToHomePage,
-      this.profileUpdate,
-      this.loadingStatus,
-      this.isPhoneNumberValid,
-      this.userPhone,
-      this.userName,
-      this.userAddress,
-      this.user,
-      this.getAddress})
-      : super(equals: [
+  _ViewModel.build({
+    this.navigateToHomePage,
+    this.profileUpdate,
+    this.loadingStatus,
+    this.isPhoneNumberValid,
+    this.userPhone,
+    this.userName,
+    this.userAddress,
+    this.user,
+    this.getAddress,
+    this.navigateToAddressView,
+  }) : super(equals: [
           loadingStatus,
           isPhoneNumberValid,
           userPhone,
@@ -513,10 +464,9 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
         user: state.authState.user,
-        userAddress: "",
+        userAddress: state.addressState.savedAddressList ?? [],
         loadingStatus: state.authState.loadingStatus,
         navigateToHomePage: () {
           //dispatch(NavigateAction.pushNamed('/myHomeView'));
@@ -524,11 +474,15 @@ class _ViewModel extends BaseModel<AppState> {
         getAddress: () {
           dispatch(GetAddressAction());
         },
-        profileUpdate: (image, address, addressId) {
-          if (address != null && address.prettyAddress != "") {
-            dispatch(
-                UpdateAddressAction(request: address, addressID: addressId));
-          }
+        navigateToAddressView: () {
+          dispatch(UpdateIsRegisterView(false));
+          dispatch(NavigateAction.pushNamed(RouteNames.CHANGE_ADDRESS));
+        },
+        profileUpdate: (image) {
+          // if (address != null && address.prettyAddress != "") {
+          //   dispatch(
+          //      UpdateAddressAction(request: address, addressID: addressId));
+          // }
           if (image != null) {
             dispatch(UploadImageAction(imageFile: image));
           }

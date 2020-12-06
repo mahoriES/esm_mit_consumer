@@ -733,11 +733,11 @@ class OrderItemBottomView extends StatelessWidget {
                   orderId:
                       snapshot.getOrderListResponse.results[index].orderId))
               .whenComplete(() async {
-            var address = await UserManager.getAddress();
             PlaceOrderRequest request = PlaceOrderRequest();
             request.businessId =
                 snapshot.getOrderListResponse.results[index].businessId;
-            request.deliveryAddressId = address.addressId;
+            request.deliveryAddressId = snapshot
+                .getOrderListResponse.results[index].deliveryAdress.addressId;
             request.deliveryType =
                 snapshot.getOrderListResponse.results[index].deliveryType;
             request.orderItems =

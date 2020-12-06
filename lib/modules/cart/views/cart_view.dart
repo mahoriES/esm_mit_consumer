@@ -628,11 +628,15 @@ class _CartViewState extends State<CartView> {
                                                                         .center),
                                                             // NJRA135, Second cross road,  Indiranagar- 6987452
                                                             Text(
-                                                                snapshot.address.prettyAddress ??
+                                                                snapshot
+                                                                        .address
+                                                                        .first
+                                                                        .prettyAddress ??
                                                                     "",
                                                                 style: const TextStyle(
-                                                                    color: const Color(
-                                                                        0xff4b4b4b),
+                                                                    color:
+                                                                        const Color(
+                                                                            0xff4b4b4b),
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -858,7 +862,7 @@ class _CartViewState extends State<CartView> {
                                       msg: tr("new_changes.choose_one"));
 //                                return;
                                 } else {
-                                  var address = await UserManager.getAddress();
+                                  // var address = await UserManager.getAddress();
                                   List<Product> cart =
                                       await CartDataSource.getListOfCartWith();
                                   var merchats =
@@ -878,7 +882,7 @@ class _CartViewState extends State<CartView> {
                                       merchats.first.businessId;
                                   request.deliveryAddressId =
                                       widget.radioValue == 1
-                                          ? address.addressId
+                                          ? snapshot.address.first.addressId
                                           : null;
                                   request.deliveryType = widget.radioValue == 1
                                       ? "DA_DELIVERY"
@@ -1038,7 +1042,7 @@ class _ViewModel extends BaseModel<AppState> {
   VoidCallback navigateToStore;
   List<JITProduct> localFreeFormItems;
   List<String> customerNoteImages;
-  Address address;
+  List<AddressResponse> address;
   Data user;
 
   _ViewModel();
@@ -1079,7 +1083,7 @@ class _ViewModel extends BaseModel<AppState> {
         customerNoteImages: state.productState.customerNoteImages,
         localFreeFormItems: state.productState.localFreeFormCartItems,
         charges: state.productState.charges,
-        address: state.authState.address,
+        address: state.addressState.savedAddressList,
         selectedMerchant: state.productState.selectedMerchant,
         localCart: state.productState.localCartItems,
         user: state.authState.user,

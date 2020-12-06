@@ -9,14 +9,13 @@ import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
-import 'package:eSamudaay/utilities/keys.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +29,6 @@ class _RegistrationState extends State<Registration> {
   TextEditingController addressController = TextEditingController();
   TextEditingController pinCodeController =
       TextEditingController(text: 'UDUPI01');
-  PickResult _pickedAddress;
   String selectedCircle = 'UDUPI01';
   @override
   Widget build(BuildContext context) {
@@ -42,6 +40,9 @@ class _RegistrationState extends State<Registration> {
           },
           model: _ViewModel(),
           builder: (context, snapshot) {
+            addressController.text =
+                snapshot.addressRequest?.prettyAddress ?? "";
+
             return WillPopScope(
               onWillPop: () async {
                 return Future.value(
@@ -164,27 +165,7 @@ class _RegistrationState extends State<Registration> {
             child: Material(
               type: MaterialType.transparency,
               child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlacePicker(
-                        apiKey: Keys.googleAPIkey,
-                        onPlacePicked: (result) {
-                          print(result?.formattedAddress);
-                          if (result?.formattedAddress != null) {
-                            addressController.text = result?.formattedAddress;
-                          }
-                          _pickedAddress = result;
-                          print(result.adrAddress);
-                          Navigator.of(context).pop();
-                        },
-                        useCurrentLocation: true,
-                        autocompleteTypes: ["geocode"],
-                      ),
-                    ),
-                  );
-                },
+                onTap: snapshot.navigateToAddressView,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -260,32 +241,10 @@ class _RegistrationState extends State<Registration> {
 //                    msg: tr('screen_register.pin_code.title'));
 //              }
               else {
-                AddressRequest _addressRequest;
-
-                double _latitude = _pickedAddress.geometry.location.lat;
-                double _longitude = _pickedAddress.geometry.location.lng;
-                if (_latitude == null || _longitude == null) {
-                  Fluttertoast.showToast(msg: "Please enter a valid address");
-                  return;
-                }
-                String pincode = "";
-                _pickedAddress.addressComponents.forEach((element) {
-                  if (element.types.contains("postal_code")) {
-                    pincode = element.longName;
-                  }
-                });
-                _addressRequest = AddressRequest(
-                  addressName: nameController.text,
-                  lat: _latitude,
-                  lon: _longitude,
-                  prettyAddress: addressController.text,
-                  geoAddr: GeoAddr(pincode: pincode),
-                );
-
                 snapshot.updateCustomerDetails(
                   CustomerDetailsRequest(
                       profileName: nameController.text, role: "CUSTOMER"),
-                  _addressRequest,
+                  snapshot.addressRequest,
                 );
               }
             } else {
@@ -373,14 +332,18 @@ class _ViewModel extends BaseModel<AppState> {
   Function(AddressRequest) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
+  VoidCallback navigateToAddressView;
+  AddressRequest addressRequest;
 
-  _ViewModel.build(
-      {this.navigateToHomePage,
-      this.updateCustomerDetails,
-      this.addAddress,
-      this.loadingStatus,
-      this.phoneNumber})
-      : super(equals: [loadingStatus, phoneNumber]);
+  _ViewModel.build({
+    this.navigateToHomePage,
+    this.updateCustomerDetails,
+    this.addAddress,
+    this.loadingStatus,
+    this.phoneNumber,
+    this.navigateToAddressView,
+    this.addressRequest,
+  }) : super(equals: [loadingStatus, phoneNumber, addressRequest]);
 
   @override
   BaseModel fromStore() {
@@ -388,11 +351,16 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         phoneNumber: state.authState.getOtpRequest.phone,
+        addressRequest: state.addressState.addressRequest,
         navigateToHomePage: () {
           dispatch(NavigateAction.pushNamed('/myHomeView'));
         },
         addAddress: (address) {
           dispatch(AddAddressAction(request: address));
+        },
+        navigateToAddressView: () {
+          dispatch(UpdateIsRegisterView(true));
+          dispatch(NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));
         },
         updateCustomerDetails: (request, address) {
           dispatchFuture(AddUserDetailAction(request: request))
