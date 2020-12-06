@@ -66,11 +66,15 @@ class UserManager {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String value = prefs.getString(userAddressKey);
     if (value == null) return null;
-    List list = jsonDecode(value);
+    var data = jsonDecode(value);
     List<AddressResponse> addressResponse = [];
-    list.forEach((element) {
-      addressResponse.add(AddressResponse.fromJson(element));
-    });
+    if (data is List) {
+      data.forEach((element) {
+        addressResponse.add(AddressResponse.fromJson(element));
+      });
+    } else {
+      addressResponse.add(AddressResponse.fromJson(data));
+    }
     return addressResponse;
   }
 
