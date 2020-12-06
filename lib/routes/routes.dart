@@ -1,7 +1,6 @@
 import 'package:eSamudaay/modules/About/view/about_view.dart';
 import 'package:eSamudaay/modules/Profile/views/profile_view.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
-import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/address/view/add_new_address_view.dart/add_new_address_view.dart';
 import 'package:eSamudaay/modules/address/view/change_address_view/change_address_view.dart';
 import 'package:eSamudaay/modules/address/view/search_view/search_view.dart';
@@ -43,7 +42,6 @@ class SetupRoutes {
       "/OrdersView": (BuildContext context) => OrdersView(),
       "/SMAlertView": (BuildContext context) => SMAlertView(),
       "/Support": (BuildContext context) => Support(),
-      // "/RecommendShop": (BuildContext context) => RecommendedShop(),
       "/profile": (BuildContext context) => ProfileView(),
       "/about": (BuildContext context) => AboutView(),
       "/onBoarding": (BuildContext context) => OnboardingWidget(),

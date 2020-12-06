@@ -27,8 +27,6 @@ class AddAddressAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      //  Fluttertoast.showToast(msg: "Updated");
-
       AddressResponse responseModel = AddressResponse.fromJson(response.data);
 
       List<AddressResponse> _updatedAddressList =
@@ -43,7 +41,6 @@ class AddAddressAction extends ReduxAction<AppState> {
       );
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
-      //throw UserException(response.data['status']);
     }
     return null;
   }
@@ -52,43 +49,6 @@ class AddAddressAction extends ReduxAction<AppState> {
 
   void after() => dispatch(UpdateAddressLoadingStatus(false));
 }
-
-// class UpdateAddressAction extends ReduxAction<AppState> {
-//   final AddressRequest request;
-//   final String addressID;
-
-//   UpdateAddressAction({
-//     this.request,
-//     this.addressID,
-//   });
-
-//   @override
-//   FutureOr<AppState> reduce() async {
-//     var response = await APIManager.shared.request(
-//         url: ApiURL.addressUrl + "$addressID",
-//         params: request.toJson(),
-//         requestType: RequestType.patch);
-
-//     if (response.status == ResponseStatus.success200) {
-//       Fluttertoast.showToast(msg: "Updated");
-
-//       Address responseModel = Address.fromJson(response.data);
-//       await UserManager.saveAddress(
-//           address: jsonEncode(responseModel.toJson()));
-//       return state.copyWith(
-//           authState: state.authState.copyWith(address: responseModel));
-//     } else {
-//       Fluttertoast.showToast(msg: response.data['message']);
-//       //throw UserException(response.data['status']);
-//     }
-//     return null;
-//   }
-
-//   void before() =>
-//       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-//   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-// }
 
 class GetAddressAction extends ReduxAction<AppState> {
   @override
@@ -115,7 +75,6 @@ class GetAddressAction extends ReduxAction<AppState> {
       );
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
-      //throw UserException(response.data['status']);
     }
     return null;
   }
@@ -147,7 +106,6 @@ class DeleteAddressAction extends ReduxAction<AppState> {
       );
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
-      //throw UserException(response.data['status']);
     }
     return null;
   }

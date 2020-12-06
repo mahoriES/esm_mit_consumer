@@ -24,11 +24,6 @@ class UserManager {
         return user != null;
       });
 
-  // Future<bool> isAddressEntered() async =>
-  //     await getAddressStatus().then((value) {
-  //       return value != null;
-  //     });
-
   Future<bool> isSkipPressed() async => await getSkipStatus().then((value) {
         return value != null && value == true;
       });
@@ -59,17 +54,6 @@ class UserManager {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(skipKey, status);
   }
-
-  // static Future<bool> getAddressStatus() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   bool value = prefs.getBool(addressKey);
-  //   return value;
-  // }
-
-  // static Future<void> saveAddressStatus({status: bool}) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setBool(addressKey, status);
-  // }
 
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -123,13 +107,6 @@ class UserManager {
     int res = await dbClient.insert("User", userData);
     return res;
   }
-
-  // Future<int> update() async {
-  //   var dbClient = await DatabaseManager().db;
-  //   dbClient.rawUpdate(
-  //     "User",
-  //   );
-  // }
 }
 
 var userManager = UserManager();
