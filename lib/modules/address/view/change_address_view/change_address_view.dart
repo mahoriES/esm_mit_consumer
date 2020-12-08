@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/address/view/widgets/multiple_address_widget.dart';
+import 'package:eSamudaay/modules/address/view/change_address_view/widgets/multiple_address_widget.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
@@ -23,6 +23,9 @@ class ChangeAddressView extends StatelessWidget {
           ),
           body: Column(
             children: [
+              SizedBox(
+                height: 24.toHeight,
+              ),
               Expanded(
                 child: MultipleAddressWidget(),
               ),

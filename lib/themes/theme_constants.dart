@@ -100,7 +100,8 @@ class _AppTextStyles {
       );
 
   TextStyle get body2Secondary => body2.copyWith(
-        color: themeColors.secondaryColor,
+        color: themeColors.warningColor,
+        fontWeight: FontWeight.bold,
       );
 
   TextStyle get bottomMenu => TextStyle(

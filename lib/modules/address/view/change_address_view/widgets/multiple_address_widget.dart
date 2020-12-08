@@ -23,17 +23,12 @@ class MultipleAddressWidget extends StatelessWidget {
         });
 
         return Container(
-          padding: EdgeInsets.all(24.toWidth),
+          padding: EdgeInsets.symmetric(horizontal: 24.toWidth),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 6),
-                Text(
-                  tr("address_picker.saved_addresses"),
-                  style: CustomTheme.of(context).textStyles.body1,
-                ),
                 SizedBox(height: 10),
 
                 // addresses list //
