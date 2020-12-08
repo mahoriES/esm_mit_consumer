@@ -4,6 +4,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/address/view/change_address_view/change_address_bottom_sheet.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
@@ -14,13 +15,12 @@ import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/jit_catalog/views/free_form_items_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
-import 'package:eSamudaay/modules/store_details/views/store_details_view/store_categories_details_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -652,7 +652,30 @@ class _CartViewState extends State<CartView> {
                                                                         .left)
                                                           ],
                                                         ),
-                                                      )
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      TextButton(
+                                                        child: Text(
+                                                          tr("address_picker.change_address")
+                                                              .toUpperCase(),
+                                                          style: CustomTheme.of(
+                                                                  context)
+                                                              .textStyles
+                                                              .body2Secondary,
+                                                        ),
+                                                        onPressed: () {
+                                                          showModalBottomSheet(
+                                                            context: context,
+                                                            barrierColor: Colors
+                                                                .black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            elevation: 4,
+                                                            builder: (context) =>
+                                                                ChangeAddressBottomSheet(),
+                                                          );
+                                                        },
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
