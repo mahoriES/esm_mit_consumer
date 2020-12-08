@@ -359,7 +359,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(AddAddressAction(request: address));
         },
         navigateToAddressView: () {
-          dispatch(UpdateIsRegisterView(true));
+          dispatch(UpdateIsRegisterFlow(true));
           dispatch(NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));
         },
         updateCustomerDetails: (request, address) {

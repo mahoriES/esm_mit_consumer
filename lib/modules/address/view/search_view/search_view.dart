@@ -1,6 +1,11 @@
+import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/address/actions/address_actions.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_webservice/places.dart';
 
 class SearchAddressView extends StatefulWidget {
   SearchAddressView({
@@ -12,14 +17,6 @@ class SearchAddressView extends StatefulWidget {
 }
 
 class _SearchAddressViewState extends State<SearchAddressView> {
-  final _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,59 +26,111 @@ class _SearchAddressViewState extends State<SearchAddressView> {
           style: CustomTheme.of(context).textStyles.topTileTitle,
         ),
       ),
-      body: Column(
-        children: [],
+      body: StoreConnector<AppState, _ViewModel>(
+        model: _ViewModel(),
+        onInit: (store) {
+          store.dispatch(ResetSearchAdressValues());
+        },
+        builder: (context, snapshot) {
+          WidgetsBinding.instance.addPostFrameCallback(
+            (timeStamp) {
+              if (snapshot.isSuccess) {
+                Navigator.pop(context);
+              }
+            },
+          );
+
+          return Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: 12.toWidth, vertical: 12.toHeight),
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: CustomTheme.of(context).colors.placeHolderColor,
+                      ),
+                    ),
+                    prefixIcon: Icon(Icons.search),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  onChanged: (input) async {
+                    if (input.trim() != "" && !snapshot.isLoading) {
+                      snapshot.getSuggestions(input);
+                    }
+                  },
+                ),
+                SizedBox(height: 12.toHeight),
+                if (!snapshot.isLoading) ...[
+                  ListView.builder(
+                    itemCount: snapshot
+                            .placesAutocompleteResponse?.predictions?.length ??
+                        0,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          onTap: () => snapshot.getPlaceDetails(
+                            snapshot.placesAutocompleteResponse
+                                ?.predictions[index].placeId,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.toWidth,
+                              vertical: 12.toHeight,
+                            ),
+                            child: Text(
+                              snapshot.placesAutocompleteResponse
+                                  ?.predictions[index].description,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ]
+              ],
+            ),
+          );
+        },
       ),
-      // body: Container(
-      //   margin: EdgeInsets.only(left: 20),
-      //   child: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: <Widget>[
-      //       TextField(
-      //         controller: _controller,
-      //         readOnly: true,
-      //         onTap: () async {
-      //           // generate a new token here
-      //           final sessionToken = "Uuid().v4()";
-      //           final Suggestion result = await showSearch(
-      //             context: context,
-      //             delegate: AddressSearch(sessionToken),
-      //           );
-      //           // This will change the text displayed in the TextField
-      //           if (result != null) {
-      //             final placeDetails = await PlaceApiProvider(sessionToken)
-      //                 .getPlaceDetailFromId(result.placeId);
-      //             setState(() {
-      //               _controller.text = result.description;
-      //               _streetNumber = placeDetails.streetNumber;
-      //               _street = placeDetails.street;
-      //               _city = placeDetails.city;
-      //               _zipCode = placeDetails.zipCode;
-      //             });
-      //           }
-      //         },
-      //         decoration: InputDecoration(
-      //           icon: Container(
-      //             width: 10,
-      //             height: 10,
-      //             child: Icon(
-      //               Icons.home,
-      //               color: Colors.black,
-      //             ),
-      //           ),
-      //           hintText: "Enter your shipping address",
-      //           border: InputBorder.none,
-      //           contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
-      //         ),
-      //       ),
-      //       SizedBox(height: 20.0),
-      //       Text('Street Number: $_streetNumber'),
-      //       Text('Street: $_street'),
-      //       Text('City: $_city'),
-      //       Text('ZIP Code: $_zipCode'),
-      //     ],
-      //   ),
-      // ),
+    );
+  }
+}
+
+class _ViewModel extends BaseModel<AppState> {
+  _ViewModel();
+
+  Function(String) getSuggestions;
+  Function(String) getPlaceDetails;
+  PlacesAutocompleteResponse placesAutocompleteResponse;
+  bool isLoading;
+  bool isSuccess;
+
+  _ViewModel.build({
+    this.placesAutocompleteResponse,
+    this.getSuggestions,
+    this.getPlaceDetails,
+    this.isLoading,
+    this.isSuccess,
+  }) : super(
+          equals: [
+            placesAutocompleteResponse,
+            isLoading,
+            isSuccess,
+          ],
+        );
+
+  @override
+  BaseModel fromStore() {
+    return _ViewModel.build(
+      getSuggestions: (input) => dispatch(GetSuggestionsAction(input)),
+      getPlaceDetails: (placeId) => dispatch(GetAddressDetailsAction(placeId)),
+      placesAutocompleteResponse: state.addressState.placesSearchResponse,
+      isLoading: state.addressState.isLoading,
+      isSuccess: state.addressState.fetchedAddressDetails,
     );
   }
 }

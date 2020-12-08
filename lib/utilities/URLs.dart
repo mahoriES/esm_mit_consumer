@@ -45,4 +45,6 @@ class ApiURL {
       baseURL + getBusinessesUrl + businessId + "/catalog/products";
   static final getBookmarkBusinessUrl = (String businessId) =>
       baseURL + getBusinessesUrl + "$businessId/bookmark";
+  static final deleteAddressUrl =
+      (String addressId) => "api/v1/addresses/$addressId";
 }

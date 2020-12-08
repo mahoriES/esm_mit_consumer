@@ -113,7 +113,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       savedAddresses: state.addressState.savedAddressList,
-      isLoading: state.addressState.isAddressLoading,
+      isLoading: state.addressState.isLoading,
       deleteAddress: (String addressId) =>
           dispatch(DeleteAddressAction(addressId)),
     );

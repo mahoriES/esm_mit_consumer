@@ -33,6 +33,22 @@ class AddressRequest {
     }
     return data;
   }
+
+  copyWith({
+    String addressName,
+    String prettyAddress,
+    double lat,
+    double lon,
+    GeoAddr geoAddr,
+  }) {
+    return AddressRequest(
+      addressName: addressName ?? this.addressName,
+      prettyAddress: prettyAddress ?? this.prettyAddress,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      geoAddr: geoAddr ?? this.geoAddr,
+    );
+  }
 }
 
 class GeoAddr {
@@ -57,6 +73,20 @@ class GeoAddr {
     data['landmark'] = this.landmark;
     data['house'] = this.house;
     return data;
+  }
+
+  copyWith({
+    String pincode,
+    String city,
+    String landmark,
+    String house,
+  }) {
+    return GeoAddr(
+      pincode: pincode ?? this.pincode,
+      city: city ?? this.city,
+      landmark: landmark ?? this.landmark,
+      house: house ?? this.house,
+    );
   }
 }
 

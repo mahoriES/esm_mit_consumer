@@ -475,7 +475,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(GetAddressAction());
         },
         navigateToAddressView: () {
-          dispatch(UpdateIsRegisterView(false));
+          dispatch(UpdateIsRegisterFlow(false));
           dispatch(NavigateAction.pushNamed(RouteNames.CHANGE_ADDRESS));
         },
         profileUpdate: (image) {

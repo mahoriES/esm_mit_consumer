@@ -35,9 +35,11 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
+      onInit: (store) {
+        addressNameController.text =
+            store.state.addressState.addressRequest.addressName;
+      },
       builder: (context, snapshot) {
-        addressNameController.text = snapshot.addressTag;
-
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           if (snapshot.isLoading) {
             LoadingDialog.show();
@@ -72,7 +74,8 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                     SizedBox(width: 8.toWidth),
                     Expanded(
                       child: Text(
-                        (snapshot.address?.toString() ?? ""),
+                        (snapshot.addressRequest.prettyAddress?.toString() ??
+                            ""),
                         style: CustomTheme.of(context).textStyles.body1,
                       ),
                     ),
@@ -128,7 +131,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                               onTap: () {
                                 addressNameController.text =
                                     AddressTags.tagList[index];
-                                snapshot.updateAddressTag(
+                                snapshot.updateAddressName(
                                     AddressTags.tagList[index]);
                               },
                             );
@@ -175,59 +178,48 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
-  String address;
-  String addressTag;
-  bool isAddressLoading;
-  Function(String) updateAddressTag;
+  AddressRequest addressRequest;
+  Function(String) updateAddressName;
   Function() goToSearchView;
   Function(String, String, String) addAddress;
   bool isLoading;
 
   _ViewModel.build({
-    this.address,
-    this.isAddressLoading,
-    this.addressTag,
-    this.updateAddressTag,
+    this.addressRequest,
+    this.updateAddressName,
     this.goToSearchView,
     this.addAddress,
     this.isLoading,
-  }) : super(equals: [address, isAddressLoading, addressTag, isLoading]);
+  }) : super(equals: [isLoading, addressRequest]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      address: state.addressState.addressDetails?.addressLine ?? "",
-      isAddressLoading: state.addressState.isAddressLoading,
-      isLoading: state.addressState.isAddressLoading,
-      addressTag: state.addressState.addressTag,
-      updateAddressTag: (tag) => dispatch(UpdateAddressTag(tag)),
+      addressRequest: state.addressState.addressRequest,
+      isLoading: state.addressState.isLoading,
+      updateAddressName: (name) => dispatch(UpdateAddressName(name)),
       goToSearchView: () =>
           dispatch(NavigateAction.pushNamed(RouteNames.SEARCH_ADDRESS)),
       addAddress: (String house, String landMark, String addressname) {
-        AddressRequest _addressRequest = AddressRequest(
+        AddressRequest _addressRequest =
+            state.addressState.addressRequest.copyWith(
           addressName: addressname,
-          prettyAddress: state.addressState.addressDetails?.addressLine,
-          lat: state.addressState.addressDetails.coordinates.latitude,
-          lon: state.addressState.addressDetails.coordinates.longitude,
-          geoAddr: GeoAddr(
-            pincode: state.addressState.addressDetails.postalCode,
-            city: state.addressState.addressDetails.adminArea,
+          geoAddr: state.addressState.addressRequest.geoAddr.copyWith(
             landmark: landMark,
             house: house,
           ),
         );
-        if (state.addressState.isRegisterView) {
-          dispatch(SaveAddressRequest(_addressRequest));
-        } else {
+        if (!state.addressState.isRegisterFlow) {
           dispatch(AddAddressAction(request: _addressRequest));
         }
       },
     );
   }
 
-  int get selectedtagIndex => addressTag == AddressTags.tagList[0]
-      ? 0
-      : addressTag == AddressTags.tagList[1]
-          ? 1
-          : 2;
+  int get selectedtagIndex =>
+      addressRequest.addressName == AddressTags.tagList[0]
+          ? 0
+          : addressRequest.addressName == AddressTags.tagList[1]
+              ? 1
+              : 2;
 }

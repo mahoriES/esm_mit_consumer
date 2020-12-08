@@ -79,8 +79,8 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      address: state.addressState.addressDetails?.addressLine ?? "",
-      isAddressLoading: state.addressState.isAddressLoading,
+      address: state.addressState.addressRequest?.prettyAddress ?? "",
+      isAddressLoading: state.addressState.isLoading,
     );
   }
 }

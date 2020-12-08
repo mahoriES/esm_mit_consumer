@@ -1,53 +1,71 @@
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
-import 'package:geocoder/model.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:uuid/uuid.dart';
 
 class AddressState {
   final List<AddressResponse> savedAddressList;
-  final bool isAddressLoading;
-  final Address addressDetails;
-  final LatLng currentPosition;
-  final String addressTag;
+  final bool isLoading;
+  final bool isRegisterFlow;
+  final bool fetchedAddressDetails;
   final AddressRequest addressRequest;
-  final bool isRegisterView;
+  final PlacesAutocompleteResponse placesSearchResponse;
+  final String sessionToken;
 
   const AddressState({
     this.savedAddressList,
-    this.addressDetails,
-    this.isAddressLoading,
-    this.currentPosition,
-    this.addressTag,
+    this.isLoading,
+    this.isRegisterFlow,
+    this.fetchedAddressDetails,
     this.addressRequest,
-    this.isRegisterView,
+    this.placesSearchResponse,
+    this.sessionToken,
   });
 
   factory AddressState.initial() => AddressState(
         savedAddressList: null,
-        addressDetails: null,
-        isAddressLoading: false,
-        currentPosition: null,
-        addressTag: null,
-        addressRequest: null,
-        isRegisterView: false,
+        isLoading: false,
+        isRegisterFlow: false,
+        fetchedAddressDetails: false,
+        addressRequest: new AddressRequest(
+          geoAddr: new GeoAddr(),
+        ),
+        placesSearchResponse: null,
+        sessionToken: Uuid().v4(),
       );
 
   AddressState copyWith({
     List<AddressResponse> savedAddressList,
-    bool isAddressLoading,
-    Address addressDetails,
-    LatLng currentPosition,
-    String addressTag,
+    bool isLoading,
+    bool isRegisterFlow,
+    bool fetchedAddressDetails,
     AddressRequest addressRequest,
-    bool isRegisterView,
+    PlacesAutocompleteResponse placesSearchResponse,
+    String sessionToken,
   }) {
     return AddressState(
       savedAddressList: savedAddressList ?? this.savedAddressList,
-      isAddressLoading: isAddressLoading ?? this.isAddressLoading,
-      addressDetails: addressDetails ?? this.addressDetails,
-      currentPosition: currentPosition ?? this.currentPosition,
-      addressTag: addressTag ?? this.addressTag,
+      isLoading: isLoading ?? this.isLoading,
+      isRegisterFlow: isRegisterFlow ?? this.isRegisterFlow,
+      fetchedAddressDetails:
+          fetchedAddressDetails ?? this.fetchedAddressDetails,
       addressRequest: addressRequest ?? this.addressRequest,
-      isRegisterView: isRegisterView ?? this.isRegisterView,
+      placesSearchResponse: placesSearchResponse ?? this.placesSearchResponse,
+      sessionToken: sessionToken ?? this.sessionToken,
+    );
+  }
+
+  AddressState reset({
+    bool fetchedAddressDetails,
+    PlacesAutocompleteResponse placesSearchResponse,
+  }) {
+    return AddressState(
+      placesSearchResponse: placesSearchResponse,
+      fetchedAddressDetails: fetchedAddressDetails,
+      savedAddressList: this.savedAddressList,
+      isLoading: this.isLoading,
+      isRegisterFlow: this.isRegisterFlow,
+      addressRequest: this.addressRequest,
+      sessionToken: this.sessionToken,
     );
   }
 }
