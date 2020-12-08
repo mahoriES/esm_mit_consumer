@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_delivery_status_widget.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/merchant_address_row.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -42,7 +44,7 @@ class BusinessTitleTile extends StatefulWidget {
 }
 
 class _BusinessTitleTileState extends State<BusinessTitleTile>
-    with MerchantWidgetElementsProviderMixin {
+    with MerchantActionsProviderMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -121,13 +123,17 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
                   const SizedBox(
                     width: AppSizes.separatorPadding,
                   ),
-                  contactMerchantActionButton(widget.onContactMerchantPressed),
+                  ContactMerchantActionButton(
+                    onContactMerchant: widget.onContactMerchantPressed,
+                  ),
                 ],
               ),
               const SizedBox(
                 height: AppSizes.separatorPadding,
               ),
-              buildDeliveryStatus(context, widget.isDeliveryAvailable),
+              DeliveryStatusWidget(
+                deliveryStatus: widget.isDeliveryAvailable,
+              ),
             ],
           ),
         ],

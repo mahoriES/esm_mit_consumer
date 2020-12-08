@@ -12,6 +12,7 @@ import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets
 import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_category_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
@@ -45,7 +46,7 @@ class StoreDetailsView extends StatefulWidget {
 //TODO: Reduce the size of this classes by moving around widget components
 
 class _StoreDetailsViewState extends State<StoreDetailsView>
-    with MerchantWidgetElementsProviderMixin {
+    with MerchantActionsProviderMixin {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -83,7 +84,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                 ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: Container(
-                  color: AppColors.solidWhite,
+                  color: CustomTheme.of(context).colors.pureWhite,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -193,10 +194,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                                     .of(context)
                                                                 .colors
                                                                 .disabledAreaColor),
-                                                    prefixIcon: const Icon(
+                                                    prefixIcon: Icon(
                                                       Icons.search_rounded,
                                                       color:
-                                                          AppColors.blueBerry,
+                                                          CustomTheme.of(context).colors.brandViolet,
                                                     ),
                                                     enabledBorder:
                                                         OutlineInputBorder(
@@ -386,15 +387,16 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
             mainAxisSpacing: 10.0,
             childAspectRatio: 1),
         itemBuilder: (context, index) {
-          return buildBusinessCategoryTile(context, onTap: () {
-            snapshot.updateSelectedCategory(snapshot.categories[index]);
-            snapshot.navigateToProductCatalog();
-          },
-              imageUrl: snapshot.categories[index].images.isEmpty
-                  ? ""
-                  : snapshot.categories[index].images.first.photoUrl,
-              tileWidth: 75.toWidth,
-              categoryName: snapshot.categories[index].categoryName ?? '');
+          return BusinessCategoryTile(
+            imageUrl: snapshot.categories[index].images.isEmpty ? ""
+                  : snapshot.categories[index].images?.first?.photoUrl ?? "",
+            tileWidth: 75.toWidth,
+            categoryName: snapshot.categories[index].categoryName ?? '',
+            onTap: (){
+              snapshot.updateSelectedCategory(snapshot.categories[index]);
+              snapshot.navigateToProductCatalog();
+            },
+          );
         },
         itemCount: snapshot.categories.length,
         shrinkWrap: true,
