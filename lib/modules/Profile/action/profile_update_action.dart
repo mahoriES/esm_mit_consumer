@@ -38,12 +38,13 @@ class UpdateProfileAction extends ReduxAction<AppState> {
       UserManager.saveUser(profile.data).then((onValue) {
         store.dispatch(GetUserFromLocalStorageAction());
       });
-      dispatch(NavigateAction.pop());
+      return state.copyWith(
+        authState: state.authState.copyWith(user: profile.data),
+      );
     } else {
-      //Fluttertoast.showToast(msg: response.data['status']);
-      //throw UserException(response.data['status']);
+      Fluttertoast.showToast(msg: response.data['status']);
+      return null;
     }
-    return state.copyWith(authState: state.authState.copyWith());
   }
 
   void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));

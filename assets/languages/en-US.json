@@ -100,7 +100,8 @@
     "logout": "Logout",
     "alert_data": "Are you sure ! do you want to logout?",
     "cancel": "Cancel",
-    "circles": "My Circles"
+    "circles": "My Circles",
+    "address": "Address"
   },
   "store_home": {
     "spotlight": "Spotlight",
