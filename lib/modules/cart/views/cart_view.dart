@@ -628,15 +628,11 @@ class _CartViewState extends State<CartView> {
                                                                         .center),
                                                             // NJRA135, Second cross road,  Indiranagar- 6987452
                                                             Text(
-                                                                snapshot
-                                                                        .address
-                                                                        .first
-                                                                        .prettyAddress ??
+                                                                snapshot.selectedAddress.prettyAddress ??
                                                                     "",
                                                                 style: const TextStyle(
-                                                                    color:
-                                                                        const Color(
-                                                                            0xff4b4b4b),
+                                                                    color: const Color(
+                                                                        0xff4b4b4b),
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
@@ -905,7 +901,7 @@ class _CartViewState extends State<CartView> {
                                       merchats.first.businessId;
                                   request.deliveryAddressId =
                                       widget.radioValue == 1
-                                          ? snapshot.address.first.addressId
+                                          ? snapshot.selectedAddress.addressId
                                           : null;
                                   request.deliveryType = widget.radioValue == 1
                                       ? "DA_DELIVERY"
@@ -1065,7 +1061,7 @@ class _ViewModel extends BaseModel<AppState> {
   VoidCallback navigateToStore;
   List<JITProduct> localFreeFormItems;
   List<String> customerNoteImages;
-  List<AddressResponse> address;
+  AddressResponse selectedAddress;
   Data user;
 
   _ViewModel();
@@ -1084,7 +1080,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.removeFromCart,
       this.navigateToCart,
       this.selectedMerchant,
-      this.address,
+      this.selectedAddress,
       this.getTaxOfOrder,
       this.loadingStatus,
       this.getOrderTax})
@@ -1094,7 +1090,7 @@ class _ViewModel extends BaseModel<AppState> {
           user,
           loadingStatus,
           customerNoteImages,
-          address,
+          selectedAddress,
           charges,
           localFreeFormItems,
         ]);
@@ -1106,7 +1102,11 @@ class _ViewModel extends BaseModel<AppState> {
         customerNoteImages: state.productState.customerNoteImages,
         localFreeFormItems: state.productState.localFreeFormCartItems,
         charges: state.productState.charges,
-        address: state.addressState.savedAddressList,
+        selectedAddress: state.addressState.selectedAddressForDelivery ??
+            (state.addressState.savedAddressList != null &&
+                    state.addressState.savedAddressList.isNotEmpty
+                ? state.addressState.savedAddressList.first
+                : null),
         selectedMerchant: state.productState.selectedMerchant,
         localCart: state.productState.localCartItems,
         user: state.authState.user,

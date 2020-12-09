@@ -10,6 +10,7 @@ class AddressState {
   final AddressRequest addressRequest;
   final PlacesAutocompleteResponse placesSearchResponse;
   final String sessionToken;
+  final AddressResponse selectedAddressForDelivery;
 
   const AddressState({
     this.savedAddressList,
@@ -19,6 +20,7 @@ class AddressState {
     this.addressRequest,
     this.placesSearchResponse,
     this.sessionToken,
+    this.selectedAddressForDelivery,
   });
 
   factory AddressState.initial() => AddressState(
@@ -31,6 +33,7 @@ class AddressState {
         ),
         placesSearchResponse: null,
         sessionToken: Uuid().v4(),
+        selectedAddressForDelivery: null,
       );
 
   AddressState copyWith({
@@ -41,6 +44,7 @@ class AddressState {
     AddressRequest addressRequest,
     PlacesAutocompleteResponse placesSearchResponse,
     String sessionToken,
+    AddressResponse selectedAddressForDelivery,
   }) {
     return AddressState(
       savedAddressList: savedAddressList ?? this.savedAddressList,
@@ -51,6 +55,8 @@ class AddressState {
       addressRequest: addressRequest ?? this.addressRequest,
       placesSearchResponse: placesSearchResponse ?? this.placesSearchResponse,
       sessionToken: sessionToken ?? this.sessionToken,
+      selectedAddressForDelivery:
+          selectedAddressForDelivery ?? this.selectedAddressForDelivery,
     );
   }
 
@@ -66,6 +72,7 @@ class AddressState {
       isRegisterFlow: this.isRegisterFlow,
       addressRequest: this.addressRequest,
       sessionToken: this.sessionToken,
+      selectedAddressForDelivery: this.selectedAddressForDelivery,
     );
   }
 }

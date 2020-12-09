@@ -100,9 +100,21 @@ class DeleteAddressAction extends ReduxAction<AppState> {
 
       await UserManager.saveAddress(address: jsonEncode(responseModel));
 
+      // If the deleted address was selected in cart
+      // then update the selected addresss to first one in list by default.
+
+      AddressResponse _selectedAddressForDelivery =
+          state.addressState.selectedAddressForDelivery;
+
+      if (state.addressState.selectedAddressForDelivery.addressId ==
+          addressId) {
+        _selectedAddressForDelivery = state.addressState.savedAddressList.first;
+      }
+
       return state.copyWith(
         addressState: state.addressState.copyWith(
           savedAddressList: responseModel,
+          selectedAddressForDelivery: _selectedAddressForDelivery,
         ),
       );
     } else {
@@ -359,6 +371,19 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
 
   @override
   void after() => dispatch(UpdateAddressLoadingStatus(false));
+}
+
+class UpdateSelectedAddressForDelivery extends ReduxAction<AppState> {
+  AddressResponse address;
+  UpdateSelectedAddressForDelivery(this.address);
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      addressState: state.addressState.copyWith(
+        selectedAddressForDelivery: address,
+      ),
+    );
+  }
 }
 
 class ResetSearchAdressValues extends ReduxAction<AppState> {

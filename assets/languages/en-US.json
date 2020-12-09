@@ -246,7 +246,7 @@
     "select_an_address": "Select an Address",
     "saved_addresses": "Saved Addresses",
     "change_address": "Change Address",
-    "delete_address": "DELETE ADDRESS",
+    "delete_address": "Delete Address",
     "add_an_Address": "Add an Address",
     "enter_address_details": "Enter Address Details",
     "your_location": "YOUR LOCATION",
@@ -260,6 +260,8 @@
     "change": "CHANGE",
     "search_location": "Search Location",
     "select_location": "Select Location",
-    "confirm_location": "Confirm Location"
+    "confirm_location": "Confirm Location",
+    "confirm_delete_message": "Are you sure , you want to delete this address",
+    "delete": "Delete"
   }
 }
