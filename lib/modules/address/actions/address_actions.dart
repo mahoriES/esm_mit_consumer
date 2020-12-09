@@ -96,8 +96,6 @@ class DeleteAddressAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       List<AddressResponse> responseModel = state.addressState.savedAddressList;
 
-      responseModel.removeWhere((element) => element.addressId == addressId);
-
       await UserManager.saveAddress(address: jsonEncode(responseModel));
 
       return state.copyWith(
@@ -144,9 +142,6 @@ class GetInitialLocation extends ReduxAction<AppState> {
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    debugPrint(
-        "get initial location ************************* ${position.latitude}");
-
     LatLng _latLng = LatLng(position.latitude, position.longitude);
 
     store.dispatch(GetAddressForLocation(_latLng));
@@ -173,14 +168,9 @@ class GetAddressForLocation extends ReduxAction<AppState> {
   GetAddressForLocation(this.position);
   @override
   FutureOr<AppState> reduce() async {
-    debugPrint(
-        "get address for location  ************************** ${position.latitude}");
     List<Address> address = await Geocoder.local.findAddressesFromCoordinates(
       new Coordinates(position.latitude, position.longitude),
     );
-
-    debugPrint(
-        "get address for location 2  ************************** ${address.length}");
 
     if (address != null && address.isNotEmpty) {
       return state.copyWith(
@@ -194,6 +184,8 @@ class GetAddressForLocation extends ReduxAction<AppState> {
           ),
         ),
       );
+    } else {
+      Fluttertoast.showToast(msg: "Could not fetch address");
     }
 
     return null;
