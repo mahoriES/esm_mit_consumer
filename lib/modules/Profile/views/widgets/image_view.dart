@@ -82,6 +82,7 @@ class ProfileImageView extends StatelessWidget {
                 child: Container(
                   height: 48.toFont,
                   width: 48.toFont,
+                  padding: EdgeInsets.all(15.toFont),
                   decoration: new BoxDecoration(
                     shape: BoxShape.circle,
                     color: CustomTheme.of(context).colors.backgroundColor,

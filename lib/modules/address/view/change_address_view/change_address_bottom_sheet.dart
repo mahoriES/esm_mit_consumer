@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/address/view/change_address_view/widgets/multi
 import 'package:eSamudaay/modules/address/view/widgets/topTile.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class ChangeAddressBottomSheet extends StatelessWidget {
         return Container(
           height: SizeConfig.screenHeight / 2,
           decoration: BoxDecoration(
+            color: CustomTheme.of(context).colors.backgroundColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),

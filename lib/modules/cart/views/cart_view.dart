@@ -667,6 +667,7 @@ class _CartViewState extends State<CartView> {
                                                                 .withOpacity(
                                                                     0.4),
                                                             elevation: 4,
+                                                            backgroundColor: Colors.transparent,
                                                             builder: (context) =>
                                                                 ChangeAddressBottomSheet(),
                                                           );
