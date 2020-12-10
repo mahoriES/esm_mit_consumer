@@ -10,6 +10,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/routes/routes.dart';
+import 'package:eSamudaay/validators/validators.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -119,15 +120,8 @@ class _RegistrationState extends State<Registration> {
               children: <Widget>[
                 Flexible(
                   child: TextFormField(
-                      validator: (value) {
-                        if (value.length == 0) return null;
-                        if (value.length < 3) {
-                          return tr('screen_register.name.empty_error');
-                          return null;
-                        }
-                        return null;
-                      },
-                      autovalidate: true,
+                      validator: Validators.nameValidator,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: nameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -173,16 +167,8 @@ class _RegistrationState extends State<Registration> {
                       child: TextFormField(
                           maxLines: null,
                           enabled: false,
-                          validator: (value) {
-                            if (value.isEmpty) return null;
-//                                          if (value.length < 10) {
-//                                            return tr(
-//                                                'screen_register.address.empty_error');
-//                                            return null;
-//                                          }
-                            return null;
-                          },
-                          autovalidate: true,
+                          validator: Validators.nullStringValidator,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: addressController,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
