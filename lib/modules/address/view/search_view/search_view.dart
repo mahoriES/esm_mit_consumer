@@ -28,9 +28,6 @@ class _SearchAddressViewState extends State<SearchAddressView> {
       ),
       body: StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
-        onInit: (store) {
-          store.dispatch(ResetSearchAdressValues());
-        },
         builder: (context, snapshot) {
           WidgetsBinding.instance.addPostFrameCallback(
             (timeStamp) {

@@ -17,7 +17,7 @@ class ChangeAddressView extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              tr("address_picker.change_address"),
+              tr("address_picker.manage_address"),
               style: CustomTheme.of(context).textStyles.topTileTitle,
             ),
           ),

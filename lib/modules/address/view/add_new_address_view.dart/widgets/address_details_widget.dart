@@ -60,7 +60,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                 TopTile(tr("address_picker.enter_address_details")),
                 SizedBox(height: 14.toHeight),
                 Text(
-                  tr("address_picker.your_location"),
+                  tr("address_picker.your_location").toUpperCase(),
                   style: CustomTheme.of(context).textStyles.body2Faded,
                 ),
                 SizedBox(height: 8.toHeight),
