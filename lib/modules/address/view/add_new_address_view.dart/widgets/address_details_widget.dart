@@ -40,15 +40,14 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
         addressNameController.text =
             store.state.addressState.addressRequest.addressName;
       },
+      onDidChange: (snapshot) {
+        if (snapshot.isLoading) {
+          LoadingDialog.show();
+        } else {
+          LoadingDialog.hide();
+        }
+      },
       builder: (context, snapshot) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (snapshot.isLoading) {
-            LoadingDialog.show();
-          } else {
-            LoadingDialog.hide();
-          }
-        });
-
         return Container(
           padding: EdgeInsets.all(20.toWidth),
           color: CustomTheme.of(context).colors.backgroundColor,
