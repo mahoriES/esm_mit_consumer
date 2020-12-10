@@ -1,7 +1,3 @@
-class AddressTags {
-  static const List<String> tagList = ["Home", "Work", "Other"];
-}
-
 class AddressRequest {
   String addressName;
   String prettyAddress;

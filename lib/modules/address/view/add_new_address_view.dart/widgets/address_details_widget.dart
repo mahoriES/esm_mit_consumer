@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
@@ -121,18 +122,18 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
-                          itemCount: AddressTags.tagList.length,
+                          itemCount: StringConstants.addressTagList.length,
                           separatorBuilder: (context, index) =>
                               SizedBox(width: 16.toWidth),
                           itemBuilder: (context, index) {
                             return TagButton(
                               isSelected: snapshot.selectedtagIndex == index,
-                              tag: AddressTags.tagList[index],
+                              tag: StringConstants.addressTagList[index],
                               onTap: () {
                                 addressNameController.text =
-                                    AddressTags.tagList[index];
+                                    StringConstants.addressTagList[index];
                                 snapshot.updateAddressName(
-                                    AddressTags.tagList[index]);
+                                    StringConstants.addressTagList[index]);
                               },
                             );
                           },
@@ -217,9 +218,9 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   int get selectedtagIndex =>
-      addressRequest.addressName == AddressTags.tagList[0]
+      addressRequest.addressName == StringConstants.addressTagList[0]
           ? 0
-          : addressRequest.addressName == AddressTags.tagList[1]
+          : addressRequest.addressName == StringConstants.addressTagList[1]
               ? 1
               : 2;
 }

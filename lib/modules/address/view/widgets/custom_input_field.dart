@@ -1,4 +1,5 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/validators/validators.dart';
 import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
@@ -17,10 +18,7 @@ class InputField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        if (value == null || value == "") return "";
-        return null;
-      },
+      validator: Validators.nullStringValidator,
       onChanged: onChanged,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 0),

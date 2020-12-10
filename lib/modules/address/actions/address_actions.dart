@@ -22,15 +22,16 @@ class AddAddressAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
+    final ResponseModel response = await APIManager.shared.request(
         url: ApiURL.addressUrl,
         params: request.toJson(),
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
-      AddressResponse responseModel = AddressResponse.fromJson(response.data);
+      final AddressResponse responseModel =
+          AddressResponse.fromJson(response.data);
 
-      List<AddressResponse> _updatedAddressList =
+      final List<AddressResponse> _updatedAddressList =
           (state.addressState.savedAddressList ?? [])..add(responseModel);
 
       await UserManager.saveAddress(address: jsonEncode(_updatedAddressList));
@@ -54,14 +55,14 @@ class AddAddressAction extends ReduxAction<AppState> {
 class GetAddressAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
+    final ResponseModel response = await APIManager.shared.request(
       url: ApiURL.addressUrl,
       params: null,
       requestType: RequestType.get,
     );
 
     if (response.status == ResponseStatus.success200) {
-      List<AddressResponse> responseModel = List<AddressResponse>();
+      final List<AddressResponse> responseModel = List<AddressResponse>();
 
       response.data.forEach((e) {
         responseModel.add(AddressResponse.fromJson(e));
@@ -82,19 +83,20 @@ class GetAddressAction extends ReduxAction<AppState> {
 }
 
 class DeleteAddressAction extends ReduxAction<AppState> {
-  String addressId;
+  final String addressId;
   DeleteAddressAction(this.addressId);
 
   @override
   FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
+    final ResponseModel response = await APIManager.shared.request(
       url: ApiURL.deleteAddressUrl(addressId),
       params: null,
       requestType: RequestType.delete,
     );
 
     if (response.status == ResponseStatus.success200) {
-      List<AddressResponse> responseModel = state.addressState.savedAddressList;
+      final List<AddressResponse> responseModel =
+          state.addressState.savedAddressList;
 
       await UserManager.saveAddress(address: jsonEncode(responseModel));
 
@@ -117,7 +119,7 @@ class DeleteAddressAction extends ReduxAction<AppState> {
 class GetAddressFromLocal extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    List<AddressResponse> address = await UserManager.getAddress();
+    final List<AddressResponse> address = await UserManager.getAddress();
     return state.copyWith(
       addressState: state.addressState.copyWith(savedAddressList: address),
     );
@@ -125,7 +127,7 @@ class GetAddressFromLocal extends ReduxAction<AppState> {
 }
 
 class UpdateIsRegisterFlow extends ReduxAction<AppState> {
-  bool isRegisterView;
+  final bool isRegisterView;
   UpdateIsRegisterFlow(this.isRegisterView);
   @override
   FutureOr<AppState> reduce() async {
@@ -138,11 +140,11 @@ class UpdateIsRegisterFlow extends ReduxAction<AppState> {
 class GetInitialLocation extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    Position position = await Geolocator.getCurrentPosition(
+    final Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    LatLng _latLng = LatLng(position.latitude, position.longitude);
+    final LatLng _latLng = LatLng(position.latitude, position.longitude);
 
     store.dispatch(GetAddressForLocation(_latLng));
 
@@ -168,7 +170,8 @@ class GetAddressForLocation extends ReduxAction<AppState> {
   GetAddressForLocation(this.position);
   @override
   FutureOr<AppState> reduce() async {
-    List<Address> address = await Geocoder.local.findAddressesFromCoordinates(
+    final List<Address> address =
+        await Geocoder.local.findAddressesFromCoordinates(
       new Coordinates(position.latitude, position.longitude),
     );
 
@@ -273,11 +276,11 @@ class UpdateAddressHouse extends ReduxAction<AppState> {
 }
 
 class GetSuggestionsAction extends ReduxAction<AppState> {
-  String input;
+  final String input;
   GetSuggestionsAction(this.input);
   @override
   FutureOr<AppState> reduce() async {
-    PlacesAutocompleteResponse geocodingResponse =
+    final PlacesAutocompleteResponse geocodingResponse =
         await new GoogleMapsPlaces(apiKey: Keys.googleAPIkey).autocomplete(
       input,
       sessionToken: state.addressState.sessionToken,
@@ -299,11 +302,11 @@ class GetSuggestionsAction extends ReduxAction<AppState> {
 }
 
 class GetAddressDetailsAction extends ReduxAction<AppState> {
-  String placeId;
+  final String placeId;
   GetAddressDetailsAction(this.placeId);
   @override
   FutureOr<AppState> reduce() async {
-    PlacesDetailsResponse placesDetailsResponse =
+    final PlacesDetailsResponse placesDetailsResponse =
         await new GoogleMapsPlaces(apiKey: Keys.googleAPIkey)
             .getDetailsByPlaceId(
       placeId,
@@ -311,7 +314,7 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
     );
 
     if (placesDetailsResponse.isOkay) {
-      PlaceDetails placeDetails = placesDetailsResponse.result;
+      final PlaceDetails placeDetails = placesDetailsResponse.result;
       String pinCode = "";
       String city = "";
 
