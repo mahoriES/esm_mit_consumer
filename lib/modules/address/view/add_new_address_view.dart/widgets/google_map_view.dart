@@ -16,7 +16,6 @@ class GoogleMapView extends StatefulWidget {
 
 class _GoogleMapViewState extends State<GoogleMapView> {
   Completer<GoogleMapController> _controller = Completer();
-  // List<Marker> _markers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -25,28 +24,23 @@ class _GoogleMapViewState extends State<GoogleMapView> {
       onInit: (store) {
         store.dispatchFuture(GetInitialLocation());
       },
+      onDidChange: (snapshot) async {
+        // if address was selected from search , then animate map location to the selected address.
+        if (snapshot.gotAddressFromSearch) {
+          GoogleMapController mapController = await _controller.future;
+          mapController.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: snapshot.location,
+                zoom: 14.4746,
+              ),
+            ),
+          );
+          // reset the seardh details to avoid animating the map multiple times.
+          snapshot.resetSearchDetails();
+        }
+      },
       builder: (context, snapshot) {
-        // debugPrint(
-        //     "got here => ${snapshot.addressRequest.prettyAddress} && ${snapshot.addressRequest.lat}");
-
-        // List<Marker> updatedMarkers = [
-        //   new Marker(
-        //     markerId: new MarkerId("locationPin"),
-        //     position: snapshot.location,
-        //   ),
-        // ];
-
-        // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        //   setState(
-        //     () {
-        //       MarkerUpdates.from(
-        //           Set<Marker>.from(_markers), Set<Marker>.from(updatedMarkers));
-        //       _markers = [];
-        //       _markers = updatedMarkers;
-        //     },
-        //   );
-        // });
-
         return snapshot.isLocationNull || snapshot.location == null
             ? Center(child: CircularProgressIndicator())
             : GoogleMap(
@@ -90,26 +84,29 @@ class _ViewModel extends BaseModel<AppState> {
   Function(CameraPosition) updateMarkerPosition;
   Function() updateAddress;
   bool isLoading;
+  bool gotAddressFromSearch;
+  VoidCallback resetSearchDetails;
 
   _ViewModel.build({
     this.addressRequest,
     this.updateMarkerPosition,
     this.updateAddress,
     this.isLoading,
-  }) : super(equals: [
-          addressRequest,
-          isLoading,
-        ]);
+    this.gotAddressFromSearch,
+    this.resetSearchDetails,
+  }) : super(equals: [addressRequest, isLoading, gotAddressFromSearch]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
         addressRequest: state.addressState.addressRequest,
+        gotAddressFromSearch: state.addressState.fetchedAddressDetails,
         isLoading: state.addressState.isLoading,
         updateMarkerPosition: (position) {
           dispatch(UpdateCurrentPosition(
               LatLng(position.target.latitude, position.target.longitude)));
         },
+        resetSearchDetails: () => dispatch(ResetSearchAdressValues()),
         updateAddress: () {
           debugPrint("*************** update address $isLocationNull");
           dispatch(
