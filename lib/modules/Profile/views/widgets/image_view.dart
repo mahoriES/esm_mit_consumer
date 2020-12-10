@@ -52,7 +52,7 @@ class ProfileImageView extends StatelessWidget {
                             leading: new Icon(Icons.photo_camera),
                             title: new Text('Camera'),
                             onTap: () async {
-                              PickedFile _file = await ImagePicker()
+                              final PickedFile _file = await ImagePicker()
                                   .getImage(source: ImageSource.camera);
                               updateImage(File(_file.path));
                               Navigator.pop(context);
@@ -62,7 +62,7 @@ class ProfileImageView extends StatelessWidget {
                             leading: new Icon(Icons.photo_album),
                             title: new Text('Gallery'),
                             onTap: () async {
-                              PickedFile _file = await ImagePicker()
+                              final PickedFile _file = await ImagePicker()
                                   .getImage(source: ImageSource.gallery);
                               updateImage(File(_file.path));
                               Navigator.pop(context);

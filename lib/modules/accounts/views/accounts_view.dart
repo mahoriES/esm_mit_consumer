@@ -34,7 +34,8 @@ class AccountsView extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: snapshot._accountItemsList.length,
                 itemBuilder: (context, index) {
-                  _AccountItem _currentItem = snapshot._accountItemsList[index];
+                  final _AccountItem _currentItem =
+                      snapshot._accountItemsList[index];
                   return ListTile(
                     onTap: () {
                       if (_currentItem.isLogout) {

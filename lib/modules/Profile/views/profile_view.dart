@@ -51,18 +51,18 @@ class ProfileView extends StatelessWidget {
                         children: <Widget>[
                           SizedBox(height: 60.toHeight),
                           ProfileImageView(
-                            imageurl: snapshot.user.profilePic.photoUrl ?? "",
+                            imageurl: snapshot.userPhotoUrl,
                             updateImage: snapshot.profileUpdate,
                           ),
                           SizedBox(height: 65.toHeight),
                           DetailsTile(
-                            data: snapshot.user?.profileName ?? "",
+                            data: snapshot.userName,
                             style:
                                 CustomTheme.of(context).textStyles.topTileTitle,
                           ),
                           SizedBox(height: 12.toHeight),
                           DetailsTile(
-                            data: snapshot.user?.userProfile?.phone ?? "",
+                            data: snapshot.userPhone,
                             style: CustomTheme.of(context)
                                 .textStyles
                                 .sectionHeading2,
@@ -105,4 +105,8 @@ class _ViewModel extends BaseModel<AppState> {
       },
     );
   }
+
+  String get userName => user?.profileName ?? "";
+  String get userPhone => user?.userProfile?.phone ?? "";
+  String get userPhotoUrl => user?.profilePic?.photoUrl ?? "";
 }

@@ -369,7 +369,7 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
 }
 
 class UpdateSelectedAddressForDelivery extends ReduxAction<AppState> {
-  AddressResponse address;
+  final AddressResponse address;
   UpdateSelectedAddressForDelivery(this.address);
   @override
   FutureOr<AppState> reduce() {
