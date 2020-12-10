@@ -33,7 +33,8 @@ class LogoutAction extends ReduxAction<AppState> {
         homePageState: HomePageState.initial());
   }
 
-  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
@@ -42,9 +43,9 @@ class GetVersionString extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     try {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      String version = packageInfo.version;
-      String buildNumber = packageInfo.buildNumber;
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      final String version = packageInfo.version;
+      final String buildNumber = packageInfo.buildNumber;
 
       return state.copyWith(
         versionString: "Version $version Build $buildNumber",
