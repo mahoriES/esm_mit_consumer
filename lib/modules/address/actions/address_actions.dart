@@ -98,6 +98,8 @@ class DeleteAddressAction extends ReduxAction<AppState> {
       final List<AddressResponse> responseModel =
           state.addressState.savedAddressList;
 
+      responseModel.removeWhere((element) => element.addressId == addressId);
+
       await UserManager.saveAddress(address: jsonEncode(responseModel));
 
       // If the deleted address was selected in cart
@@ -106,7 +108,7 @@ class DeleteAddressAction extends ReduxAction<AppState> {
       AddressResponse _selectedAddressForDelivery =
           state.addressState.selectedAddressForDelivery;
 
-      if (state.addressState.selectedAddressForDelivery.addressId ==
+      if (state.addressState?.selectedAddressForDelivery?.addressId ==
           addressId) {
         _selectedAddressForDelivery = state.addressState.savedAddressList.first;
       }
@@ -118,7 +120,7 @@ class DeleteAddressAction extends ReduxAction<AppState> {
         ),
       );
     } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+      Fluttertoast.showToast(msg: response.data['message'] ?? "Some Error Occured");
     }
     return null;
   }

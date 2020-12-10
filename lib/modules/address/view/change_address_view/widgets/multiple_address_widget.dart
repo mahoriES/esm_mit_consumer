@@ -19,15 +19,14 @@ class MultipleAddressWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
+      onDidChange: (snapshot) {
+        if (snapshot.isLoading) {
+          LoadingDialog.show();
+        } else {
+          LoadingDialog.hide();
+        }
+      },
       builder: (context, snapshot) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (snapshot.isLoading) {
-            LoadingDialog.show();
-          } else {
-            LoadingDialog.hide();
-          }
-        });
-
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 24.toWidth),
           child: SingleChildScrollView(
@@ -35,7 +34,14 @@ class MultipleAddressWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 10),
+                SizedBox(height: 6.toHeight),
+
+                Text(
+                  tr("address_picker.saved_addresses"),
+                  style: CustomTheme.of(context).textStyles.body1,
+                ),
+
+                SizedBox(height: 12.toHeight),
 
                 // addresses list //
                 ListView.separated(
