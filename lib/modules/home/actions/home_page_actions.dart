@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:dio/dio.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
