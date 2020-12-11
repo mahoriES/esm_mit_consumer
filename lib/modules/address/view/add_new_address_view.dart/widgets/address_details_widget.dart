@@ -212,6 +212,9 @@ class _ViewModel extends BaseModel<AppState> {
         if (!state.addressState.isRegisterFlow) {
           dispatch(AddAddressAction(request: _addressRequest));
         }
+        else{
+          dispatch(UpdateSelectedAddressForRegister(_addressRequest));
+        }
       },
     );
   }
