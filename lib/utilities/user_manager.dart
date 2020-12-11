@@ -89,6 +89,11 @@ class UserManager {
     await prefs.setString(userAddressKey, address);
   }
 
+  static Future<void> deleteAddress({address: String}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(userAddressKey);
+  }
+
   static Future<String> getFcmToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String value = prefs.getString(fcmToken);

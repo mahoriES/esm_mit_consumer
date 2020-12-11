@@ -23,6 +23,7 @@ class LogoutAction extends ReduxAction<AppState> {
     await CartDataSource.deleteAllMerchants();
     await CartDataSource.deleteAll();
     await UserManager.deleteUser();
+    await UserManager.deleteAddress();
     PushNotificationsManager().signOut();
     dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
 
