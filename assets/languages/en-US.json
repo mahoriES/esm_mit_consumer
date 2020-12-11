@@ -241,5 +241,22 @@
   },
   "product_catalog": {
     "All": "All"
+  },
+
+  "home_stores_categories": {
+    "services": "Services",
+    "product_cat": "Product Categories",
+    "service_cat": "Service Categories",
+    "featured": "Featured Stores",
+    "view_shop": "View Shop",
+    "bought": "Previously Bought",
+    "popular_pack": "Popular Packages",
+    "search_home": "Search eSamudaay",
+    "handpicked": "Handpicked for You",
+    "nearest": "Nearest",
+    "favourites": "Favourites",
+    "filters": "Filters",
+    "off": "Off"
   }
+
 }

@@ -1,3 +1,4 @@
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
 class GetBusinessesResponse {
@@ -48,6 +49,7 @@ class Business {
   String notice;
 
   bool hasDelivery;
+  List<OrderItems> previouslyOrderedItems;
 
   Business(
       {this.businessId,
@@ -60,6 +62,7 @@ class Business {
       this.notice,
       this.images,
       this.phones,
+      this.previouslyOrderedItems,
       this.hasDelivery});
 
   Business.fromJson(Map<String, dynamic> json) {
@@ -82,6 +85,12 @@ class Business {
       notice = json['notice'].toString();
     phones = json['phones'] != null ? json['phones'].cast<String>() : [];
     hasDelivery = json['has_delivery'];
+    if (json['ag_orderitems'] != null && json['ag_orderitems'] is List) {
+      previouslyOrderedItems = List<OrderItems>();
+      json['ag_orderitems'].forEach((v) {
+        previouslyOrderedItems.add(OrderItems.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {

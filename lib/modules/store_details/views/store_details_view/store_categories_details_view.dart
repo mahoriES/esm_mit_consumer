@@ -73,6 +73,9 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                   GetBusinessVideosAction(businessId: businessId));
               store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
             },
+            onDidChange: (snapshot){
+
+            },
             builder: (context, snapshot) {
               return ModalProgressHUD(
                 progressIndicator: Card(

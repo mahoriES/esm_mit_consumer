@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:dio/dio.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -250,5 +251,32 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
               results: [],
             ),
             categories: []));
+  }
+}
+
+class GetTopBannerImageAction extends ReduxAction<AppState> {
+  final String businessId;
+
+  GetTopBannerImageAction(this.businessId) : assert(businessId != null);
+
+  @override
+  FutureOr<AppState> reduce() async {
+
+    var response = await APIManager.shared.request(
+      url: "api/v1/clusters/$businessId/banners",
+      params: {'top':true},
+      requestType: RequestType.get,
+    );
+    if (response.status == ResponseStatus.success200) {
+      Photo topBanner = Photo.fromJson(response.data);
+      return state.copyWith(
+          homePageState: state.homePageState.copyWith(
+            topBanner: topBanner,
+          ),
+      );
+    } else {
+      Fluttertoast.showToast(msg: response.data['msg']);
+    }
+    return null;
   }
 }

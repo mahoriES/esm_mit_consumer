@@ -10,23 +10,17 @@ class HomePageState {
   final String homePageLoadedDate;
   final int currentIndex;
   final List<Photo> banners;
+  final Photo topBanner;
 
   HomePageState(
       {@required this.currentIndex,
       @required this.loadingStatus,
       @required this.merchants,
+      @required this.topBanner,
       @required this.homePageLoadedDate,
       @required this.banners,
       this.response});
 
-//  static HomePageState fromJson(dynamic json) =>
-//      HomePageState(homePageLoadedDate: json["homePageLoadedDate"]);
-//
-//  dynamic toJson() {
-//    final Map<String, dynamic> data = new Map<String, dynamic>();
-//    data['homePageLoadedDate'] = this.homePageLoadedDate;
-//    return data;
-//  }
 
   factory HomePageState.initial() {
     return new HomePageState(
@@ -34,6 +28,7 @@ class HomePageState {
         merchants: [],
         homePageLoadedDate: "0",
         currentIndex: 0,
+        topBanner: Photo(),
         banners: <Photo>[],
         response: GetBusinessesResponse());
   }
@@ -43,9 +38,11 @@ class HomePageState {
       List<Business> merchants,
       List<Photo> banners,
       int currentIndex,
+      Photo topBanner,
       String homePageLoadedDate,
       GetBusinessesResponse response}) {
     return new HomePageState(
+        topBanner: topBanner ?? this.topBanner,
         currentIndex: currentIndex ?? this.currentIndex,
         loadingStatus: loadingStatus ?? this.loadingStatus,
         merchants: merchants ?? this.merchants,

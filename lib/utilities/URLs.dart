@@ -40,9 +40,12 @@ class ApiURL {
   static final getProductsForSubcategory = (
           {@required String businessId, @required String subCategoryId}) =>
       "api/v1/businesses/$businessId/catalog/categories/$subCategoryId/products";
+
   // TODO : this one is duplicated.
   static final getProductsListUrl = (String businessId) =>
       baseURL + getBusinessesUrl + businessId + "/catalog/products";
   static final getBookmarkBusinessUrl = (String businessId) =>
       baseURL + getBusinessesUrl + "$businessId/bookmark";
+  static final Function(String) getHomePageCategoriesUrl = (String circleId) =>
+      baseURL + getClustersUrl + "$circleId/categories";
 }

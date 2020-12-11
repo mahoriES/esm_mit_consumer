@@ -1,4 +1,5 @@
 import 'package:eSamudaay/redux/states/home_page_state.dart';
+import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/redux/states/videos_state.dart';
 
@@ -10,9 +11,11 @@ class AppState {
   final HomePageState homePageState;
   final ProductState productState;
   final VideosState videosState;
+  final LandingPageComponentsState homeCategoriesState;
   const AppState({
     this.authState,
     this.isLoading,
+    this.homeCategoriesState,
     this.homePageState,
     this.productState,
     this.videosState,
@@ -36,6 +39,7 @@ class AppState {
         productState: ProductState.initial(),
         homePageState: HomePageState.initial(),
         videosState: VideosState.initial(),
+        homeCategoriesState: LandingPageComponentsState.initial(),
       );
 
   AppState copyWith({
@@ -43,12 +47,14 @@ class AppState {
     bool isLoading,
     HomePageState homePageState,
     ProductState productState,
+    LandingPageComponentsState homeCategoriesState,
     VideosState videosState,
   }) {
     return AppState(
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
       isLoading: isLoading ?? this.isLoading,
+      homeCategoriesState: homeCategoriesState ?? this.homeCategoriesState,
       homePageState: homePageState ?? this.homePageState,
       videosState: videosState ?? this.videosState,
     );
