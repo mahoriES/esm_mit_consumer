@@ -214,6 +214,19 @@ class UpdateAddressLoadingStatus extends ReduxAction<AppState> {
   }
 }
 
+class UpdateSelectedAddressForRegister extends ReduxAction<AppState> {
+  final AddressRequest addressRequest;
+  UpdateSelectedAddressForRegister(this.addressRequest);
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      addressState: state.addressState.copyWith(
+        selectedAddressForRegister: addressRequest,
+      ),
+    );
+  }
+}
+
 class UpdateCurrentPosition extends ReduxAction<AppState> {
   final LatLng position;
   UpdateCurrentPosition(this.position);

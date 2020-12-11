@@ -8,6 +8,7 @@ class AddressState {
   final bool isRegisterFlow;
   final bool fetchedAddressDetails;
   final AddressRequest addressRequest;
+  final AddressRequest selectedAddressForRegister;
   final PlacesAutocompleteResponse placesSearchResponse;
   final String sessionToken;
 
@@ -16,6 +17,7 @@ class AddressState {
     this.isLoading,
     this.isRegisterFlow,
     this.fetchedAddressDetails,
+    this.selectedAddressForRegister,
     this.addressRequest,
     this.placesSearchResponse,
     this.sessionToken,
@@ -26,6 +28,7 @@ class AddressState {
         isLoading: false,
         isRegisterFlow: false,
         fetchedAddressDetails: false,
+        selectedAddressForRegister: null,
         addressRequest: new AddressRequest(
           geoAddr: new GeoAddr(),
         ),
@@ -38,7 +41,7 @@ class AddressState {
     bool isLoading,
     bool isRegisterFlow,
     bool fetchedAddressDetails,
-    AddressRequest addressRequest,
+    AddressRequest addressRequest,AddressRequest selectedAddressForRegister,
     PlacesAutocompleteResponse placesSearchResponse,
     String sessionToken,
   }) {
@@ -46,6 +49,7 @@ class AddressState {
       savedAddressList: savedAddressList ?? this.savedAddressList,
       isLoading: isLoading ?? this.isLoading,
       isRegisterFlow: isRegisterFlow ?? this.isRegisterFlow,
+      selectedAddressForRegister: selectedAddressForRegister ?? this.selectedAddressForRegister,
       fetchedAddressDetails:
           fetchedAddressDetails ?? this.fetchedAddressDetails,
       addressRequest: addressRequest ?? this.addressRequest,

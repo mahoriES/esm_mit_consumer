@@ -315,7 +315,6 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Function(CustomerDetailsRequest request, AddressRequest)
       updateCustomerDetails;
-  Function(AddressRequest) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
   VoidCallback navigateToAddressView;
@@ -324,7 +323,6 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel.build({
     this.navigateToHomePage,
     this.updateCustomerDetails,
-    this.addAddress,
     this.loadingStatus,
     this.phoneNumber,
     this.navigateToAddressView,
@@ -337,12 +335,9 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         phoneNumber: state.authState.getOtpRequest.phone,
-        addressRequest: state.addressState.addressRequest,
+        addressRequest: state.addressState.selectedAddressForRegister,
         navigateToHomePage: () {
           dispatch(NavigateAction.pushNamed('/myHomeView'));
-        },
-        addAddress: (address) {
-          dispatch(AddAddressAction(request: address));
         },
         navigateToAddressView: () {
           dispatch(UpdateIsRegisterFlow(true));
