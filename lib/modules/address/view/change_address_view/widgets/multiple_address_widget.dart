@@ -99,6 +99,10 @@ class MultipleAddressWidget extends StatelessWidget {
                                             tr("address_picker.delete_address"),
                                         message: tr(
                                             "address_picker.confirm_delete_message"),
+                                        actionButtonColor:
+                                            CustomTheme.of(context)
+                                                .colors
+                                                .warningColor,
                                         positiveAction: () {
                                           Navigator.pop(context);
                                           snapshot.deleteAddress(snapshot

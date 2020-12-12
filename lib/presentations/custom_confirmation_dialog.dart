@@ -8,13 +8,15 @@ class CustomConfirmationDialog extends StatelessWidget {
   final String message;
   final String positiveButtonText;
   final String negativeButtonText;
-  final Function positiveAction;
+  final VoidCallback positiveAction;
+  final Color actionButtonColor;
   const CustomConfirmationDialog({
     @required this.title,
     @required this.message,
     @required this.positiveAction,
     @required this.positiveButtonText,
     this.negativeButtonText,
+    this.actionButtonColor,
     Key key,
   }) : super(key: key);
 
@@ -77,7 +79,8 @@ class CustomConfirmationDialog extends StatelessWidget {
                       icon: Icons.check,
                       text: positiveButtonText,
                       onTap: positiveAction,
-                      color: CustomTheme.of(context).colors.positiveColor,
+                      color: actionButtonColor ??
+                          CustomTheme.of(context).colors.positiveColor,
                     ),
                   ),
                 ],
