@@ -1,6 +1,14 @@
+import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
+import 'package:eSamudaay/modules/head_categories/models/main_categories_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class BusinessCategoryTile extends StatelessWidget {
   final Function onTap;
@@ -71,6 +79,82 @@ class BusinessCategoryTile extends StatelessWidget {
     return Image.asset(
       'assets/images/category_placeholder.png',
       fit: BoxFit.cover,
+    );
+  }
+}
+
+class HomeCategoriesGridView extends StatelessWidget {
+  const HomeCategoriesGridView({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, _ViewModel>(
+      model: _ViewModel(),
+      builder: (context, snapshot) {
+        debugPrint(
+            'Building the CategoryGridView ${snapshot.homePageCategoriesResponse.catalogCategories.length}');
+
+        if (snapshot.homePageCategoriesResponse == null ||
+            snapshot.homePageCategoriesResponse.catalogCategories == null ||
+            snapshot.homePageCategoriesResponse.catalogCategories.isEmpty)
+          return SizedBox.shrink();
+        return Container(
+          child: GridView.builder(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.separatorPadding,
+                vertical: AppSizes.separatorPadding),
+            primary: false,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 1),
+            itemBuilder: (context, index) {
+              HomePageCategoryResponse category =
+                  snapshot.homePageCategoriesResponse.catalogCategories[index];
+              return BusinessCategoryTile(
+                imageUrl: category.categoryImageUrl ?? "",
+                tileWidth: 75.toWidth,
+                categoryName: category.categoryName ?? ' ',
+                onTap: () {
+                  snapshot.navigateToCategoryScreen(category);
+                },
+              );
+            },
+            itemCount:
+                snapshot.homePageCategoriesResponse.catalogCategories.length,
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ViewModel extends BaseModel<AppState> {
+  _ViewModel();
+
+  HomePageCategoriesResponse homePageCategoriesResponse;
+  Function(HomePageCategoryResponse) navigateToCategoryScreen;
+
+  _ViewModel.build({
+    this.homePageCategoriesResponse,
+    this.navigateToCategoryScreen,
+  }) : super(equals: [
+          homePageCategoriesResponse,
+        ]);
+
+  @override
+  BaseModel fromStore() {
+    return _ViewModel.build(
+      homePageCategoriesResponse: state.homeCategoriesState.homePageCategories,
+      navigateToCategoryScreen: (HomePageCategoryResponse selectedCategory) {
+        dispatch(
+            SelectHomePageCategoryAction(selectedCategory: selectedCategory));
+        dispatch(NavigateAction.pushNamed(RouteNames.CATEGORY_BUSINESSES));
+        debugPrint('Category selected');
+      },
     );
   }
 }

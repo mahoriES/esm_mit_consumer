@@ -25,7 +25,10 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
         url: getUrl,
-        params: {"cluster_id": state.authState.cluster.clusterId},
+        params: {
+          "cluster_id": state.authState.cluster.clusterId,
+          "ag_cat": true
+        },
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
@@ -260,18 +263,17 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-
     var response = await APIManager.shared.request(
       url: "api/v1/clusters/$businessId/banners",
-      params: {'top':true},
+      params: {'top': true},
       requestType: RequestType.get,
     );
     if (response.status == ResponseStatus.success200) {
       Photo topBanner = Photo.fromJson(response.data);
       return state.copyWith(
-          homePageState: state.homePageState.copyWith(
-            topBanner: topBanner,
-          ),
+        homePageState: state.homePageState.copyWith(
+          topBanner: topBanner,
+        ),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['msg']);

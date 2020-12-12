@@ -8,15 +8,13 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class GetHomePageCategories extends ReduxAction<AppState> {
-  final String circleId;
-
-  GetHomePageCategories({@required this.circleId}) : assert(circleId != null);
+class GetHomePageCategoriesAction extends ReduxAction<AppState> {
+  GetHomePageCategoriesAction();
 
   @override
   FutureOr<AppState> reduce() async {
     final response = await APIManager.shared.request(
-        url: ApiURL.getHomePageCategoriesUrl(circleId),
+        url: ApiURL.getHomePageCategoriesUrl(state.authState.cluster.clusterId),
         requestType: RequestType.get,
         params: null);
 
@@ -24,7 +22,9 @@ class GetHomePageCategories extends ReduxAction<AppState> {
       if (response.data != null && response.data is Map) {
         final parsedCategoriesResponse =
             HomePageCategoriesResponse.fromJson(response.data);
-        state.copyWith(
+        debugPrint(
+            'Before putting in state ${parsedCategoriesResponse.catalogCategories.length}');
+        return state.copyWith(
             homeCategoriesState: state.homeCategoriesState.copyWith(
           homePageCategories: parsedCategoriesResponse,
         ));
@@ -50,11 +50,24 @@ class SelectHomePageCategoryAction extends ReduxAction<AppState> {
   }
 }
 
-class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
-  final String circleId;
+class ClearPreviousCategoryDetailsAction extends ReduxAction<AppState> {
 
-  GetPreviouslyBoughtBusinessesListAction({@required this.circleId})
-      : assert(circleId != null);
+  ClearPreviousCategoryDetailsAction();
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      homeCategoriesState: state.homeCategoriesState.copyWith(
+        previouslyBoughtBusinessUnderSelectedCategory: [],
+        businessesUnderSelectedCategory: []
+      )
+    );
+  }
+
+}
+
+class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
+  GetPreviouslyBoughtBusinessesListAction();
 
   @override
   FutureOr<AppState> reduce() async {
@@ -62,9 +75,9 @@ class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
         url: ApiURL.getBusinessesUrl,
         requestType: RequestType.get,
         params: {
-          "cluster_id": circleId,
+          "cluster_id": state.authState.cluster.clusterId,
           "ordered": true,
-          "ag_orderitems": true
+          "ag_orderitems": true,
         });
     if (response.status == ResponseStatus.success200) {
       if (response.data != null &&
@@ -89,13 +102,11 @@ class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
 
 class GetPreviouslyBoughtBusinessesListUnderSelectedCategoryAction
     extends ReduxAction<AppState> {
-  final String circleId;
   final String categoryId;
 
   GetPreviouslyBoughtBusinessesListUnderSelectedCategoryAction(
-      {@required this.circleId, @required this.categoryId})
-      : assert(circleId != null),
-        assert(categoryId != null);
+      {@required this.categoryId})
+      : assert(categoryId != null);
 
   @override
   FutureOr<AppState> reduce() async {
@@ -103,7 +114,7 @@ class GetPreviouslyBoughtBusinessesListUnderSelectedCategoryAction
         url: ApiURL.getBusinessesUrl,
         requestType: RequestType.get,
         params: {
-          "cluster_id": circleId,
+          "cluster_id": state.authState.cluster.clusterId,
           "ordered": true,
           "ag_orderitems": true,
           "bcat_id": categoryId
@@ -133,19 +144,19 @@ class GetPreviouslyBoughtBusinessesListUnderSelectedCategoryAction
 
 class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
   final String categoryId;
-  final String circleId;
 
-  GetBusinessesUnderSelectedCategory(
-      {@required this.categoryId, @required this.circleId})
-      : assert(categoryId != null),
-        assert(circleId != null);
+  GetBusinessesUnderSelectedCategory({@required this.categoryId})
+      : assert(categoryId != null);
 
   @override
   FutureOr<AppState> reduce() async {
     final response = await APIManager.shared.request(
         url: ApiURL.getBusinessesUrl,
         requestType: RequestType.get,
-        params: {"bcat": categoryId, "cluster_id": circleId});
+        params: {
+          "bcat": categoryId,
+          "cluster_id": state.authState.cluster.clusterId
+        });
     if (response.status == ResponseStatus.success200) {
       if (response.data != null &&
           response.data is Map &&

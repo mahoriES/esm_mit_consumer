@@ -1,4 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
 class GetBusinessesResponse {
@@ -50,6 +51,7 @@ class Business {
 
   bool hasDelivery;
   List<OrderItems> previouslyOrderedItems;
+  List<CategoriesNew> augmentedCategories;
 
   Business(
       {this.businessId,
@@ -60,6 +62,7 @@ class Business {
       this.address,
       this.description,
       this.notice,
+      this.augmentedCategories,
       this.images,
       this.phones,
       this.previouslyOrderedItems,
@@ -89,6 +92,12 @@ class Business {
       previouslyOrderedItems = List<OrderItems>();
       json['ag_orderitems'].forEach((v) {
         previouslyOrderedItems.add(OrderItems.fromJson(v));
+      });
+    }
+    if (json['ag_cat'] != null && json['ag_cat'] is List) {
+      augmentedCategories = List<CategoriesNew>();
+      json['ag_cat'].forEach((v){
+        augmentedCategories.add(CategoriesNew.fromJson(v));
       });
     }
   }
@@ -126,6 +135,8 @@ class Business {
       notice: business.notice,
       hasDelivery: business.hasDelivery,
       phones: business.phones ?? null,
+      augmentedCategories: business.augmentedCategories ?? null,
+      previouslyOrderedItems: business.previouslyOrderedItems ?? null
   );
 
 }

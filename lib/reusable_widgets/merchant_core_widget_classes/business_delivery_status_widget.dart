@@ -27,8 +27,9 @@ class _DeliveryStatusWidgetState extends State<DeliveryStatusWidget> {
                   color: green,
                 )
               : Icon(
-                  Icons.store,
+                  Icons.store_rounded,
                   color: orange,
+                  size: 20,
                 ),
           const SizedBox(
             width: 3,

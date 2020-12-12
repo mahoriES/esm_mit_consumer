@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class HomePageCategoryResponse {
 
   String categoryName;
@@ -25,11 +27,14 @@ class HomePageCategoriesResponse {
 
   HomePageCategoriesResponse.fromJson(Map<String, dynamic> json) {
     if (json['product'] != null && json['product'] is List) {
+      debugPrint('About to parse');
       var categoriesResponseList = List.from(json['product']);
+      debugPrint('Passed this');
       catalogCategories = List<HomePageCategoryResponse>();
       categoriesResponseList.forEach((element) {
         catalogCategories.add(HomePageCategoryResponse.fromJson(element));
       });
+      debugPrint('Count - ${catalogCategories.length}');
     }
   }
 }

@@ -35,20 +35,25 @@ class _AppFontFamily {
 
 // text styles should be similar in all themes except the text color.
 // pass significant AppThemeColors to get respective text styles.
+
+///Removed the [.toFont] method calls. They were leading to different sizes for my
+///devices. Compared to other elements, fonts were smaller and weren't coming out well.
+///If this still leads to noticeable issues on devices, then we'll find an optimum solution
+
 class _AppTextStyles {
   final _AppThemeColors themeColors;
   _AppTextStyles(this.themeColors);
 
   TextStyle get merchantCardTitle => TextStyle(
         color: themeColors.primaryColor,
-        fontSize: 24.toFont,
+        fontSize: 24,
         fontWeight: FontWeight.w700,
         fontFamily: _AppFontFamily.archivo,
       );
 
   TextStyle get topTileTitle => TextStyle(
         color: themeColors.textColor,
-        fontSize: 20.toFont,
+        fontSize: 20,
         fontWeight: FontWeight.w500,
         fontFamily: _AppFontFamily.archivo,
         height: 1.1,
@@ -56,14 +61,14 @@ class _AppTextStyles {
 
   TextStyle get sectionHeading1 => TextStyle(
         color: themeColors.primaryColor,
-        fontSize: 16.toFont,
+        fontSize: 16,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.archivo,
       );
 
   TextStyle get sectionHeading2 => TextStyle(
         color: themeColors.textColor,
-        fontSize: 16.toFont,
+        fontSize: 16,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.18,
@@ -71,7 +76,7 @@ class _AppTextStyles {
 
   TextStyle get cardTitle => TextStyle(
         color: themeColors.textColor,
-        fontSize: 14.toFont,
+        fontSize: 14,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.21,
@@ -79,7 +84,7 @@ class _AppTextStyles {
 
   TextStyle get body1 => TextStyle(
         color: themeColors.textColor,
-        fontSize: 12.toFont,
+        fontSize: 12,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.25,
@@ -87,7 +92,7 @@ class _AppTextStyles {
 
   TextStyle get buttonText2 => TextStyle(
         color: themeColors.primaryColor,
-        fontSize: 10.toFont,
+        fontSize: 10,
         fontWeight: FontWeight.w700,
         fontFamily: _AppFontFamily.lato,
         height: 1.2,
@@ -95,7 +100,7 @@ class _AppTextStyles {
 
   TextStyle get body2 => TextStyle(
         color: themeColors.textColorDarker,
-        fontSize: 10.toFont,
+        fontSize: 10,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.2,
@@ -103,7 +108,7 @@ class _AppTextStyles {
 
   TextStyle get bottomMenu => TextStyle(
         color: themeColors.primaryColor,
-        fontSize: 10.toFont,
+        fontSize: 10,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.2,

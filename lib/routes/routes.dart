@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
+import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
 import 'package:eSamudaay/modules/language/view/language_view.dart';
@@ -51,6 +52,8 @@ class SetupRoutes {
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
           ProductDetailsView(),
       '/videoPlayer': (BuildContext context) => VideoPlayerScreen(),
+      '/businessUnderCategory': (BuildContext context) =>
+          BusinessesListUnderSelectedCategoryScreen(),
     };
   }
 }
@@ -62,4 +65,5 @@ class RouteNames {
   static const PRODUCT_DETAILS = "/productDeails";
   static const PRODUCT_CATALOGUE = "/StoreProductListingView";
   static const PRODUCT_SEARCH = "/productSearch";
+  static const CATEGORY_BUSINESSES = '/businessUnderCategory';
 }
