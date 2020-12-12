@@ -12,6 +12,7 @@ import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/core_home_widgets/circle_banners_carousel.dart';
+import 'package:eSamudaay/modules/home/views/core_home_widgets/circle_top_banner.dart';
 import 'package:eSamudaay/modules/home/views/core_home_widgets/empty_view.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
@@ -81,96 +82,22 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     return UserExceptionDialog<AppState>(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(120.0), // here the desired height
-          child: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            brightness: Brightness.light,
-            automaticallyImplyLeading: false,
-            centerTitle: false,
-            flexibleSpace: // Rect
-                // angle 2102
-                Container(
-              height: 160,
-              padding: EdgeInsets.only(top: 20),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/images/HeaderImage.png"),
-                      fit: BoxFit.fill)),
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            'assets/images/splash.png',
-                            width: 200,
-                            color: Colors.white,
-                          ),
-                          StoreConnector<AppState, _ViewModel>(
-                              model: _ViewModel(),
-                              onInit: (store) {
-                                store.dispatch(GetCartFromLocal());
-                                store.dispatch(GetUserFromLocalStorageAction());
-                              },
-                              builder: (context, snapshot) {
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 45,
-                                    ),
-                                    ImageIcon(
-                                      AssetImage('assets/images/location2.png'),
-                                      color: Colors.white,
-                                      size: 14,
-                                    ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(snapshot?.cluster?.clusterName ?? "",
-                                        style: TextStyle(
-                                          fontFamily: 'JTLeonor',
-                                          color: Colors.white,
-                                          fontSize: 13.5,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                        )),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    GestureDetector(
-                                      child: Text(
-                                        'Change Circle',
-                                        style: TextStyle(
-                                          fontFamily: 'JTLeonor',
-                                          color: AppColors.offWhitish,
-                                          fontSize: fit.t(12),
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        snapshot.changeSelectedCircle(
-                                          ApiURL.getBusinessesUrl,
-                                          context,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              })
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+          preferredSize: Size.fromHeight(134 / 375 * SizeConfig.screenWidth),
+          // here the desired height
+          child: SafeArea(
+            child: StoreConnector<AppState, _ViewModel>(
+                model: _ViewModel(),
+                builder: (context, snapshot) {
+                  debugPrint('This is top banner image url ${snapshot?.topBanner?.photoUrl}');
+                  if (snapshot?.topBanner?.photoUrl == null) return SizedBox.shrink();
+                  return CircleTopBannerView(
+                      imageUrl: snapshot?.topBanner?.photoUrl ?? '',
+                      circleName: snapshot?.cluster?.clusterName ?? '',
+                      onTapCircleButton: () {
+                        snapshot.changeSelectedCircle(
+                            ApiURL.getBusinessesUrl, context);
+                      });
+                }),
           ),
         ),
         body: StoreConnector<AppState, _ViewModel>(
@@ -183,6 +110,9 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 snapshot.dispatch(LoadVideoFeed());
                 store.dispatchFuture(GetHomePageCategoriesAction());
               }
+              store.dispatch(GetCartFromLocal());
+              store.dispatch(GetUserFromLocalStorageAction());
+              store.dispatch(GetTopBannerImageAction());
               debugPrint(
                   'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
               if (!DynamicLinkService().isDynamicLinkInitialized) {
@@ -362,6 +292,7 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Cluster cluster;
   GetBusinessesResponse response;
+  Photo topBanner;
 
   _ViewModel.build({
     this.updateSelectedVideo,
@@ -369,6 +300,7 @@ class _ViewModel extends BaseModel<AppState> {
     this.navigateToAddAddressPage,
     this.navigateToCart,
     this.cluster,
+    this.topBanner,
     this.banners,
     this.navigateToProductSearch,
     this.navigateToStoreDetailsPage,
@@ -390,6 +322,7 @@ class _ViewModel extends BaseModel<AppState> {
           banners,
           loadingStatus,
           userAddress,
+          topBanner,
           cluster,
           response,
           videoFeedResponse,
@@ -398,6 +331,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+      topBanner: state.homePageState.topBanner,
       response: state.homePageState.response,
       cluster: state.authState.cluster,
       userAddress: "",

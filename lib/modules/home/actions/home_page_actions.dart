@@ -257,14 +257,13 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
 }
 
 class GetTopBannerImageAction extends ReduxAction<AppState> {
-  final String businessId;
 
-  GetTopBannerImageAction(this.businessId) : assert(businessId != null);
+  GetTopBannerImageAction();
 
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-      url: "api/v1/clusters/$businessId/banners",
+      url: "api/v1/clusters/${state.authState.cluster.clusterId}/banners",
       params: {'top': true},
       requestType: RequestType.get,
     );

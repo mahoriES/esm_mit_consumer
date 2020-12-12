@@ -174,5 +174,6 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
     }
+    return null;
   }
 }
