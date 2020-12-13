@@ -34,6 +34,19 @@ class GetHomePageCategoriesAction extends ReduxAction<AppState> {
     }
     return null;
   }
+
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeCircleCategoriesLoadingAction(true));
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeCircleCategoriesLoadingAction(false));
+    super.after();
+  }
+
 }
 
 class SelectHomePageCategoryAction extends ReduxAction<AppState> {
@@ -192,5 +205,124 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
       Fluttertoast.showToast(msg: response.data['message']);
     }
     return null;
+  }
+
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeBusinessUnderCategoryLoadingAction(true));
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeBusinessUnderCategoryLoadingAction(false));
+    super.after();
+  }
+
+}
+
+class ChangeVideoFeedLoadingAction extends ReduxAction<AppState> {
+  final bool value;
+
+  ChangeVideoFeedLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        videosLoading: value,
+      ),
+    );
+  }
+}
+
+class ChangeBusinessListLoadingAction extends ReduxAction<AppState> {
+  final bool value;
+
+  ChangeBusinessListLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        businessListLoading: value,
+      ),
+    );
+  }
+}
+
+class ChangeCircleBannersLoadingAction extends ReduxAction<AppState> {
+  final bool value;
+
+  ChangeCircleBannersLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        circleBannersLoading: value,
+      ),
+    );
+  }
+}
+
+class ChangeCircleTopBannerLoadingAction extends ReduxAction<AppState> {
+  final bool value;
+
+  ChangeCircleTopBannerLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        circleTopBannerLoading: value,
+      ),
+    );
+  }
+}
+
+class ChangeCircleCategoriesLoadingAction extends ReduxAction<AppState> {
+  final bool value;
+
+  ChangeCircleCategoriesLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        circleCategoriesLoading: value,
+      ),
+    );
+  }
+}
+
+class ChangeNearbyCircleLoadingAction extends ReduxAction<AppState> {
+  final bool value;
+
+  ChangeNearbyCircleLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        nearbyCirclesLoading: value,
+      ),
+    );
+  }
+}
+
+class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
+
+  final bool value;
+
+  ChangeBusinessUnderCategoryLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        businessesUnderCategoryLoading: value,
+      ),
+    );
   }
 }

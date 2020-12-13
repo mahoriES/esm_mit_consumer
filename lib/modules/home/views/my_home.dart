@@ -10,6 +10,7 @@ import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
@@ -21,6 +22,7 @@ class MyHomeView extends StatefulWidget {
   MyHomeView({
     Key key,
   }) : super(key: key);
+
   @override
   _MyHomeViewState createState() => _MyHomeViewState();
 }
@@ -92,65 +94,51 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           },
           builder: (context, snapshot) {
             return BottomNavigationBar(
-              selectedItemColor: AppColors.iconColors,
+              selectedItemColor: CustomTheme.of(context).colors.brandViolet,
               currentIndex: snapshot.currentIndex,
               type: BottomNavigationBarType.fixed,
+              selectedLabelStyle: activatedTextStyle,
+              unselectedLabelStyle: deactivatedTextStyle,
               items: [
                 BottomNavigationBarItem(
                   icon: ImageIcon(
                     AssetImage('assets/images/path330.png'),
-                    color: Colors.black,
                   ),
                   activeIcon: ImageIcon(
                     AssetImage('assets/images/path330.png'),
-                    color: AppColors.iconColors,
                   ),
-                  title: new Text(
-                    tr('screen_home.tab_bar.store'),
-                  ),
+                  label: tr('screen_home.tab_bar.store'),
                 ),
                 BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage('assets/images/path338.png'),
-                      color: Colors.black,
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path338.png'),
-                      color: AppColors.iconColors,
                     ),
-                    title: Text(
-                      tr('screen_home.tab_bar.orders'),
-                    )),
+                    label: tr('screen_home.tab_bar.orders')),
                 BottomNavigationBarItem(
                     icon: NavigationCartItem(
                       icon: ImageIcon(
                         AssetImage(
                           'assets/images/bag2.png',
                         ),
-                        color: Colors.black,
                       ),
                     ),
                     activeIcon: NavigationCartItem(
                       icon: ImageIcon(
                         AssetImage('assets/images/bag2.png'),
-                        color: AppColors.iconColors,
                       ),
                     ),
-                    title: Text(
-                      tr('screen_home.tab_bar.cart'),
-                    )),
+                    label: tr('screen_home.tab_bar.cart')),
                 BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage('assets/images/path5.png'),
-                      color: Colors.black,
                     ),
                     activeIcon: ImageIcon(
                       AssetImage('assets/images/path5.png'),
-                      color: AppColors.iconColors,
                     ),
-                    title: Text(
-                      'screen_home.tab_bar.account',
-                    ).tr())
+                    label: tr('screen_home.tab_bar.account'))
               ],
               onTap: (index) {
                 snapshot.updateCurrentIndex(index);
@@ -167,6 +155,14 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
     );
   }
 
+  TextStyle get activatedTextStyle =>
+      CustomTheme.of(context).textStyles.bottomMenu;
+
+  TextStyle get deactivatedTextStyle => CustomTheme.of(context)
+      .textStyles
+      .bottomMenu
+      .copyWith(color: CustomTheme.of(context).colors.darkGrey);
+
   double height(BuildContext context, int totalItemCount) {
     var totalHeight = MediaQuery.of(context).size.height;
     var emptySpace = totalHeight - 250 + 150;
@@ -178,12 +174,14 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
   Function updateCurrentIndex;
   VoidCallback getMerchants;
   Function(Business) updateSelectedMerchant;
   int currentIndex;
+
   _ViewModel.build(
       {this.navigateToAddAddressPage,
       this.getMerchants,

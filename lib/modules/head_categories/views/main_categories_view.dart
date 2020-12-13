@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/plain_business_tile.dart';
+import 'package:eSamudaay/reusable_widgets/shimmering_view.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -70,7 +71,7 @@ class _BusinessesListUnderSelectedCategoryScreenState
               title: Row(
                 children: [
                   IconButton(
-                    padding: EdgeInsets.zero,
+                    padding: const EdgeInsets.all(0),
                     icon: Icon(
                       Icons.arrow_back_ios,
                       color: CustomTheme.of(context).colors.brandViolet,
@@ -98,8 +99,7 @@ class _BusinessesListUnderSelectedCategoryScreenState
                 ],
               ),
             ),
-            body: SmartRefresher(
-              //enablePullDown: true,
+            body:(snapshot.showShimmering) ?  const ShimmeringView() : SmartRefresher(
               enablePullUp: true,
               controller: _refreshController,
               onLoading: () {
@@ -173,17 +173,20 @@ class _ViewModel extends BaseModel<AppState> {
   List<Business> businessesUnderSelectedCategory;
   GetBusinessesResponse businessesResponse;
   Future<void> Function(String getUrl, String categoryId) getBusinessesList;
+  bool showShimmering;
 
   _ViewModel.build(
       {this.selectedCategory,
       this.navigateToBusiness,
       this.businessesUnderSelectedCategory,
       this.businessesResponse,
+      this.showShimmering,
       this.getBusinessesList,
       this.previouslyBoughtBusinessesUnderSelectedCategory})
       : super(equals: [
           selectedCategory,
           previouslyBoughtBusinessesUnderSelectedCategory,
+          showShimmering,
           businessesResponse,
           businessesUnderSelectedCategory,
         ]);
@@ -191,6 +194,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+        showShimmering: state.componentsLoadingState.businessesUnderCategoryLoading,
         businessesResponse: state.homeCategoriesState.currentBusinessResponse,
         selectedCategory: state.homeCategoriesState.selectedCategory,
         previouslyBoughtBusinessesUnderSelectedCategory: state

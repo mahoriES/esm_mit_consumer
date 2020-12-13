@@ -1,3 +1,4 @@
+import 'package:eSamudaay/redux/states/components_loading_state.dart';
 import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
@@ -12,16 +13,20 @@ class AppState {
   final ProductState productState;
   final VideosState videosState;
   final LandingPageComponentsState homeCategoriesState;
+  final ComponentsLoadingState componentsLoadingState;
+
   const AppState({
     this.authState,
     this.isLoading,
+    this.componentsLoadingState,
     this.homeCategoriesState,
     this.homePageState,
     this.productState,
     this.videosState,
   });
 
-  static AppState fromJson(dynamic json) => AppState(
+  static AppState fromJson(dynamic json) =>
+      AppState(
         isLoading: json == null ? false : json["isLoading"],
         authState: json == null ? AuthState.initial() : json['authState'],
       );
@@ -33,9 +38,11 @@ class AppState {
     return data;
   }
 
-  factory AppState.initial() => AppState(
+  factory AppState.initial() =>
+      AppState(
         authState: AuthState.initial(),
         isLoading: false,
+        componentsLoadingState: ComponentsLoadingState.initial(),
         productState: ProductState.initial(),
         homePageState: HomePageState.initial(),
         videosState: VideosState.initial(),
@@ -44,6 +51,7 @@ class AppState {
 
   AppState copyWith({
     AuthState authState,
+    ComponentsLoadingState componentsLoadingState,
     bool isLoading,
     HomePageState homePageState,
     ProductState productState,
@@ -53,6 +61,8 @@ class AppState {
     return AppState(
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
+      componentsLoadingState: componentsLoadingState ??
+          this.componentsLoadingState,
       isLoading: isLoading ?? this.isLoading,
       homeCategoriesState: homeCategoriesState ?? this.homeCategoriesState,
       homePageState: homePageState ?? this.homePageState,
@@ -63,16 +73,19 @@ class AppState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AppState &&
-          runtimeType == other.runtimeType &&
-          authState == other.authState &&
-          homePageState == other.homePageState &&
-          productState == other.productState &&
-          videosState == other.videosState &&
-          isLoading == other.isLoading;
+          other is AppState &&
+              runtimeType == other.runtimeType &&
+              authState == other.authState &&
+              componentsLoadingState == other.componentsLoadingState &&
+              homePageState == other.homePageState &&
+              homeCategoriesState == other.homeCategoriesState &&
+              productState == other.productState &&
+              videosState == other.videosState &&
+              isLoading == other.isLoading;
 
   @override
   int get hashCode => authState.hashCode;
+
   @override
   String toString() {
     return '';

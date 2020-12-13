@@ -11,6 +11,7 @@ import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
+import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 
 class GetNearbyCirclesAction extends ReduxAction<AppState> {
   @override
@@ -87,12 +88,14 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
   @override
   FutureOr<void> before() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    dispatch(ChangeNearbyCircleLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeNearbyCircleLoadingAction(false));
     super.after();
   }
 }

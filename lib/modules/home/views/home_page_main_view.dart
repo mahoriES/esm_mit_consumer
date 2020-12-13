@@ -1,6 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
@@ -21,19 +19,15 @@ import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart'
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_category_tile.dart';
 import 'package:eSamudaay/reusable_widgets/plain_business_tile.dart';
+import 'package:eSamudaay/reusable_widgets/shimmering_view.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
-import 'package:eSamudaay/utilities/colors.dart';
-import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
-import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_shimmer/flutter_shimmer.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:fm_fit/fm_fit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -44,7 +38,7 @@ class HomePageMainView extends StatefulWidget {
 
 class _HomePageMainViewState extends State<HomePageMainView> {
   String address = "";
-  RefreshController _refreshController =
+  final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
   @override
@@ -59,7 +53,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
       await snapshot.getMerchantList(ApiURL.getBusinessesUrl);
       snapshot.loadVideoFeed();
     }
-
     _refreshController.refreshCompleted();
   }
 
@@ -77,14 +70,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(134 / 375 * SizeConfig.screenWidth),
-          // here the desired height
           child: StoreConnector<AppState, _ViewModel>(
               model: _ViewModel(),
               builder: (context, snapshot) {
                 debugPrint(
                     'This is top banner image url ${snapshot?.topBanner?.photoUrl}');
-                if (snapshot?.topBanner?.photoUrl == null)
-                  return SizedBox.shrink();
+                if (snapshot?.topBanner?.photoUrl == null &&
+                    snapshot.shouldShowLoading) return SizedBox.shrink();
                 return CircleTopBannerView(
                     imageUrl: snapshot?.topBanner?.photoUrl ?? '',
                     circleName: snapshot?.cluster?.clusterName ?? '',
@@ -118,116 +110,105 @@ class _HomePageMainViewState extends State<HomePageMainView> {
               }
             },
             builder: (context, snapshot) {
-              return ModalProgressHUD(
-                progressIndicator: Card(
-                  child: Image.asset(
-                    'assets/images/indicator.gif',
-                    height: 75,
-                    width: 75,
-                  ),
+              if (snapshot.shouldShowLoading) return const ShimmeringView();
+              return SmartRefresher(
+                enablePullUp: true,
+                footer: CustomFooter(
+                  builder: (BuildContext context, LoadStatus mode) {
+                    if (mode == LoadStatus.loading)
+                      return CupertinoActivityIndicator();
+                    else
+                      return SizedBox.shrink();
+                  },
                 ),
-                inAsyncCall:
-                    snapshot.loadingStatus == LoadingStatusApp.loading &&
-                        snapshot.merchants.isEmpty,
-                child: SmartRefresher(
-                  enablePullUp: true,
-                  footer: CustomFooter(
-                    builder: (BuildContext context, LoadStatus mode) {
-                      if (mode == LoadStatus.loading)
-                        return CupertinoActivityIndicator();
-                      else
-                        return SizedBox.shrink();
-                    },
-                  ),
-                  controller: _refreshController,
-                  onRefresh: () {
-                    _onRefresh(snapshot);
-                  },
-                  onLoading: () {
-                    _onLoading(snapshot);
-                  },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        VideosListWidget(
-                          videoFeedResponse: snapshot.videoFeedResponse,
-                          onRefresh: () => snapshot.dispatch(LoadVideoFeed()),
-                          onTapOnVideo: (videoItem) {
-                            snapshot.updateSelectedVideo(videoItem);
-                            snapshot.navigateToVideoView();
-                          },
-                        ),
-                        CircleBannersCarousel(banners: snapshot.banners),
-                        HomeCategoriesGridView(),
-                        (snapshot.merchants != null &&
-                                    snapshot.merchants.isEmpty) &&
-                                snapshot.loadingStatus !=
-                                    LoadingStatusApp.loading
-                            ? const EmptyListView()
-                            : ListView(
-                                padding: EdgeInsets.only(top: 2, bottom: 15),
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10, bottom: 11),
-                                    child: Text(
-                                            'home_stores_categories.featured',
-                                            style: CustomTheme.of(context)
-                                                .textStyles
-                                                .sectionHeading2,
-                                            textAlign: TextAlign.left)
-                                        .tr(),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0),
-                                    child: AnimationLimiter(
-                                      child: ListView.separated(
-                                        itemBuilder: (context, index) {
-                                          var business =
-                                              snapshot.merchants[index];
-                                          return InkWell(
-                                              onTap: () {
-                                                snapshot.updateSelectedMerchant(
-                                                    business);
-                                                snapshot
-                                                    .navigateToStoreDetailsPage();
-                                              },
-                                              child: AnimationConfiguration
-                                                  .staggeredList(
-                                                position: index,
-                                                duration: const Duration(
-                                                    milliseconds: 375),
-                                                child: SlideAnimation(
-                                                  horizontalOffset: 5.0,
-                                                  child: FadeInAnimation(
-                                                    child:
-                                                        HybridBusinessTileConnector(
-                                                      business: snapshot
-                                                          .merchants[index],
-                                                    ),
+                controller: _refreshController,
+                onRefresh: () {
+                  _onRefresh(snapshot);
+                },
+                onLoading: () {
+                  _onLoading(snapshot);
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      VideosListWidget(
+                        videoFeedResponse: snapshot.videoFeedResponse,
+                        onRefresh: () => snapshot.dispatch(LoadVideoFeed()),
+                        onTapOnVideo: (videoItem) {
+                          snapshot.updateSelectedVideo(videoItem);
+                          snapshot.navigateToVideoView();
+                        },
+                      ),
+                      CircleBannersCarousel(banners: snapshot.banners),
+                      HomeCategoriesGridView(),
+                      (snapshot.merchants != null &&
+                                  snapshot.merchants.isEmpty) &&
+                              snapshot.loadingStatus !=
+                                  LoadingStatusApp.loading
+                          ? const EmptyListView()
+                          : ListView(
+                              padding: EdgeInsets.only(top: 2, bottom: 15),
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, bottom: 11),
+                                  child: Text(
+                                          'home_stores_categories.featured',
+                                          style: CustomTheme.of(context)
+                                              .textStyles
+                                              .sectionHeading2,
+                                          textAlign: TextAlign.left)
+                                      .tr(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0),
+                                  child: AnimationLimiter(
+                                    child: ListView.separated(
+                                      itemBuilder: (context, index) {
+                                        var business =
+                                            snapshot.merchants[index];
+                                        return InkWell(
+                                            onTap: () {
+                                              snapshot.updateSelectedMerchant(
+                                                  business);
+                                              snapshot
+                                                  .navigateToStoreDetailsPage();
+                                            },
+                                            child: AnimationConfiguration
+                                                .staggeredList(
+                                              position: index,
+                                              duration: const Duration(
+                                                  milliseconds: 375),
+                                              child: SlideAnimation(
+                                                horizontalOffset: 5.0,
+                                                child: FadeInAnimation(
+                                                  child:
+                                                      HybridBusinessTileConnector(
+                                                    business: snapshot
+                                                        .merchants[index],
                                                   ),
                                                 ),
-                                              ));
-                                        },
-                                        itemCount: snapshot.merchants.length,
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        separatorBuilder:
-                                            (BuildContext context, int index) {
-                                          return const SizedBox(
-                                            height: 16,
-                                          );
-                                        },
-                                      ),
+                                              ),
+                                            ));
+                                      },
+                                      itemCount: snapshot.merchants.length,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      separatorBuilder:
+                                          (BuildContext context, int index) {
+                                        return const SizedBox(
+                                          height: 16,
+                                        );
+                                      },
                                     ),
                                   ),
-                                ],
-                              ),
-                      ],
-                    ),
+                                ),
+                              ],
+                            ),
+                    ],
                   ),
                 ),
               );
@@ -241,6 +222,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   Function(VideoItem) updateSelectedVideo;
+  bool shouldShowLoading;
   Function navigateToVideoView;
   Future<void> Function(String) getMerchantList;
   Function(String, BuildContext) changeSelectedCircle;
@@ -267,6 +249,7 @@ class _ViewModel extends BaseModel<AppState> {
     this.navigateToVideoView,
     this.navigateToAddAddressPage,
     this.navigateToCart,
+    this.shouldShowLoading,
     this.cluster,
     this.topBanner,
     this.banners,
@@ -286,6 +269,7 @@ class _ViewModel extends BaseModel<AppState> {
     this.navigateToCircles,
   }) : super(equals: [
           currentIndex,
+          shouldShowLoading,
           merchants,
           banners,
           loadingStatus,
@@ -346,6 +330,12 @@ class _ViewModel extends BaseModel<AppState> {
       navigateToVideoView: () {
         dispatch(NavigateAction.pushNamed("/videoPlayer"));
       },
+      shouldShowLoading: state.componentsLoadingState.circleCategoriesLoading ||
+          state.componentsLoadingState.circleTopBannerLoading ||
+          state.componentsLoadingState.circleBannersLoading ||
+          state.componentsLoadingState.businessListLoading ||
+          state.componentsLoadingState.videosLoading ||
+          state.componentsLoadingState.nearbyCirclesLoading,
     );
   }
 }

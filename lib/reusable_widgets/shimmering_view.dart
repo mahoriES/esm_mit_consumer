@@ -11,15 +11,14 @@ class ShimmeringView extends StatelessWidget {
     return SizedBox(
       height: SizeConfig.screenHeight,
       width: SizeConfig.screenWidth,
-      child: ListView(
-        children: [
-          YoutubeShimmer(),
-          ProfileShimmer(),
-          ListTileShimmer(),
-          ProfileShimmer(),
-          ProfileShimmer(),
-          YoutubeShimmer(),
-          ListTileShimmer(),
+      child:  ListView(
+        children: const [
+          YoutubeShimmer(padding: EdgeInsets.all(0),),
+          ProfileShimmer(padding: EdgeInsets.all(0),),
+          YoutubeShimmer(padding: EdgeInsets.all(0),),
+          ListTileShimmer(padding: EdgeInsets.all(0),),
+          ProfileShimmer(padding: EdgeInsets.all(0),),
+          ProfileShimmer(padding: EdgeInsets.all(0),),
         ],
       ),
     );

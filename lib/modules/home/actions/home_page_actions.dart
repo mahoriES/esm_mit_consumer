@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
@@ -61,12 +61,13 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   @override
   FutureOr<void> before() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
+    dispatch(ChangeBusinessListLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
+    dispatch(ChangeBusinessListLoadingAction(false));
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     dispatch(GetBannerDetailsAction());
     super.after();
@@ -164,7 +165,8 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       List<Photo> responseModel = [];
-      response.data.forEach((v) => responseModel.add(Photo.fromJson(v)));
+      if (response.data is List)
+        response.data.forEach((v) => responseModel.add(Photo.fromJson(v)));
 
       return state.copyWith(
           homePageState: state.homePageState.copyWith(banners: responseModel));
@@ -174,11 +176,13 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<void> before() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    dispatch(ChangeCircleBannersLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
+    dispatch(ChangeCircleBannersLoadingAction(false));
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
   }
@@ -200,7 +204,6 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       List<Cluster> result = [];
       response.data.forEach((item) {
         result.add(Cluster.fromJson(item));
-        debugPrint("Cluster++++++++++++++++++" + item.toString());
       });
       return state.copyWith(
           authState: state.authState.copyWith(
@@ -213,7 +216,6 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<void> before() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
     return super.before();
   }
 
@@ -268,7 +270,9 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
       requestType: RequestType.get,
     );
     if (response.status == ResponseStatus.success200) {
-      Photo topBanner = Photo.fromJson(response.data);
+      Photo topBanner = Photo();
+      if (response.data is Map)
+        topBanner = Photo.fromJson(response.data);
       return state.copyWith(
         homePageState: state.homePageState.copyWith(
           topBanner: topBanner,
@@ -279,4 +283,17 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
     }
     return null;
   }
+
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeCircleTopBannerLoadingAction(true));
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeCircleTopBannerLoadingAction(false));
+    super.after();
+  }
+
 }

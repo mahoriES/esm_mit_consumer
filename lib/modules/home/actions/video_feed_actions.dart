@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
@@ -32,16 +33,22 @@ class LoadVideoFeed extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    dispatch(ChangeVideoFeedLoadingAction(true));
+  }
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void after() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeVideoFeedLoadingAction(false));
+  }
 }
 
 class UpdateSelectedVideoAction extends ReduxAction<AppState> {
   final VideoItem selectedVideo;
 
   UpdateSelectedVideoAction({@required this.selectedVideo});
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -51,6 +58,7 @@ class UpdateSelectedVideoAction extends ReduxAction<AppState> {
 
 class SlelectVideoPlayerByID extends ReduxAction<AppState> {
   final String videoId;
+
   SlelectVideoPlayerByID({@required this.videoId});
 
   @override
