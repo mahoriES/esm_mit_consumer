@@ -31,6 +31,7 @@ class BusinessHeaderView extends StatelessWidget {
       builder: (context, snapshot) => Padding(
         padding: const EdgeInsets.fromLTRB(6, 13, 6, 0),
         child: BusinessTitleTile(
+          businessId: snapshot.selectedMerchant.businessId,
           businessName: snapshot.selectedMerchant.businessName ?? '',
           businessSubtitle: showDescription
               ? (snapshot.selectedMerchant.description ?? '')
@@ -90,6 +91,7 @@ class _ViewModel extends BaseModel<AppState> {
       context: context,
       builder: (context) {
         return BusinessDetailsPopup(
+          businessId: selectedMerchant.businessId,
           locationPoint: selectedMerchant.address?.locationPoint ?? null,
           onShareMerchant: () async {
             LoadingDialog.show();

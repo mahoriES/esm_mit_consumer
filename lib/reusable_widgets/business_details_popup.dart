@@ -30,11 +30,13 @@ class BusinessDetailsPopup extends StatefulWidget {
   final Function onContactMerchant;
   final LocationPoint locationPoint;
   final Function onShareMerchant;
+  final String businessId;
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
       @required this.locationPoint,
       @required this.onContactMerchant,
+      @required this.businessId,
       @required this.businessPrettyAddress,
       @required this.merchantBusinessImageUrl,
       @required this.isDeliveryAvailable,
@@ -217,7 +219,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const BookmarkButton(),
+                BookmarkButton(businessId: widget.businessId,),
                 ShareBusinessActionButton(onShare: widget.onShareMerchant),
               ],
             ),

@@ -113,6 +113,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             BusinessTitleTile(
+                                              businessId: snapshot.selectedMerchant.businessId,
                                               businessName: snapshot
                                                       .selectedMerchant
                                                       .businessName ??
@@ -458,6 +459,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
         context: context,
         builder: (context) {
           return BusinessDetailsPopup(
+              businessId: snapshot.selectedMerchant.businessId,
               locationPoint:
                   snapshot.selectedMerchant.address?.locationPoint ?? null,
               onShareMerchant: () async {

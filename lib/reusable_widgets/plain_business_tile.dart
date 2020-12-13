@@ -102,7 +102,7 @@ class HybridBusinessTile extends StatelessWidget {
                 ),
                 const CustomDivider(),
               ],
-              Row(
+              Row(crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(
                     height: 0.168 * SizeConfig.screenWidth,
@@ -147,18 +147,19 @@ class HybridBusinessTile extends StatelessWidget {
                           style: CustomTheme.of(context).textStyles.body1,
                         ),
                         const SizedBox(
-                          height: AppSizes.separatorPadding / 2,
+                          height: AppSizes.separatorPadding/2,
                         ),
                         DeliveryStatusWidget(
                             deliveryStatus: isDeliveryAvailable),
                       ],
                     ),
                   ),
-                  Column(
+                  Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-//                      Row(
-//                        children: const [BookmarkButton()],
-//                      ),
+                      BookmarkButton(businessId: businessId,),
+                      const SizedBox(
+                        height: AppSizes.widgetPadding,
+                      ),
                       Text(
                         goToShopActionTitle ?? 'VIEW SHOP',
                         style: CustomTheme.of(context).textStyles.buttonText2,

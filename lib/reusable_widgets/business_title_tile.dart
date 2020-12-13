@@ -26,6 +26,7 @@ class BusinessTitleTile extends StatefulWidget {
   final Function onBackPressed;
   final Function onContactMerchantPressed;
   final Function onShowMerchantInfo;
+  final String businessId;
 
   const BusinessTitleTile(
       {@required this.businessName,
@@ -34,6 +35,7 @@ class BusinessTitleTile extends StatefulWidget {
       @required this.businessImageUrl,
       @required this.onBackPressed,
       @required this.onShowMerchantInfo,
+      @required this.businessId,
       @required this.onContactMerchantPressed,
       this.businessSubtitle = '',
       this.businessPhoneNumber,
@@ -119,7 +121,7 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const BookmarkButton(),
+                  BookmarkButton(businessId: widget.businessId,),
                   const SizedBox(
                     width: AppSizes.separatorPadding,
                   ),

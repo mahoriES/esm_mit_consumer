@@ -368,6 +368,9 @@ class _ViewModel extends BaseModel<AppState> {
         await dispatchFuture(ChangeSelectedCircleAction(context: context));
         dispatch(GetMerchantDetails(getUrl: url));
         dispatch(LoadVideoFeed());
+        dispatchFuture(GetHomePageCategoriesAction());
+        dispatchFuture(GetTopBannerImageAction());
+
       },
       navigateToCircles: () {
         dispatch(NavigateAction.pushNamed("/circles"));
