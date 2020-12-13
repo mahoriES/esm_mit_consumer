@@ -2,13 +2,13 @@ import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 import 'package:eSamudaay/modules/head_categories/models/main_categories_response.dart';
-import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BusinessCategoryTile extends StatelessWidget {
   final Function onTap;
@@ -98,33 +98,50 @@ class HomeCategoriesGridView extends StatelessWidget {
             snapshot.homePageCategoriesResponse.catalogCategories == null ||
             snapshot.homePageCategoriesResponse.catalogCategories.isEmpty)
           return SizedBox.shrink();
-        return Container(
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSizes.separatorPadding,
-                vertical: AppSizes.separatorPadding),
-            primary: false,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12.0,
-                mainAxisSpacing: 10.0,
-                childAspectRatio: 1),
-            itemBuilder: (context, index) {
-              HomePageCategoryResponse category =
-                  snapshot.homePageCategoriesResponse.catalogCategories[index];
-              return BusinessCategoryTile(
-                imageUrl: category.categoryImageUrl ?? "",
-                tileWidth: 75.toWidth,
-                categoryName: category.categoryName ?? ' ',
-                onTap: () {
-                  snapshot.navigateToCategoryScreen(category);
-                },
-              );
-            },
-            itemCount:
-                snapshot.homePageCategoriesResponse.catalogCategories.length,
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.separatorPadding,
+              vertical: AppSizes.separatorPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'shop.item_category',
+                style: CustomTheme.of(context).textStyles.sectionHeading1,
+              ).tr(),
+              const SizedBox(height: 11,),
+              Text(
+                'home_stores_categories.product_cat',
+                style: CustomTheme.of(context).textStyles.body1,
+              ).tr(),
+              const SizedBox(height: 11,),
+              Container(
+                child: GridView.builder(
+                  primary: false,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12.0,
+                      mainAxisSpacing: 10.0,
+                      childAspectRatio: 1),
+                  itemBuilder: (context, index) {
+                    HomePageCategoryResponse category = snapshot
+                        .homePageCategoriesResponse.catalogCategories[index];
+                    return BusinessCategoryTile(
+                      imageUrl: category.categoryImageUrl ?? "",
+                      tileWidth: 75.toWidth,
+                      categoryName: category.categoryName ?? ' ',
+                      onTap: () {
+                        snapshot.navigateToCategoryScreen(category);
+                      },
+                    );
+                  },
+                  itemCount: snapshot
+                      .homePageCategoriesResponse.catalogCategories.length,
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -153,7 +170,6 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(
             SelectHomePageCategoryAction(selectedCategory: selectedCategory));
         dispatch(NavigateAction.pushNamed(RouteNames.CATEGORY_BUSINESSES));
-        debugPrint('Category selected');
       },
     );
   }

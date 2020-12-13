@@ -51,19 +51,15 @@ class SelectHomePageCategoryAction extends ReduxAction<AppState> {
 }
 
 class ClearPreviousCategoryDetailsAction extends ReduxAction<AppState> {
-
   ClearPreviousCategoryDetailsAction();
 
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-      homeCategoriesState: state.homeCategoriesState.copyWith(
-        previouslyBoughtBusinessUnderSelectedCategory: [],
-        businessesUnderSelectedCategory: []
-      )
-    );
+        homeCategoriesState: state.homeCategoriesState.copyWith(
+            previouslyBoughtBusinessUnderSelectedCategory: [],
+            businessesUnderSelectedCategory: []));
   }
-
 }
 
 class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
@@ -144,9 +140,12 @@ class GetPreviouslyBoughtBusinessesListUnderSelectedCategoryAction
 
 class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
   final String categoryId;
+  final String getBusinessesUrl;
 
-  GetBusinessesUnderSelectedCategory({@required this.categoryId})
-      : assert(categoryId != null);
+  GetBusinessesUnderSelectedCategory(
+      {@required this.categoryId, @required this.getBusinessesUrl})
+      : assert(categoryId != null),
+        assert(getBusinessesUrl != null);
 
   @override
   FutureOr<AppState> reduce() async {
@@ -157,6 +156,7 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
           "bcat": categoryId,
           "cluster_id": state.authState.cluster.clusterId
         });
+    final businessesResponse = GetBusinessesResponse.fromJson(response.data);
     if (response.status == ResponseStatus.success200) {
       if (response.data != null &&
           response.data is Map &&
@@ -166,10 +166,27 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
             (response.data['results'] as List).map((v) {
           return Business.fromJson(v);
         }).toList();
-        return state.copyWith(
+
+        if (getBusinessesUrl != ApiURL.getBusinessesUrl &&
+            state.homeCategoriesState.businessesUnderSelectedCategory
+                .isNotEmpty) {
+          final List<Business> previousBusinesses = List.from(
+              state.homeCategoriesState.businessesUnderSelectedCategory);
+          final List<Business> joinedListOfBusinesses =
+              previousBusinesses + businessesUnderSelectedCategory;
+          return state.copyWith(
             homeCategoriesState: state.homeCategoriesState.copyWith(
-          businessesUnderSelectedCategory: businessesUnderSelectedCategory,
-        ));
+              businessesUnderSelectedCategory: joinedListOfBusinesses,
+              currentBusinessResponse: businessesResponse,
+            ),
+          );
+        }
+        return state.copyWith(
+          homeCategoriesState: state.homeCategoriesState.copyWith(
+            businessesUnderSelectedCategory: businessesUnderSelectedCategory,
+            currentBusinessResponse: businessesResponse,
+          ),
+        );
       }
     } else {
       Fluttertoast.showToast(msg: response.data['message']);

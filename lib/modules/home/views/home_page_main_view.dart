@@ -47,18 +47,15 @@ class _HomePageMainViewState extends State<HomePageMainView> {
       RefreshController(initialRefresh: false);
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   void _onRefresh(_ViewModel snapshot) async {
-    // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
-
     if (snapshot.response.previous != null) {
     } else {
-      snapshot.getMerchantList(ApiURL.getBusinessesUrl);
+      await snapshot.getMerchantList(ApiURL.getBusinessesUrl);
       snapshot.loadVideoFeed();
     }
 
@@ -66,14 +63,10 @@ class _HomePageMainViewState extends State<HomePageMainView> {
   }
 
   void _onLoading(_ViewModel snapshot) async {
-    // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-//    items.add((items.length + 1).toString());
     if (snapshot.response.next != null) {
-      snapshot.getMerchantList(snapshot.response.next);
+      await snapshot.getMerchantList(snapshot.response.next);
     }
-    if (mounted) setState(() {});
+    //if (mounted) setState(() {});
     _refreshController.loadComplete();
   }
 
@@ -84,21 +77,21 @@ class _HomePageMainViewState extends State<HomePageMainView> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(134 / 375 * SizeConfig.screenWidth),
           // here the desired height
-          child: SafeArea(
-            child: StoreConnector<AppState, _ViewModel>(
-                model: _ViewModel(),
-                builder: (context, snapshot) {
-                  debugPrint('This is top banner image url ${snapshot?.topBanner?.photoUrl}');
-                  if (snapshot?.topBanner?.photoUrl == null) return SizedBox.shrink();
-                  return CircleTopBannerView(
-                      imageUrl: snapshot?.topBanner?.photoUrl ?? '',
-                      circleName: snapshot?.cluster?.clusterName ?? '',
-                      onTapCircleButton: () {
-                        snapshot.changeSelectedCircle(
-                            ApiURL.getBusinessesUrl, context);
-                      });
-                }),
-          ),
+          child: StoreConnector<AppState, _ViewModel>(
+              model: _ViewModel(),
+              builder: (context, snapshot) {
+                debugPrint(
+                    'This is top banner image url ${snapshot?.topBanner?.photoUrl}');
+                if (snapshot?.topBanner?.photoUrl == null)
+                  return SizedBox.shrink();
+                return CircleTopBannerView(
+                    imageUrl: snapshot?.topBanner?.photoUrl ?? '',
+                    circleName: snapshot?.cluster?.clusterName ?? '',
+                    onTapCircleButton: () {
+                      snapshot.changeSelectedCircle(
+                          ApiURL.getBusinessesUrl, context);
+                    });
+              }),
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
@@ -136,39 +129,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                     snapshot.loadingStatus == LoadingStatusApp.loading &&
                         snapshot.merchants.isEmpty,
                 child: SmartRefresher(
-                  enablePullDown: true,
                   enablePullUp: true,
-                  header: WaterDropHeader(
-                    waterDropColor: AppColors.icColors,
-                    complete: Image.asset(
-                      'assets/images/indicator.gif',
-                      height: 75,
-                      width: 75,
-                    ),
-                    refresh: Image.asset(
-                      'assets/images/indicator.gif',
-                      height: 75,
-                      width: 75,
-                    ),
-                  ),
                   footer: CustomFooter(
                     builder: (BuildContext context, LoadStatus mode) {
-                      Widget body;
-                      if (mode == LoadStatus.idle) {
-                        body = Text("");
-                      } else if (mode == LoadStatus.loading) {
-                        body = CupertinoActivityIndicator();
-                      } else if (mode == LoadStatus.failed) {
-                        body = Text("Load Failed!Click retry!");
-                      } else if (mode == LoadStatus.canLoading) {
-                        body = Text("");
-                      } else {
-                        body = Text("No more Data");
-                      }
-                      return Container(
-                        height: 55.0,
-                        child: Center(child: body),
-                      );
+                      if (mode == LoadStatus.loading)
+                        return CupertinoActivityIndicator();
+                      else
+                        return SizedBox.shrink();
                     },
                   ),
                   controller: _refreshController,
@@ -249,8 +216,8 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                         physics: NeverScrollableScrollPhysics(),
                                         separatorBuilder:
                                             (BuildContext context, int index) {
-                                          return Container(
-                                            height: 10,
+                                          return const SizedBox(
+                                            height: 16,
                                           );
                                         },
                                       ),
@@ -274,7 +241,7 @@ class _ViewModel extends BaseModel<AppState> {
 
   Function(VideoItem) updateSelectedVideo;
   Function navigateToVideoView;
-  Function(String) getMerchantList;
+  Future<void> Function(String) getMerchantList;
   Function(String, BuildContext) changeSelectedCircle;
   String userAddress;
   Function navigateToAddAddressPage;
@@ -361,8 +328,8 @@ class _ViewModel extends BaseModel<AppState> {
       navigateToProductSearch: () {
         dispatch(UpdateSelectedTabAction(1));
       },
-      getMerchantList: (url) {
-        dispatch(GetMerchantDetails(getUrl: url));
+      getMerchantList: (url) async {
+        await dispatchFuture(GetMerchantDetails(getUrl: url));
       },
       changeSelectedCircle: (url, context) async {
         await dispatchFuture(ChangeSelectedCircleAction(context: context));
@@ -370,7 +337,6 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(LoadVideoFeed());
         dispatchFuture(GetHomePageCategoriesAction());
         dispatchFuture(GetTopBannerImageAction());
-
       },
       navigateToCircles: () {
         dispatch(NavigateAction.pushNamed("/circles"));
