@@ -3,6 +3,7 @@ import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -10,10 +11,16 @@ import 'package:flutter/material.dart';
 ///It also allows toggling the status of the same for the merchant
 
 class BookmarkButton extends StatefulWidget {
+  ///Unique identity of the business
+  ///For changing the bookmark status of the required merchant is changed in the
+  ///main list of merchants held in the [HomePageState]
+  ///The ViewModels listening to that list are all rebuilt when bookmark status is altered
+  ///for any business and so are StoreConnectors and dumb-widgets.
   final String businessId;
 
   const BookmarkButton({Key key, @required this.businessId})
-      : assert(businessId != null), super(key: key);
+      : assert(businessId != null),
+        super(key: key);
 
   @override
   _BookmarkButtonState createState() => _BookmarkButtonState();
@@ -43,7 +50,6 @@ class _BookmarkButtonState extends State<BookmarkButton>
   @override
   void dispose() {
     _controller.dispose();
-    debugPrint('Closing dialog');
     super.dispose();
   }
 
@@ -54,7 +60,6 @@ class _BookmarkButtonState extends State<BookmarkButton>
         builder: (context, snapshot) {
           final Business business = snapshot.businesses
               .firstWhere((element) => element.businessId == widget.businessId);
-          //debugPrint(snapshot.isBusinessBookmarked.toString());
           return Container(
             child: GestureDetector(
               onTap: () {
@@ -88,10 +93,9 @@ class _ViewModel extends BaseModel<AppState> {
 
   _ViewModel();
 
-  _ViewModel.build({this.bookmarkMerchantAction, this.businesses,this.loadingStatusApp})
-      : super(equals: [
-          businesses,loadingStatusApp
-        ]);
+  _ViewModel.build(
+      {this.bookmarkMerchantAction, this.businesses, this.loadingStatusApp})
+      : super(equals: [businesses, loadingStatusApp]);
 
   @override
   BaseModel fromStore() {

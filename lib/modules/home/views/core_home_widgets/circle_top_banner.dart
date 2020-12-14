@@ -37,29 +37,35 @@ class CircleTopBannerView extends StatelessWidget {
                       fit: BoxFit.cover,
                       imageUrl: imageUrl ?? "",
                       placeholder: (context, url) =>
-                          CupertinoActivityIndicator(),
-                      errorWidget: (context, url, error) => Center(
-                            child: Icon(
-                              Icons.image,
-                              size: AppSizes.productItemIconSize,
-                            ),
+                          Image.asset(
+                            'assets/images/top_banner_placeholder.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                      errorWidget: (context, url, error) => Image.asset(
+                            'assets/images/top_banner_placeholder.jpg',
+                            fit: BoxFit.cover,
                           ))),
               Positioned.fill(
-                  child: FractionallySizedBox(alignment: Alignment.bottomCenter,
+                  child: FractionallySizedBox(
+                alignment: Alignment.bottomCenter,
                 widthFactor: 1,
                 heightFactor: 94 / 134,
-                child: Container(decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                child: Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
                     colors: [
                       CustomTheme.of(context).colors.pureBlack,
-                      CustomTheme.of(context).colors.pureBlack.withOpacity(0.76),
+                      CustomTheme.of(context)
+                          .colors
+                          .pureBlack
+                          .withOpacity(0.76),
                       CustomTheme.of(context).colors.pureBlack.withOpacity(0.0),
                     ],
-                    stops: [0.0,0.39,1.0],
+                    stops: [0.0, 0.39, 1.0],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                  )
-                ),),
+                  )),
+                ),
               )),
               Positioned(
                 bottom: AppSizes.separatorPadding,

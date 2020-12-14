@@ -41,25 +41,15 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
   Widget currentPage({index: int}) {
     if (index == 0) {
       return HomePageMainView(
-//        key: keyOne,
           );
     }
-//    else if (index == 1) {
-//      return ProductSearchView();
-////      return CartView(
-////        key: keyTwo,
-////      );
-//    }
     else if (index == 1) {
       return OrdersView();
-//      return ProfileView(
-//        key: keyThree,
-//      );
+
     } else if (index == 2) {
       return CartView();
     } else {
       return AccountsView();
-//      return ProductDetailsView();
     }
   }
 
@@ -74,23 +64,22 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) async {
-            store.dispatchFuture(GetClusterDetailsAction()).then((value) async {
-              var address = await UserManager.getAddress();
-              if (address == null) {
-                store.dispatch(GetAddressAction());
-              } else {
-                store.dispatch(GetAddressFromLocal());
-              }
-
-              store
-                  .dispatchFuture(
-                      GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl))
-                  .whenComplete(() {
-                store.dispatch(GetBannerDetailsAction());
-              });
-              store.dispatch(GetCartFromLocal());
-            });
-            store.dispatch(GetUserFromLocalStorageAction());
+//            store.dispatchFuture(GetClusterDetailsAction()).then((value) async {
+//              var address = await UserManager.getAddress();
+//              if (address == null) {
+//                store.dispatch(GetAddressAction());
+//              } else {
+//                store.dispatch(GetAddressFromLocal());
+//              }
+////              store
+////                  .dispatchFuture(
+////                      GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl))
+////                  .whenComplete(() {
+////                store.dispatch(GetBannerDetailsAction());
+////              });
+//              //store.dispatch(GetCartFromLocal());
+//            });
+            //store.dispatch(GetUserFromLocalStorageAction());
           },
           builder: (context, snapshot) {
             return BottomNavigationBar(

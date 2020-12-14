@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
@@ -24,6 +25,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +75,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
           child: StoreConnector<AppState, _ViewModel>(
               model: _ViewModel(),
               builder: (context, snapshot) {
-                debugPrint(
-                    'This is top banner image url ${snapshot?.topBanner?.photoUrl}');
                 if (snapshot?.topBanner?.photoUrl == null &&
                     snapshot.shouldShowLoading) return SizedBox.shrink();
                 return CircleTopBannerView(
@@ -90,7 +90,15 @@ class _HomePageMainViewState extends State<HomePageMainView> {
             model: _ViewModel(),
             onInit: (snapshot) async {
               if (snapshot.state.authState.cluster == null) {
-                await snapshot.dispatchFuture(GetNearbyCirclesAction());
+                await snapshot.dispatchFuture(GetClusterDetailsAction());
+                var address = await UserManager.getAddress();
+                if (address == null) {
+                  store.dispatch(GetAddressAction());
+                } else {
+                  store.dispatch(GetAddressFromLocal());
+                }
+                snapshot.dispatchFuture(GetNearbyCirclesAction());
+                //await snapshot.dispatchFuture(GetNearbyCirclesAction());
                 snapshot.dispatch(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
                 snapshot.dispatch(LoadVideoFeed());
@@ -98,6 +106,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
               }
               store.dispatch(GetCartFromLocal());
               store.dispatch(GetUserFromLocalStorageAction());
+              store.dispatch(GetBannerDetailsAction());
               store.dispatch(GetTopBannerImageAction());
               debugPrint(
                   'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
@@ -143,8 +152,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                       HomeCategoriesGridView(),
                       (snapshot.merchants != null &&
                                   snapshot.merchants.isEmpty) &&
-                              snapshot.loadingStatus !=
-                                  LoadingStatusApp.loading
+                              snapshot.loadingStatus != LoadingStatusApp.loading
                           ? const EmptyListView()
                           : ListView(
                               padding: EdgeInsets.only(top: 2, bottom: 15),
@@ -154,8 +162,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 10, bottom: 11),
-                                  child: Text(
-                                          'home_stores_categories.featured',
+                                  child: Text('home_stores_categories.featured',
                                           style: CustomTheme.of(context)
                                               .textStyles
                                               .sectionHeading2,
@@ -226,7 +233,6 @@ class _ViewModel extends BaseModel<AppState> {
   Function navigateToVideoView;
   Future<void> Function(String) getMerchantList;
   Function(String, BuildContext) changeSelectedCircle;
-  String userAddress;
   Function navigateToAddAddressPage;
   Function navigateToProductSearch;
   Function navigateToStoreDetailsPage;
@@ -260,7 +266,6 @@ class _ViewModel extends BaseModel<AppState> {
     this.loadingStatus,
     this.loadVideoFeed,
     this.merchants,
-    this.userAddress,
     this.updateSelectedMerchant,
     this.getMerchantList,
     this.response,
@@ -273,7 +278,6 @@ class _ViewModel extends BaseModel<AppState> {
           merchants,
           banners,
           loadingStatus,
-          userAddress,
           topBanner,
           cluster,
           response,
@@ -286,7 +290,6 @@ class _ViewModel extends BaseModel<AppState> {
       topBanner: state.homePageState.topBanner,
       response: state.homePageState.response,
       cluster: state.authState.cluster,
-      userAddress: "",
       loadingStatus: state.authState.loadingStatus,
       merchants: state.homePageState.merchants,
       banners: state.homePageState.banners,
@@ -330,7 +333,8 @@ class _ViewModel extends BaseModel<AppState> {
       navigateToVideoView: () {
         dispatch(NavigateAction.pushNamed("/videoPlayer"));
       },
-      shouldShowLoading: state.componentsLoadingState.circleCategoriesLoading ||
+      shouldShowLoading: state.componentsLoadingState.circleDetailsLoading ||
+          state.componentsLoadingState.circleCategoriesLoading ||
           state.componentsLoadingState.circleTopBannerLoading ||
           state.componentsLoadingState.circleBannersLoading ||
           state.componentsLoadingState.businessListLoading ||

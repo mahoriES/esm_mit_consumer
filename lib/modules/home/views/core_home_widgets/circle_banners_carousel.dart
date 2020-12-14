@@ -6,7 +6,13 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+///[CircleBannersCarousel] implements the horizontal carousel view of the promotional banners
+///for the circle. These banners are meant for the promotion related stuff for the circle.
+///These are added by the CP or the admin.
+///
+/// This is mainly a dumb-widget, which is oblivious of state/store
 class CircleBannersCarousel extends StatefulWidget {
+  ///List of banners fetched from  the API, for the selected circle
   final List<Photo> banners;
 
   const CircleBannersCarousel({Key key, @required this.banners})
@@ -17,6 +23,8 @@ class CircleBannersCarousel extends StatefulWidget {
 }
 
 class _CircleBannersCarouselState extends State<CircleBannersCarousel> {
+  ///[_current] holds the index of the current visible page in the carousel
+  ///This is used to highlight the correct page indicator
   int _current = 0;
   @override
   Widget build(BuildContext context) {
@@ -50,6 +58,7 @@ class _CircleBannersCarouselState extends State<CircleBannersCarousel> {
               _current = index;
             });},
           ),
+          ///Implementation of the page indicator
           Positioned(bottom: 10,child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: widget.banners.map((url) {

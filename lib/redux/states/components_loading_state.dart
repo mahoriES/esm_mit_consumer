@@ -8,9 +8,11 @@ class ComponentsLoadingState {
   final bool businessListLoading;
   final bool nearbyCirclesLoading;
   final bool businessesUnderCategoryLoading;
+  final bool circleDetailsLoading;
 
   ComponentsLoadingState(
       {@required this.videosLoading,
+      @required this.circleDetailsLoading,
       @required this.circleBannersLoading,
       @required this.circleTopBannerLoading,
       @required this.businessesUnderCategoryLoading,
@@ -21,6 +23,7 @@ class ComponentsLoadingState {
   factory ComponentsLoadingState.initial() {
     return ComponentsLoadingState(
         videosLoading: false,
+        circleDetailsLoading: false,
         businessesUnderCategoryLoading: false,
         circleBannersLoading: false,
         circleTopBannerLoading: false,
@@ -36,8 +39,10 @@ class ComponentsLoadingState {
       bool circleCategoriesLoading,
       bool businessesUnderCategoryLoading,
       bool nearbyCirclesLoading,
+      bool circleDetailsLoading,
       bool businessListLoading}) {
     return ComponentsLoadingState(
+        circleDetailsLoading: circleDetailsLoading ?? this.circleDetailsLoading,
         businessesUnderCategoryLoading: businessesUnderCategoryLoading ??
             this.businessesUnderCategoryLoading,
         nearbyCirclesLoading: nearbyCirclesLoading ?? this.nearbyCirclesLoading,

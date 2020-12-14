@@ -216,12 +216,14 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<void> before() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    dispatch(ChangeClusterDetailsLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeClusterDetailsLoadingAction(false));
     super.after();
   }
 }

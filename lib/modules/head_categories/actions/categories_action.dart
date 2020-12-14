@@ -326,3 +326,19 @@ class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
     );
   }
 }
+
+class ChangeClusterDetailsLoadingAction extends ReduxAction<AppState> {
+
+  final bool value;
+
+  ChangeClusterDetailsLoadingAction(this.value);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      componentsLoadingState: state.componentsLoadingState.copyWith(
+        circleDetailsLoading: value,
+      ),
+    );
+  }
+}
