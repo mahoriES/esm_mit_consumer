@@ -96,9 +96,16 @@ class MultipleAddressWidget extends StatelessWidget {
                                       builder: (context) =>
                                           CustomConfirmationDialog(
                                         title:
-                                            tr("address_picker.delete_address"),
+                                            tr("address_picker.delete_address") +
+                                                "?",
                                         message: tr(
-                                            "address_picker.confirm_delete_message"),
+                                          "address_picker.confirm_delete_message",
+                                          namedArgs: {
+                                            'addressName': snapshot
+                                                .savedAddresses[index]
+                                                .addressName,
+                                          },
+                                        ),
                                         actionButtonColor:
                                             CustomTheme.of(context)
                                                 .colors

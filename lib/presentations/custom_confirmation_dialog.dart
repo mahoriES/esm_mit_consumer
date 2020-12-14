@@ -50,7 +50,7 @@ class CustomConfirmationDialog extends StatelessWidget {
               ],
               if (message != null) ...[
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50.toWidth),
+                  padding: EdgeInsets.symmetric(horizontal: 30.toWidth),
                   child: Text(
                     message,
                     style: CustomTheme.of(context).textStyles.cardTitle,

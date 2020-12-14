@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
 import 'package:eSamudaay/modules/address/view/change_address_view/change_address_bottom_sheet.dart';
+import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
@@ -15,8 +17,10 @@ import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/jit_catalog/views/free_form_items_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
@@ -82,6 +86,13 @@ class _CartViewState extends State<CartView> {
                 : widget.radioValue;
             if (store.state.productState.localCartItems.isNotEmpty) {
               store.dispatch(GetOrderTaxAction());
+            }
+          },
+          onDidChange: (snapshot) {
+            if (snapshot.isAddressLoading) {
+              LoadingDialog.show();
+            } else {
+              LoadingDialog.hide();
             }
           },
           builder: (context, snapshot) {
@@ -587,94 +598,108 @@ class _CartViewState extends State<CartView> {
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(
                                                       10.0),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(right: 8),
-                                                        child: ImageIcon(
-                                                          AssetImage(
-                                                              'assets/images/home41.png'),
-                                                          color: AppColors
-                                                              .icColors,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
+                                                  child: snapshot
+                                                          .isDeliveryAddressAvailable
+                                                      ? Row(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: <Widget>[
-                                                            Text("Deliver to:",
-                                                                style: const TextStyle(
-                                                                    color: const Color(
-                                                                        0xff000000),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontFamily:
-                                                                        "Avenir-Medium",
-                                                                    fontStyle:
-                                                                        FontStyle
-                                                                            .normal,
-                                                                    fontSize:
-                                                                        16.0),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center),
-                                                            // NJRA135, Second cross road,  Indiranagar- 6987452
-                                                            Text(
-                                                                snapshot.selectedAddress?.prettyAddress ??
-                                                                    "",
-                                                                style: const TextStyle(
-                                                                    color: const Color(
-                                                                        0xff4b4b4b),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontFamily:
-                                                                        "Avenir-Medium",
-                                                                    fontStyle:
-                                                                        FontStyle
-                                                                            .normal,
-                                                                    fontSize:
-                                                                        14.0),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 8),
+                                                              child: ImageIcon(
+                                                                AssetImage(
+                                                                    'assets/images/home41.png'),
+                                                                color: AppColors
+                                                                    .icColors,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Text(
+                                                                      "Deliver to:",
+                                                                      style: const TextStyle(
+                                                                          color: const Color(
+                                                                              0xff000000),
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          fontFamily:
+                                                                              "Avenir-Medium",
+                                                                          fontStyle: FontStyle
+                                                                              .normal,
+                                                                          fontSize:
+                                                                              16.0),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center),
+                                                                  // NJRA135, Second cross road,  Indiranagar- 6987452
+                                                                  Text(
+                                                                      snapshot.selectedAddress
+                                                                              ?.prettyAddress ??
+                                                                          "",
+                                                                      style: const TextStyle(
+                                                                          color: const Color(
+                                                                              0xff4b4b4b),
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          fontFamily:
+                                                                              "Avenir-Medium",
+                                                                          fontStyle: FontStyle
+                                                                              .normal,
+                                                                          fontSize:
+                                                                              14.0),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .left)
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 8),
+                                                            TextButton(
+                                                              child: Text(
+                                                                tr("address_picker.change_address")
+                                                                    .toUpperCase(),
+                                                                style: CustomTheme.of(
+                                                                        context)
+                                                                    .textStyles
+                                                                    .body2Secondary,
+                                                              ),
+                                                              onPressed: () {
+                                                                showModalBottomSheet(
+                                                                  context:
+                                                                      context,
+                                                                  barrierColor: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  elevation: 4,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ChangeAddressBottomSheet(),
+                                                                );
+                                                              },
+                                                            ),
                                                           ],
+                                                        )
+                                                      : ActionButton(
+                                                          text: tr(
+                                                              "address_picker.add_an_Address"),
+                                                          icon: Icons.add,
+                                                          onTap: snapshot
+                                                              .goToAddNewAddress,
+                                                          isDisabled: false,
                                                         ),
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      TextButton(
-                                                        child: Text(
-                                                          tr("address_picker.change_address")
-                                                              .toUpperCase(),
-                                                          style: CustomTheme.of(
-                                                                  context)
-                                                              .textStyles
-                                                              .body2Secondary,
-                                                        ),
-                                                        onPressed: () {
-                                                          showModalBottomSheet(
-                                                            context: context,
-                                                            barrierColor: Colors
-                                                                .black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            elevation: 4,
-                                                            backgroundColor: Colors.transparent,
-                                                            builder: (context) =>
-                                                                ChangeAddressBottomSheet(),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
                                                 ),
                                               )
                                         : Container(
@@ -881,6 +906,11 @@ class _CartViewState extends State<CartView> {
                                   Fluttertoast.showToast(
                                       msg: tr("new_changes.choose_one"));
 //                                return;
+                                } else if (widget.radioValue == 1 &&
+                                    !snapshot.isDeliveryAddressAvailable) {
+                                  Fluttertoast.showToast(
+                                    msg: "Please add a valid delivery address",
+                                  );
                                 } else {
                                   // var address = await UserManager.getAddress();
                                   List<Product> cart =
@@ -902,7 +932,7 @@ class _CartViewState extends State<CartView> {
                                       merchats.first.businessId;
                                   request.deliveryAddressId =
                                       widget.radioValue == 1
-                                          ? snapshot.selectedAddress.addressId
+                                          ? snapshot.selectedAddress?.addressId
                                           : null;
                                   request.deliveryType = widget.radioValue == 1
                                       ? "DA_DELIVERY"
@@ -1064,28 +1094,32 @@ class _ViewModel extends BaseModel<AppState> {
   List<String> customerNoteImages;
   AddressResponse selectedAddress;
   Data user;
+  Function goToAddNewAddress;
+  bool isAddressLoading;
 
   _ViewModel();
 
-  _ViewModel.build(
-      {this.localCart,
-      this.localFreeFormItems,
-      this.customerNoteImages,
-      this.navigateToStore,
-      this.charges,
-      this.updateSelectedMerchant,
-      this.placeOrder,
-      this.user,
-      this.getCartTotal,
-      this.addToCart,
-      this.removeFromCart,
-      this.navigateToCart,
-      this.selectedMerchant,
-      this.selectedAddress,
-      this.getTaxOfOrder,
-      this.loadingStatus,
-      this.getOrderTax})
-      : super(equals: [
+  _ViewModel.build({
+    this.localCart,
+    this.localFreeFormItems,
+    this.customerNoteImages,
+    this.navigateToStore,
+    this.charges,
+    this.updateSelectedMerchant,
+    this.placeOrder,
+    this.user,
+    this.getCartTotal,
+    this.addToCart,
+    this.removeFromCart,
+    this.navigateToCart,
+    this.selectedMerchant,
+    this.selectedAddress,
+    this.getTaxOfOrder,
+    this.loadingStatus,
+    this.getOrderTax,
+    this.goToAddNewAddress,
+    this.isAddressLoading,
+  }) : super(equals: [
           localCart,
           selectedMerchant,
           user,
@@ -1094,6 +1128,7 @@ class _ViewModel extends BaseModel<AppState> {
           selectedAddress,
           charges,
           localFreeFormItems,
+          isAddressLoading,
         ]);
 
   @override
@@ -1108,6 +1143,7 @@ class _ViewModel extends BaseModel<AppState> {
                     state.addressState.savedAddressList.isNotEmpty
                 ? state.addressState.savedAddressList.first
                 : null),
+        isAddressLoading: state.addressState.isLoading,
         selectedMerchant: state.productState.selectedMerchant,
         localCart: state.productState.localCartItems,
         user: state.authState.user,
@@ -1152,6 +1188,11 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
+        goToAddNewAddress: () async {
+          dispatch(UpdateIsRegisterFlow(false));
+          await dispatchFuture(
+              NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));
+        },
         getOrderTax: (value) {
           if (state.productState.localCartItems.isNotEmpty) {
             var total =
@@ -1181,6 +1222,8 @@ class _ViewModel extends BaseModel<AppState> {
           }
         });
   }
+
+  bool get isDeliveryAddressAvailable => selectedAddress != null;
 }
 
 extension Precision on double {

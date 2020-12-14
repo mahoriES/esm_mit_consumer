@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,9 +29,14 @@ class ProfileImageView extends StatelessWidget {
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(156.toFont),
-              child: Image.network(
-                imageurl ?? "",
+              child: FadeInImage(
+                image: imageurl == null
+                    ? NetworkImage(imageurl)
+                    : AssetImage(ImagePathConstants.profilePlaceHolder),
                 fit: BoxFit.cover,
+                placeholder: AssetImage(
+                  ImagePathConstants.profilePlaceHolder,
+                ),
               ),
             ),
           ),
