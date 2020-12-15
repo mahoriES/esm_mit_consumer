@@ -32,13 +32,30 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
 
   GlobalKey<FormState> formKey = new GlobalKey<FormState>();
 
+  bool isValidated;
+
+  @override
+  void initState() {
+    isValidated = false;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    houseNumberController.dispose();
+    landMarkController.dispose();
+    addressNameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       onInit: (store) {
         addressNameController.text =
-            store.state.addressState.addressRequest.addressName;
+            store.state.addressState?.addressRequest?.addressName ??
+                tr("address_picker.Other");
       },
       onDidChange: (snapshot) {
         if (snapshot.isLoading) {
@@ -93,22 +110,23 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                 SizedBox(height: 6.toHeight),
                 Form(
                   key: formKey,
+                  onChanged: () {
+                    if (isValidated == formKey.currentState.validate()) {
+                      setState(() {
+                        isValidated = formKey.currentState.validate();
+                      });
+                    }
+                  },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InputField(
                         hintText: tr("address_picker.house_number"),
                         controller: houseNumberController,
-                        onChanged: (s) {
-                          setState(() {});
-                        },
                       ),
                       InputField(
                         hintText: tr("address_picker.landmark"),
                         controller: landMarkController,
-                        onChanged: (s) {
-                          setState(() {});
-                        },
                       ),
                       SizedBox(height: 20.toHeight),
                       Text(
@@ -127,7 +145,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                           itemBuilder: (context, index) {
                             return TagButton(
                               isSelected: snapshot.selectedtagIndex == index,
-                              tag: StringConstants.addressTagList[index],
+                              tag: tr(StringConstants.addressTagList[index]),
                               onTap: () {
                                 addressNameController.text =
                                     StringConstants.addressTagList[index];
@@ -163,8 +181,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                       );
                     }
                   },
-                  isDisabled: landMarkController.text.trim() == "" ||
-                      houseNumberController.text.trim() == "",
+                  isDisabled: !isValidated,
                 ),
               ],
             ),
@@ -211,8 +228,7 @@ class _ViewModel extends BaseModel<AppState> {
         );
         if (!state.addressState.isRegisterFlow) {
           dispatch(AddAddressAction(request: _addressRequest));
-        }
-        else{
+        } else {
           dispatch(UpdateSelectedAddressForRegister(_addressRequest));
         }
       },

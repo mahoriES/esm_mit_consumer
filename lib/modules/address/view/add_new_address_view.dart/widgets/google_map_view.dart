@@ -15,7 +15,7 @@ class GoogleMapView extends StatefulWidget {
 }
 
 class _GoogleMapViewState extends State<GoogleMapView> {
-  Completer<GoogleMapController> _controller = Completer();
+  Completer<GoogleMapController> _completer = Completer();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class _GoogleMapViewState extends State<GoogleMapView> {
       onDidChange: (snapshot) async {
         // if address was selected from search , then animate map location to the selected address.
         if (snapshot.gotAddressFromSearch) {
-          GoogleMapController mapController = await _controller.future;
+          GoogleMapController mapController = await _completer.future;
           mapController.animateCamera(
             CameraUpdate.newCameraPosition(
               CameraPosition(
@@ -58,7 +58,7 @@ class _GoogleMapViewState extends State<GoogleMapView> {
                   ],
                 ),
                 onMapCreated: (controllerValue) => setState(() {
-                  _controller.complete(controllerValue);
+                  _completer.complete(controllerValue);
                 }),
                 zoomGesturesEnabled: true,
                 zoomControlsEnabled: false,

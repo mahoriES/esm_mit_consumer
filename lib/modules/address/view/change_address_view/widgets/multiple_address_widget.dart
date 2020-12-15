@@ -29,7 +29,7 @@ class MultipleAddressWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 // addresses list //
                 ListView.separated(
@@ -37,7 +37,8 @@ class MultipleAddressWidget extends StatelessWidget {
                   itemCount: snapshot.savedAddresses?.length ?? 0,
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  separatorBuilder: (context, index) => SizedBox(height: 15),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 15),
                   itemBuilder: (context, index) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -48,13 +49,15 @@ class MultipleAddressWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                snapshot.savedAddresses[index].addressName,
+                                snapshot.savedAddresses[index]?.addressName ??
+                                    tr("address_picker.Other"),
                                 style: CustomTheme.of(context)
                                     .textStyles
                                     .cardTitle,
                               ),
                               Text(
-                                snapshot.savedAddresses[index].prettyAddress,
+                                snapshot.savedAddresses[index]?.prettyAddress ??
+                                    "",
                                 style: CustomTheme.of(context)
                                     .textStyles
                                     .body1Faded,

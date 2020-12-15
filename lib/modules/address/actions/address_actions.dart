@@ -7,10 +7,11 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart' as location;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:eSamudaay/utilities/keys.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -55,30 +56,39 @@ class AddAddressAction extends ReduxAction<AppState> {
 class GetAddressAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    final ResponseModel response = await APIManager.shared.request(
-      url: ApiURL.addressUrl,
-      params: null,
-      requestType: RequestType.get,
-    );
-
-    if (response.status == ResponseStatus.success200) {
-      final List<AddressResponse> responseModel = List<AddressResponse>();
-
-      response.data.forEach((e) {
-        responseModel.add(AddressResponse.fromJson(e));
-      });
-
-      await UserManager.saveAddress(address: jsonEncode(responseModel));
-
-      return state.copyWith(
-        addressState: state.addressState.copyWith(
-          savedAddressList: responseModel,
-        ),
+    try {
+      final ResponseModel response = await APIManager.shared.request(
+        url: ApiURL.addressUrl,
+        params: null,
+        requestType: RequestType.get,
       );
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+
+      if (response.status == ResponseStatus.success200) {
+        if (response.data == null) {
+          throw Exception();
+        }
+        final List<AddressResponse> responseModel = List<AddressResponse>();
+
+        response.data.forEach((e) {
+          responseModel.add(AddressResponse.fromJson(e));
+        });
+
+        await UserManager.saveAddress(address: jsonEncode(responseModel));
+
+        return state.copyWith(
+          addressState: state.addressState.copyWith(
+            savedAddressList: responseModel,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        return null;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      return null;
     }
-    return null;
   }
 }
 
@@ -140,19 +150,19 @@ class UpdateIsRegisterFlow extends ReduxAction<AppState> {
 class GetInitialLocation extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    final Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    location.LocationData _locationData =
+        await location.Location().getLocation();
 
-    final LatLng _latLng = LatLng(position.latitude, position.longitude);
+    final LatLng _latLng =
+        LatLng(_locationData.latitude, _locationData.longitude);
 
     store.dispatch(GetAddressForLocation(_latLng));
 
     return state.copyWith(
       addressState: state.addressState.copyWith(
         addressRequest: state.addressState.addressRequest.copyWith(
-          lat: position.latitude,
-          lon: position.longitude,
+          lat: _locationData.latitude,
+          lon: _locationData.longitude,
         ),
       ),
     );
