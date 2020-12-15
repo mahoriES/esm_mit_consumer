@@ -28,5 +28,6 @@ class AppSizes {
   static const bodyText2FontSize = 10.0;
   static const itemHeadingFontSize = 20.0;
   static const itemCaptionFontSize = 10.0;
-
+  static const profileImageSize = 156;
+  static const profileImageEditIconSize = 48;
 }

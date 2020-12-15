@@ -7,6 +7,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
@@ -120,7 +121,8 @@ class DeleteAddressAction extends ReduxAction<AppState> {
         ),
       );
     } else {
-      Fluttertoast.showToast(msg: response.data['message'] ?? "Some Error Occured");
+      Fluttertoast.showToast(
+          msg: response.data['message'] ?? tr("common.some_error_occured"));
     }
     return null;
   }

@@ -1,7 +1,8 @@
 {
   "common": {
     "closed": "Closed",
-    "view_store": "View Store"
+    "view_store": "View Store",
+    "some_error_occured": "Some Error Occured"
   },
   "screen_language": {
     "title": "Choose your Preferred Language"

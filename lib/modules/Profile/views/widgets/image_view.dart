@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,8 +19,8 @@ class ProfileImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 156.toFont,
-      width: 156.toFont,
+      height: AppSizes.profileImageSize.toWidth,
+      width: AppSizes.profileImageSize.toWidth,
       decoration: new BoxDecoration(
         shape: BoxShape.circle,
         color: CustomTheme.of(context).colors.placeHolderColor,
@@ -28,7 +29,8 @@ class ProfileImageView extends StatelessWidget {
         children: [
           Positioned.fill(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(156.toFont),
+              borderRadius: BorderRadius.circular(
+                  (AppSizes.profileImageSize / 2).toWidth),
               child: FadeInImage(
                 image: imageurl == null
                     ? NetworkImage(imageurl)
@@ -83,12 +85,13 @@ class ProfileImageView extends StatelessWidget {
               child: Card(
                 elevation: 4,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(48.toFont),
+                  borderRadius: BorderRadius.circular(
+                      (AppSizes.profileImageEditIconSize / 2).toWidth),
                 ),
                 child: Container(
-                  height: 48.toFont,
-                  width: 48.toFont,
-                  padding: EdgeInsets.all(15.toFont),
+                  height: AppSizes.profileImageEditIconSize.toWidth,
+                  width: AppSizes.profileImageEditIconSize.toWidth,
+                  padding: EdgeInsets.all(15.toWidth),
                   decoration: new BoxDecoration(
                     shape: BoxShape.circle,
                     color: CustomTheme.of(context).colors.backgroundColor,

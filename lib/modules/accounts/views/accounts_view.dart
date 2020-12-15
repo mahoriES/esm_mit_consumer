@@ -59,7 +59,7 @@ class AccountsView extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 snapshot.versionString,
                 style: CustomTheme.of(context).textStyles.cardTitle,
