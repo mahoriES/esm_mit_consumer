@@ -28,15 +28,12 @@ class _SearchAddressViewState extends State<SearchAddressView> {
       ),
       body: StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
+        onDidChange: (snapshot) {
+          if (snapshot.isSuccess) {
+            Navigator.pop(context);
+          }
+        },
         builder: (context, snapshot) {
-          WidgetsBinding.instance.addPostFrameCallback(
-            (timeStamp) {
-              if (snapshot.isSuccess) {
-                Navigator.pop(context);
-              }
-            },
-          );
-
           return Container(
             padding: EdgeInsets.symmetric(
                 horizontal: 12.toWidth, vertical: 12.toHeight),
@@ -61,17 +58,14 @@ class _SearchAddressViewState extends State<SearchAddressView> {
                 SizedBox(height: 12.toHeight),
                 if (!snapshot.isLoading) ...[
                   ListView.builder(
-                    itemCount: snapshot
-                            .placesAutocompleteResponse?.predictions?.length ??
-                        0,
+                    itemCount: snapshot.predictions.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Material(
                         type: MaterialType.transparency,
                         child: InkWell(
                           onTap: () => snapshot.getPlaceDetails(
-                            snapshot.placesAutocompleteResponse
-                                ?.predictions[index].placeId,
+                            snapshot.predictions[index].placeId,
                           ),
                           child: Container(
                             padding: EdgeInsets.symmetric(
@@ -79,8 +73,7 @@ class _SearchAddressViewState extends State<SearchAddressView> {
                               vertical: 12.toHeight,
                             ),
                             child: Text(
-                              snapshot.placesAutocompleteResponse
-                                  ?.predictions[index].description,
+                              snapshot.predictions[index]?.description ?? "",
                             ),
                           ),
                         ),
@@ -130,4 +123,7 @@ class _ViewModel extends BaseModel<AppState> {
       isSuccess: state.addressState.fetchedAddressDetails,
     );
   }
+
+  List<Prediction> get predictions =>
+      placesAutocompleteResponse?.predictions ?? [];
 }
