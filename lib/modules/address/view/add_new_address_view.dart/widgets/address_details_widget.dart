@@ -111,7 +111,7 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
                 Form(
                   key: formKey,
                   onChanged: () {
-                    if (isValidated == formKey.currentState.validate()) {
+                    if (isValidated != formKey.currentState.validate()) {
                       setState(() {
                         isValidated = formKey.currentState.validate();
                       });
