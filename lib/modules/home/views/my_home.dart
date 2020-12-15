@@ -63,24 +63,6 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
     return Scaffold(
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
-          onInit: (store) async {
-//            store.dispatchFuture(GetClusterDetailsAction()).then((value) async {
-//              var address = await UserManager.getAddress();
-//              if (address == null) {
-//                store.dispatch(GetAddressAction());
-//              } else {
-//                store.dispatch(GetAddressFromLocal());
-//              }
-////              store
-////                  .dispatchFuture(
-////                      GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl))
-////                  .whenComplete(() {
-////                store.dispatch(GetBannerDetailsAction());
-////              });
-//              //store.dispatch(GetCartFromLocal());
-//            });
-            //store.dispatch(GetUserFromLocalStorageAction());
-          },
           builder: (context, snapshot) {
             return BottomNavigationBar(
               selectedItemColor: CustomTheme.of(context).colors.brandViolet,

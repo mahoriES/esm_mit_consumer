@@ -47,7 +47,6 @@ class _BusinessesListUnderSelectedCategoryScreenState
         snapshot.getBusinessesList(snapshot.businessesResponse.next,
             snapshot.selectedCategory.categoryId.toString());
       }
-      //if (mounted) setState(() {});
       _refreshController.loadComplete();
     }
 

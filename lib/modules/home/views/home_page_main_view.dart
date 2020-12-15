@@ -62,7 +62,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     if (snapshot.response.next != null) {
       await snapshot.getMerchantList(snapshot.response.next);
     }
-    //if (mounted) setState(() {});
     _refreshController.loadComplete();
   }
 
@@ -97,7 +96,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 } else {
                   store.dispatch(GetAddressFromLocal());
                 }
-                //snapshot.dispatchFuture(GetNearbyCirclesAction());
                 snapshot.dispatch(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
                 snapshot.dispatch(LoadVideoFeed());
