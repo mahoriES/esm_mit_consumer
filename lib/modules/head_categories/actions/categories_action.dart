@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:eSamudaay/modules/head_categories/models/main_categories_response.dart';
+import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
@@ -8,6 +9,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+///Fetches the categories shown on the the home page(Top-Level Categories)
 class GetHomePageCategoriesAction extends ReduxAction<AppState> {
   GetHomePageCategoriesAction();
 
@@ -49,6 +51,10 @@ class GetHomePageCategoriesAction extends ReduxAction<AppState> {
 
 }
 
+///Executed prior to navigating to [BusinessesListUnderSelectedCategoryScreen] screen to view businesses selling products
+///belonging to that category.
+///The tapped category is set as the selected ones, and referenced when showing
+///things related to that.
 class SelectHomePageCategoryAction extends ReduxAction<AppState> {
   final HomePageCategoryResponse selectedCategory;
 
@@ -63,6 +69,8 @@ class SelectHomePageCategoryAction extends ReduxAction<AppState> {
   }
 }
 
+///Prior to navigating to the [BusinessesListUnderSelectedCategoryScreen] the
+///data from the last visit is cleared
 class ClearPreviousCategoryDetailsAction extends ReduxAction<AppState> {
   ClearPreviousCategoryDetailsAction();
 
@@ -75,6 +83,7 @@ class ClearPreviousCategoryDetailsAction extends ReduxAction<AppState> {
   }
 }
 
+///Fetches the list of businesses (augmented with list od
 class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
   GetPreviouslyBoughtBusinessesListAction();
 

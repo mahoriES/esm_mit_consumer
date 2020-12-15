@@ -39,7 +39,9 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
         ));
       }
     }
-    _locationData = await location.getLocation();
+    ///If location fetching takes more than 20 seconds(average for A-GPS) we
+    ///stop further wait; so yeah, timeout!
+    _locationData = await location.getLocation().timeout(Duration(seconds: 20));
 
     if (_locationData.latitude == null || _locationData.longitude == null)
       return state.copyWith(authState: state.authState.copyWith(

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -224,6 +225,8 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   void after() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     dispatch(ChangeClusterDetailsLoadingAction(false));
+    if (state.authState.cluster == null)
+      dispatch(GetNearbyCirclesAction());
     super.after();
   }
 }

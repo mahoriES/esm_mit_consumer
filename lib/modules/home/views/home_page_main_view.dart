@@ -97,8 +97,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 } else {
                   store.dispatch(GetAddressFromLocal());
                 }
-                snapshot.dispatchFuture(GetNearbyCirclesAction());
-                //await snapshot.dispatchFuture(GetNearbyCirclesAction());
+                //snapshot.dispatchFuture(GetNearbyCirclesAction());
                 snapshot.dispatch(
                     GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
                 snapshot.dispatch(LoadVideoFeed());
@@ -338,8 +337,6 @@ class _ViewModel extends BaseModel<AppState> {
           state.componentsLoadingState.circleTopBannerLoading ||
           state.componentsLoadingState.circleBannersLoading ||
           state.componentsLoadingState.businessListLoading ||
-          state.componentsLoadingState.videosLoading ||
-          state.componentsLoadingState.nearbyCirclesLoading,
-    );
+          state.componentsLoadingState.videosLoading,);
   }
 }
