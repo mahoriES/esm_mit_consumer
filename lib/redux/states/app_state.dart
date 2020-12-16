@@ -1,4 +1,5 @@
 import 'package:eSamudaay/redux/states/components_loading_state.dart';
+import 'package:eSamudaay/redux/states/address_state.dart';
 import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
@@ -14,6 +15,8 @@ class AppState {
   final VideosState videosState;
   final LandingPageComponentsState homeCategoriesState;
   final ComponentsLoadingState componentsLoadingState;
+  final AddressState addressState;
+  final String versionString;
 
   const AppState({
     this.authState,
@@ -23,6 +26,8 @@ class AppState {
     this.homePageState,
     this.productState,
     this.videosState,
+    this.addressState,
+    this.versionString,
   });
 
   static AppState fromJson(dynamic json) =>
@@ -47,6 +52,8 @@ class AppState {
         homePageState: HomePageState.initial(),
         videosState: VideosState.initial(),
         homeCategoriesState: LandingPageComponentsState.initial(),
+        addressState: AddressState.initial(),
+        versionString: "",
       );
 
   AppState copyWith({
@@ -57,6 +64,8 @@ class AppState {
     ProductState productState,
     LandingPageComponentsState homeCategoriesState,
     VideosState videosState,
+    AddressState addressState,
+    String versionString,
   }) {
     return AppState(
       productState: productState ?? this.productState,
@@ -67,6 +76,8 @@ class AppState {
       homeCategoriesState: homeCategoriesState ?? this.homeCategoriesState,
       homePageState: homePageState ?? this.homePageState,
       videosState: videosState ?? this.videosState,
+      addressState: addressState ?? this.addressState,
+      versionString: versionString ?? this.versionString,
     );
   }
 
@@ -81,7 +92,9 @@ class AppState {
               homeCategoriesState == other.homeCategoriesState &&
               productState == other.productState &&
               videosState == other.videosState &&
-              isLoading == other.isLoading;
+              isLoading == other.isLoading &&
+              addressState == other.addressState &&
+              versionString == other.versionString;
 
   @override
   int get hashCode => authState.hashCode;

@@ -83,6 +83,10 @@ class _AppTextStyles {
         height: 1.25,
       );
 
+  TextStyle get body1Faded => body1.copyWith(
+        color: themeColors.disabledAreaColor,
+      );
+
   TextStyle get buttonText2 => TextStyle(
         color: themeColors.primaryColor,
         fontSize: 10,
@@ -97,6 +101,15 @@ class _AppTextStyles {
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.2,
+      );
+
+  TextStyle get body2Faded => body2.copyWith(
+        color: themeColors.disabledAreaColor,
+      );
+
+  TextStyle get body2Secondary => body2.copyWith(
+        color: themeColors.warningColor,
+        fontWeight: FontWeight.bold,
       );
 
   TextStyle get bottomMenu => TextStyle(

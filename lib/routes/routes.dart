@@ -1,7 +1,9 @@
 import 'package:eSamudaay/modules/About/view/about_view.dart';
 import 'package:eSamudaay/modules/Profile/views/profile_view.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
-import 'package:eSamudaay/modules/accounts/views/recommended_shop.dart';
+import 'package:eSamudaay/modules/address/view/add_new_address_view.dart/add_new_address_view.dart';
+import 'package:eSamudaay/modules/address/view/change_address_view/manage_address_view.dart';
+import 'package:eSamudaay/modules/address/view/search_view/search_view.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
@@ -41,7 +43,6 @@ class SetupRoutes {
       "/OrdersView": (BuildContext context) => OrdersView(),
       "/SMAlertView": (BuildContext context) => SMAlertView(),
       "/Support": (BuildContext context) => Support(),
-      "/RecommendShop": (BuildContext context) => RecommendedShop(),
       "/profile": (BuildContext context) => ProfileView(),
       "/about": (BuildContext context) => AboutView(),
       "/onBoarding": (BuildContext context) => OnboardingWidget(),
@@ -54,6 +55,9 @@ class SetupRoutes {
       '/videoPlayer': (BuildContext context) => VideoPlayerScreen(),
       RouteNames.CATEGORY_BUSINESSES: (BuildContext context) =>
           BusinessesListUnderSelectedCategoryScreen(),
+      RouteNames.CHANGE_ADDRESS: (BuildContext context) => ChangeAddressView(),
+      RouteNames.ADD_NEW_ADDRESS: (BuildContext context) => AddNewAddressView(),
+      RouteNames.SEARCH_ADDRESS: (BuildContext context) => SearchAddressView(),
     };
   }
 }
@@ -66,4 +70,7 @@ class RouteNames {
   static const PRODUCT_CATALOGUE = "/StoreProductListingView";
   static const PRODUCT_SEARCH = "/productSearch";
   static const CATEGORY_BUSINESSES = '/businessUnderCategory';
+  static const CHANGE_ADDRESS = "/changeAddress";
+  static const ADD_NEW_ADDRESS = "/addNewAddress";
+  static const SEARCH_ADDRESS = "/searchAddress";
 }

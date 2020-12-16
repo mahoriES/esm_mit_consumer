@@ -97,6 +97,7 @@ class PlaceOrderResponse {
   String clusterName;
   String customerName;
   PickupAddress pickupAddress;
+  PickupAddress deliveryAdress;
   List<String> businessPhones;
   List<String> customerPhones;
   List<OrderItems> orderItems;
@@ -126,6 +127,7 @@ class PlaceOrderResponse {
       this.clusterName,
       this.customerName,
       this.pickupAddress,
+      this.deliveryAdress,
       this.businessPhones,
       this.customerPhones,
       this.orderItems,
@@ -168,6 +170,9 @@ class PlaceOrderResponse {
         : null;
     pickupAddress = json['pickup_address'] != null
         ? new PickupAddress.fromJson(json['pickup_address'])
+        : null;
+    deliveryAdress = json['delivery_address'] != null
+        ? new PickupAddress.fromJson(json['delivery_address'])
         : null;
     if (json['business_phones'] != null) {
       businessPhones = json['business_phones'].cast<String>();
@@ -228,6 +233,9 @@ class PlaceOrderResponse {
     data['customer_name'] = this.customerName;
     if (this.pickupAddress != null) {
       data['pickup_address'] = this.pickupAddress.toJson();
+    }
+    if (this.deliveryAdress != null) {
+      data['delivery_address'] = this.deliveryAdress.toJson();
     }
     data['business_phones'] = this.businessPhones;
     data['customer_phones'] = this.customerPhones;

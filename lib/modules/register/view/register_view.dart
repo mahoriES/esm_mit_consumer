@@ -9,14 +9,14 @@ import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
-import 'package:eSamudaay/utilities/keys.dart';
+import 'package:eSamudaay/routes/routes.dart';
+import 'package:eSamudaay/validators/validators.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +30,6 @@ class _RegistrationState extends State<Registration> {
   TextEditingController addressController = TextEditingController();
   TextEditingController pinCodeController =
       TextEditingController(text: 'UDUPI01');
-  String latitude, longitude;
   String selectedCircle = 'UDUPI01';
   @override
   Widget build(BuildContext context) {
@@ -42,6 +41,9 @@ class _RegistrationState extends State<Registration> {
           },
           model: _ViewModel(),
           builder: (context, snapshot) {
+            addressController.text =
+                snapshot.addressRequest?.prettyAddress ?? "";
+
             return WillPopScope(
               onWillPop: () async {
                 return Future.value(
@@ -118,15 +120,8 @@ class _RegistrationState extends State<Registration> {
               children: <Widget>[
                 Flexible(
                   child: TextFormField(
-                      validator: (value) {
-                        if (value.length == 0) return null;
-                        if (value.length < 3) {
-                          return tr('screen_register.name.empty_error');
-                          return null;
-                        }
-                        return null;
-                      },
-                      autovalidate: true,
+                      validator: Validators.nameValidator,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: nameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -161,89 +156,52 @@ class _RegistrationState extends State<Registration> {
         child: TextInputBG(
           child: Padding(
             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Flexible(
-                  child: TextFormField(
-                      maxLines: null,
-                      // enableInteractiveSelection: false,
-                      validator: (value) {
-                        if (value.isEmpty) return null;
-//                                          if (value.length < 10) {
-//                                            return tr(
-//                                                'screen_register.address.empty_error');
-//                                            return null;
-//                                          }
-                        return null;
-                      },
-                      autovalidate: true,
-                      controller: addressController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: tr('screen_register.address.title'),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      style: const TextStyle(
-                          color: const Color(0xff1a1a1a),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 13.0),
-                      textAlign: TextAlign.center),
-                ),
-                Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlacePicker(
-                            apiKey: Keys.googleAPIkey, // Put YOUR OWN KEY here.
-                            onPlacePicked: (result) {
-                              // Handle the result in your way
-                              print(result?.formattedAddress);
-                              // print(result?.a);
-                              if (result?.formattedAddress != null) {
-                                addressController.text =
-                                    result?.formattedAddress;
-                              }
-//                                                if (result?.postalCode !=
-//                                                    null) {
-//                                                  pinCodeController.text =
-//                                                      result?.postalCode;
-//                                                }
-                              latitude =
-                                  result.geometry.location.lat.toString();
-                              longitude =
-                                  result.geometry.location.lng.toString();
-                              print(result.adrAddress);
-                              Navigator.of(context).pop();
-                            },
-//                                              initialPosition: HomePage.kInitialPosition,
-                            useCurrentLocation: true,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: snapshot.navigateToAddressView,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                          maxLines: null,
+                          enabled: false,
+                          validator: Validators.nullStringValidator,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: addressController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            hintText: tr('screen_register.address.title'),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                           ),
-                        ),
-                      );
-                    },
-                    child: Icon(
+                          style: const TextStyle(
+                              color: const Color(0xff1a1a1a),
+                              fontWeight: FontWeight.w400,
+                              fontFamily: "Avenir-Medium",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 13.0),
+                          textAlign: TextAlign.center),
+                    ),
+                    Icon(
                       Icons.add_location,
                       color: AppColors.icColors,
-                    ),
-                  ),
-                )
-              ],
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
 
-      SizedBox(height: 30,),
+      SizedBox(
+        height: 30,
+      ),
 
       //location
       //Register_but
@@ -270,15 +228,10 @@ class _RegistrationState extends State<Registration> {
 //              }
               else {
                 snapshot.updateCustomerDetails(
-                    CustomerDetailsRequest(
-                        profileName: nameController.text,
-                        role: "CUSTOMER"),
-                    AddressRequest(
-                        addressName: nameController.text,
-                        lat: double.parse(latitude ?? "0"),
-                        lon: double.parse(longitude ?? "0"),
-                        prettyAddress: addressController.text,
-                        geoAddr: GeoAddr(pincode: "")));
+                  CustomerDetailsRequest(
+                      profileName: nameController.text, role: "CUSTOMER"),
+                  snapshot.addressRequest,
+                );
               }
             } else {
               Fluttertoast.showToast(msg: "All fields are required");
@@ -326,7 +279,6 @@ class _RegistrationState extends State<Registration> {
           ),
         ),
       ),
-
     ];
   }
 
@@ -363,17 +315,19 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Function(CustomerDetailsRequest request, AddressRequest)
       updateCustomerDetails;
-  Function(AddressRequest) addAddress;
   Function navigateToHomePage;
   String phoneNumber;
+  VoidCallback navigateToAddressView;
+  AddressRequest addressRequest;
 
-  _ViewModel.build(
-      {this.navigateToHomePage,
-      this.updateCustomerDetails,
-      this.addAddress,
-      this.loadingStatus,
-      this.phoneNumber})
-      : super(equals: [loadingStatus, phoneNumber]);
+  _ViewModel.build({
+    this.navigateToHomePage,
+    this.updateCustomerDetails,
+    this.loadingStatus,
+    this.phoneNumber,
+    this.navigateToAddressView,
+    this.addressRequest,
+  }) : super(equals: [loadingStatus, phoneNumber, addressRequest]);
 
   @override
   BaseModel fromStore() {
@@ -381,11 +335,13 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         phoneNumber: state.authState.getOtpRequest.phone,
+        addressRequest: state.addressState.selectedAddressForRegister,
         navigateToHomePage: () {
           dispatch(NavigateAction.pushNamed('/myHomeView'));
         },
-        addAddress: (address) {
-          dispatch(AddAddressAction(request: address));
+        navigateToAddressView: () {
+          dispatch(UpdateIsRegisterFlow(true));
+          dispatch(NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));
         },
         updateCustomerDetails: (request, address) {
           dispatchFuture(AddUserDetailAction(request: request))

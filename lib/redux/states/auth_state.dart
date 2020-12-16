@@ -1,7 +1,6 @@
 import 'package:eSamudaay/models/api_response_handler.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
-import 'package:eSamudaay/modules/address/models/addess_models.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
 import 'package:eSamudaay/modules/otp/model/validate_otp_request.dart';
@@ -22,7 +21,6 @@ class AuthState {
   final String token;
   final bool isLoggedIn;
   final bool isOnboardingCompleted;
-  final Address address;
   final Data user;
   final bool isPhoneNumberValid;
   final bool isOtpEntered;
@@ -42,7 +40,6 @@ class AuthState {
     @required this.isSignUp,
     @required this.updateCustomerDetailsRequest,
     @required this.deviceToken,
-    @required this.address,
     @required this.myClusters,
     @required this.nearbyClusters,
     @required this.suggestedClusters,
@@ -50,7 +47,6 @@ class AuthState {
 
   factory AuthState.initial() {
     return new AuthState(
-      address: null,
       cluster: null,
       myClusters: null,
       nearbyClusters: null,
@@ -72,7 +68,6 @@ class AuthState {
 
   AuthState copyWith({
     Data user,
-    Address address,
     LoadingStatusApp loadingStatus,
     String mobileNumber,
     bool emailError,
@@ -100,7 +95,6 @@ class AuthState {
     List<Cluster> suggestedClusters,
   }) {
     return new AuthState(
-        address: address ?? this.address,
         deviceToken: token,
         cluster: cluster ?? this.cluster,
         myClusters: myClusters ?? this.myClusters,
