@@ -245,8 +245,6 @@
   "product_catalog": {
     "All": "All"
   },
-<<<<<<< HEAD
-
   "home_stores_categories": {
     "services": "Services",
     "product_cat": "Product Categories",
@@ -261,7 +259,8 @@
     "favourites": "Favourites",
     "filters": "Filters",
     "off": "Off"
-=======
+  },
+
   "address_picker": {
     "select_an_address": "Select an Address",
     "saved_addresses": "Saved Addresses",
@@ -284,7 +283,6 @@
     "confirm_location": "Confirm Location",
     "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
     "delete": "Delete"
->>>>>>> master
   }
 
 }
