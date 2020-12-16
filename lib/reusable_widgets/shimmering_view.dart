@@ -13,12 +13,12 @@ class ShimmeringView extends StatelessWidget {
       width: SizeConfig.screenWidth,
       child:  ListView(
         children: const [
-          YoutubeShimmer(padding: EdgeInsets.all(0),),
-          ProfileShimmer(padding: EdgeInsets.all(0),),
-          YoutubeShimmer(padding: EdgeInsets.all(0),),
-          ListTileShimmer(padding: EdgeInsets.all(0),),
-          ProfileShimmer(padding: EdgeInsets.all(0),),
-          ProfileShimmer(padding: EdgeInsets.all(0),),
+          YoutubeShimmer(padding: EdgeInsets.zero,),
+          ProfileShimmer(padding: EdgeInsets.zero,),
+          YoutubeShimmer(padding: EdgeInsets.zero,),
+          ListTileShimmer(padding: EdgeInsets.zero,),
+          ProfileShimmer(padding: EdgeInsets.zero,),
+          ProfileShimmer(padding: EdgeInsets.zero,),
         ],
       ),
     );

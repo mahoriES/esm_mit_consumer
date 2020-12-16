@@ -32,6 +32,18 @@ class HybridBusinessTileConnector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return HybridBusinessTile(
+        businessImageUrl: business.images == null || business.images.isEmpty
+            ? null
+            : business.images.first.photoUrl,
+        isDeliveryAvailable: business.hasDelivery,
+        highlightedItemsList: highlightedItemsList,
+        businessId: business.businessId,
+        businessTitle: business.businessName,
+        businessSubtitle: business.description);
+  }
+
+  List<HighlightedItemsType> get highlightedItemsList {
     final List<HighlightedItemsType> highlightedItemsList = [];
     if (businessShowType == BusinessShowType.mainPageListing &&
         business.augmentedCategories != null &&
@@ -44,16 +56,9 @@ class HybridBusinessTileConnector extends StatelessWidget {
                 : element.images.first.photoUrl));
       });
     }
-    return HybridBusinessTile(
-        businessImageUrl: business.images == null || business.images.isEmpty
-            ? null
-            : business.images.first.photoUrl,
-        isDeliveryAvailable: business.hasDelivery,
-        highlightedItemsList: highlightedItemsList,
-        businessId: business.businessId,
-        businessTitle: business.businessName,
-        businessSubtitle: business.description);
+    return highlightedItemsList;
   }
+
 }
 
 ///This class should be used only via it's connector [HybridBusinessTileConnector]
@@ -91,14 +96,13 @@ class HybridBusinessTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           decoration: BoxDecoration(
-              color: CustomTheme.of(context).colors.pureWhite,
+              color: CustomTheme.of(context).colors.backgroundColor,
               borderRadius: BorderRadius.circular(9),
               boxShadow: [
                 BoxShadow(
                     color: CustomTheme.of(context)
                         .colors
-                        .pureBlack
-                        .withOpacity(0.16),
+                        .shadowColor16,
                     offset: const Offset(0, 3.0),
                     blurRadius: 6.0),
               ]),
@@ -127,8 +131,7 @@ class HybridBusinessTile extends StatelessWidget {
                           blurRadius: 6,
                           color: CustomTheme.of(context)
                               .colors
-                              .pureBlack
-                              .withOpacity(0.16),
+                              .shadowColor16,
                         )
                       ]),
                       child: CachedNetworkImage(
@@ -204,6 +207,15 @@ class HighlightedItemHorizontalCarouselViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (highlightedItemsList.isEmpty) return SizedBox.shrink();
+    return SingleChildScrollView(
+      child: Row(
+        children: generateCarouselTiles,
+      ),
+      scrollDirection: Axis.horizontal,
+    );
+  }
+
+  List<Widget> get generateCarouselTiles {
     List<Widget> tiles = [];
     for (var index
         in Iterable<int>.generate(highlightedItemsList.length).toList()) {
@@ -218,12 +230,7 @@ class HighlightedItemHorizontalCarouselViewer extends StatelessWidget {
         ),
       );
     }
-    return SingleChildScrollView(
-      child: Row(
-        children: tiles,
-      ),
-      scrollDirection: Axis.horizontal,
-    );
+    return tiles;
   }
 }
 
@@ -236,6 +243,8 @@ class HighlightedItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ///This is the side for the circular images of the highlighted categories / products
+    ///This will be 75 sp for the standard screen, and then modified according to screen width
     final double imageSide = SizeConfig.screenWidth * 75 / 375;
     return Container(
         constraints: BoxConstraints(
@@ -249,8 +258,7 @@ class HighlightedItemTile extends StatelessWidget {
                   BoxShadow(
                       color: CustomTheme.of(context)
                           .colors
-                          .pureBlack
-                          .withOpacity(0.16),
+                          .shadowColor16,
                       offset: const Offset(0, 3.0),
                       blurRadius: 3.0),
                 ]),
@@ -266,7 +274,7 @@ class HighlightedItemTile extends StatelessWidget {
                             CupertinoActivityIndicator(),
                         errorWidget: (context, url, error) => Container(
                               decoration: ShapeDecoration(
-                                color: CustomTheme.of(context).colors.pureWhite,
+                                color: CustomTheme.of(context).colors.backgroundColor,
                                 shape: CircleBorder(),
                               ),
                               child: Center(

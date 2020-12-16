@@ -3,6 +3,8 @@ import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+//TODO: Merge this and no product view into a common customisable widget for such cases
+
 class EmptyListView extends StatelessWidget {
 
   const EmptyListView();
@@ -22,7 +24,7 @@ class EmptyListView extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.45,
-                    color: CustomTheme.of(context).colors.pureWhite,
+                    color: CustomTheme.of(context).colors.backgroundColor,
                   ),
                   clipper: CustomClipPath(),
                 ),

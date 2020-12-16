@@ -65,7 +65,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           model: _ViewModel(),
           builder: (context, snapshot) {
             return BottomNavigationBar(
-              selectedItemColor: CustomTheme.of(context).colors.brandViolet,
+              selectedItemColor: CustomTheme.of(context).colors.primaryColor,
               currentIndex: snapshot.currentIndex,
               type: BottomNavigationBarType.fixed,
               selectedLabelStyle: activatedTextStyle,
@@ -132,7 +132,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
   TextStyle get deactivatedTextStyle => CustomTheme.of(context)
       .textStyles
       .bottomMenu
-      .copyWith(color: CustomTheme.of(context).colors.darkGrey);
+      .copyWith(color: CustomTheme.of(context).colors.disabledAreaColor);
 
   double height(BuildContext context, int totalItemCount) {
     var totalHeight = MediaQuery.of(context).size.height;

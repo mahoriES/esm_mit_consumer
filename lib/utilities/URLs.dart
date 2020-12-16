@@ -48,4 +48,6 @@ class ApiURL {
       baseURL + getBusinessesUrl + "$businessId/bookmark";
   static final Function(String) getHomePageCategoriesUrl = (String circleId) =>
       baseURL + getClustersUrl + "$circleId/categories";
+  static final Function(String ) getBannersUrl = (String circleId) =>
+       baseURL + getClustersUrl + circleId + "/banners";
 }

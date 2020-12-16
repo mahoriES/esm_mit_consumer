@@ -52,7 +52,7 @@ class SetupRoutes {
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
           ProductDetailsView(),
       '/videoPlayer': (BuildContext context) => VideoPlayerScreen(),
-      '/businessUnderCategory': (BuildContext context) =>
+      RouteNames.CATEGORY_BUSINESSES: (BuildContext context) =>
           BusinessesListUnderSelectedCategoryScreen(),
     };
   }

@@ -1,4 +1,5 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -41,26 +42,26 @@ class ContactBusinessDialogBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Wrap(
+      child: Wrap(
         children: <Widget>[
-          new ListTile(
-              title: new Text(
+          ListTile(
+              title: Text(
                 'Call $businessName',
                 style: CustomTheme.of(context).textStyles.cardTitle,
               ),
               leading: Icon(
                 Icons.call,
                 size: 25,
-                color: CustomTheme.of(context).colors.positiveGreen,
+                color: CustomTheme.of(context).colors.positiveColor,
               ),
               onTap: onCall),
-          new ListTile(
-            title: new Text('Whatsapp $businessName',
+          ListTile(
+            title: Text('Whatsapp $businessName',
                 style: CustomTheme.of(context).textStyles.cardTitle),
             leading: SizedBox(
               height: 25.toHeight,
               width: 25.toWidth,
-              child: Image.asset('assets/images/whatsapp.png'),
+              child: Image.asset(ImagePathConstants.whatsappIcon),
             ),
             onTap: onWhatsapp,
           ),
@@ -90,9 +91,9 @@ class CircularAppLogo extends StatelessWidget {
             scale: currentHeight != null ? currentHeight : 1.0,
             child: Container(
               decoration: ShapeDecoration(
-                color: CustomTheme.of(context).colors.pureWhite,
+                color: CustomTheme.of(context).colors.backgroundColor,
                 shadows: [
-                   BoxShadow(
+                  BoxShadow(
                       color: CustomTheme.of(context).colors.shadowColor,
                       blurRadius: AppSizes.widgetPadding,
                       spreadRadius: 0.0,

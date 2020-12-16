@@ -13,15 +13,8 @@ abstract class _AppThemeColors {
   Color get disabledAreaColor;
   Color get warningColor;
   Color get shadowColor;
-  Color get brandViolet;
-  Color get brandPink;
-  Color get positiveGreen;
-  Color get darkBlack;
-  Color get pureBlack;
-  Color get darkGrey;
-  Color get lightGrey;
-  Color get pureWhite;
-  Color get brandOrange;
+  Color get storeCoreColor;
+  Color get shadowColor16;
   Color get categoryTileTextUnderlay;
   Brightness get brightness;
 }
@@ -118,45 +111,53 @@ class _AppTextStyles {
 // extension to get colors for light theme.
 class _LightThemeColors with _AppThemeColors {
   @override
-  Color get primaryColor => brandViolet;
+  Color get primaryColor => _brandViolet;
   @override
-  Color get secondaryColor => brandPink;
+  Color get secondaryColor => _brandPink;
   @override
-  Color get positiveColor => positiveGreen;
+  Color get positiveColor => _positiveGreen;
   @override
-  Color get textColor => darkBlack;
+  Color get textColor => _darkBlack;
   @override
-  Color get textColorDarker => pureBlack;
+  Color get textColorDarker => _pureBlack;
   @override
-  Color get disabledAreaColor => darkGrey;
+  Color get disabledAreaColor => _darkGrey;
   @override
-  Color get placeHolderColor => lightGrey;
+  Color get placeHolderColor => _lightGrey;
   @override
-  Color get backgroundColor => pureWhite;
+  Color get backgroundColor => _pureWhite;
   @override
-  Color get warningColor => brandOrange;
+  Color get warningColor => _brandOrange;
+  @override
+  Color get storeCoreColor => _brandOrange;
   @override
   Color get shadowColor => const Color(0x0d242424);
+
+  ///16 here refers to opacity which is 16%
   @override
-  Color get brandViolet => const Color(0xFF5f3a9f);
-  @override
-  Color get brandPink => const Color(0xFFe1517d);
-  @override
-  Color get positiveGreen => const Color(0xFF2ac10f);
-  @override
-  Color get darkBlack => const Color(0xFF363636);
-  @override
-  Color get pureBlack => const Color(0xFF000000);
-  @override
-  Color get darkGrey => const Color(0xFF969696);
-  @override
-  Color get lightGrey => const Color(0xFFe4e4e4);
-  @override
-  Color get pureWhite => const Color(0xFFFFFFFF);
-  @override
-  Color get brandOrange => const Color(0xFFfb7452);
+  Color get shadowColor16 => const Color(0x29242424);
+
+  Color get _brandViolet => const Color(0xFF5f3a9f);
+
+  Color get _brandPink => const Color(0xFFe1517d);
+
+  Color get _positiveGreen => const Color(0xFF2ac10f);
+
+  Color get _darkBlack => const Color(0xFF363636);
+
+  Color get _pureBlack => const Color(0xFF000000);
+
+  Color get _darkGrey => const Color(0xFF969696);
+
+  Color get _lightGrey => const Color(0xFFe4e4e4);
+
+  Color get _pureWhite => const Color(0xFFFFFFFF);
+
+  Color get _brandOrange => const Color(0xFFfb7452);
+
   @override
   Color get categoryTileTextUnderlay => const Color(0xffe6ffffff);
+
   @override
   Brightness get brightness => Brightness.light;
 }

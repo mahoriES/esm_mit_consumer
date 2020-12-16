@@ -73,10 +73,10 @@ class _BookmarkButtonState extends State<BookmarkButton>
                   Icons.bookmark,
                   size: 28,
                   color: business.isBookmarked
-                      ? CustomTheme.of(context).colors.brandViolet
+                      ? CustomTheme.of(context).colors.primaryColor
                       : CustomTheme.of(context)
                           .colors
-                          .brandViolet
+                          .primaryColor
                           .withOpacity(0.3),
                 ),
               ),

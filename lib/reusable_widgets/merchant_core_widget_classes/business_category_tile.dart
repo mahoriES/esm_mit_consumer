@@ -16,12 +16,11 @@ class BusinessCategoryTile extends StatelessWidget {
   final String imageUrl;
   final double tileWidth;
 
-  const BusinessCategoryTile(
-      {Key key,
-      @required this.onTap,
-      @required this.categoryName,
-      @required this.imageUrl,
-      @required this.tileWidth})
+  const BusinessCategoryTile({Key key,
+    @required this.onTap,
+    @required this.categoryName,
+    @required this.imageUrl,
+    @required this.tileWidth})
       : super(key: key);
 
   @override
@@ -39,11 +38,11 @@ class BusinessCategoryTile extends StatelessWidget {
               children: [
                 Positioned.fill(
                     child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  errorWidget: (_, __, ___) => placeHolderImage,
-                  placeholder: (_, __) => placeHolderImage,
-                  fit: BoxFit.cover,
-                )),
+                      imageUrl: imageUrl,
+                      errorWidget: (_, __, ___) => placeHolderImage,
+                      placeholder: (_, __) => placeHolderImage,
+                      fit: BoxFit.cover,
+                    )),
                 Positioned.fill(
                   child: FractionallySizedBox(
                     alignment: Alignment.bottomCenter,
@@ -51,7 +50,8 @@ class BusinessCategoryTile extends StatelessWidget {
                     heightFactor: 0.20,
                     child: Container(
                       width: tileWidth,
-                      color: CustomTheme.of(context)
+                      color: CustomTheme
+                          .of(context)
                           .colors
                           .categoryTileTextUnderlay,
                       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -59,7 +59,10 @@ class BusinessCategoryTile extends StatelessWidget {
                         child: Text(
                           categoryName,
                           maxLines: 1,
-                          style: CustomTheme.of(context).textStyles.body2,
+                          style: CustomTheme
+                              .of(context)
+                              .textStyles
+                              .body2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
                         ),
@@ -91,30 +94,33 @@ class HomeCategoriesGridView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       builder: (context, snapshot) {
-        debugPrint(
-            'Building the CategoryGridView ${snapshot.homePageCategoriesResponse.catalogCategories.length}');
-
-        if (snapshot.homePageCategoriesResponse == null ||
-            snapshot.homePageCategoriesResponse.catalogCategories == null ||
-            snapshot.homePageCategoriesResponse.catalogCategories.isEmpty)
+        if (snapshot.shouldNotShowContent)
           return SizedBox.shrink();
         return Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppSizes.separatorPadding,
-              vertical: AppSizes.separatorPadding),
+          padding: const EdgeInsets.all(AppSizes.separatorPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'shop.item_category',
-                style: CustomTheme.of(context).textStyles.sectionHeading1,
+                style: CustomTheme
+                    .of(context)
+                    .textStyles
+                    .sectionHeading1,
               ).tr(),
-              const SizedBox(height: 11,),
+              const SizedBox(
+                height: 11,
+              ),
               Text(
                 'home_stores_categories.product_cat',
-                style: CustomTheme.of(context).textStyles.body1,
+                style: CustomTheme
+                    .of(context)
+                    .textStyles
+                    .body1,
               ).tr(),
-              const SizedBox(height: 11,),
+              const SizedBox(
+                height: 11,
+              ),
               Container(
                 child: GridView.builder(
                   primary: false,
@@ -154,18 +160,24 @@ class _ViewModel extends BaseModel<AppState> {
 
   HomePageCategoriesResponse homePageCategoriesResponse;
   Function(HomePageCategoryResponse) navigateToCategoryScreen;
+  bool shouldNotShowContent;
 
   _ViewModel.build({
     this.homePageCategoriesResponse,
+    this.shouldNotShowContent,
     this.navigateToCategoryScreen,
-  }) : super(equals: [
-          homePageCategoriesResponse,
-        ]);
+  }) : super(equals: [homePageCategoriesResponse, shouldNotShowContent]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
       homePageCategoriesResponse: state.homeCategoriesState.homePageCategories,
+      shouldNotShowContent: state.homeCategoriesState.homePageCategories ==
+          null ||
+          state.homeCategoriesState.homePageCategories.catalogCategories ==
+              null ||
+          state.homeCategoriesState.homePageCategories.catalogCategories
+              .isEmpty,
       navigateToCategoryScreen: (HomePageCategoryResponse selectedCategory) {
         dispatch(
             SelectHomePageCategoryAction(selectedCategory: selectedCategory));

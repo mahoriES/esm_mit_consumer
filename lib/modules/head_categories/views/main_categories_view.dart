@@ -34,32 +34,17 @@ class _BusinessesListUnderSelectedCategoryScreenState
 
   @override
   Widget build(BuildContext context) {
-    void _onRefresh(_ViewModel snapshot) async {
-      if (snapshot.businessesResponse.previous == null) {
-        await snapshot.getBusinessesList(ApiURL.getBusinessesUrl,
-            snapshot.selectedCategory.categoryId.toString());
-      }
-      _refreshController.refreshCompleted();
-    }
-
-    void _onLoading(_ViewModel snapshot) async {
-      if (snapshot.businessesResponse.next != null) {
-        snapshot.getBusinessesList(snapshot.businessesResponse.next,
-            snapshot.selectedCategory.categoryId.toString());
-      }
-      _refreshController.loadComplete();
-    }
 
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
-          store.dispatchFuture(ClearPreviousCategoryDetailsAction());
+          store.dispatch(ClearPreviousCategoryDetailsAction());
           final String bCatId = store
               .state.homeCategoriesState.selectedCategory.categoryId
               .toString();
-          store.dispatchFuture(GetBusinessesUnderSelectedCategory(
+          store.dispatch(GetBusinessesUnderSelectedCategory(
               getBusinessesUrl: ApiURL.getBusinessesUrl, categoryId: bCatId));
-          store.dispatchFuture(
+          store.dispatch(
               GetPreviouslyBoughtBusinessesListUnderSelectedCategoryAction(
                   categoryId: bCatId));
         },
@@ -73,7 +58,7 @@ class _BusinessesListUnderSelectedCategoryScreenState
                     padding: const EdgeInsets.all(0),
                     icon: Icon(
                       Icons.arrow_back_ios,
-                      color: CustomTheme.of(context).colors.brandViolet,
+                      color: CustomTheme.of(context).colors.primaryColor,
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -98,66 +83,70 @@ class _BusinessesListUnderSelectedCategoryScreenState
                 ],
               ),
             ),
-            body:(snapshot.showShimmering) ?  const ShimmeringView() : SmartRefresher(
-              enablePullUp: true,
-              controller: _refreshController,
-              onLoading: () {
-                _onLoading(snapshot);
-              },
-              onRefresh: () {
-                _onRefresh(snapshot);
-              },
-              footer: CustomFooter(
-                builder: (context, loadStatus) {
-                  if (loadStatus == LoadStatus.loading)
-                    return CupertinoActivityIndicator();
-                  else
-                    return SizedBox.shrink();
-                },
-              ),
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: AppSizes.separatorPadding),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: AppSizes.separatorPadding),
-                          child: Text(
-                            'home_stores_categories.featured',
-                            style: CustomTheme.of(context)
-                                .textStyles
-                                .sectionHeading2,
-                          ).tr()),
-                      ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final Business business =
-                                snapshot.businessesUnderSelectedCategory[index];
-                            return InkWell(
-                              onTap: () {
-                                snapshot.navigateToBusiness(business);
-                              },
-                              child: HybridBusinessTileConnector(
-                                business: business,
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              height: AppSizes.widgetPadding,
-                            );
-                          },
-                          itemCount:
-                              snapshot.businessesUnderSelectedCategory.length),
-                    ],
+            body: (snapshot.showShimmering)
+                ? const ShimmeringView()
+                : SmartRefresher(
+                    enablePullUp: true,
+                    controller: _refreshController,
+                    onLoading: () async {
+                      await snapshot.onLoadingOuter();
+                      _refreshController.loadComplete();
+                    },
+                    onRefresh: () async {
+                      await snapshot.onRefreshOuter();
+                      _refreshController.refreshCompleted();
+                    },
+                    footer: CustomFooter(
+                      builder: (context, loadStatus) {
+                        if (loadStatus == LoadStatus.loading)
+                          return CupertinoActivityIndicator();
+                        else
+                          return SizedBox.shrink();
+                      },
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppSizes.separatorPadding),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: AppSizes.separatorPadding),
+                                child: Text(
+                                  'home_stores_categories.featured',
+                                  style: CustomTheme.of(context)
+                                      .textStyles
+                                      .sectionHeading2,
+                                ).tr()),
+                            ListView.separated(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  final Business business = snapshot
+                                      .businessesUnderSelectedCategory[index];
+                                  return InkWell(
+                                    onTap: () {
+                                      snapshot.navigateToBusiness(business);
+                                    },
+                                    child: HybridBusinessTileConnector(
+                                      business: business,
+                                    ),
+                                  );
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox(
+                                    height: AppSizes.widgetPadding,
+                                  );
+                                },
+                                itemCount: snapshot
+                                    .businessesUnderSelectedCategory.length),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
           );
         });
   }
@@ -193,7 +182,8 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-        showShimmering: state.componentsLoadingState.businessesUnderCategoryLoading,
+        showShimmering:
+            state.componentsLoadingState.businessesUnderCategoryLoading,
         businessesResponse: state.homeCategoriesState.currentBusinessResponse,
         selectedCategory: state.homeCategoriesState.selectedCategory,
         previouslyBoughtBusinessesUnderSelectedCategory: state
@@ -208,6 +198,21 @@ class _ViewModel extends BaseModel<AppState> {
         getBusinessesList: (getUrl, bCatId) async {
           await dispatchFuture(GetBusinessesUnderSelectedCategory(
               getBusinessesUrl: getUrl, categoryId: bCatId));
-        });
+        },);
   }
+
+  Future<void> onRefreshOuter() async{
+    if (businessesResponse.previous == null) {
+      await getBusinessesList(ApiURL.getBusinessesUrl,
+          selectedCategory.categoryId.toString());
+    }
+  }
+
+  Future<void> onLoadingOuter() async {
+    if (businessesResponse.next != null) {
+      await getBusinessesList(businessesResponse.next,
+          selectedCategory.categoryId.toString());
+    }
+  }
+
 }

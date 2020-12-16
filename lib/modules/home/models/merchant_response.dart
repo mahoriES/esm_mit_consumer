@@ -124,19 +124,19 @@ class Business {
   }
 
   Business.clone(Business business) : this(
-      businessId: business.businessId ?? null,
-      isBookmarked: business.isBookmarked ?? null,
-      businessName: business.businessName ?? null,
-      itemsCount: business.itemsCount ?? null,
-      isOpen: business.isOpen ?? null,
-      address: business.address ?? null,
-      description: business.description ?? null,
-      images: business.images ?? null,
+      businessId: business.businessId,
+      isBookmarked: business.isBookmarked,
+      businessName: business.businessName,
+      itemsCount: business.itemsCount,
+      isOpen: business.isOpen,
+      address: business.address,
+      description: business.description,
+      images: business.images,
       notice: business.notice,
       hasDelivery: business.hasDelivery,
-      phones: business.phones ?? null,
-      augmentedCategories: business.augmentedCategories ?? null,
-      previouslyOrderedItems: business.previouslyOrderedItems ?? null
+      phones: business.phones,
+      augmentedCategories: business.augmentedCategories,
+      previouslyOrderedItems: business.previouslyOrderedItems
   );
 
 }

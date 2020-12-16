@@ -35,7 +35,7 @@ class MerchantAddressRow extends StatelessWidget {
                 AssetImage(
                   'assets/images/location2.png',
                 ),
-                color: CustomTheme.of(context).colors.brandViolet,
+                color: CustomTheme.of(context).colors.primaryColor,
               ),
             ),
             Expanded(
@@ -83,7 +83,7 @@ class ContactMerchantActionButton extends StatelessWidget {
         onTap: onContactMerchant,
         child: Icon(
           Icons.phone_outlined,
-          color: CustomTheme.of(context).colors.brandViolet,
+          color: CustomTheme.of(context).colors.primaryColor,
           size: 22,
         ),
       ),
@@ -106,7 +106,7 @@ class ShareBusinessActionButton extends StatelessWidget {
           onTap: onShare,
           child: Icon(
             Icons.share,
-            color: CustomTheme.of(context).colors.brandViolet,
+            color: CustomTheme.of(context).colors.primaryColor,
           )),
     );
   }

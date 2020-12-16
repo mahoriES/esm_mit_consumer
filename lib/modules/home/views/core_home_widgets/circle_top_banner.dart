@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,7 +25,7 @@ class CircleTopBannerView extends StatelessWidget {
         BoxShadow(
             offset: Offset(0, 3),
             blurRadius: 6.0,
-            color: CustomTheme.of(context).colors.pureBlack.withOpacity(0.16))
+            color: CustomTheme.of(context).colors.shadowColor16)
       ]),
       child: SizedBox(
         width: SizeConfig.screenWidth,
@@ -38,11 +39,11 @@ class CircleTopBannerView extends StatelessWidget {
                       imageUrl: imageUrl ?? "",
                       placeholder: (context, url) =>
                           Image.asset(
-                            'assets/images/top_banner_placeholder.jpg',
+                            ImagePathConstants.topBannerImage,
                             fit: BoxFit.cover,
                           ),
                       errorWidget: (context, url, error) => Image.asset(
-                            'assets/images/top_banner_placeholder.jpg',
+                            ImagePathConstants.topBannerImage,
                             fit: BoxFit.cover,
                           ))),
               Positioned.fill(
@@ -54,12 +55,12 @@ class CircleTopBannerView extends StatelessWidget {
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                     colors: [
-                      CustomTheme.of(context).colors.pureBlack,
+                      CustomTheme.of(context).colors.textColorDarker,
                       CustomTheme.of(context)
                           .colors
-                          .pureBlack
+                          .textColorDarker
                           .withOpacity(0.76),
-                      CustomTheme.of(context).colors.pureBlack.withOpacity(0.0),
+                      Colors.transparent,
                     ],
                     stops: [0.0, 0.39, 1.0],
                     begin: Alignment.bottomCenter,
@@ -80,7 +81,7 @@ class CircleTopBannerView extends StatelessWidget {
                         Image.asset(
                           'assets/images/splash.png',
                           width: 134.5 / 375 * SizeConfig.screenWidth,
-                          color: CustomTheme.of(context).colors.pureWhite,
+                          color: CustomTheme.of(context).colors.backgroundColor,
                         ),
                         InkWell(
                           onTap: onTapCircleButton,
@@ -91,13 +92,13 @@ class CircleTopBannerView extends StatelessWidget {
                                 border: Border.all(
                                     color: CustomTheme.of(context)
                                         .colors
-                                        .pureWhite)),
+                                        .backgroundColor)),
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.location_on_outlined,
                                   color:
-                                      CustomTheme.of(context).colors.pureWhite,
+                                      CustomTheme.of(context).colors.backgroundColor,
                                 ),
                                 const SizedBox(
                                   width: 3,
@@ -110,7 +111,7 @@ class CircleTopBannerView extends StatelessWidget {
                                       .copyWith(
                                           color: CustomTheme.of(context)
                                               .colors
-                                              .pureWhite),
+                                              .backgroundColor),
                                 ),
                               ],
                             ),

@@ -87,7 +87,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                 ),
                 inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
                 child: Container(
-                  color: CustomTheme.of(context).colors.pureWhite,
+                  color: CustomTheme.of(context).colors.backgroundColor,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -201,7 +201,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                     prefixIcon: Icon(
                                                       Icons.search_rounded,
                                                       color:
-                                                          CustomTheme.of(context).colors.brandViolet,
+                                                          CustomTheme.of(context).colors.primaryColor,
                                                     ),
                                                     enabledBorder:
                                                         OutlineInputBorder(

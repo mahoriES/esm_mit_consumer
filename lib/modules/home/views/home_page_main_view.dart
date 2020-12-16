@@ -39,7 +39,6 @@ class HomePageMainView extends StatefulWidget {
 }
 
 class _HomePageMainViewState extends State<HomePageMainView> {
-  String address = "";
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -49,26 +48,11 @@ class _HomePageMainViewState extends State<HomePageMainView> {
     super.dispose();
   }
 
-  void _onRefresh(_ViewModel snapshot) async {
-    if (snapshot.response.previous != null) {
-    } else {
-      await snapshot.getMerchantList(ApiURL.getBusinessesUrl);
-      snapshot.loadVideoFeed();
-    }
-    _refreshController.refreshCompleted();
-  }
-
-  void _onLoading(_ViewModel snapshot) async {
-    if (snapshot.response.next != null) {
-      await snapshot.getMerchantList(snapshot.response.next);
-    }
-    _refreshController.loadComplete();
-  }
-
   @override
   Widget build(BuildContext context) {
     return UserExceptionDialog<AppState>(
       child: Scaffold(
+        //TODO: Create a separate Widget along with ViewModel for this
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(134 / 375 * SizeConfig.screenWidth),
           child: StoreConnector<AppState, _ViewModel>(
@@ -83,28 +67,12 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                       snapshot.changeSelectedCircle(
                           ApiURL.getBusinessesUrl, context);
                     });
-              }),
+              },),
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             onInit: (snapshot) async {
-              if (snapshot.state.authState.cluster == null) {
-                await snapshot.dispatchFuture(GetClusterDetailsAction());
-                var address = await UserManager.getAddress();
-                if (address == null) {
-                  store.dispatch(GetAddressAction());
-                } else {
-                  store.dispatch(GetAddressFromLocal());
-                }
-                snapshot.dispatch(
-                    GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-                snapshot.dispatch(LoadVideoFeed());
-                store.dispatchFuture(GetHomePageCategoriesAction());
-              }
-              store.dispatch(GetCartFromLocal());
-              store.dispatch(GetUserFromLocalStorageAction());
-              store.dispatch(GetBannerDetailsAction());
-              store.dispatch(GetTopBannerImageAction());
+              store.dispatch(HomePageMultipleDispatcherAction());
               debugPrint(
                   'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
               if (!DynamicLinkService().isDynamicLinkInitialized) {
@@ -128,11 +96,13 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                   },
                 ),
                 controller: _refreshController,
-                onRefresh: () {
-                  _onRefresh(snapshot);
+                onRefresh: () async {
+                  await snapshot.onRefresh();
+                  _refreshController.refreshCompleted();
                 },
-                onLoading: () {
-                  _onLoading(snapshot);
+                onLoading: () async {
+                  await snapshot.onLoading();
+                  _refreshController.loadComplete();
                 },
                 child: SingleChildScrollView(
                   child: Column(
@@ -147,9 +117,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                       ),
                       CircleBannersCarousel(banners: snapshot.banners),
                       HomeCategoriesGridView(),
-                      (snapshot.merchants != null &&
-                                  snapshot.merchants.isEmpty) &&
-                              snapshot.loadingStatus != LoadingStatusApp.loading
+                      snapshot.shouldShowEmptyView
                           ? const EmptyListView()
                           : ListView(
                               padding: EdgeInsets.only(top: 2, bottom: 15),
@@ -172,7 +140,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                                   child: AnimationLimiter(
                                     child: ListView.separated(
                                       itemBuilder: (context, index) {
-                                        var business =
+                                        final Business business =
                                             snapshot.merchants[index];
                                         return InkWell(
                                             onTap: () {
@@ -246,12 +214,14 @@ class _ViewModel extends BaseModel<AppState> {
   Cluster cluster;
   GetBusinessesResponse response;
   Photo topBanner;
+  bool shouldShowEmptyView;
 
   _ViewModel.build({
     this.updateSelectedVideo,
     this.navigateToVideoView,
     this.navigateToAddAddressPage,
     this.navigateToCart,
+    this.shouldShowEmptyView,
     this.shouldShowLoading,
     this.cluster,
     this.topBanner,
@@ -272,6 +242,7 @@ class _ViewModel extends BaseModel<AppState> {
   }) : super(equals: [
           currentIndex,
           shouldShowLoading,
+          shouldShowEmptyView,
           merchants,
           banners,
           loadingStatus,
@@ -330,11 +301,28 @@ class _ViewModel extends BaseModel<AppState> {
       navigateToVideoView: () {
         dispatch(NavigateAction.pushNamed("/videoPlayer"));
       },
+      shouldShowEmptyView: (merchants != null && merchants.isEmpty) &&
+          loadingStatus != LoadingStatusApp.loading,
       shouldShowLoading: state.componentsLoadingState.circleDetailsLoading ||
           state.componentsLoadingState.circleCategoriesLoading ||
           state.componentsLoadingState.circleTopBannerLoading ||
           state.componentsLoadingState.circleBannersLoading ||
           state.componentsLoadingState.businessListLoading ||
-          state.componentsLoadingState.videosLoading,);
+          state.componentsLoadingState.videosLoading,
+    );
+  }
+
+  Future<void> onRefresh() async {
+    if (response.previous != null) {
+    } else {
+      await getMerchantList(ApiURL.getBusinessesUrl);
+      loadVideoFeed();
+    }
+  }
+
+  Future<void> onLoading() async {
+    if (response.next != null) {
+      await getMerchantList(response.next);
+    }
   }
 }
