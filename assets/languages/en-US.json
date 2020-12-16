@@ -2,7 +2,8 @@
   "common": {
     "closed": "Closed",
     "view_store": "View Store",
-    "some_error_occured": "Some Error Occured"
+    "some_error_occured": "Some Error Occured",
+    "location_error": "Couldn't fetch you location"
   },
   "screen_language": {
     "title": "Choose your Preferred Language"
