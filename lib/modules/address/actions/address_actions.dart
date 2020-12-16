@@ -151,21 +151,29 @@ class GetInitialLocation extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     location.LocationData _locationData =
-        await location.Location().getLocation();
+        await location.Location().getLocation().timeout(
+              Duration(seconds: 30),
+              onTimeout: () => null,
+            );
 
-    final LatLng _latLng =
-        LatLng(_locationData.latitude, _locationData.longitude);
+    if (_locationData?.latitude != null && _locationData?.longitude != null) {
+      final LatLng _latLng =
+          LatLng(_locationData.latitude, _locationData.longitude);
 
-    store.dispatch(GetAddressForLocation(_latLng));
+      store.dispatch(GetAddressForLocation(_latLng));
 
-    return state.copyWith(
-      addressState: state.addressState.copyWith(
-        addressRequest: state.addressState.addressRequest.copyWith(
-          lat: _locationData.latitude,
-          lon: _locationData.longitude,
+      return state.copyWith(
+        addressState: state.addressState.copyWith(
+          addressRequest: state.addressState.addressRequest.copyWith(
+            lat: _locationData.latitude,
+            lon: _locationData.longitude,
+          ),
         ),
-      ),
-    );
+      );
+    }
+
+    Fluttertoast.showToast(msg: "common.location_error".tr());
+    return null;
   }
 
   @override

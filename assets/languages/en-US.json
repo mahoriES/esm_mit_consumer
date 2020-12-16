@@ -1,7 +1,8 @@
 {
   "common": {
     "closed": "Closed",
-    "view_store": "View Store"
+    "view_store": "View Store",
+    "location_error": "Couldn't fetch you location"
   },
   "screen_language": {
     "title": "Choose your Preferred Language"
