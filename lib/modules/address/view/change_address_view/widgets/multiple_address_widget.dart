@@ -52,83 +52,94 @@ class MultipleAddressWidget extends StatelessWidget {
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 15),
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () => onTapOnAddress == null
-                          ? null
-                          : onTapOnAddress(snapshot.savedAddresses[index]),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  snapshot.savedAddresses[index]?.addressName ??
-                                      tr("address_picker.Other"),
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .cardTitle,
-                                ),
-                                Text(
-                                  snapshot.savedAddresses[index]
-                                          ?.prettyAddress ??
-                                      "",
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .body1Faded,
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 20),
-                          if (snapshot.savedAddresses.length > 1) ...[
-                            Flexible(
-                              flex: 1,
-                              child: TextButton(
-                                  child: Text(
-                                    tr("address_picker.delete_address")
-                                        .toUpperCase(),
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        onTap: () => onTapOnAddress == null
+                            ? null
+                            : onTapOnAddress(snapshot.savedAddresses[index]),
+                        splashColor: onTapOnAddress == null
+                            ? Colors.transparent
+                            : Theme.of(context).splashColor,
+                        highlightColor: onTapOnAddress == null
+                            ? Colors.transparent
+                            : Theme.of(context).highlightColor,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    snapshot.savedAddresses[index]
+                                            ?.addressName ??
+                                        tr("address_picker.Other"),
                                     style: CustomTheme.of(context)
                                         .textStyles
-                                        .body2Secondary,
+                                        .cardTitle,
                                   ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          CustomConfirmationDialog(
-                                        title:
-                                            tr("address_picker.delete_address") +
-                                                "?",
-                                        message: tr(
-                                          "address_picker.confirm_delete_message",
-                                          namedArgs: {
-                                            'addressName': snapshot
-                                                .savedAddresses[index]
-                                                .addressName,
-                                          },
-                                        ),
-                                        actionButtonColor:
-                                            CustomTheme.of(context)
-                                                .colors
-                                                .warningColor,
-                                        positiveAction: () {
-                                          Navigator.pop(context);
-                                          snapshot.deleteAddress(snapshot
-                                              .savedAddresses[index].addressId);
-                                        },
-                                        positiveButtonText:
-                                            tr("address_picker.delete"),
-                                        negativeButtonText:
-                                            tr("screen_order.Cancel"),
-                                      ),
-                                    );
-                                  }),
+                                  Text(
+                                    snapshot.savedAddresses[index]
+                                            ?.prettyAddress ??
+                                        "",
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .body1Faded,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ]
-                        ],
+                            SizedBox(width: 20),
+                            if (snapshot.savedAddresses.length > 1) ...[
+                              Flexible(
+                                flex: 1,
+                                child: TextButton(
+                                    child: Text(
+                                      tr("address_picker.delete_address")
+                                          .toUpperCase(),
+                                      style: CustomTheme.of(context)
+                                          .textStyles
+                                          .body2Secondary,
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            CustomConfirmationDialog(
+                                          title:
+                                              tr("address_picker.delete_address") +
+                                                  "?",
+                                          message: tr(
+                                            "address_picker.confirm_delete_message",
+                                            namedArgs: {
+                                              'addressName': snapshot
+                                                  .savedAddresses[index]
+                                                  .addressName,
+                                            },
+                                          ),
+                                          actionButtonColor:
+                                              CustomTheme.of(context)
+                                                  .colors
+                                                  .warningColor,
+                                          positiveAction: () {
+                                            Navigator.pop(context);
+                                            snapshot.deleteAddress(snapshot
+                                                .savedAddresses[index]
+                                                .addressId);
+                                          },
+                                          positiveButtonText:
+                                              tr("address_picker.delete"),
+                                          negativeButtonText:
+                                              tr("screen_order.Cancel"),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            ]
+                          ],
+                        ),
                       ),
                     );
                   },

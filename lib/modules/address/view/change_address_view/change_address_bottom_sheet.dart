@@ -36,12 +36,14 @@ class ChangeAddressBottomSheet extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 24.toWidth),
                 child: TopTile(tr("address_picker.select_an_address")),
               ),
-              Expanded(child: MultipleAddressWidget(
-                onTapOnAddress: (address) {
-                  snapshot.updateSelectedAddress(address);
-                  Navigator.pop(context);
-                },
-              )),
+              Expanded(
+                child: MultipleAddressWidget(
+                  onTapOnAddress: (address) {
+                    snapshot.updateSelectedAddress(address);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.all(24.toWidth),
                 child: ActionButton(
