@@ -2,6 +2,7 @@
   "common": {
     "closed": "Closed",
     "view_store": "View Store",
+    "some_error_occured": "Some Error Occured",
     "location_error": "Couldn't fetch you location"
   },
   "screen_language": {
@@ -101,7 +102,8 @@
     "logout": "Logout",
     "alert_data": "Are you sure ! do you want to logout?",
     "cancel": "Cancel",
-    "circles": "My Circles"
+    "circles": "My Circles",
+    "address": "Address"
   },
   "store_home": {
     "spotlight": "Spotlight",
@@ -247,6 +249,7 @@
     "select_an_address": "Select an Address",
     "saved_addresses": "Saved Addresses",
     "manage_address": "Manage Address",
+    "change_address": "Change Address",
     "delete_address": "Delete Address",
     "add_an_Address": "Add an Address",
     "enter_address_details": "Enter Address Details",
@@ -261,6 +264,8 @@
     "change": "CHANGE",
     "search_location": "Search Location",
     "select_location": "Select Location",
-    "confirm_location": "Confirm Location"
+    "confirm_location": "Confirm Location",
+    "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
+    "delete": "Delete"
   }
 }

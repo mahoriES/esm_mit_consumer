@@ -8,13 +8,15 @@ class CustomConfirmationDialog extends StatelessWidget {
   final String message;
   final String positiveButtonText;
   final String negativeButtonText;
-  final Function positiveAction;
+  final VoidCallback positiveAction;
+  final Color actionButtonColor;
   const CustomConfirmationDialog({
     @required this.title,
     @required this.message,
     @required this.positiveAction,
     @required this.positiveButtonText,
     this.negativeButtonText,
+    this.actionButtonColor,
     Key key,
   }) : super(key: key);
 
@@ -48,7 +50,7 @@ class CustomConfirmationDialog extends StatelessWidget {
               ],
               if (message != null) ...[
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50.toWidth),
+                  padding: EdgeInsets.symmetric(horizontal: 30.toWidth),
                   child: Text(
                     message,
                     style: CustomTheme.of(context).textStyles.cardTitle,
@@ -77,7 +79,8 @@ class CustomConfirmationDialog extends StatelessWidget {
                       icon: Icons.check,
                       text: positiveButtonText,
                       onTap: positiveAction,
-                      color: CustomTheme.of(context).colors.positiveColor,
+                      color: actionButtonColor ??
+                          CustomTheme.of(context).colors.positiveColor,
                     ),
                   ),
                 ],

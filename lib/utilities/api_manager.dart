@@ -148,7 +148,10 @@ class APIManager {
               return ResponseModel(res.data, ResponseStatus.error401);
             } else if (res.statusCode == 429) {
               return ResponseModel(res.data, ResponseStatus.error404);
-            } else {
+            }
+            // TODO : add proper status code for success state
+            // and return "some error occured in case of default status code".
+            else {
               return ResponseModel(res.data, ResponseStatus.success200);
             }
           });
@@ -178,7 +181,7 @@ class APIManager {
       case RequestType.delete:
         try{
           return await dio.delete(url,data: params).then((response) {
-            if (response.statusCode == 400) {
+            if (response.statusCode == 400 || response.statusCode == 404) {
               return ResponseModel(response.data, ResponseStatus.error404);
             } else if (response.statusCode >= 500) {
               return ResponseModel(response.data, ResponseStatus.error500);

@@ -12,6 +12,7 @@ class AppState {
   final ProductState productState;
   final VideosState videosState;
   final AddressState addressState;
+  final String versionString;
   const AppState({
     this.authState,
     this.isLoading,
@@ -19,6 +20,7 @@ class AppState {
     this.productState,
     this.videosState,
     this.addressState,
+    this.versionString,
   });
 
   static AppState fromJson(dynamic json) => AppState(
@@ -40,6 +42,7 @@ class AppState {
         homePageState: HomePageState.initial(),
         videosState: VideosState.initial(),
         addressState: AddressState.initial(),
+        versionString: "",
       );
 
   AppState copyWith({
@@ -49,6 +52,7 @@ class AppState {
     ProductState productState,
     VideosState videosState,
     AddressState addressState,
+    String versionString,
   }) {
     return AppState(
       productState: productState ?? this.productState,
@@ -57,6 +61,7 @@ class AppState {
       homePageState: homePageState ?? this.homePageState,
       videosState: videosState ?? this.videosState,
       addressState: addressState ?? this.addressState,
+      versionString: versionString ?? this.versionString,
     );
   }
 
@@ -70,7 +75,8 @@ class AppState {
           productState == other.productState &&
           videosState == other.videosState &&
           isLoading == other.isLoading &&
-          addressState == other.addressState;
+          addressState == other.addressState &&
+          versionString == other.versionString;
 
   @override
   int get hashCode => authState.hashCode;
