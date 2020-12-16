@@ -264,26 +264,23 @@ class HighlightedItemTile extends StatelessWidget {
                 ]),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(imageSide / 2),
-                  child: SizedBox(
-                    height: imageSide,
-                    width: imageSide,
-                    child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: item.itemImageUrl ?? "",
-                        placeholder: (context, url) =>
-                            CupertinoActivityIndicator(),
-                        errorWidget: (context, url, error) => Container(
-                              decoration: ShapeDecoration(
-                                color: CustomTheme.of(context).colors.backgroundColor,
-                                shape: CircleBorder(),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.image,
-                                  size: AppSizes.productItemIconSize,
-                                ),
-                              ),
-                            )),
+                  child: Container(
+                    color: CustomTheme.of(context).colors.backgroundColor,
+                    child: SizedBox(
+                      height: imageSide,
+                      width: imageSide,
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: item.itemImageUrl ?? "",
+                          placeholder: (context, url) =>
+                              CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) => Center(
+                            child: Icon(
+                              Icons.image,
+                              size: AppSizes.productItemIconSize,
+                            ),
+                          )),
+                    ),
                   ),
                 )),
             const SizedBox(
