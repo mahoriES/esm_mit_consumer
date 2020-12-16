@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -18,14 +18,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.12+48
 
-
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -39,7 +37,8 @@ dependencies:
   dio: ^3.0.8
   connectivity: ^0.4.8+1
   intl: ^0.16.0
-  easy_alert: ^0.0.8
+  easy_alert:
+    ^0.0.8
     #  flutter_secure_storage: ^3.3.1+1
   carousel_slider: ^1.4.1
   flutter_country_picker: ^0.1.6
@@ -54,7 +53,6 @@ dependencies:
   expandable: ^4.1.3
   dio_cookie_manager: ^1.0.0
   cookie_jar: ^1.0.1
-  google_maps_place_picker: ^0.9.4
   flutter_rating_bar: ^3.0.1+1
   firebase_messaging: ^6.0.16
   url_launcher: ^5.4.11
@@ -79,6 +77,10 @@ dependencies:
   firebase_dynamic_links: ^0.6.0+1
   share: ^0.6.5+4
   visibility_detector: ^0.1.5
+  google_maps_flutter: ^1.0.6
+  geocoder: ^0.2.1
+  uuid: ^2.2.2
+  google_maps_webservice: ^0.0.18
 
 dev_dependencies:
   flutter_test:
@@ -160,13 +162,11 @@ flutter:
     - assets/images/HeaderImage.png
     - assets/images/whatsapp.png
     - assets/images/category_placeholder.png
-
+    - assets/images/profile_placeholder.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
@@ -186,7 +186,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-
-
-

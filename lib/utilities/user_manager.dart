@@ -24,11 +24,6 @@ class UserManager {
         return user != null;
       });
 
-  Future<bool> isAddressEntered() async =>
-      await getAddressStatus().then((value) {
-        return value != null;
-      });
-
   Future<bool> isSkipPressed() async => await getSkipStatus().then((value) {
         return value != null && value == true;
       });
@@ -60,17 +55,6 @@ class UserManager {
     await prefs.setBool(skipKey, status);
   }
 
-  static Future<bool> getAddressStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool value = prefs.getBool(addressKey);
-    return value;
-  }
-
-  static Future<void> saveAddressStatus({status: bool}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(addressKey, status);
-  }
-
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String value = prefs.getString(tokenKey);
@@ -78,12 +62,20 @@ class UserManager {
     return value;
   }
 
-  static Future<Address> getAddress() async {
+  static Future<List<AddressResponse>> getAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String value = prefs.getString(userAddressKey);
     if (value == null) return null;
-    Address address = Address.fromJson(jsonDecode(value));
-    return address;
+    var data = jsonDecode(value);
+    List<AddressResponse> addressResponse = [];
+    if (data is List) {
+      data.forEach((element) {
+        addressResponse.add(AddressResponse.fromJson(element));
+      });
+    } else {
+      addressResponse.add(AddressResponse.fromJson(data));
+    }
+    return addressResponse;
   }
 
   static Future<void> saveToken({token: String}) async {
@@ -95,6 +87,11 @@ class UserManager {
   static Future<void> saveAddress({address: String}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(userAddressKey, address);
+  }
+
+  static Future<void> deleteAddress({address: String}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(userAddressKey);
   }
 
   static Future<String> getFcmToken() async {
@@ -118,13 +115,6 @@ class UserManager {
     int resp = await dbClient.delete('User');
     int res = await dbClient.insert("User", userData);
     return res;
-  }
-
-  Future<int> update() async {
-    var dbClient = await DatabaseManager().db;
-    dbClient.rawUpdate(
-      "User",
-    );
   }
 }
 

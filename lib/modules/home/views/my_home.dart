@@ -72,14 +72,14 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) async {
-            store.dispatchFuture(GetClusterDetailsAction()).then((value) async {
-              var address = await UserManager.getAddress();
-              if (address == null) {
-                store.dispatch(GetAddressAction());
-              } else {
-                store.dispatch(GetAddressFromLocal());
-              }
+            var address = await UserManager.getAddress();
+            if (address == null) {
+              store.dispatch(GetAddressAction());
+            } else {
+              store.dispatch(GetAddressFromLocal());
+            }
 
+            store.dispatchFuture(GetClusterDetailsAction()).then((value) async {
               store
                   .dispatchFuture(
                       GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl))
