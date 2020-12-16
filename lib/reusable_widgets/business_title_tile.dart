@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_delivery_status_widget.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/merchant_address_row.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -24,6 +26,7 @@ class BusinessTitleTile extends StatefulWidget {
   final Function onBackPressed;
   final Function onContactMerchantPressed;
   final Function onShowMerchantInfo;
+  final String businessId;
 
   const BusinessTitleTile(
       {@required this.businessName,
@@ -32,6 +35,7 @@ class BusinessTitleTile extends StatefulWidget {
       @required this.businessImageUrl,
       @required this.onBackPressed,
       @required this.onShowMerchantInfo,
+      @required this.businessId,
       @required this.onContactMerchantPressed,
       this.businessSubtitle = '',
       this.businessPhoneNumber,
@@ -42,7 +46,7 @@ class BusinessTitleTile extends StatefulWidget {
 }
 
 class _BusinessTitleTileState extends State<BusinessTitleTile>
-    with MerchantWidgetElementsProviderMixin {
+    with MerchantActionsProviderMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -117,17 +121,21 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const BookmarkButton(),
+                  BookmarkButton(businessId: widget.businessId,),
                   const SizedBox(
                     width: AppSizes.separatorPadding,
                   ),
-                  contactMerchantActionButton(widget.onContactMerchantPressed),
+                  ContactMerchantActionButton(
+                    onContactMerchant: widget.onContactMerchantPressed,
+                  ),
                 ],
               ),
               const SizedBox(
                 height: AppSizes.separatorPadding,
               ),
-              buildDeliveryStatus(context, widget.isDeliveryAvailable),
+              DeliveryStatusWidget(
+                deliveryStatus: widget.isDeliveryAvailable,
+              ),
             ],
           ),
         ],

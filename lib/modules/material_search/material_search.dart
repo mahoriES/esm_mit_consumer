@@ -22,13 +22,7 @@ class MaterialSearchResult<T> extends StatelessWidget {
   final Merchants merchants;
   @override
   Widget build(BuildContext context) {
-    return new StoresListView(
-      shopImage: merchants.displayPicture,
-      name: merchants.shopName,
-      items: merchants.cardViewLine2,
-      deliveryStatus: merchants.flags.contains('DELIVERY'),
-      shopClosed: merchants.flags.contains('IS_SHOP_CLOSED'),
-    );
+    return SizedBox.shrink();
   }
 }
 

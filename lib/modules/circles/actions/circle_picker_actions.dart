@@ -11,49 +11,49 @@ import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
+import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 
 class GetNearbyCirclesAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-
+    // TODO: Handle location timeout, errors, default cases gracefully!
     Location location = Location();
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
     LocationData _locationData;
 
     _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) _serviceEnabled = await location.requestService();
     if (!_serviceEnabled)
-      _serviceEnabled = await location.requestService();
-    if (!_serviceEnabled) return state.copyWith(
-        authState: state.authState.copyWith(
-        nearbyClusters: null
-    ));
+      return state.copyWith(
+          authState: state.authState.copyWith(nearbyClusters: null));
 
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-        return state.copyWith(authState: state.authState.copyWith(
-          nearbyClusters: null
-        ));
+        return state.copyWith(
+            authState: state.authState.copyWith(nearbyClusters: null));
       }
     }
-    _locationData = await location.getLocation();
 
-    if (_locationData.latitude == null || _locationData.longitude == null)
-      return state.copyWith(authState: state.authState.copyWith(
-          nearbyClusters: null
-      ));
+    ///If location fetching takes more than 20 seconds(average for A-GPS) we
+    ///stop further wait; so yeah, timeout!
+    _locationData = await location.getLocation().timeout(Duration(seconds: 20));
+
+    if (_locationData == null ||
+        _locationData.latitude == null ||
+        _locationData.longitude == null)
+      return state.copyWith(
+          authState: state.authState.copyWith(nearbyClusters: null));
     debugPrint('The location is ${_locationData.toString()}');
     var response = await APIManager.shared.request(
-      url: ApiURL.getClustersUrl,
-      requestType: RequestType.get,
-      params: {
-        "lon" : _locationData.longitude.toString(),
-        "lat" : _locationData.latitude.toString(),
-
-       }
-    );
+        url: ApiURL.getClustersUrl,
+        requestType: RequestType.get,
+        params: {
+          "lon": _locationData.longitude.toString(),
+          "lat": _locationData.latitude.toString(),
+        });
     if (response.status == ResponseStatus.success200) {
       debugPrint('Success getting nearby circles');
       List<Cluster> nearbyCircles = [];
@@ -69,36 +69,36 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
       return state.copyWith(
         authState: state.authState.copyWith(
           nearbyClusters: nearbyCircles,
-          cluster: state.authState.myClusters == null ?
-            state.authState.cluster == null ? nearbyCircles.first :
-            state.authState.cluster : state.authState.myClusters.first,
+          cluster: state.authState.myClusters == null
+              ? state.authState.cluster == null
+                  ? nearbyCircles.first
+                  : state.authState.cluster
+              : state.authState.myClusters.first,
         ),
       );
-
     } else {
       debugPrint('Error occurred fetching nearby circles');
-      return state.copyWith(authState: state.authState.copyWith(
-          nearbyClusters: null
-      ));
+      return state.copyWith(
+          authState: state.authState.copyWith(nearbyClusters: null));
     }
-
   }
 
   @override
   FutureOr<void> before() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    dispatch(ChangeNearbyCircleLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeNearbyCircleLoadingAction(false));
     super.after();
   }
 }
 
 class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
-
   final String queryText;
 
   GetSuggestionsForCircleAction({@required this.queryText});
@@ -109,13 +109,12 @@ class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
       requestType: RequestType.get,
       url: ApiURL.getClustersUrl,
       params: {
-        "search_query" : queryText,
+        "search_query": queryText,
       },
     );
 
     if (response.status == ResponseStatus.success200) {
-      if (response.data == null || response.data.isEmpty)
-        return null;
+      if (response.data == null || response.data.isEmpty) return null;
 
       List<Cluster> suggestedCircles = [];
 
@@ -127,41 +126,39 @@ class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
           suggestedClusters: suggestedCircles,
         ),
       );
-    }
-    else {
-      Fluttertoast.showToast(msg: 'Error : '
-          '${response.data['status']}');
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Error : '
+              '${response.data['status']}');
     }
     return null;
   }
-
 }
 
 class AddCircleToProfileAction extends ReduxAction<AppState> {
-
   final String circleCode;
 
   AddCircleToProfileAction({@required this.circleCode});
 
   @override
   FutureOr<AppState> reduce() async {
-
     var response = await APIManager.shared.request(
-      requestType: RequestType.post,
-      url: ApiURL.getClustersUrl,
-      params: {
-        "cluster_code" : circleCode,
-      }
-    );
+        requestType: RequestType.post,
+        url: ApiURL.getClustersUrl,
+        params: {
+          "cluster_code": circleCode,
+        });
 
     if (response.status == ResponseStatus.success200) {
       await dispatchFuture(GetClusterDetailsAction());
       await dispatchFuture(GetNearbyCirclesAction());
-      Fluttertoast.showToast(msg: 'Successfully added the circle to '
-          'profile!');
+      Fluttertoast.showToast(
+          msg: 'Successfully added the circle to '
+              'profile!');
     } else {
-      Fluttertoast.showToast(msg: 'Error : '
-          '${response.data['status']}');
+      Fluttertoast.showToast(
+          msg: 'Error : '
+              '${response.data['status']}');
     }
     return null;
   }
@@ -177,11 +174,9 @@ class AddCircleToProfileAction extends ReduxAction<AppState> {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
   }
-
 }
 
 class RemoveCircleFromProfileAction extends ReduxAction<AppState> {
-
   final String circleCode;
   final String circleId;
 
@@ -199,20 +194,19 @@ class RemoveCircleFromProfileAction extends ReduxAction<AppState> {
     debugPrint('1');
     var response = await APIManager.shared.request(
         requestType: RequestType.delete,
-        url: ApiURL.getClustersUrl+"/$circleId",
-        params: {
-          "cluster_code" : circleCode
-        }
-    );
+        url: ApiURL.getClustersUrl + "/$circleId",
+        params: {"cluster_code": circleCode});
     debugPrint('2 ${response.toString()}');
     if (response.status == ResponseStatus.success200) {
       await dispatchFuture(GetClusterDetailsAction());
       await dispatchFuture(GetNearbyCirclesAction());
-      Fluttertoast.showToast(msg: 'Successfully removed the circle from '
-          'profile!');
+      Fluttertoast.showToast(
+          msg: 'Successfully removed the circle from '
+              'profile!');
     } else {
-      Fluttertoast.showToast(msg: 'Error : '
-          '${response.data['status']}');
+      Fluttertoast.showToast(
+          msg: 'Error : '
+              '${response.data['status']}');
     }
     return null;
   }
@@ -228,5 +222,4 @@ class RemoveCircleFromProfileAction extends ReduxAction<AppState> {
     dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
     super.after();
   }
-
 }

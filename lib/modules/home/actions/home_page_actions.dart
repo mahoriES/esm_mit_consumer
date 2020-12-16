@@ -1,17 +1,23 @@
 import 'dart:async';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/address/actions/address_actions.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
+import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
+import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/my_clusters_view.dart';
+import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dynamic_link_actions.dart';
@@ -25,7 +31,10 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
         url: getUrl,
-        params: {"cluster_id": state.authState.cluster.clusterId},
+        params: {
+          "cluster_id": state.authState.cluster.clusterId,
+          "ag_cat": true
+        },
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
@@ -57,14 +66,13 @@ class GetMerchantDetails extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
+    dispatch(ChangeBusinessListLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeBusinessListLoadingAction(false));
     dispatch(GetBannerDetailsAction());
     super.after();
   }
@@ -97,6 +105,32 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
       ),
     );
   }
+}
+
+class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
+
+  @override
+  FutureOr<AppState> reduce() async {
+    if (store.state.authState.cluster == null) {
+      await store.dispatchFuture(GetClusterDetailsAction());
+      var address = await UserManager.getAddress();
+      if (address == null) {
+        store.dispatch(GetAddressAction());
+      } else {
+        store.dispatch(GetAddressFromLocal());
+      }
+      store.dispatch(
+          GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(LoadVideoFeed());
+      store.dispatch(GetHomePageCategoriesAction());
+    }
+    store.dispatch(GetCartFromLocal());
+    store.dispatch(GetUserFromLocalStorageAction());
+    store.dispatch(GetBannerDetailsAction());
+    store.dispatch(GetTopBannerImageAction());
+    return null;
+  }
+
 }
 
 class SelectMerchantDetailsByID extends ReduxAction<AppState> {
@@ -152,8 +186,8 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: "api/v1/clusters/${state.authState.cluster.clusterId}/banners",
-        params: {"": ""},
+        url: ApiURL.getBannersUrl(state.authState.cluster.clusterId),
+        params: null,
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
       throw UserException(response.data['message']);
@@ -161,7 +195,8 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       List<Photo> responseModel = [];
-      response.data.forEach((v) => responseModel.add(Photo.fromJson(v)));
+      if (response.data is List)
+        response.data.forEach((v) => responseModel.add(Photo.fromJson(v)));
 
       return state.copyWith(
           homePageState: state.homePageState.copyWith(banners: responseModel));
@@ -170,13 +205,13 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    dispatch(ChangeCircleBannersLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeCircleBannersLoadingAction(false));
     super.after();
   }
 }
@@ -197,7 +232,6 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       List<Cluster> result = [];
       response.data.forEach((item) {
         result.add(Cluster.fromJson(item));
-        debugPrint("Cluster++++++++++++++++++" + item.toString());
       });
       return state.copyWith(
           authState: state.authState.copyWith(
@@ -209,14 +243,15 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<void> before() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
+    dispatch(ChangeClusterDetailsLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
-    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+    dispatch(ChangeClusterDetailsLoadingAction(false));
+    if (state.authState.cluster == null)
+      dispatch(GetNearbyCirclesAction());
     super.after();
   }
 }
@@ -251,4 +286,44 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
             ),
             categories: []));
   }
+}
+
+class GetTopBannerImageAction extends ReduxAction<AppState> {
+
+  GetTopBannerImageAction();
+
+  @override
+  FutureOr<AppState> reduce() async {
+    var response = await APIManager.shared.request(
+      url: ApiURL.getBannersUrl(state.authState.cluster.clusterId),
+      params: {'top': true},
+      requestType: RequestType.get,
+    );
+    if (response.status == ResponseStatus.success200) {
+      Photo topBanner = Photo();
+      if (response.data is Map)
+        topBanner = Photo.fromJson(response.data);
+      return state.copyWith(
+        homePageState: state.homePageState.copyWith(
+          topBanner: topBanner,
+        ),
+      );
+    } else {
+      Fluttertoast.showToast(msg: response.data['msg']);
+    }
+    return null;
+  }
+
+  @override
+  FutureOr<void> before() {
+    dispatch(ChangeCircleTopBannerLoadingAction(true));
+    return super.before();
+  }
+
+  @override
+  void after() {
+    dispatch(ChangeCircleTopBannerLoadingAction(false));
+    super.after();
+  }
+
 }

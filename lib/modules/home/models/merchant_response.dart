@@ -1,3 +1,5 @@
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
 class GetBusinessesResponse {
@@ -48,6 +50,8 @@ class Business {
   String notice;
 
   bool hasDelivery;
+  List<OrderItems> previouslyOrderedItems;
+  List<CategoriesNew> augmentedCategories;
 
   Business(
       {this.businessId,
@@ -58,8 +62,10 @@ class Business {
       this.address,
       this.description,
       this.notice,
+      this.augmentedCategories,
       this.images,
       this.phones,
+      this.previouslyOrderedItems,
       this.hasDelivery});
 
   Business.fromJson(Map<String, dynamic> json) {
@@ -82,6 +88,18 @@ class Business {
       notice = json['notice'].toString();
     phones = json['phones'] != null ? json['phones'].cast<String>() : [];
     hasDelivery = json['has_delivery'];
+    if (json['ag_orderitems'] != null && json['ag_orderitems'] is List) {
+      previouslyOrderedItems = List<OrderItems>();
+      json['ag_orderitems'].forEach((v) {
+        previouslyOrderedItems.add(OrderItems.fromJson(v));
+      });
+    }
+    if (json['ag_cat'] != null && json['ag_cat'] is List) {
+      augmentedCategories = List<CategoriesNew>();
+      json['ag_cat'].forEach((v){
+        augmentedCategories.add(CategoriesNew.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -106,17 +124,19 @@ class Business {
   }
 
   Business.clone(Business business) : this(
-      businessId: business.businessId ?? null,
-      isBookmarked: business.isBookmarked ?? null,
-      businessName: business.businessName ?? null,
-      itemsCount: business.itemsCount ?? null,
-      isOpen: business.isOpen ?? null,
-      address: business.address ?? null,
-      description: business.description ?? null,
-      images: business.images ?? null,
+      businessId: business.businessId,
+      isBookmarked: business.isBookmarked,
+      businessName: business.businessName,
+      itemsCount: business.itemsCount,
+      isOpen: business.isOpen,
+      address: business.address,
+      description: business.description,
+      images: business.images,
       notice: business.notice,
       hasDelivery: business.hasDelivery,
-      phones: business.phones ?? null,
+      phones: business.phones,
+      augmentedCategories: business.augmentedCategories,
+      previouslyOrderedItems: business.previouslyOrderedItems
   );
 
 }

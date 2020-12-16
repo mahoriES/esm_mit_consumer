@@ -1,14 +1,26 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/redux/states/home_page_state.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 ///The [BookmarkButton] widget, is an animated button, used to show the bookmark status for the merchant
 ///It also allows toggling the status of the same for the merchant
 
 class BookmarkButton extends StatefulWidget {
-  const BookmarkButton({Key key}) : super(key: key);
+  ///Unique identity of the business
+  ///For changing the bookmark status of the required merchant is changed in the
+  ///main list of merchants held in the [HomePageState]
+  ///The ViewModels listening to that list are all rebuilt when bookmark status is altered
+  ///for any business and so are StoreConnectors and dumb-widgets.
+  final String businessId;
+
+  const BookmarkButton({Key key, @required this.businessId})
+      : assert(businessId != null),
+        super(key: key);
 
   @override
   _BookmarkButtonState createState() => _BookmarkButtonState();
@@ -38,7 +50,6 @@ class _BookmarkButtonState extends State<BookmarkButton>
   @override
   void dispose() {
     _controller.dispose();
-    debugPrint('Closing dialog');
     super.dispose();
   }
 
@@ -47,22 +58,26 @@ class _BookmarkButtonState extends State<BookmarkButton>
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          debugPrint(snapshot.isBusinessBookmarked.toString());
+          final Business business = snapshot.businesses
+              .firstWhere((element) => element.businessId == widget.businessId);
           return Container(
             child: GestureDetector(
               onTap: () {
-                snapshot.bookmarkMerchantAction();
+                snapshot.bookmarkMerchantAction(widget.businessId);
                 //When the bookmark button is tapped, we toggle the status while the animations continues
-                //this.isBookmarked = !this.isBookmarked;
                 _controller.forward();
               },
               child: Transform.scale(
                 scale: _animation.value,
                 child: Icon(
                   Icons.bookmark,
-                  color: snapshot.isBusinessBookmarked
-                      ? AppColors.blueBerry
-                      : AppColors.blueBerry.withOpacity(0.3),
+                  size: 28,
+                  color: business.isBookmarked
+                      ? CustomTheme.of(context).colors.primaryColor
+                      : CustomTheme.of(context)
+                          .colors
+                          .primaryColor
+                          .withOpacity(0.3),
                 ),
               ),
             ),
@@ -72,27 +87,30 @@ class _BookmarkButtonState extends State<BookmarkButton>
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  Function bookmarkMerchantAction;
-  bool isBusinessBookmarked;
+  Function(String) bookmarkMerchantAction;
+  List<Business> businesses;
+  LoadingStatusApp loadingStatusApp;
 
   _ViewModel();
 
-  _ViewModel.build({this.isBusinessBookmarked, this.bookmarkMerchantAction})
-      : super(equals: [
-          isBusinessBookmarked,
-        ]);
+  _ViewModel.build(
+      {this.bookmarkMerchantAction, this.businesses, this.loadingStatusApp})
+      : super(equals: [businesses, loadingStatusApp]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      isBusinessBookmarked: state.productState.selectedMerchant.isBookmarked,
-      bookmarkMerchantAction: () async {
-        if (state.productState.selectedMerchant.isBookmarked)
-          await dispatchFuture(UnBookmarkBusinessAction(
-              businessId: state.productState.selectedMerchant.businessId));
+      loadingStatusApp: state.authState.loadingStatus,
+      businesses: state.homePageState.merchants,
+      bookmarkMerchantAction: (String businessId) async {
+        final Business business = state.homePageState.merchants
+            .firstWhere((element) => element.businessId == businessId);
+        if (business.isBookmarked)
+          await dispatchFuture(
+              UnBookmarkBusinessAction(businessId: business.businessId));
         else
-          await dispatchFuture(BookmarkBusinessAction(
-              businessId: state.productState.selectedMerchant.businessId));
+          await dispatchFuture(
+              BookmarkBusinessAction(businessId: business.businessId));
       },
     );
   }

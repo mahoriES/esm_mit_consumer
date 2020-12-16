@@ -158,17 +158,17 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       requestType: RequestType.post,
     );
     if (response.status == ResponseStatus.success200) {
-      Business copiedMerchantFromState =
-          Business.clone(state.productState.selectedMerchant);
+      Business copiedMerchantFromState = Business.clone(state
+          .homePageState.merchants
+          .firstWhere((element) => element.businessId == businessId));
       copiedMerchantFromState.isBookmarked = true;
 
       List<Business> updatedHomeMerchants = [];
       for (final index
           in Iterable<int>.generate(state.homePageState.merchants.length)
               .toList()) {
-        if (index ==
-            state.homePageState.merchants
-                .indexOf(state.productState.selectedMerchant))
+        if (state.homePageState.merchants[index].businessId ==
+            copiedMerchantFromState.businessId)
           updatedHomeMerchants.add(copiedMerchantFromState);
         else
           updatedHomeMerchants.add(state.homePageState.merchants[index]);
@@ -177,8 +177,6 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       return state.copyWith(
         homePageState:
             state.homePageState.copyWith(merchants: updatedHomeMerchants),
-        productState: state.productState
-            .copyWith(selectedMerchant: copiedMerchantFromState),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
@@ -253,7 +251,6 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-
 }
 
 class UnBookmarkBusinessAction extends ReduxAction<AppState> {
@@ -270,17 +267,17 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
     );
 
     if (response.status == ResponseStatus.success200) {
-      Business copiedMerchantFromState =
-          Business.clone(state.productState.selectedMerchant);
+      Business copiedMerchantFromState = Business.clone(state
+          .homePageState.merchants
+          .firstWhere((element) => element.businessId == businessId));
       copiedMerchantFromState.isBookmarked = false;
 
       List<Business> updatedHomeMerchants = [];
       for (final index
           in Iterable<int>.generate(state.homePageState.merchants.length)
               .toList()) {
-        if (index ==
-            state.homePageState.merchants
-                .indexOf(state.productState.selectedMerchant))
+        if (state.homePageState.merchants[index].businessId ==
+            copiedMerchantFromState.businessId)
           updatedHomeMerchants.add(copiedMerchantFromState);
         else
           updatedHomeMerchants.add(state.homePageState.merchants[index]);
@@ -289,8 +286,6 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
       return state.copyWith(
         homePageState:
             state.homePageState.copyWith(merchants: updatedHomeMerchants),
-        productState: state.productState
-            .copyWith(selectedMerchant: copiedMerchantFromState),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['status']);

@@ -1,6 +1,8 @@
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/reusable_widgets/bookmark_button.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_delivery_status_widget.dart';
+import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/merchant_address_row.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
@@ -28,11 +30,13 @@ class BusinessDetailsPopup extends StatefulWidget {
   final Function onContactMerchant;
   final LocationPoint locationPoint;
   final Function onShareMerchant;
+  final String businessId;
 
   const BusinessDetailsPopup(
       {@required this.businessTitle,
       @required this.locationPoint,
       @required this.onContactMerchant,
+      @required this.businessId,
       @required this.businessPrettyAddress,
       @required this.merchantBusinessImageUrl,
       @required this.isDeliveryAvailable,
@@ -45,7 +49,7 @@ class BusinessDetailsPopup extends StatefulWidget {
 }
 
 class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
-    with SingleTickerProviderStateMixin, MerchantWidgetElementsProviderMixin {
+    with SingleTickerProviderStateMixin, MerchantActionsProviderMixin {
   AnimationController _controller;
   Animation<double> separatorPaddingAnimation;
   Animation<double> appLogoScaleAnimation;
@@ -149,8 +153,9 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                                   right: AppSizes.widgetPadding),
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: buildDeliveryStatus(
-                                    context, widget.isDeliveryAvailable),
+                                child: DeliveryStatusWidget(
+                                  deliveryStatus: widget.isDeliveryAvailable,
+                                ),
                               ),
                             ),
                           ),
@@ -158,14 +163,15 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                       ),
                       AnimatedCustomDivider(
                           scalingUnitaryValue: separatorPaddingAnimation),
-                      buildMerchantAddressRow(
-                          context,
-                          widget.businessPrettyAddress,
-                          widget.merchantPhoneNumber,
-                          widget.onContactMerchant, () {
-                        openMap(widget.locationPoint?.lat,
-                            widget.locationPoint?.lon);
-                      }),
+                      MerchantAddressRow(
+                        onOpenMap: () {
+                          openMap(widget.locationPoint?.lat,
+                              widget.locationPoint?.lon);
+                        },
+                        onContactMerchant: widget.onContactMerchant,
+                        address: widget.businessPrettyAddress,
+                        phoneNumber: widget.merchantPhoneNumber,
+                      ),
                       const SizedBox(
                         height: AppSizes.widgetPadding,
                       ),
@@ -213,8 +219,8 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const BookmarkButton(),
-                shareActionButton(widget.onShareMerchant),
+                BookmarkButton(businessId: widget.businessId,),
+                ShareBusinessActionButton(onShare: widget.onShareMerchant),
               ],
             ),
           ),
@@ -227,8 +233,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
 /// [eSamudaayAnimatedLogo] class provides a animated instance of the app logo. The class requires an
 /// [Animation] value as, hence can be customised as per need.
 
-class eSamudaayAnimatedLogo extends AnimatedWidget
-    with AppLogoVariationProviderMixin {
+class eSamudaayAnimatedLogo extends AnimatedWidget {
   final Animation<double> animation;
   final double scaledHeight;
 
@@ -238,17 +243,17 @@ class eSamudaayAnimatedLogo extends AnimatedWidget
 
   @override
   Widget build(BuildContext context) {
-    return buildCircularLogo(scaledHeight, currentHeight: animation.value);
+    return CircularAppLogo(scaledHeight: scaledHeight, currentHeight: animation.value);
   }
 }
 
-class eSamudaayLogo extends StatelessWidget with AppLogoVariationProviderMixin {
+class eSamudaayLogo extends StatelessWidget {
   final double scaledHeight;
 
   const eSamudaayLogo({@required this.scaledHeight});
 
   @override
   Widget build(BuildContext context) {
-    return buildCircularLogo(scaledHeight);
+    return CircularAppLogo(scaledHeight: scaledHeight);
   }
 }

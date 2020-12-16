@@ -38,6 +38,9 @@ class TextInputBG extends StatelessWidget {
 }
 
 class CustomDivider extends StatelessWidget {
+
+  const CustomDivider();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
