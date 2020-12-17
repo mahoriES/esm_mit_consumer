@@ -30,8 +30,7 @@ class AppState {
     this.versionString,
   });
 
-  static AppState fromJson(dynamic json) =>
-      AppState(
+  static AppState fromJson(dynamic json) => AppState(
         isLoading: json == null ? false : json["isLoading"],
         authState: json == null ? AuthState.initial() : json['authState'],
       );
@@ -43,8 +42,7 @@ class AppState {
     return data;
   }
 
-  factory AppState.initial() =>
-      AppState(
+  factory AppState.initial() => AppState(
         authState: AuthState.initial(),
         isLoading: false,
         componentsLoadingState: ComponentsLoadingState.initial(),
@@ -70,8 +68,8 @@ class AppState {
     return AppState(
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
-      componentsLoadingState: componentsLoadingState ??
-          this.componentsLoadingState,
+      componentsLoadingState:
+          componentsLoadingState ?? this.componentsLoadingState,
       isLoading: isLoading ?? this.isLoading,
       homeCategoriesState: homeCategoriesState ?? this.homeCategoriesState,
       homePageState: homePageState ?? this.homePageState,
@@ -84,17 +82,17 @@ class AppState {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AppState &&
-              runtimeType == other.runtimeType &&
-              authState == other.authState &&
-              componentsLoadingState == other.componentsLoadingState &&
-              homePageState == other.homePageState &&
-              homeCategoriesState == other.homeCategoriesState &&
-              productState == other.productState &&
-              videosState == other.videosState &&
-              isLoading == other.isLoading &&
-              addressState == other.addressState &&
-              versionString == other.versionString;
+      other is AppState &&
+          runtimeType == other.runtimeType &&
+          authState == other.authState &&
+          componentsLoadingState == other.componentsLoadingState &&
+          homePageState == other.homePageState &&
+          homeCategoriesState == other.homeCategoriesState &&
+          productState == other.productState &&
+          videosState == other.videosState &&
+          isLoading == other.isLoading &&
+          addressState == other.addressState &&
+          versionString == other.versionString;
 
   @override
   int get hashCode => authState.hashCode;

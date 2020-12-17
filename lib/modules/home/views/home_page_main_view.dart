@@ -1,8 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
-import 'package:eSamudaay/modules/address/actions/address_actions.dart';
-import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
@@ -14,23 +11,19 @@ import 'package:eSamudaay/modules/home/views/core_home_widgets/circle_banners_ca
 import 'package:eSamudaay/modules/home/views/core_home_widgets/circle_top_banner.dart';
 import 'package:eSamudaay/modules/home/views/core_home_widgets/empty_view.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
-import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/actions/categories_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_category_tile.dart';
 import 'package:eSamudaay/reusable_widgets/plain_business_tile.dart';
 import 'package:eSamudaay/reusable_widgets/shimmering_view.dart';
-import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePageMainView extends StatefulWidget {
@@ -56,23 +49,23 @@ class _HomePageMainViewState extends State<HomePageMainView> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(134 / 375 * SizeConfig.screenWidth),
           child: StoreConnector<AppState, _ViewModel>(
-              model: _ViewModel(),
-              builder: (context, snapshot) {
-                if (snapshot?.topBanner?.photoUrl == null &&
-                    snapshot.shouldShowLoading) return SizedBox.shrink();
-                return CircleTopBannerView(
-                    imageUrl: snapshot?.topBanner?.photoUrl ?? '',
-                    circleName: snapshot?.cluster?.clusterName ?? '',
-                    onTapCircleButton: () {
-                      snapshot.changeSelectedCircle(
-                          ApiURL.getBusinessesUrl, context);
-                    });
-              },),
+            model: _ViewModel(),
+            builder: (context, snapshot) {
+              if (snapshot?.topBanner?.photoUrl == null &&
+                  snapshot.shouldShowLoading) return SizedBox.shrink();
+              return CircleTopBannerView(
+                  imageUrl: snapshot?.topBanner?.photoUrl ?? '',
+                  circleName: snapshot?.cluster?.clusterName ?? '',
+                  onTapCircleButton: () {
+                    snapshot.changeSelectedCircle(
+                        ApiURL.getBusinessesUrl, context);
+                  });
+            },
+          ),
         ),
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             onInit: (snapshot) async {
-              store.dispatch(HomePageMultipleDispatcherAction());
               debugPrint(
                   'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
               if (!DynamicLinkService().isDynamicLinkInitialized) {
@@ -90,9 +83,9 @@ class _HomePageMainViewState extends State<HomePageMainView> {
                 footer: CustomFooter(
                   builder: (BuildContext context, LoadStatus mode) {
                     if (mode == LoadStatus.loading)
-                      return CupertinoActivityIndicator();
+                      return const CupertinoActivityIndicator();
                     else
-                      return SizedBox.shrink();
+                      return const SizedBox.shrink();
                   },
                 ),
                 controller: _refreshController,
@@ -307,17 +300,16 @@ class _ViewModel extends BaseModel<AppState> {
           state.componentsLoadingState.circleCategoriesLoading ||
           state.componentsLoadingState.circleTopBannerLoading ||
           state.componentsLoadingState.circleBannersLoading ||
-          state.componentsLoadingState.businessListLoading ||
+          (state.componentsLoadingState.businessListLoading &&
+              !(state.homePageState.response.previous != null ||
+                  state.homePageState.response.next != null)) ||
           state.componentsLoadingState.videosLoading,
     );
   }
 
   Future<void> onRefresh() async {
-    if (response.previous != null) {
-    } else {
-      await getMerchantList(ApiURL.getBusinessesUrl);
-      loadVideoFeed();
-    }
+    getMerchantList(ApiURL.getBusinessesUrl);
+    loadVideoFeed();
   }
 
   Future<void> onLoading() async {

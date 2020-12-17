@@ -7,6 +7,8 @@ import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 
+//TODO: This button shall be modified to make sure that bookmark button shows false for businesses not present in DS. No convoluted handling required
+
 ///The [BookmarkButton] widget, is an animated button, used to show the bookmark status for the merchant
 ///It also allows toggling the status of the same for the merchant
 
@@ -58,8 +60,8 @@ class _BookmarkButtonState extends State<BookmarkButton>
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          final Business business = snapshot.businesses
-              .firstWhere((element) => element.businessId == widget.businessId);
+          final Business business =
+              snapshot.businessesDataSource[widget.businessId];
           return Container(
             child: GestureDetector(
               onTap: () {
@@ -88,29 +90,31 @@ class _BookmarkButtonState extends State<BookmarkButton>
 
 class _ViewModel extends BaseModel<AppState> {
   Function(String) bookmarkMerchantAction;
-  List<Business> businesses;
+  Map<String, Business> businessesDataSource;
   LoadingStatusApp loadingStatusApp;
 
   _ViewModel();
 
   _ViewModel.build(
-      {this.bookmarkMerchantAction, this.businesses, this.loadingStatusApp})
-      : super(equals: [businesses, loadingStatusApp]);
+      {this.bookmarkMerchantAction,
+      this.businessesDataSource,
+      this.loadingStatusApp})
+      : super(equals: [businessesDataSource, loadingStatusApp]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
       loadingStatusApp: state.authState.loadingStatus,
-      businesses: state.homePageState.merchants,
+      businessesDataSource: state.homePageState.businessDS,
       bookmarkMerchantAction: (String businessId) async {
-        final Business business = state.homePageState.merchants
-            .firstWhere((element) => element.businessId == businessId);
+        final Business business =
+            state.homePageState.businessDS[businessId];
         if (business.isBookmarked)
           await dispatchFuture(
-              UnBookmarkBusinessAction(businessId: business.businessId));
+              UnBookmarkBusinessAction(businessId: businessId));
         else
           await dispatchFuture(
-              BookmarkBusinessAction(businessId: business.businessId));
+              BookmarkBusinessAction(businessId: businessId));
       },
     );
   }

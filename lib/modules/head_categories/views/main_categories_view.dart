@@ -34,7 +34,6 @@ class _BusinessesListUnderSelectedCategoryScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
@@ -99,9 +98,9 @@ class _BusinessesListUnderSelectedCategoryScreenState
                     footer: CustomFooter(
                       builder: (context, loadStatus) {
                         if (loadStatus == LoadStatus.loading)
-                          return CupertinoActivityIndicator();
+                          return const CupertinoActivityIndicator();
                         else
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                       },
                     ),
                     child: Padding(
@@ -182,37 +181,40 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-        showShimmering:
-            state.componentsLoadingState.businessesUnderCategoryLoading,
-        businessesResponse: state.homeCategoriesState.currentBusinessResponse,
-        selectedCategory: state.homeCategoriesState.selectedCategory,
-        previouslyBoughtBusinessesUnderSelectedCategory: state
-            .homeCategoriesState.previouslyBoughtBusinessUnderSelectedCategory,
-        businessesUnderSelectedCategory:
-            state.homeCategoriesState.businessesUnderSelectedCategory,
-        navigateToBusiness: (business) {
-          dispatch(UpdateSelectedMerchantAction(selectedMerchant: business));
-          dispatch(ResetCatalogueAction());
-          dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
-        },
-        getBusinessesList: (getUrl, bCatId) async {
-          await dispatchFuture(GetBusinessesUnderSelectedCategory(
-              getBusinessesUrl: getUrl, categoryId: bCatId));
-        },);
+      showShimmering: state
+              .componentsLoadingState.businessesUnderCategoryLoading &&
+          !(state.homeCategoriesState.currentBusinessResponse.previous !=
+                  null ||
+              state.homeCategoriesState.currentBusinessResponse.next != null),
+      businessesResponse: state.homeCategoriesState.currentBusinessResponse,
+      selectedCategory: state.homeCategoriesState.selectedCategory,
+      previouslyBoughtBusinessesUnderSelectedCategory: state
+          .homeCategoriesState.previouslyBoughtBusinessUnderSelectedCategory,
+      businessesUnderSelectedCategory:
+          state.homeCategoriesState.businessesUnderSelectedCategory,
+      navigateToBusiness: (business) {
+        dispatch(UpdateSelectedMerchantAction(selectedMerchant: business));
+        dispatch(ResetCatalogueAction());
+        dispatch(NavigateAction.pushNamed('/StoreDetailsView'));
+      },
+      getBusinessesList: (getUrl, bCatId) async {
+        await dispatchFuture(GetBusinessesUnderSelectedCategory(
+            getBusinessesUrl: getUrl, categoryId: bCatId));
+      },
+    );
   }
 
-  Future<void> onRefreshOuter() async{
+  Future<void> onRefreshOuter() async {
     if (businessesResponse.previous == null) {
-      await getBusinessesList(ApiURL.getBusinessesUrl,
-          selectedCategory.categoryId.toString());
+      await getBusinessesList(
+          ApiURL.getBusinessesUrl, selectedCategory.categoryId.toString());
     }
   }
 
   Future<void> onLoadingOuter() async {
     if (businessesResponse.next != null) {
-      await getBusinessesList(businessesResponse.next,
-          selectedCategory.categoryId.toString());
+      await getBusinessesList(
+          businessesResponse.next, selectedCategory.categoryId.toString());
     }
   }
-
 }

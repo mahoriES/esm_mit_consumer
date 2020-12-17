@@ -50,7 +50,7 @@ class GetMerchantDetails extends ReduxAction<AppState> {
         var businessList = state.homePageState.merchants;
         responseModel.results = businessList + responseModel.results;
       }
-
+      dispatch(UpdateBusinessesDataStructureAction(responseModel.results));
       if (merchants.isNotEmpty) {
         return state.copyWith(
             homePageState: state.homePageState.copyWith(
@@ -60,7 +60,8 @@ class GetMerchantDetails extends ReduxAction<AppState> {
       }
       return state.copyWith(
           homePageState: state.homePageState.copyWith(
-              merchants: responseModel.results, response: responseModel));
+              merchants: responseModel.results,
+              response: responseModel));
     }
   }
 
@@ -73,7 +74,6 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   @override
   void after() {
     dispatch(ChangeBusinessListLoadingAction(false));
-    dispatch(GetBannerDetailsAction());
     super.after();
   }
 }
@@ -106,8 +106,10 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
     );
   }
 }
-
-class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
+///This action is dispatched on init of application. It hits mutiple APIs and makes
+///things ready for the home page screen.
+///This should be called elsewhere but only ONCE when app starts up
+class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     // adress must be fetched isrrespective of cluster is null or not.
@@ -117,7 +119,6 @@ class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
     } else {
       store.dispatch(GetAddressFromLocal());
     }
-
 
     if (store.state.authState.cluster == null) {
       await store.dispatchFuture(GetClusterDetailsAction());
@@ -132,7 +133,6 @@ class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
     store.dispatch(GetTopBannerImageAction());
     return null;
   }
-
 }
 
 class SelectMerchantDetailsByID extends ReduxAction<AppState> {
@@ -252,8 +252,7 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   @override
   void after() {
     dispatch(ChangeClusterDetailsLoadingAction(false));
-    if (state.authState.cluster == null)
-      dispatch(GetNearbyCirclesAction());
+    if (state.authState.cluster == null) dispatch(GetNearbyCirclesAction());
     super.after();
   }
 }
@@ -291,7 +290,6 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
 }
 
 class GetTopBannerImageAction extends ReduxAction<AppState> {
-
   GetTopBannerImageAction();
 
   @override
@@ -303,8 +301,7 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
     );
     if (response.status == ResponseStatus.success200) {
       Photo topBanner = Photo();
-      if (response.data is Map)
-        topBanner = Photo.fromJson(response.data);
+      if (response.data is Map) topBanner = Photo.fromJson(response.data);
       return state.copyWith(
         homePageState: state.homePageState.copyWith(
           topBanner: topBanner,
@@ -327,5 +324,4 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
     dispatch(ChangeCircleTopBannerLoadingAction(false));
     super.after();
   }
-
 }

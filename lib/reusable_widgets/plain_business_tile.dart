@@ -7,6 +7,7 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
@@ -58,7 +59,6 @@ class HybridBusinessTileConnector extends StatelessWidget {
     }
     return highlightedItemsList;
   }
-
 }
 
 ///This class should be used only via it's connector [HybridBusinessTileConnector]
@@ -92,33 +92,34 @@ class HybridBusinessTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        type: MaterialType.transparency,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          decoration: BoxDecoration(
-              color: CustomTheme.of(context).colors.backgroundColor,
-              borderRadius: BorderRadius.circular(9),
-              boxShadow: [
-                BoxShadow(
-                    color: CustomTheme.of(context)
-                        .colors
-                        .shadowColor16,
-                    offset: const Offset(0, 3.0),
-                    blurRadius: 6.0),
-              ]),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (highlightedItemsList != null &&
-                  highlightedItemsList.isNotEmpty) ...[
-                HighlightedItemHorizontalCarouselViewer(
-                  highlightedItemsList: highlightedItemsList,
-                ),
-                const CustomDivider(),
-              ],
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+      type: MaterialType.transparency,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+        decoration: BoxDecoration(
+            color: CustomTheme.of(context).colors.backgroundColor,
+            borderRadius: BorderRadius.circular(9),
+            boxShadow: [
+              BoxShadow(
+                  color: CustomTheme.of(context).colors.shadowColor16,
+                  offset: const Offset(0, 3.0),
+                  blurRadius: 6.0),
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (highlightedItemsList != null &&
+                highlightedItemsList.isNotEmpty) ...[
+              HighlightedItemHorizontalCarouselViewer(
+                highlightedItemsList: highlightedItemsList,
+              ),
+              const CustomDivider(),
+            ],
+            SizedBox(
+              width: SizeConfig.screenWidth,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 0.168 * SizeConfig.screenWidth,
@@ -129,22 +130,29 @@ class HybridBusinessTile extends StatelessWidget {
                           ShapeDecoration(shape: CircleBorder(), shadows: [
                         BoxShadow(
                           blurRadius: 6,
-                          color: CustomTheme.of(context)
-                              .colors
-                              .shadowColor16,
+                          color: CustomTheme.of(context).colors.shadowColor16,
                         )
                       ]),
-                      child: CachedNetworkImage(
-                        imageUrl: businessImageUrl ?? '',
-                        errorWidget: (_, __, ___) =>
-                            Image.asset('assets/images/shop1.png'),
-                        fit: BoxFit.cover,
+                      child: Container(
+                        color: CustomTheme.of(context).colors.backgroundColor,
+                        child: CachedNetworkImage(
+                          imageUrl: businessImageUrl ?? '',
+                          placeholder: (
+                            _,
+                            __,
+                          ) =>
+                              const CupertinoActivityIndicator(),
+                          errorWidget: (_, __, ___) =>
+                              Image.asset('assets/images/shop1.png'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
                   itemPadding,
                   Expanded(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -159,6 +167,7 @@ class HybridBusinessTile extends StatelessWidget {
                         ),
                         Text(
                           businessSubtitle ?? ' ',
+                          maxLines: 2,
                           style: CustomTheme.of(context).textStyles.body1,
                         ),
                         const SizedBox(
@@ -179,16 +188,19 @@ class HybridBusinessTile extends StatelessWidget {
                         height: AppSizes.widgetPadding,
                       ),
                       Text(
-                        goToShopActionTitle ?? 'VIEW SHOP',
+                        goToShopActionTitle ??
+                            tr('home_stores_categories.view_shop').toUpperCase(),
                         style: CustomTheme.of(context).textStyles.buttonText2,
                       ),
                     ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget get itemPadding => const SizedBox(
@@ -256,34 +268,29 @@ class HighlightedItemTile extends StatelessWidget {
             Container(
                 decoration: ShapeDecoration(shape: CircleBorder(), shadows: [
                   BoxShadow(
-                      color: CustomTheme.of(context)
-                          .colors
-                          .shadowColor16,
+                      color: CustomTheme.of(context).colors.shadowColor16,
                       offset: const Offset(0, 3.0),
                       blurRadius: 3.0),
                 ]),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(imageSide / 2),
-                  child: SizedBox(
-                    height: imageSide,
-                    width: imageSide,
-                    child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: item.itemImageUrl ?? "",
-                        placeholder: (context, url) =>
-                            CupertinoActivityIndicator(),
-                        errorWidget: (context, url, error) => Container(
-                              decoration: ShapeDecoration(
-                                color: CustomTheme.of(context).colors.backgroundColor,
-                                shape: CircleBorder(),
-                              ),
-                              child: Center(
+                  child: Container(
+                    color: CustomTheme.of(context).colors.backgroundColor,
+                    child: SizedBox(
+                      height: imageSide,
+                      width: imageSide,
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: item.itemImageUrl ?? "",
+                          placeholder: (context, url) =>
+                              CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) => Center(
                                 child: Icon(
                                   Icons.image,
                                   size: AppSizes.productItemIconSize,
                                 ),
-                              ),
-                            )),
+                              )),
+                    ),
                   ),
                 )),
             const SizedBox(

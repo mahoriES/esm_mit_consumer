@@ -48,7 +48,6 @@ class GetHomePageCategoriesAction extends ReduxAction<AppState> {
     dispatch(ChangeCircleCategoriesLoadingAction(false));
     super.after();
   }
-
 }
 
 ///Executed prior to navigating to [BusinessesListUnderSelectedCategoryScreen] screen to view businesses selling products
@@ -83,7 +82,7 @@ class ClearPreviousCategoryDetailsAction extends ReduxAction<AppState> {
   }
 }
 
-///Fetches the list of businesses (augmented with list od
+///Fetches the list of businesses (augmented with list order items)
 class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
   GetPreviouslyBoughtBusinessesListAction();
 
@@ -188,7 +187,8 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
             (response.data['results'] as List).map((v) {
           return Business.fromJson(v);
         }).toList();
-
+        dispatch(UpdateBusinessesDataStructureAction(
+            businessesUnderSelectedCategory));
         if (getBusinessesUrl != ApiURL.getBusinessesUrl &&
             state.homeCategoriesState.businessesUnderSelectedCategory
                 .isNotEmpty) {
@@ -227,7 +227,37 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
     dispatch(ChangeBusinessUnderCategoryLoadingAction(false));
     super.after();
   }
+}
 
+///
+/// This action accepts a list of [Business] and prepares a Map<String, Business>
+/// from it, which is then merged into the existing Business Data Structure.
+///
+class UpdateBusinessesDataStructureAction extends ReduxAction<AppState> {
+  ///List of businesses supplied
+  final List<Business> toBeAppendedList;
+
+  UpdateBusinessesDataStructureAction(this.toBeAppendedList);
+
+  @override
+  FutureOr<AppState> reduce() {
+    final Map<String, Business> toBeAppendedMap = {};
+    //Preparing map
+    toBeAppendedList.forEach((element) {
+      toBeAppendedMap.addAll({element.businessId: element});
+    });
+    //Cloning of existing elements in the store data structure
+    final Map<String, Business> existingDataElements =
+        Map.from(state.homePageState.businessDS);
+    final Map<String, Business> createdDataStructure = [
+      existingDataElements,
+      toBeAppendedMap,
+    ].reduce((map1, map2) => map1..addAll(map2));
+    return state.copyWith(
+        homePageState: state.homePageState.copyWith(
+      businessDS: createdDataStructure,
+    ));
+  }
 }
 
 class ChangeVideoFeedLoadingAction extends ReduxAction<AppState> {
@@ -321,7 +351,6 @@ class ChangeNearbyCircleLoadingAction extends ReduxAction<AppState> {
 }
 
 class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
-
   final bool value;
 
   ChangeBusinessUnderCategoryLoadingAction(this.value);
@@ -337,7 +366,6 @@ class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
 }
 
 class ChangeClusterDetailsLoadingAction extends ReduxAction<AppState> {
-
   final bool value;
 
   ChangeClusterDetailsLoadingAction(this.value);
