@@ -37,8 +37,6 @@ class _BusinessesListUnderSelectedCategoryScreenState
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
-          debugPrint(
-              'Datasource Count ${store.state.homePageState.businessDS.length}');
           store.dispatch(ClearPreviousCategoryDetailsAction());
           final String bCatId = store
               .state.homeCategoriesState.selectedCategory.categoryId
