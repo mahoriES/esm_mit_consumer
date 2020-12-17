@@ -132,6 +132,8 @@ class Product {
   String get firstSkuPrice =>
       _firstSku?.basePrice?.paisaToRupee?.withRupeePrefix;
 
+  bool get hasImages => this.images != null && this.images.isNotEmpty;
+
   String get firstImageUrl => this.images == null || this.images.isEmpty
       ? ""
       : (this.images.first?.photoUrl ?? "");

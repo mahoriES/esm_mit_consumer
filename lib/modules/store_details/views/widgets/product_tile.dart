@@ -18,7 +18,6 @@ class ProductTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.toWidth),
-      height: 100.toHeight,
       width: double.infinity,
       child: Row(
         children: [
@@ -27,33 +26,36 @@ class ProductTile extends StatelessWidget {
               onTap: navigateToDetails,
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: Container(
-                      height: 100.toHeight,
-                      width: 100.toHeight,
-                      color: CustomTheme.of(context).colors.placeHolderColor,
-                      child: CachedNetworkImage(
-                        imageUrl: product.firstImageUrl,
+                  if (product.hasImages) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Container(
                         height: 100.toHeight,
                         width: 100.toHeight,
-                        placeholder: (context, url) =>
-                            CupertinoActivityIndicator(),
-                        errorWidget: (context, url, error) => Icon(
-                          Icons.image,
-                          size: 30.toFont,
+                        color: CustomTheme.of(context).colors.placeHolderColor,
+                        child: CachedNetworkImage(
+                          imageUrl: product.firstImageUrl,
+                          height: 100.toHeight,
+                          width: 100.toHeight,
+                          placeholder: (context, url) =>
+                              CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) => Icon(
+                            Icons.image,
+                            size: 30.toFont,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                   Expanded(
                     child: Container(
                       padding: EdgeInsets.only(
-                        left: 18.toWidth,
+                        left: product.hasImages ? 18.toWidth : 0,
                         top: 10.toHeight,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             product.productName,
