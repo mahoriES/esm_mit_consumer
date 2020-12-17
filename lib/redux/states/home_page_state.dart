@@ -7,6 +7,14 @@ class HomePageState {
   final GetBusinessesResponse response;
   final LoadingStatusApp loadingStatus;
   final List<Business> merchants;
+  ///This Map is a data structure which holds the master business lists
+  ///All the businesses under Certain Category, Main Page Businesses, Previously bought
+  ///under category etc. would be put in this structure, and used from here.
+  ///For now, the bookmark button checks and updates the bookmark status for the
+  ///businesses in this structure itself.
+  ///
+  /// Moving forward, merchnats would be segregated in list of Business IDs lists,
+  /// and the actual [Business] would be grabbed from here.
   final Map<String, Business> businessDS;
   final String homePageLoadedDate;
   final int currentIndex;

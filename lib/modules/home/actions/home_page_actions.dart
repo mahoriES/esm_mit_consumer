@@ -106,8 +106,10 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
     );
   }
 }
-
-class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
+///This action is dispatched on init of application. It hits mutiple APIs and makes
+///things ready for the home page screen.
+///This should be called elsewhere but only ONCE when app starts up
+class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     // adress must be fetched isrrespective of cluster is null or not.

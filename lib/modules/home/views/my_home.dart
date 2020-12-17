@@ -65,7 +65,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) {
-            store.dispatch(HomePageMultipleDispatcherAction());
+            store.dispatch(HomePageOnInitMultipleDispatcherAction());
           },
           builder: (context, snapshot) {
             return BottomNavigationBar(

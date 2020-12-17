@@ -7,6 +7,7 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
@@ -58,7 +59,6 @@ class HybridBusinessTileConnector extends StatelessWidget {
     }
     return highlightedItemsList;
   }
-
 }
 
 ///This class should be used only via it's connector [HybridBusinessTileConnector]
@@ -92,113 +92,116 @@ class HybridBusinessTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        type: MaterialType.transparency,
-        child: Container(
-          constraints: BoxConstraints(maxWidth: SizeConfig.screenWidth),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          decoration: BoxDecoration(
-              color: CustomTheme.of(context).colors.backgroundColor,
-              borderRadius: BorderRadius.circular(9),
-              boxShadow: [
-                BoxShadow(
-                    color: CustomTheme.of(context)
-                        .colors
-                        .shadowColor16,
-                    offset: const Offset(0, 3.0),
-                    blurRadius: 6.0),
-              ]),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (highlightedItemsList != null &&
-                  highlightedItemsList.isNotEmpty) ...[
-                HighlightedItemHorizontalCarouselViewer(
-                  highlightedItemsList: highlightedItemsList,
-                ),
-                const CustomDivider(),
-              ],
-              SizedBox(width: SizeConfig.screenWidth,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 0.168 * SizeConfig.screenWidth,
-                      width: 0.168 * SizeConfig.screenWidth,
+      type: MaterialType.transparency,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: SizeConfig.screenWidth),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+        decoration: BoxDecoration(
+            color: CustomTheme.of(context).colors.backgroundColor,
+            borderRadius: BorderRadius.circular(9),
+            boxShadow: [
+              BoxShadow(
+                  color: CustomTheme.of(context).colors.shadowColor16,
+                  offset: const Offset(0, 3.0),
+                  blurRadius: 6.0),
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (highlightedItemsList != null &&
+                highlightedItemsList.isNotEmpty) ...[
+              HighlightedItemHorizontalCarouselViewer(
+                highlightedItemsList: highlightedItemsList,
+              ),
+              const CustomDivider(),
+            ],
+            SizedBox(
+              width: SizeConfig.screenWidth,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 0.168 * SizeConfig.screenWidth,
+                    width: 0.168 * SizeConfig.screenWidth,
+                    child: Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration:
+                          ShapeDecoration(shape: CircleBorder(), shadows: [
+                        BoxShadow(
+                          blurRadius: 6,
+                          color: CustomTheme.of(context).colors.shadowColor16,
+                        )
+                      ]),
                       child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration:
-                            ShapeDecoration(shape: CircleBorder(), shadows: [
-                          BoxShadow(
-                            blurRadius: 6,
-                            color: CustomTheme.of(context)
-                                .colors
-                                .shadowColor16,
-                          )
-                        ]),
-                        child: Container(
-                          color: CustomTheme.of(context).colors.backgroundColor,
-                          child: CachedNetworkImage(
-                            imageUrl: businessImageUrl ?? '',
-                            placeholder: (_,__,) => const CupertinoActivityIndicator(),
-                            errorWidget: (_, __, ___) =>
-                                Image.asset('assets/images/shop1.png'),
-                            fit: BoxFit.cover,
-                          ),
+                        color: CustomTheme.of(context).colors.backgroundColor,
+                        child: CachedNetworkImage(
+                          imageUrl: businessImageUrl ?? '',
+                          placeholder: (
+                            _,
+                            __,
+                          ) =>
+                              const CupertinoActivityIndicator(),
+                          errorWidget: (_, __, ___) =>
+                              Image.asset('assets/images/shop1.png'),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    itemPadding,
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            businessTitle ?? ' ',
-                            style: CustomTheme.of(context)
-                                .textStyles
-                                .cardTitle
-                                .copyWith(fontSize: 16),
-                          ),
-                          const SizedBox(
-                            height: AppSizes.separatorPadding / 2,
-                          ),
-                          Text(
-                            businessSubtitle ?? ' ',
-                            maxLines: 2,
-                            style: CustomTheme.of(context).textStyles.body1,
-                          ),
-                          const SizedBox(
-                            height: AppSizes.separatorPadding / 2,
-                          ),
-                          DeliveryStatusWidget(
-                              deliveryStatus: isDeliveryAvailable),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                  itemPadding,
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        BookmarkButton(
-                          businessId: businessId,
+                        Text(
+                          businessTitle ?? ' ',
+                          style: CustomTheme.of(context)
+                              .textStyles
+                              .cardTitle
+                              .copyWith(fontSize: 16),
                         ),
                         const SizedBox(
-                          height: AppSizes.widgetPadding,
+                          height: AppSizes.separatorPadding / 2,
                         ),
                         Text(
-                          goToShopActionTitle ?? 'VIEW SHOP',
-                          style: CustomTheme.of(context).textStyles.buttonText2,
+                          businessSubtitle ?? ' ',
+                          maxLines: 2,
+                          style: CustomTheme.of(context).textStyles.body1,
                         ),
+                        const SizedBox(
+                          height: AppSizes.separatorPadding / 2,
+                        ),
+                        DeliveryStatusWidget(
+                            deliveryStatus: isDeliveryAvailable),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BookmarkButton(
+                        businessId: businessId,
+                      ),
+                      const SizedBox(
+                        height: AppSizes.widgetPadding,
+                      ),
+                      Text(
+                        goToShopActionTitle ??
+                            tr('home_stores_categories.view_shop').toUpperCase(),
+                        style: CustomTheme.of(context).textStyles.buttonText2,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),);
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget get itemPadding => const SizedBox(
@@ -266,9 +269,7 @@ class HighlightedItemTile extends StatelessWidget {
             Container(
                 decoration: ShapeDecoration(shape: CircleBorder(), shadows: [
                   BoxShadow(
-                      color: CustomTheme.of(context)
-                          .colors
-                          .shadowColor16,
+                      color: CustomTheme.of(context).colors.shadowColor16,
                       offset: const Offset(0, 3.0),
                       blurRadius: 3.0),
                 ]),
@@ -285,11 +286,11 @@ class HighlightedItemTile extends StatelessWidget {
                           placeholder: (context, url) =>
                               CupertinoActivityIndicator(),
                           errorWidget: (context, url, error) => Center(
-                            child: Icon(
-                              Icons.image,
-                              size: AppSizes.productItemIconSize,
-                            ),
-                          )),
+                                child: Icon(
+                                  Icons.image,
+                                  size: AppSizes.productItemIconSize,
+                                ),
+                              )),
                     ),
                   ),
                 )),
