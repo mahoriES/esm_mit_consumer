@@ -144,13 +144,17 @@ class Business {
 class AddressNew {
   String prettyAddress;
   LocationPoint locationPoint;
+  GeoAddr geoAddr;
 
-  AddressNew({this.prettyAddress, this.locationPoint});
+  AddressNew({this.prettyAddress, this.locationPoint, this.geoAddr});
 
   AddressNew.fromJson(Map<String, dynamic> json) {
     prettyAddress = json['pretty_address'];
     locationPoint = json['location_point'] != null
         ? new LocationPoint.fromJson(json['location_point'])
+        : null;
+    geoAddr = json['geo_addr'] != null
+        ? new GeoAddr.fromJson(json['geo_addr'])
         : null;
   }
 
@@ -160,6 +164,34 @@ class AddressNew {
     if (this.locationPoint != null) {
       data['location_point'] = this.locationPoint.toJson();
     }
+    if (this.geoAddr != null) {
+      data['geo_addr'] = this.geoAddr.toJson();
+    }
+    return data;
+  }
+}
+
+class GeoAddr {
+  String pincode;
+  String city;
+  String landmark;
+  String house;
+
+  GeoAddr({this.pincode, this.city, this.house, this.landmark});
+
+  GeoAddr.fromJson(Map<String, dynamic> json) {
+    pincode = json['pincode'];
+    city = json['city'];
+    landmark = json['landmark'];
+    house = json['house'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['pincode'] = this.pincode;
+    data['city'] = this.city;
+    data['landmark'] = this.landmark;
+    data['house'] = this.house;
     return data;
   }
 }
