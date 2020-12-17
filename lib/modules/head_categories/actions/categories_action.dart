@@ -229,7 +229,12 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
   }
 }
 
+///
+/// This action accepts a list of [Business] and prepares a Map<String, Business>
+/// from it, which is then merged into the existing Business Data Structure.
+///
 class UpdateBusinessesDataStructureAction extends ReduxAction<AppState> {
+  ///List of businesses supplied
   final List<Business> toBeAppendedList;
 
   UpdateBusinessesDataStructureAction(this.toBeAppendedList);
@@ -237,9 +242,11 @@ class UpdateBusinessesDataStructureAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     final Map<String, Business> toBeAppendedMap = {};
+    //Preparing map
     toBeAppendedList.forEach((element) {
       toBeAppendedMap.addAll({element.businessId: element});
     });
+    //Cloning of existing elements in the store data structure
     final Map<String, Business> existingDataElements =
         Map.from(state.homePageState.businessDS);
     final Map<String, Business> createdDataStructure = [
