@@ -1,7 +1,6 @@
 import 'package:eSamudaay/redux/states/components_loading_state.dart';
 import 'package:eSamudaay/redux/states/address_state.dart';
 import 'package:eSamudaay/redux/states/home_page_state.dart';
-import 'package:eSamudaay/redux/states/master_data_state.dart';
 import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/redux/states/videos_state.dart';

@@ -48,7 +48,6 @@ class GetHomePageCategoriesAction extends ReduxAction<AppState> {
     dispatch(ChangeCircleCategoriesLoadingAction(false));
     super.after();
   }
-
 }
 
 ///Executed prior to navigating to [BusinessesListUnderSelectedCategoryScreen] screen to view businesses selling products
@@ -83,7 +82,7 @@ class ClearPreviousCategoryDetailsAction extends ReduxAction<AppState> {
   }
 }
 
-///Fetches the list of businesses (augmented with list od
+///Fetches the list of businesses (augmented with list order items)
 class GetPreviouslyBoughtBusinessesListAction extends ReduxAction<AppState> {
   GetPreviouslyBoughtBusinessesListAction();
 
@@ -188,16 +187,8 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
             (response.data['results'] as List).map((v) {
           return Business.fromJson(v);
         }).toList();
-        final Map<String, Business> mapOfResults = {};
-        businessesUnderSelectedCategory.forEach((element) {
-          mapOfResults.addAll({element.businessId:element});
-        });
-        final Map<String, Business> existingDataElements =
-        Map.from(state.homePageState.businessDS);
-        final Map<String, Business> createdDataStructure = [
-          mapOfResults,
-          existingDataElements
-        ].reduce((map1, map2) => map1..addAll(map2));
+        dispatch(UpdateBusinessesDataStructureAction(
+            businessesUnderSelectedCategory));
         if (getBusinessesUrl != ApiURL.getBusinessesUrl &&
             state.homeCategoriesState.businessesUnderSelectedCategory
                 .isNotEmpty) {
@@ -206,9 +197,6 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
           final List<Business> joinedListOfBusinesses =
               previousBusinesses + businessesUnderSelectedCategory;
           return state.copyWith(
-            homePageState: state.homePageState.copyWith(
-              businessDS: createdDataStructure
-            ),
             homeCategoriesState: state.homeCategoriesState.copyWith(
               businessesUnderSelectedCategory: joinedListOfBusinesses,
               currentBusinessResponse: businessesResponse,
@@ -216,9 +204,6 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
           );
         }
         return state.copyWith(
-          homePageState: state.homePageState.copyWith(
-            businessDS: createdDataStructure
-          ),
           homeCategoriesState: state.homeCategoriesState.copyWith(
             businessesUnderSelectedCategory: businessesUnderSelectedCategory,
             currentBusinessResponse: businessesResponse,
@@ -242,7 +227,30 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
     dispatch(ChangeBusinessUnderCategoryLoadingAction(false));
     super.after();
   }
+}
 
+class UpdateBusinessesDataStructureAction extends ReduxAction<AppState> {
+  final List<Business> toBeAppendedList;
+
+  UpdateBusinessesDataStructureAction(this.toBeAppendedList);
+
+  @override
+  FutureOr<AppState> reduce() {
+    final Map<String, Business> toBeAppendedMap = {};
+    toBeAppendedList.forEach((element) {
+      toBeAppendedMap.addAll({element.businessId: element});
+    });
+    final Map<String, Business> existingDataElements =
+        Map.from(state.homePageState.businessDS);
+    final Map<String, Business> createdDataStructure = [
+      existingDataElements,
+      toBeAppendedMap,
+    ].reduce((map1, map2) => map1..addAll(map2));
+    return state.copyWith(
+        homePageState: state.homePageState.copyWith(
+      businessDS: createdDataStructure,
+    ));
+  }
 }
 
 class ChangeVideoFeedLoadingAction extends ReduxAction<AppState> {
@@ -336,7 +344,6 @@ class ChangeNearbyCircleLoadingAction extends ReduxAction<AppState> {
 }
 
 class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
-
   final bool value;
 
   ChangeBusinessUnderCategoryLoadingAction(this.value);
@@ -352,7 +359,6 @@ class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
 }
 
 class ChangeClusterDetailsLoadingAction extends ReduxAction<AppState> {
-
   final bool value;
 
   ChangeClusterDetailsLoadingAction(this.value);

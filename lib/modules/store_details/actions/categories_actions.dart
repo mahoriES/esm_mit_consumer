@@ -158,13 +158,12 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       requestType: RequestType.post,
     );
     if (response.status == ResponseStatus.success200) {
-      Business copiedMerchantFromState = Business.clone(
+      final Business copiedMerchantFromState = Business.clone(
           state.homePageState.businessDS[businessId]);
       copiedMerchantFromState.isBookmarked = true;
       final Map<String, Business> copyOfDataSource =
           Map.from(state.homePageState.businessDS);
       copyOfDataSource[businessId] = copiedMerchantFromState;
-      debugPrint('Damn this too is called');
 
       return state.copyWith(
           homePageState: state.homePageState.copyWith(businessDS: copyOfDataSource));
@@ -257,7 +256,7 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
     );
 
     if (response.status == ResponseStatus.success200) {
-      Business copiedMerchantFromState = Business.clone(
+      final Business copiedMerchantFromState = Business.clone(
           state.homePageState.businessDS[businessId]);
       copiedMerchantFromState.isBookmarked = false;
       final Map<String, Business> copyOfDataSource =

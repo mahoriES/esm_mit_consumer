@@ -7,6 +7,8 @@ import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 
+//TODO: This button shall be modified to make sure that bookmark button shows false for businesses not present in DS. No convoluted handling required
+
 ///The [BookmarkButton] widget, is an animated button, used to show the bookmark status for the merchant
 ///It also allows toggling the status of the same for the merchant
 

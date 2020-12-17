@@ -66,8 +66,6 @@ class _HomePageMainViewState extends State<HomePageMainView> {
         body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             onInit: (snapshot) async {
-//              debugPrint('Homepage oninit called');
-//              store.dispatch(HomePageMultipleDispatcherAction());
               debugPrint(
                   'home view init state => initialized : ${DynamicLinkService().isDynamicLinkInitialized} && pending Link : ${DynamicLinkService().pendingLinkData?.link.toString()}');
               if (!DynamicLinkService().isDynamicLinkInitialized) {

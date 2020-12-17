@@ -50,31 +50,16 @@ class GetMerchantDetails extends ReduxAction<AppState> {
         var businessList = state.homePageState.merchants;
         responseModel.results = businessList + responseModel.results;
       }
-      final Map<String, Business> mapOfResults = {};
-      responseModel.results.forEach((element) {
-        mapOfResults.addAll({element.businessId: element});
-      });
-      final Map<String, Business> existingDataElements =
-          Map.from(state.homePageState.businessDS);
-      final Map<String, Business> createdDataStructure = [
-        mapOfResults,
-        existingDataElements
-      ].reduce((map1, map2) => map1..addAll(map2));
-      debugPrint(
-          'Map123 ${createdDataStructure is Map<String, Business>},${createdDataStructure.length}, ${createdDataStructure.keys.toList()}');
+      dispatch(UpdateBusinessesDataStructureAction(responseModel.results));
       if (merchants.isNotEmpty) {
         return state.copyWith(
             homePageState: state.homePageState.copyWith(
-              businessDS: createdDataStructure,
                 merchants: responseModel.results, response: responseModel),
             productState:
                 state.productState.copyWith(selectedMerchant: merchants.first));
       }
-      debugPrint(
-          'About to put this in store ${createdDataStructure.length}, ${createdDataStructure.keys.toList()}');
       return state.copyWith(
           homePageState: state.homePageState.copyWith(
-              businessDS: createdDataStructure,
               merchants: responseModel.results,
               response: responseModel));
     }
