@@ -158,26 +158,16 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       requestType: RequestType.post,
     );
     if (response.status == ResponseStatus.success200) {
-      Business copiedMerchantFromState = Business.clone(state
-          .homePageState.merchants
-          .firstWhere((element) => element.businessId == businessId));
+      Business copiedMerchantFromState = Business.clone(
+          state.homePageState.businessDS[businessId]);
       copiedMerchantFromState.isBookmarked = true;
-
-      List<Business> updatedHomeMerchants = [];
-      for (final index
-          in Iterable<int>.generate(state.homePageState.merchants.length)
-              .toList()) {
-        if (state.homePageState.merchants[index].businessId ==
-            copiedMerchantFromState.businessId)
-          updatedHomeMerchants.add(copiedMerchantFromState);
-        else
-          updatedHomeMerchants.add(state.homePageState.merchants[index]);
-      }
+      final Map<String, Business> copyOfDataSource =
+          Map.from(state.homePageState.businessDS);
+      copyOfDataSource[businessId] = copiedMerchantFromState;
+      debugPrint('Damn this too is called');
 
       return state.copyWith(
-        homePageState:
-            state.homePageState.copyWith(merchants: updatedHomeMerchants),
-      );
+          homePageState: state.homePageState.copyWith(businessDS: copyOfDataSource));
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
     }
@@ -267,25 +257,16 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
     );
 
     if (response.status == ResponseStatus.success200) {
-      Business copiedMerchantFromState = Business.clone(state
-          .homePageState.merchants
-          .firstWhere((element) => element.businessId == businessId));
+      Business copiedMerchantFromState = Business.clone(
+          state.homePageState.businessDS[businessId]);
       copiedMerchantFromState.isBookmarked = false;
-
-      List<Business> updatedHomeMerchants = [];
-      for (final index
-          in Iterable<int>.generate(state.homePageState.merchants.length)
-              .toList()) {
-        if (state.homePageState.merchants[index].businessId ==
-            copiedMerchantFromState.businessId)
-          updatedHomeMerchants.add(copiedMerchantFromState);
-        else
-          updatedHomeMerchants.add(state.homePageState.merchants[index]);
-      }
-
+      final Map<String, Business> copyOfDataSource =
+          Map.from(state.homePageState.businessDS);
+      copyOfDataSource[businessId] = copiedMerchantFromState;
       return state.copyWith(
-        homePageState:
-            state.homePageState.copyWith(merchants: updatedHomeMerchants),
+        homePageState: state.homePageState.copyWith(
+          businessDS: copyOfDataSource
+        ),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['status']);

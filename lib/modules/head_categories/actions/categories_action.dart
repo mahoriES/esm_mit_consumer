@@ -188,7 +188,16 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
             (response.data['results'] as List).map((v) {
           return Business.fromJson(v);
         }).toList();
-
+        final Map<String, Business> mapOfResults = {};
+        businessesUnderSelectedCategory.forEach((element) {
+          mapOfResults.addAll({element.businessId:element});
+        });
+        final Map<String, Business> existingDataElements =
+        Map.from(state.homePageState.businessDS);
+        final Map<String, Business> createdDataStructure = [
+          mapOfResults,
+          existingDataElements
+        ].reduce((map1, map2) => map1..addAll(map2));
         if (getBusinessesUrl != ApiURL.getBusinessesUrl &&
             state.homeCategoriesState.businessesUnderSelectedCategory
                 .isNotEmpty) {
@@ -197,6 +206,9 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
           final List<Business> joinedListOfBusinesses =
               previousBusinesses + businessesUnderSelectedCategory;
           return state.copyWith(
+            homePageState: state.homePageState.copyWith(
+              businessDS: createdDataStructure
+            ),
             homeCategoriesState: state.homeCategoriesState.copyWith(
               businessesUnderSelectedCategory: joinedListOfBusinesses,
               currentBusinessResponse: businessesResponse,
@@ -204,6 +216,9 @@ class GetBusinessesUnderSelectedCategory extends ReduxAction<AppState> {
           );
         }
         return state.copyWith(
+          homePageState: state.homePageState.copyWith(
+            businessDS: createdDataStructure
+          ),
           homeCategoriesState: state.homeCategoriesState.copyWith(
             businessesUnderSelectedCategory: businessesUnderSelectedCategory,
             currentBusinessResponse: businessesResponse,

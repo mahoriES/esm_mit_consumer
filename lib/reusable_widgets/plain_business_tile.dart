@@ -94,6 +94,7 @@ class HybridBusinessTile extends StatelessWidget {
     return Material(
         type: MaterialType.transparency,
         child: Container(
+          constraints: BoxConstraints(maxWidth: SizeConfig.screenWidth),
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           decoration: BoxDecoration(
               color: CustomTheme.of(context).colors.backgroundColor,
@@ -117,78 +118,87 @@ class HybridBusinessTile extends StatelessWidget {
                 ),
                 const CustomDivider(),
               ],
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: 0.168 * SizeConfig.screenWidth,
-                    width: 0.168 * SizeConfig.screenWidth,
-                    child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration:
-                          ShapeDecoration(shape: CircleBorder(), shadows: [
-                        BoxShadow(
-                          blurRadius: 6,
-                          color: CustomTheme.of(context)
-                              .colors
-                              .shadowColor16,
-                        )
-                      ]),
-                      child: CachedNetworkImage(
-                        imageUrl: businessImageUrl ?? '',
-                        errorWidget: (_, __, ___) =>
-                            Image.asset('assets/images/shop1.png'),
-                        fit: BoxFit.cover,
+              SizedBox(width: SizeConfig.screenWidth,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 0.168 * SizeConfig.screenWidth,
+                      width: 0.168 * SizeConfig.screenWidth,
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration:
+                            ShapeDecoration(shape: CircleBorder(), shadows: [
+                          BoxShadow(
+                            blurRadius: 6,
+                            color: CustomTheme.of(context)
+                                .colors
+                                .shadowColor16,
+                          )
+                        ]),
+                        child: Container(
+                          color: CustomTheme.of(context).colors.backgroundColor,
+                          child: CachedNetworkImage(
+                            imageUrl: businessImageUrl ?? '',
+                            placeholder: (_,__,) => const CupertinoActivityIndicator(),
+                            errorWidget: (_, __, ___) =>
+                                Image.asset('assets/images/shop1.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  itemPadding,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    itemPadding,
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            businessTitle ?? ' ',
+                            style: CustomTheme.of(context)
+                                .textStyles
+                                .cardTitle
+                                .copyWith(fontSize: 16),
+                          ),
+                          const SizedBox(
+                            height: AppSizes.separatorPadding / 2,
+                          ),
+                          Text(
+                            businessSubtitle ?? ' ',
+                            maxLines: 2,
+                            style: CustomTheme.of(context).textStyles.body1,
+                          ),
+                          const SizedBox(
+                            height: AppSizes.separatorPadding / 2,
+                          ),
+                          DeliveryStatusWidget(
+                              deliveryStatus: isDeliveryAvailable),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          businessTitle ?? ' ',
-                          style: CustomTheme.of(context)
-                              .textStyles
-                              .cardTitle
-                              .copyWith(fontSize: 16),
+                        BookmarkButton(
+                          businessId: businessId,
                         ),
                         const SizedBox(
-                          height: AppSizes.separatorPadding / 2,
+                          height: AppSizes.widgetPadding,
                         ),
                         Text(
-                          businessSubtitle ?? ' ',
-                          style: CustomTheme.of(context).textStyles.body1,
+                          goToShopActionTitle ?? 'VIEW SHOP',
+                          style: CustomTheme.of(context).textStyles.buttonText2,
                         ),
-                        const SizedBox(
-                          height: AppSizes.separatorPadding / 2,
-                        ),
-                        DeliveryStatusWidget(
-                            deliveryStatus: isDeliveryAvailable),
                       ],
                     ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BookmarkButton(
-                        businessId: businessId,
-                      ),
-                      const SizedBox(
-                        height: AppSizes.widgetPadding,
-                      ),
-                      Text(
-                        goToShopActionTitle ?? 'VIEW SHOP',
-                        style: CustomTheme.of(context).textStyles.buttonText2,
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
-        ));
+        ),);
   }
 
   Widget get itemPadding => const SizedBox(

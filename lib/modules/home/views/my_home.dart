@@ -3,6 +3,7 @@ import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
@@ -63,6 +64,9 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
     return Scaffold(
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
+          onInit: (store) {
+            store.dispatch(HomePageMultipleDispatcherAction());
+          },
           builder: (context, snapshot) {
             return BottomNavigationBar(
               selectedItemColor: CustomTheme.of(context).colors.primaryColor,

@@ -7,6 +7,7 @@ class HomePageState {
   final GetBusinessesResponse response;
   final LoadingStatusApp loadingStatus;
   final List<Business> merchants;
+  final Map<String, Business> businessDS;
   final String homePageLoadedDate;
   final int currentIndex;
   final List<Photo> banners;
@@ -16,6 +17,7 @@ class HomePageState {
       {@required this.currentIndex,
       @required this.loadingStatus,
       @required this.merchants,
+      @required this.businessDS,
       @required this.topBanner,
       @required this.homePageLoadedDate,
       @required this.banners,
@@ -27,6 +29,7 @@ class HomePageState {
         loadingStatus: LoadingStatusApp.success,
         merchants: [],
         homePageLoadedDate: "0",
+        businessDS: Map<String, Business>(),
         currentIndex: 0,
         topBanner: Photo(),
         banners: <Photo>[],
@@ -39,10 +42,12 @@ class HomePageState {
       List<Photo> banners,
       int currentIndex,
       Photo topBanner,
+      Map<String, Business> businessDS,
       String homePageLoadedDate,
       GetBusinessesResponse response}) {
     return new HomePageState(
         topBanner: topBanner ?? this.topBanner,
+        businessDS: businessDS ?? this.businessDS,
         currentIndex: currentIndex ?? this.currentIndex,
         loadingStatus: loadingStatus ?? this.loadingStatus,
         merchants: merchants ?? this.merchants,

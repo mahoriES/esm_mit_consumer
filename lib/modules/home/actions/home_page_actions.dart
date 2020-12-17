@@ -50,17 +50,33 @@ class GetMerchantDetails extends ReduxAction<AppState> {
         var businessList = state.homePageState.merchants;
         responseModel.results = businessList + responseModel.results;
       }
-
+      final Map<String, Business> mapOfResults = {};
+      responseModel.results.forEach((element) {
+        mapOfResults.addAll({element.businessId: element});
+      });
+      final Map<String, Business> existingDataElements =
+          Map.from(state.homePageState.businessDS);
+      final Map<String, Business> createdDataStructure = [
+        mapOfResults,
+        existingDataElements
+      ].reduce((map1, map2) => map1..addAll(map2));
+      debugPrint(
+          'Map123 ${createdDataStructure is Map<String, Business>},${createdDataStructure.length}, ${createdDataStructure.keys.toList()}');
       if (merchants.isNotEmpty) {
         return state.copyWith(
             homePageState: state.homePageState.copyWith(
+              businessDS: createdDataStructure,
                 merchants: responseModel.results, response: responseModel),
             productState:
                 state.productState.copyWith(selectedMerchant: merchants.first));
       }
+      debugPrint(
+          'About to put this in store ${createdDataStructure.length}, ${createdDataStructure.keys.toList()}');
       return state.copyWith(
           homePageState: state.homePageState.copyWith(
-              merchants: responseModel.results, response: responseModel));
+              businessDS: createdDataStructure,
+              merchants: responseModel.results,
+              response: responseModel));
     }
   }
 
@@ -73,7 +89,6 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   @override
   void after() {
     dispatch(ChangeBusinessListLoadingAction(false));
-    dispatch(GetBannerDetailsAction());
     super.after();
   }
 }
@@ -108,7 +123,6 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
 }
 
 class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() async {
     if (store.state.authState.cluster == null) {
@@ -119,8 +133,7 @@ class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
       } else {
         store.dispatch(GetAddressFromLocal());
       }
-      store.dispatch(
-          GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
       store.dispatch(LoadVideoFeed());
       store.dispatch(GetHomePageCategoriesAction());
     }
@@ -130,7 +143,6 @@ class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
     store.dispatch(GetTopBannerImageAction());
     return null;
   }
-
 }
 
 class SelectMerchantDetailsByID extends ReduxAction<AppState> {
@@ -250,8 +262,7 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   @override
   void after() {
     dispatch(ChangeClusterDetailsLoadingAction(false));
-    if (state.authState.cluster == null)
-      dispatch(GetNearbyCirclesAction());
+    if (state.authState.cluster == null) dispatch(GetNearbyCirclesAction());
     super.after();
   }
 }
@@ -289,7 +300,6 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
 }
 
 class GetTopBannerImageAction extends ReduxAction<AppState> {
-
   GetTopBannerImageAction();
 
   @override
@@ -301,8 +311,7 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
     );
     if (response.status == ResponseStatus.success200) {
       Photo topBanner = Photo();
-      if (response.data is Map)
-        topBanner = Photo.fromJson(response.data);
+      if (response.data is Map) topBanner = Photo.fromJson(response.data);
       return state.copyWith(
         homePageState: state.homePageState.copyWith(
           topBanner: topBanner,
@@ -325,5 +334,4 @@ class GetTopBannerImageAction extends ReduxAction<AppState> {
     dispatch(ChangeCircleTopBannerLoadingAction(false));
     super.after();
   }
-
 }
