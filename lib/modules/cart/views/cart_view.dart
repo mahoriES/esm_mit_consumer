@@ -828,10 +828,7 @@ class _CartViewState extends State<CartView> {
                                                             .tr(),
                                                         // NJRA135, Second cross road,  Indiranagar- 6987452
                                                         Text(
-                                                            snapshot
-                                                                    .selectedMerchant
-                                                                    ?.address
-                                                                    ?.prettyAddress ??
+                                                            snapshot.storeAddress ??
                                                                 "",
                                                             style: const TextStyle(
                                                                 color: const Color(
@@ -1222,6 +1219,15 @@ class _ViewModel extends BaseModel<AppState> {
           }
         });
   }
+
+  String get storeAddress =>
+      (_storeHouse == null ? "" : "$_storeHouse, ") +
+      (_storeAddress ?? "") +
+      (_storeLandmark == null ? "" : "\nLandmark : $_storeLandmark");
+
+  String get _storeHouse => selectedMerchant.address?.geoAddr?.house;
+  String get _storeLandmark => selectedMerchant.address?.geoAddr?.landmark;
+  String get _storeAddress => selectedMerchant.address?.prettyAddress;
 
   bool get isDeliveryAddressAvailable => selectedAddress != null;
 }
