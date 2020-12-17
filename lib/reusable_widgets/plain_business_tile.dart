@@ -94,7 +94,6 @@ class HybridBusinessTile extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: Container(
-        constraints: BoxConstraints(maxWidth: SizeConfig.screenWidth),
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
         decoration: BoxDecoration(
             color: CustomTheme.of(context).colors.backgroundColor,
