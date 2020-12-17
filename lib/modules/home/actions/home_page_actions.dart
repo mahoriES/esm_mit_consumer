@@ -110,15 +110,18 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
 class HomePageMultipleDispatcherAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
+    // adress must be fetched isrrespective of cluster is null or not.
+     var address = await UserManager.getAddress();
+    if (address == null) {
+      store.dispatch(GetAddressAction());
+    } else {
+      store.dispatch(GetAddressFromLocal());
+    }
+
     if (store.state.authState.cluster == null) {
       await store.dispatchFuture(GetClusterDetailsAction());
-      var address = await UserManager.getAddress();
-      if (address == null) {
-        store.dispatch(GetAddressAction());
-      } else {
-        store.dispatch(GetAddressFromLocal());
-      }
-      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(
+          GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
       store.dispatch(LoadVideoFeed());
       store.dispatch(GetHomePageCategoriesAction());
     }
