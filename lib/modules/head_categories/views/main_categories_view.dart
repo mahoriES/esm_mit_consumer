@@ -16,6 +16,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class BusinessesListUnderSelectedCategoryScreen extends StatefulWidget {
+
+  const BusinessesListUnderSelectedCategoryScreen({Key key}) : super(key: key);
+
   @override
   _BusinessesListUnderSelectedCategoryScreenState createState() =>
       _BusinessesListUnderSelectedCategoryScreenState();

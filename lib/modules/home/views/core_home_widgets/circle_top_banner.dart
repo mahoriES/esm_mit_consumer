@@ -6,17 +6,33 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CircleTopBannerView extends StatelessWidget {
+class CircleTopBannerView extends StatelessWidget with PreferredSizeWidget {
   final String imageUrl;
   final String circleName;
   final VoidCallback onTapCircleButton;
+  final bool isBannerShownOnCircleScreen;
+
+  @override
+  final Size preferredSize;
 
   CircleTopBannerView(
       {Key key,
       @required this.imageUrl,
-      @required this.circleName,
-      @required this.onTapCircleButton})
-      : super(key: key);
+      this.circleName,
+      this.isBannerShownOnCircleScreen = false,
+      this.onTapCircleButton})
+      : preferredSize = Size.fromHeight(134 / 375 * SizeConfig.screenWidth),
+        assert(isBannerShownOnCircleScreen
+            ? true
+            : onTapCircleButton == null
+                ? false
+                : true),
+        assert(isBannerShownOnCircleScreen
+            ? true
+            : circleName != null
+                ? true
+                : false),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +53,7 @@ class CircleTopBannerView extends StatelessWidget {
                   child: CachedNetworkImage(
                       fit: BoxFit.cover,
                       imageUrl: imageUrl ?? "",
-                      placeholder: (context, url) =>
-                          Image.asset(
+                      placeholder: (context, url) => Image.asset(
                             ImagePathConstants.topBannerImage,
                             fit: BoxFit.cover,
                           ),
@@ -68,59 +83,83 @@ class CircleTopBannerView extends StatelessWidget {
                   )),
                 ),
               )),
-              Positioned(
-                bottom: AppSizes.separatorPadding,
-                child: SizedBox(
-                  width: SizeConfig.screenWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppSizes.separatorPadding),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset(
-                          'assets/images/splash.png',
-                          width: 134.5 / 375 * SizeConfig.screenWidth,
-                          color: CustomTheme.of(context).colors.backgroundColor,
-                        ),
-                        InkWell(
-                          onTap: onTapCircleButton,
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                border: Border.all(
-                                    color: CustomTheme.of(context)
-                                        .colors
-                                        .backgroundColor)),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  color:
-                                      CustomTheme.of(context).colors.backgroundColor,
-                                ),
-                                const SizedBox(
-                                  width: 3,
-                                ),
-                                Text(
-                                  circleName,
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .sectionHeading2
-                                      .copyWith(
-                                          color: CustomTheme.of(context)
-                                              .colors
-                                              .backgroundColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+              isBannerShownOnCircleScreen
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: buildCustomOverChild(context),
+                    )
+                  : Positioned(
+                      bottom: AppSizes.separatorPadding,
+                      child: buildCustomOverChild(context),
                     ),
-                  ),
-                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCustomOverChild(BuildContext context) {
+    return SizedBox(
+      width: SizeConfig.screenWidth,
+      child: Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppSizes.separatorPadding),
+        child: Row(
+          mainAxisAlignment: isBannerShownOnCircleScreen
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.spaceBetween,
+          children: [
+            Image.asset(
+              'assets/images/splash.png',
+              width: 134.5 / 375 * SizeConfig.screenWidth,
+              color: CustomTheme.of(context).colors.backgroundColor,
+            ),
+            if (!isBannerShownOnCircleScreen)
+              CircleActionButton(
+                  circleName: circleName, onTap: onTapCircleButton),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CircleActionButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final String circleName;
+
+  const CircleActionButton(
+      {Key key, @required this.onTap, @required this.circleName})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(
+                  color: CustomTheme.of(context).colors.backgroundColor)),
+          child: Row(
+            children: [
+              Icon(
+                Icons.location_on_outlined,
+                color: CustomTheme.of(context).colors.backgroundColor,
+              ),
+              const SizedBox(
+                width: 3,
+              ),
+              Text(
+                circleName,
+                style: CustomTheme.of(context)
+                    .textStyles
+                    .sectionHeading2
+                    .copyWith(
+                        color: CustomTheme.of(context).colors.backgroundColor),
               ),
             ],
           ),

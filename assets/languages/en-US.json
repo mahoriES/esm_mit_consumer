@@ -283,6 +283,17 @@
     "confirm_location": "Confirm Location",
     "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
     "delete": "Delete"
+  },
+
+  "circle" : {
+    "saved": "Saved Circles",
+    "search": "Search for a Circle",
+    "turn_on": "Turn Location On",
+    "suggested": "Suggested Circles",
+    "location": "Turn on your device's location to get suggestions for Circles near you",
+    "branding": "eSamudaay Circles",
+    "info_1": "A 'Circle' is a community of shop owners, restaurants and merchants that serve in a locality",
+    "info_2": "You can add a circle by turning your location or searching for a specific circle"
   }
 
 }

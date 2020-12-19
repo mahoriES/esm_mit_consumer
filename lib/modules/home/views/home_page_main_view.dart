@@ -17,6 +17,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_category_tile.dart';
 import 'package:eSamudaay/reusable_widgets/plain_business_tile.dart';
 import 'package:eSamudaay/reusable_widgets/shimmering_view.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -54,6 +55,7 @@ class _HomePageMainViewState extends State<HomePageMainView> {
               if (snapshot?.topBanner?.photoUrl == null &&
                   snapshot.shouldShowLoading) return SizedBox.shrink();
               return CircleTopBannerView(
+                  isBannerShownOnCircleScreen: false,
                   imageUrl: snapshot?.topBanner?.photoUrl ?? '',
                   circleName: snapshot?.cluster?.clusterName ?? '',
                   onTapCircleButton: () {
@@ -281,6 +283,8 @@ class _ViewModel extends BaseModel<AppState> {
         await dispatchFuture(GetMerchantDetails(getUrl: url));
       },
       changeSelectedCircle: (url, context) async {
+        dispatch(NavigateAction.pushNamed(RouteNames.CIRCLE_PICKER));
+        return;
         await dispatchFuture(ChangeSelectedCircleAction(context: context));
         dispatch(GetMerchantDetails(getUrl: url));
         dispatch(LoadVideoFeed());
