@@ -32,34 +32,30 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      localCart: state.productState.localCartItems,
-      localFreeFormItems: state.productState.localFreeFormCartItems,
+      localCart: state.cartState.localCartItems,
+      localFreeFormItems: state.cartState.localFreeFormCartItems,
       // TODO : optimize getCartTotalPrice.
       getCartTotalPrice: () {
-        if (state.productState.localCartItems.isNotEmpty &&
-            (state.productState.localFreeFormCartItems.isEmpty ||
+        if (state.cartState.localCartItems.isNotEmpty &&
+            (state.cartState.localFreeFormCartItems.isEmpty ||
                 allItemsHaveZeroQuantity(
-                    state.productState.localFreeFormCartItems))) {
+                    state.cartState.localFreeFormCartItems))) {
           final formatCurrency = new NumberFormat.simpleCurrency(
             name: "INR",
           );
           var total =
-              state.productState.localCartItems.fold(0, (previous, current) {
-                    double price = double.parse(
-                            (current.skus[current.selectedVariant].basePrice /
-                                    100)
-                                .toString()) *
-                        current.count;
+              state.cartState.localCartItems.fold(0, (previous, current) {
+                    double price = current.selectedSkuPrice * current.count;
 
                     return (double.parse(previous.toString()) + price);
                   }) ??
                   0.0;
-          if (state.productState.charges != null &&
-              state.productState.charges.isNotEmpty) {
-            state.productState.charges.forEach((element) {
+          if (state.cartState.charges != null &&
+              state.cartState.charges.isNotEmpty) {
+            state.cartState.charges.forEach((element) {
               debugPrint('Getting here to add price ${element.chargeValue}');
               if (element.businessId ==
-                  state.productState.selectedMerchant.businessId) {
+                  state.cartState.cartMerchant.businessId) {
                 debugPrint('PRice to be added ${element.chargeValue}');
                 total += (element.chargeValue / 100).toDouble();
               }
@@ -68,13 +64,13 @@ class _ViewModel extends BaseModel<AppState> {
             debugPrint('This is null man:(');
           }
           return formatCurrency.format(total.toDouble());
-        } else if (state.productState.localCartItems.isNotEmpty ||
-            state.productState.localFreeFormCartItems.isNotEmpty) {
+        } else if (state.cartState.localCartItems.isNotEmpty ||
+            state.cartState.localFreeFormCartItems.isNotEmpty) {
           var totalItemCount = 0;
-          state.productState.localCartItems.forEach((element) {
+          state.cartState.localCartItems.forEach((element) {
             totalItemCount += element.count;
           });
-          state.productState.localFreeFormCartItems.forEach((element) {
+          state.cartState.localFreeFormCartItems.forEach((element) {
             totalItemCount += element.quantity;
           });
           return "${totalItemCount.toString()} Items";

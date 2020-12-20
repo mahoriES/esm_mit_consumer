@@ -99,17 +99,17 @@ class GetProductsForSubCategory extends ReduxAction<AppState> {
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      CatalogSearchResponse responseModel =
+      final CatalogSearchResponse responseModel =
           CatalogSearchResponse.fromJson(response.data);
 
       // Fetch the local cart items.
-      // TODO : these variables should be final
-      List<Product> localCartItems = await CartDataSource.getListOfCartWith();
+      final List<Product> localCartItems =
+          await CartDataSource.getListOfProducts();
 
       // check if any of these product items are already added in cart.
       // if yes updated the item count for the same.
       responseModel.results.forEach((item) {
-        item.selectedVariant = 0;
+        item.selectedSkuIndex = 0;
         item.count = 0;
         localCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
@@ -120,7 +120,7 @@ class GetProductsForSubCategory extends ReduxAction<AppState> {
 
       // If action was triggered to load_more then append existingProducts in new data list.
       if (urlForNextPageResponse != null) {
-        List<Product> existingProducts = state.productState
+        final List<Product> existingProducts = state.productState
             .subCategoryIdToProductData[selectedSubCategory.categoryId].results;
         responseModel.results = existingProducts + responseModel.results;
       }
@@ -176,17 +176,16 @@ class GetAllProducts extends ReduxAction<AppState> {
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      CatalogSearchResponse _responseModel =
+      final CatalogSearchResponse _responseModel =
           CatalogSearchResponse.fromJson(response.data);
 
-      // TODO : these variables should be final
       // Fetch the local cart items.
-      List<Product> _allCartItems = await CartDataSource.getListOfCartWith();
+      final List<Product> _allCartItems = await CartDataSource.getListOfProducts();
 
       // check if any of these product items are already added in cart.
       // if yes updated the item count for the same.
       _responseModel.results.forEach((item) {
-        item.selectedVariant = 0;
+        item.selectedSkuIndex = 0;
         item.count = 0;
         _allCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
@@ -271,19 +270,6 @@ class UpdateSelectedProductAction extends ReduxAction<AppState> {
         selectedProductForDetails: selectedProduct,
       ),
     );
-  }
-}
-
-class UpdateProductListingDataAction extends ReduxAction<AppState> {
-  final List<Product> listingData;
-
-  UpdateProductListingDataAction({this.listingData});
-
-  @override
-  FutureOr<AppState> reduce() {
-    return state.copyWith(
-        productState:
-            state.productState.copyWith(productListingDataSource: listingData));
   }
 }
 

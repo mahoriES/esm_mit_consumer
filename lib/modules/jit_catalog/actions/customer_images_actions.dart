@@ -52,7 +52,7 @@ class PickImageAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       if (response.data['photo_url'] == null) return null;
       final List<String> customerNoteImagesList =
-          state.productState.customerNoteImages ?? [];
+          state.cartState.customerNoteImages ?? [];
       customerNoteImagesList.add(response.data['photo_url'].toString());
       final List<String> newCustomerNoteImagesList = [];
       if (customerNoteImagesList.isNotEmpty) {
@@ -62,7 +62,7 @@ class PickImageAction extends ReduxAction<AppState> {
       }
       CartDataSource.insertCustomerNoteImagesList(newCustomerNoteImagesList);
       return state.copyWith(
-        productState: state.productState.copyWith(
+        cartState: state.cartState.copyWith(
           customerNoteImages: newCustomerNoteImagesList,
         ),
       );
@@ -85,7 +85,7 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() {
-    final customerNoteImagesList = state.productState.customerNoteImages ?? [];
+    final customerNoteImagesList = state.cartState.customerNoteImages ?? [];
     customerNoteImagesList.removeAt(imageIndex);
 
     ///New list required to let Redux know that that model changed and let the
@@ -97,7 +97,7 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
     });
     CartDataSource.insertCustomerNoteImagesList(newCustomerNoteImagesList);
     return state.copyWith(
-        productState: state.productState.copyWith(
+        cartState: state.cartState.copyWith(
       customerNoteImages: newCustomerNoteImagesList,
     ));
   }

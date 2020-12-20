@@ -206,11 +206,11 @@ class _ViewModel extends BaseModel<AppState> {
             ? dispatch(GetSubCategoriesAction())
             : dispatch(GetAllProducts());
       },
-      freeFormItemsList: state.productState.localFreeFormCartItems,
+      freeFormItemsList: state.cartState.localFreeFormCartItems,
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed('/CartView'));
       },
-      localCartListing: state.productState.localCartItems,
+      localCartListing: state.cartState.localCartItems,
     );
   }
 }

@@ -54,12 +54,12 @@ class GetItemsForMerchantProductSearch extends ReduxAction<AppState> {
       }).toList();
       ///Getting the list of all items currently persisted in the local cart
       ///data source
-      List<Product> allCartItems = await CartDataSource.getListOfCartWith();
+      List<Product> allCartItems = await CartDataSource.getListOfProducts();
       ///Initialising the selected SKU for each product (in the fetched product
       ///list) and if the item has already been added to the local cart, then
       ///updating it's quantity to that in the local cart.
       products.forEach((item) {
-        item.selectedVariant = 0;
+        item.selectedSkuIndex = 0;
         allCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
             item.count = localCartItem.count;

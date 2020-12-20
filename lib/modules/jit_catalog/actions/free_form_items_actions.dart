@@ -19,7 +19,7 @@ class AddFreeFormItemAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
 
     if (!doesThisJitProductExistInLocalCart(jitProduct))
       freeFormOrderItems.add(jitProduct);
@@ -30,13 +30,13 @@ class AddFreeFormItemAction extends ReduxAction<AppState> {
     });
     CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
-        productState: state.productState
+        cartState: state.cartState
             .copyWith(localFreeFormCartItems: newFreeFormItemList));
   }
 
   bool doesThisJitProductExistInLocalCart(JITProduct jitProduct) {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
     if (freeFormOrderItems.isEmpty) return false;
     var itemToBeRemoved = freeFormOrderItems.firstWhere(
         (element) => (element.quantity == jitProduct.quantity &&
@@ -57,7 +57,7 @@ class RemoveFreeFormItemAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
 
     freeFormOrderItems.remove(jitProduct);
 
@@ -67,7 +67,7 @@ class RemoveFreeFormItemAction extends ReduxAction<AppState> {
     });
     CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
-      productState: state.productState.copyWith(
+      cartState: state.cartState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
       ),
     );
@@ -87,7 +87,7 @@ class RemoveFreeFormItemByIndexAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
     if (freeFormOrderItems == null || freeFormOrderItems.length <= index)
       return null;
     dispatch(RemoveFreeFormItemAction(jitProduct: freeFormOrderItems[index]));
@@ -105,7 +105,7 @@ class UpdateFreeFormItemSkuName extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
     if (updatedIndex >= freeFormOrderItems.length) {
       debugPrint("Creating new product");
       JITProduct updatedProduct = JITProduct(quantity: 0, itemName: skuName);
@@ -124,7 +124,7 @@ class UpdateFreeFormItemSkuName extends ReduxAction<AppState> {
     });
     CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
-      productState: state.productState.copyWith(
+      cartState: state.cartState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
       ),
     );
@@ -141,7 +141,7 @@ class UpdateFreeFormItemQuantity extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
     if (updatedIndex >= freeFormOrderItems.length) {
       debugPrint("Creating new product");
       JITProduct updatedProduct = JITProduct(quantity: quantity, itemName: "");
@@ -160,7 +160,7 @@ class UpdateFreeFormItemQuantity extends ReduxAction<AppState> {
     });
     CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
-      productState: state.productState.copyWith(
+      cartState: state.cartState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
       ),
     );
@@ -171,7 +171,7 @@ class ClearLocalFreeFormItemsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-      productState: state.productState.copyWith(
+      cartState: state.cartState.copyWith(
         localFreeFormCartItems: [],
         customerNoteImages: [],
       ),
@@ -187,7 +187,7 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     List<JITProduct> freeFormOrderItems =
-        state.productState.localFreeFormCartItems ?? [];
+        state.cartState.localFreeFormCartItems ?? [];
 
     if (freeFormOrderItems.isNotEmpty) {
       for (final element in freeFormOrderItems) {
@@ -205,7 +205,7 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
     newFreeFormItemList.add(JITProduct(quantity: 0, itemName: ""));
     CartDataSource.insertFreeFormItemsList(newFreeFormItemList);
     return state.copyWith(
-      productState: state.productState.copyWith(
+      cartState: state.cartState.copyWith(
         localFreeFormCartItems: newFreeFormItemList,
       ),
     );
@@ -214,9 +214,9 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
   ///This function checks if the user has already added free form items previously from another merchant.
   ///If yes, then those are cleared before adding list items for new merchant.
   void setMerchantForFreeFormItem(BuildContext context) async {
-    var merchant = await CartDataSource.getListOfMerchants();
-    if (merchant.isNotEmpty) {
-      if (merchant.first.businessId !=
+    var merchant = await CartDataSource.getCartMerchant();
+    if (merchant != null) {
+      if (merchant.businessId !=
           state.productState.selectedMerchant.businessId) {
         showDialog(
             context: context,
@@ -257,24 +257,24 @@ class CheckLocalFreeFormItemsAndAddEmptyItem extends ReduxAction<AppState> {
                         fontSize: 16.0),
                   ).tr(),
                   onPressed: () async {
-                    await CartDataSource.deleteAllMerchants();
-                    await CartDataSource.deleteAll();
-                    await CartDataSource.insertToMerchants(
-                        business: state.productState.selectedMerchant);
+                    await CartDataSource.deleteCartMerchant();
+                    await CartDataSource.deleteAllProducts();
+                    await CartDataSource.insertCartMerchant(
+                        state.productState.selectedMerchant);
                     Navigator.pop(context);
                   },
                 )
               ],
             ));
       } else {
-        await CartDataSource.deleteAllMerchants();
-        await CartDataSource.insertToMerchants(
-            business: state.productState.selectedMerchant);
+        await CartDataSource.deleteCartMerchant();
+        await CartDataSource.insertCartMerchant(
+            state.productState.selectedMerchant);
       }
     } else {
-      await CartDataSource.deleteAllMerchants();
-      await CartDataSource.insertToMerchants(
-          business: state.productState.selectedMerchant);
+      await CartDataSource.deleteCartMerchant();
+      await CartDataSource.insertCartMerchant(
+          state.productState.selectedMerchant);
     }
   }
 }

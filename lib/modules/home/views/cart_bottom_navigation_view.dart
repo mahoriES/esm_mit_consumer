@@ -155,7 +155,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       cartListDataSource: [], //state.productState.cartListingDataSource.items,
-      localCart: state.productState.localCartItems,
+      localCart: state.cartState.localCartItems,
       getCartTotalPrice: () {
 //        if (state.productState.localCartItems.isNotEmpty) {
 //          final formatCurrency = new NumberFormat.simpleCurrency(

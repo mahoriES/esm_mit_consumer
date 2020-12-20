@@ -347,7 +347,7 @@ class _ViewModel extends BaseModel<AppState> {
     // TODO: implement fromStore
     return _ViewModel.build(
       loadingStatusApp: state.authState.loadingStatus,
-      customerNoteImages: state.productState.customerNoteImages,
+      customerNoteImages: state.cartState.customerNoteImages,
       closeWindowAction: () => dispatch(NavigateAction.pop()),
       addNewCustomerNotePhotoAction: (imageSource) =>
           dispatch(PickImageAction(imageSource: imageSource)),

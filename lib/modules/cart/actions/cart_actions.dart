@@ -5,9 +5,8 @@ import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
-import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
@@ -21,235 +20,167 @@ import 'package:fluttertoast/fluttertoast.dart';
 class GetCartFromLocal extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    List<Product> localCartList = await CartDataSource.getListOfCartWith();
-    List<JITProduct> freeFormItemsList =
-        await CartDataSource.getFreeFormItems() ?? [];
-    List<String> customerNoteImages =
-        await CartDataSource.getCustomerNoteImagesList();
-    var merchant = await CartDataSource.getListOfMerchants();
+    try {
+      final List<Product> localCartList =
+          await CartDataSource.getListOfProducts();
+      final List<JITProduct> freeFormItemsList =
+          await CartDataSource.getFreeFormItems() ?? [];
+      final List<String> customerNoteImages =
+          await CartDataSource.getCustomerNoteImagesList();
+      final Business merchant = await CartDataSource.getCartMerchant();
 
-    return state.copyWith(
-        productState: state.productState.copyWith(
-            localCartItems: localCartList,
-            localFreeFormCartItems: freeFormItemsList,
-            customerNoteImages: customerNoteImages,
-            selectedMerchant: state.productState.selectedMerchant != null
-                ? state.productState.selectedMerchant
-                : merchant.isEmpty
-                    ? null
-                    : merchant.first));
-  }
-}
-
-class UpdateCartListAction extends ReduxAction<AppState> {
-  final List<Product> localCart;
-
-  UpdateCartListAction({this.localCart});
-
-  @override
-  FutureOr<AppState> reduce() {
-    // TODO: implement reduce
-    return state.copyWith(
-        productState: state.productState.copyWith(localCartItems: localCart));
+      return state.copyWith(
+        cartState: state.cartState.copyWith(
+          localCartItems: localCartList,
+          localFreeFormCartItems: freeFormItemsList,
+          customerNoteImages: customerNoteImages,
+          cartMerchant: merchant,
+        ),
+      );
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Could not fetch cart items");
+      return null;
+    }
   }
 }
 
 class AddToCartLocalAction extends ReduxAction<AppState> {
   final Product product;
-  final BuildContext context;
+  // final VoidCallback showReplaceCartAlert;
+  final Business selectedMerchant;
 
-  AddToCartLocalAction({this.product, this.context});
+  AddToCartLocalAction({
+    @required this.product,
+    @required this.selectedMerchant,
+    // @required this.showReplaceCartAlert,
+  });
 
   @override
   FutureOr<AppState> reduce() async {
-    var merchant = await CartDataSource.getListOfMerchants();
-    if (merchant.isNotEmpty) {
-      if (merchant.first.businessId !=
-          state.productState.selectedMerchant.businessId) {
-        // TODO : this logic should be written in view part
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          child: CustomConfirmationDialog(
-            title: tr("product_details.replace_cart_items"),
-            message: tr('new_changes.clear_info'),
-            positiveButtonText: tr('new_changes.continue'),
-            negativeButtonText: tr("screen_account.cancel"),
-            positiveAction: () async {
-              await CartDataSource.deleteAllMerchants();
-              await CartDataSource.deleteAll();
-              await CartDataSource.insertToMerchants(
-                  business: state.productState.selectedMerchant);
-              bool isInCart = await CartDataSource.isAvailableInCart(
-                  id: product.productId.toString(),
-                  variation: product
-                      .skus[product.selectedVariant].variationOptions.weight);
-              if (isInCart) {
-                await CartDataSource.update(
-                    product,
-                    product
-                        .skus[product.selectedVariant].variationOptions.weight);
-              } else {
-                await CartDataSource.insert(
-                    product: product,
-                    variation: product
-                        .skus[product.selectedVariant].variationOptions.weight);
-              }
-              List<Product> allCartNewList = [];
-              List<Product> allCartItems =
-                  state.productState.productListingDataSource;
-              allCartItems.forEach((value) {
-                if (value.productId == product.productId) {
-                  value.count = product.count;
-                }
-                allCartNewList.add(value);
-              });
-              var localCartItems = await CartDataSource.getListOfCartWith();
-              Navigator.pop(context);
-              dispatch(
-                  UpdateProductListingDataAction(listingData: allCartNewList));
-              dispatch(UpdateCartListAction(localCart: localCartItems));
-            },
-          ),
-        );
-      } else {
-        await CartDataSource.deleteAllMerchants();
-        await CartDataSource.insertToMerchants(
-            business: state.productState.selectedMerchant);
-        bool isInCart = await CartDataSource.isAvailableInCart(
-            id: product.productId.toString(),
-            variation:
-                product.skus[product.selectedVariant].variationOptions.weight);
-        if (isInCart) {
-          await CartDataSource.update(product,
-              product.skus[product.selectedVariant].variationOptions.weight);
-        } else {
-          await CartDataSource.insert(
-              product: product,
-              variation: product
-                  .skus[product.selectedVariant].variationOptions.weight);
+    try {
+      // get store details for local cart.
+      final Business cartMerchant = state.cartState.cartMerchant;
+
+      if (cartMerchant != null) {
+        // if cart store is diffrent from current store.
+        if (cartMerchant.businessId != selectedMerchant.businessId) {
+          // showReplaceCartAlert();
+          // return null;
         }
-        List<Product> allCartNewList = [];
-        List<Product> allCartItems =
-            state.productState.productListingDataSource;
-        allCartItems.forEach((value) {
-          if (value.productId == product.productId) {
-            value.count = product.count;
+        // otherwise if cart store is same as current store
+        else {
+          // check if the product is already present in the cart
+          final bool isInCart = state.cartState.isAvailableInCart(product);
+
+          if (isInCart) {
+            await CartDataSource.updateCartProduct(product);
+          } else {
+            await CartDataSource.insertProduct(product);
           }
-          allCartNewList.add(value);
-        });
-        var localCartItems = await CartDataSource.getListOfCartWith();
+          final List<Product> localCartItems =
+              await CartDataSource.getListOfProducts();
+
+          return state.copyWith(
+            cartState: state.cartState.copyWith(
+              localCartItems: localCartItems,
+            ),
+          );
+        }
+      }
+      // if cart is empty yet
+      else {
+        await CartDataSource.insertCartMerchant(selectedMerchant);
+        await CartDataSource.insertProduct(product);
+
+        final List<Product> localCartItems =
+            await CartDataSource.getListOfProducts();
 
         return state.copyWith(
-            productState: state.productState.copyWith(
-          productListingDataSource: allCartNewList,
-          localCartItems: localCartItems,
-        ));
+          cartState: state.cartState.copyWith(
+            localCartItems: localCartItems,
+            cartMerchant: selectedMerchant,
+          ),
+        );
       }
-    } else {
-      await CartDataSource.deleteAllMerchants();
-      await CartDataSource.insertToMerchants(
-          business: state.productState.selectedMerchant);
-      bool isInCart = await CartDataSource.isAvailableInCart(
-          id: product.productId.toString(),
-          variation:
-              product.skus[product.selectedVariant].variationOptions.weight);
-      if (isInCart) {
-        await CartDataSource.update(product,
-            product.skus[product.selectedVariant].variationOptions.weight);
-      } else {
-        await CartDataSource.insert(
-            product: product,
-            variation:
-                product.skus[product.selectedVariant].variationOptions.weight);
-      }
-      List<Product> allCartNewList = [];
-      List<Product> allCartItems = state.productState.productListingDataSource;
-      allCartItems.forEach((value) {
-        if (value.productId == product.productId) {
-          value.count = product.count;
-        }
-        allCartNewList.add(value);
-      });
-      var localCartItems = await CartDataSource.getListOfCartWith();
-
-      return state.copyWith(
-          productState: state.productState.copyWith(
-        productListingDataSource: allCartNewList,
-        localCartItems: localCartItems,
-      ));
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Some error occured while updating cart");
+      return null;
     }
-    return null;
   }
 }
 
-class RemoveFromCartLocalAction extends ReduxAction<AppState> {
+class RemoveFromCartAction extends ReduxAction<AppState> {
   final Product product;
-
-  RemoveFromCartLocalAction({this.product});
+  RemoveFromCartAction({@required this.product});
 
   @override
   FutureOr<AppState> reduce() async {
-    bool isInCart = await CartDataSource.isAvailableInCart(
-        id: product.productId.toString(),
-        variation:
-            product.skus[product.selectedVariant].variationOptions.weight);
-    if (isInCart) {
-      if (product.count == 0.0) {
-        await CartDataSource.delete(product.productId.toString(),
-            product.skus[product.selectedVariant].variationOptions.weight);
+    try {
+      // if product count is decreamented to zero then remove the product from cart.
+      if (product.count == 0) {
+        await CartDataSource.deleteCartProduct(product);
       } else {
-        await CartDataSource.update(product,
-            product.skus[product.selectedVariant].variationOptions.weight);
+        await CartDataSource.updateCartProduct(product);
       }
-    }
-    List<Product> allItemsNewList = [];
-    List<Product> allItemList = state.productState.productListingDataSource;
-//    Item selectedProduct = state.productState.selectedProduct;
 
-    allItemList.forEach((value) {
-      if (value.productId == product.productId) {
-        value.count = product.count;
+      final List<Product> localCartItems =
+          await CartDataSource.getListOfProducts();
+
+      // if all products are removed clear the cart data.
+      if (localCartItems.isEmpty) {
+        await CartDataSource.deleteCartMerchant();
       }
-//      if (state.productState?.selectedProduct != null &&
-//          state.productState.selectedProduct.id == value.id) {
-//        selectedProduct.inCart = product.inCart;
-//      }
-      allItemsNewList.add(value);
-    });
-    var localCartItems = await CartDataSource.getListOfCartWith();
-    if (localCartItems.isEmpty) {
-      await CartDataSource.deleteAllMerchants();
+      return state.copyWith(
+          cartState: state.cartState.copyWith(
+        localCartItems: localCartItems,
+        cartMerchant: await CartDataSource.getCartMerchant(),
+      ));
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Some error occured while updating cart");
+      return null;
     }
-    return state.copyWith(
-        productState: state.productState.copyWith(
-      productListingDataSource: allItemsNewList,
-      localCartItems: localCartItems,
-//            selectedProduct: state.productState?.selectedProduct
-//                ?.copyWith(inCart: selectedProduct?.inCart)
-    ));
   }
 }
 
+// Delete existing data in cart and add new merchant as cart store along with the selected product.
+class UpdateCartMerchantAction extends ReduxAction<AppState> {
+  // final Business newMerchant;
+  // UpdateCartMerchantAction({@required this.newMerchant});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    try {
+      return state.copyWith(
+        cartState: state.cartState.copyWith(
+          cartMerchant: await CartDataSource.getCartMerchant(),
+        ),
+      );
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Some error occured while updating cart");
+      return null;
+    }
+  }
+}
+
+// TODO : Refactor this action.
 class PlaceOrderAction extends ReduxAction<AppState> {
   final PlaceOrderRequest request;
 
-  PlaceOrderAction({this.request});
+  PlaceOrderAction({@required this.request});
 
   @override
   FutureOr<AppState> reduce() async {
-    print(request.toJson());
-    var response = await APIManager.shared.request(
+    final response = await APIManager.shared.request(
         url: ApiURL.placeOrderUrl,
         params: request.toJson(),
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
 //      request.order.status = "UNCONFIRMED";
-      var responseModel = PlaceOrderResponse.fromJson(response.data);
+      final responseModel = PlaceOrderResponse.fromJson(response.data);
       Fluttertoast.showToast(msg: 'Order Placed');
-      await CartDataSource.deleteAllMerchants();
-      await CartDataSource.deleteAll();
+      await CartDataSource.deleteCartMerchant();
+      await CartDataSource.deleteAllProducts();
       await CartDataSource.insertCustomerNoteImagesList([]);
       await CartDataSource.insertFreeFormItemsList([]);
 
@@ -272,15 +203,14 @@ class PlaceOrderAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
+// TODO : Refactor this action.
 class GetOrderTaxAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    var merchant = await CartDataSource.getListOfMerchants();
+    var merchant = state.cartState.cartMerchant;
 
     var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl +
-            "${merchant.first.businessId}" +
-            "/charges",
+        url: ApiURL.getBusinessesUrl + "${merchant?.businessId}" + "/charges",
         params: {"": ""},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.success200) {
@@ -289,7 +219,7 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
         charge.add(new Charge.fromJson(v));
       });
       return state.copyWith(
-          productState: state.productState.copyWith(charges: charge));
+          cartState: state.cartState.copyWith(charges: charge));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
       return null;
@@ -302,6 +232,7 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
+// TODO : Refactor this action.
 class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
   final PlaceOrderRequest request;
 
@@ -309,9 +240,9 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-    var merchant = await CartDataSource.getListOfMerchants();
+    var merchant = await CartDataSource.getCartMerchant();
     var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl + "${merchant.first.businessId}" + "/open",
+        url: ApiURL.getBusinessesUrl + "${merchant?.businessId}" + "/open",
         params: {"": ""},
         requestType: RequestType.get);
     if (response.status == ResponseStatus.success200) {

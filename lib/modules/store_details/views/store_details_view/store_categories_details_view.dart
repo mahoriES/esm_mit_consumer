@@ -51,11 +51,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        List<Business> merchants = await CartDataSource.getListOfMerchants();
-        if (merchants.isNotEmpty &&
-            merchants.first.businessId !=
+        // TODO : this logic to update selected merchant from cart data doesn't seems right.
+        // [High]
+        Business merchants = await CartDataSource.getCartMerchant();
+        if (merchants != null &&
+            merchants.businessId !=
                 store.state.productState.selectedMerchant.businessId) {
-          var localMerchant = merchants.first;
+          var localMerchant = merchants;
           store.dispatch(
               UpdateSelectedMerchantAction(selectedMerchant: localMerchant));
         }
@@ -134,19 +136,20 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                       .images.first.photoUrl
                                                   : "",
                                               onBackPressed: () async {
-                                                List<Business> merchants =
+                                                 // TODO : this logic to update selected merchant from cart data doesn't seems right.
+                                                 // [High]
+                                                Business merchants =
                                                     await CartDataSource
-                                                        .getListOfMerchants();
-                                                if (merchants.isNotEmpty &&
-                                                    merchants
-                                                            .first.businessId !=
+                                                        .getCartMerchant();
+                                                if (merchants != null &&
+                                                    merchants.businessId !=
                                                         store
                                                             .state
                                                             .productState
                                                             .selectedMerchant
                                                             .businessId) {
                                                   var localMerchant =
-                                                      merchants.first;
+                                                      merchants;
                                                   store.dispatch(
                                                       UpdateSelectedMerchantAction(
                                                           selectedMerchant:
@@ -244,9 +247,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                         },
                                         spotlightProducts:
                                             snapshot.spotlightItems,
-                                        onAddProduct: snapshot.addToCart,
-                                        onRemoveProduct:
-                                            snapshot.removeFromCart,
+                                        selectedMerchant:
+                                            snapshot.selectedMerchant,
                                       ),
                                     ],
                                   ),
@@ -487,8 +489,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  Function(Product, BuildContext, int) addToCart;
-  Function(Product, int) removeFromCart;
   Function() navigateToProductCatalog;
   Function(VideoItem) updateSelectedVideo;
   Function(CategoriesNew) updateSelectedCategory;
@@ -520,9 +520,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.loadingStatus,
       this.onVideoTap,
       this.navigateToProductDetailsPage,
-      this.addToCart,
       this.singleCategoryFewProducts,
-      this.removeFromCart,
       this.spotlightItems,
       this.onRefresh,
       this.freeFormItemsList,
@@ -552,8 +550,8 @@ class _ViewModel extends BaseModel<AppState> {
         singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
         spotlightItems: state.productState.spotlightItems,
         videoFeedResponse: state.productState.videosResponse,
-        freeFormItemsList: state.productState.localFreeFormCartItems,
-        localCartListing: state.productState.localCartItems,
+        freeFormItemsList: state.cartState.localFreeFormCartItems,
+        localCartListing: state.cartState.localCartItems,
         categories: state.productState?.categories ?? [],
         updateSelectedCategory: (category) {
           dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
@@ -574,27 +572,6 @@ class _ViewModel extends BaseModel<AppState> {
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
-        addToCart: (item, context, index) {
-          if (!item.skus[index].inStock) {
-            Fluttertoast.showToast(msg: 'Item not in stock!');
-            return;
-          }
-          item.selectedVariant = index;
-          int count = getCountOfExistingSpotlightItemInCart(item, index);
-          item.count = count + 1;
-          dispatch(AddToCartLocalAction(product: item, context: context));
-        },
-        removeFromCart: (item, index) {
-          if (!item.skus[index].inStock) {
-            Fluttertoast.showToast(msg: 'Item not in stock!');
-            return;
-          }
-          item.selectedVariant = index;
-          int count = getCountOfExistingSpotlightItemInCart(item, index);
-          if (count == 0) return;
-          item.count = count - 1;
-          dispatch(RemoveFromCartLocalAction(product: item));
-        },
         loadingStatus: state.authState.loadingStatus,
         selectedMerchant: state.productState.selectedMerchant,
         navigateToProductSearch: () {
@@ -613,9 +590,10 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed("/videoPlayer"));
         },
         checkForPreviouslyAddedListItems: (context) async {
-          var merchant = await CartDataSource.getListOfMerchants();
-          if (merchant.isNotEmpty) {
-            if (merchant.first.businessId !=
+          // TODO : Handle this case later. [HIGH]
+          final Business merchant = await CartDataSource.getCartMerchant();
+          if (merchant != null) {
+            if (merchant.businessId !=
                 state.productState.selectedMerchant.businessId) {
               showDialog(
                   context: context,
@@ -656,10 +634,10 @@ class _ViewModel extends BaseModel<AppState> {
                               fontSize: 16.0),
                         ).tr(),
                         onPressed: () async {
-                          await CartDataSource.deleteAllMerchants();
-                          await CartDataSource.deleteAll();
-                          await CartDataSource.insertToMerchants(
-                              business: state.productState.selectedMerchant);
+                          await CartDataSource.deleteCartMerchant();
+                          await CartDataSource.deleteAllProducts();
+                          await CartDataSource.insertCartMerchant(
+                              state.productState.selectedMerchant);
                           await CartDataSource.insertFreeFormItemsList([]);
                           await CartDataSource.insertCustomerNoteImagesList([]);
                           Navigator.pop(context);
@@ -670,42 +648,19 @@ class _ViewModel extends BaseModel<AppState> {
                     ],
                   ));
             } else {
-              await CartDataSource.deleteAllMerchants();
-              await CartDataSource.insertToMerchants(
-                  business: state.productState.selectedMerchant);
+              await CartDataSource.deleteCartMerchant();
+              await CartDataSource.insertCartMerchant(
+                  state.productState.selectedMerchant);
               dispatch(NavigateAction.pushNamed('/CartView'));
             }
           } else {
-            await CartDataSource.deleteAllMerchants();
-            await CartDataSource.insertToMerchants(
-                business: state.productState.selectedMerchant);
+            await CartDataSource.deleteCartMerchant();
+            await CartDataSource.insertCartMerchant(
+                state.productState.selectedMerchant);
             dispatch(ClearLocalFreeFormItemsAction());
             dispatch(NavigateAction.pushNamed('/CartView'));
           }
         });
-  }
-
-  int getCountOfExistingSpotlightItemInCart(Product product, int index) {
-    if (localCartListing.isEmpty)
-      return 0;
-    else {
-      Product prod;
-      try {
-        prod = localCartListing.firstWhere(
-          (element) =>
-              element.productId == product.productId &&
-              element.skus[element.selectedVariant].variationOptions.weight ==
-                  product.skus[index].variationOptions.weight &&
-              element.selectedVariant == index,
-        );
-      } catch (e) {
-        return 0;
-      }
-      if (prod == null)
-        return 0;
-      else
-        return prod.count;
-    }
   }
 
   bool get showNoProductsWidget {

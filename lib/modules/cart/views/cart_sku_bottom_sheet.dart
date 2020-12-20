@@ -1,6 +1,7 @@
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/product_count_widget.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -17,12 +18,17 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 ///can add multiple quantities of each variation
 ///
 /// TODO : This should be a global widget.
+
+// merchant data should be passed as argument in such global widgets
+// to avoid coupling with selectedMerchant.
 class SkuBottomSheet extends StatefulWidget {
   final Product product;
+  final Business selectedMerchant;
 
   const SkuBottomSheet({
     Key key,
     @required this.product,
+    @required this.selectedMerchant,
   })  : assert(product != null, 'The product cannot be null'),
         super(key: key);
 
@@ -77,6 +83,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
                             widget.product.skus[index].variationOptions.weight,
                         price: widget.product.skus[index].basePrice,
                         index: index,
+                        selectedMerchant: widget.selectedMerchant,
                       ),
                     ),
                   ),
@@ -100,6 +107,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
     int price,
     String specificationName,
     int index,
+    Business selectedMerchant,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -131,6 +139,7 @@ class _SkuBottomSheetState extends State<SkuBottomSheet> {
         ProductCountWidget(
           product: widget.product,
           isSku: true,
+          selectedMerchant: selectedMerchant,
           skuIndex: index,
         ),
       ],
@@ -152,7 +161,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() => _ViewModel.build(
         ///Holds the current snapshot of the local cart from the store
-        localCartItems: state.productState.localCartItems,
+        localCartItems: state.cartState.localCartItems,
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },

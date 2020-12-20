@@ -218,7 +218,7 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
         loadingStatusApp: state.authState.loadingStatus,
-        localFreeFormCartItems: state.productState.localFreeFormCartItems,
+        localFreeFormCartItems: state.cartState.localFreeFormCartItems,
         addJitProductToLocalCart: (jitProduct) {
           dispatch(AddFreeFormItemAction(jitProduct: jitProduct));
           displayTheFreeFormItemList();
@@ -250,8 +250,8 @@ class _ViewModel extends BaseModel<AppState> {
 
   void displayTheFreeFormItemList() {
     debugPrint(
-        "Free form items: ${state.productState.localFreeFormCartItems.length}");
-    state.productState.localFreeFormCartItems.forEach((element) {
+        "Free form items: ${state.cartState.localFreeFormCartItems.length}");
+    state.cartState.localFreeFormCartItems.forEach((element) {
       debugPrint("${element.itemName}-\t${element.quantity}");
     });
   }

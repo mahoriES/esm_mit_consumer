@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/presentations/no_iems_view.dart';
@@ -70,10 +71,12 @@ class ProductListView extends StatelessWidget {
                       snapshot.productsList(
                           subCategoryIndex, showFewProductsOnly)[productIndex],
                     ),
+                    selectedMerchant: snapshot.selectedMerchant,
                   ),
                 );
               }
               return ProductTile(
+                selectedMerchant: snapshot.selectedMerchant,
                 product: snapshot.productsList(
                     subCategoryIndex, showFewProductsOnly)[productIndex],
                 navigateToDetails: () => snapshot.navigateToProductDetails(
@@ -97,6 +100,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Product) navigateToProductDetails;
   List<Product> singleCategoryFewProducts;
   LoadingStatusApp loadingStatus;
+  Business selectedMerchant;
 
   _ViewModel();
 
@@ -109,11 +113,13 @@ class _ViewModel extends BaseModel<AppState> {
     this.navigateToProductDetails,
     this.singleCategoryFewProducts,
     this.loadingStatus,
+    this.selectedMerchant,
   }) : super(equals: [
           isLoadingMore,
           subCategoryList,
           allProducts,
           loadingStatus,
+          selectedMerchant,
         ]);
 
   @override
@@ -127,6 +133,7 @@ class _ViewModel extends BaseModel<AppState> {
       singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
       isLoadingMore: state.productState.isLoadingMore,
       productListMap: state.productState.subCategoryIdToProductData,
+      selectedMerchant: state.productState.selectedMerchant,
       fetchProducts: (int subCategoryIndex) {
         if (subCategoryIndex == CustomCategoryForAllProducts().categoryId) {
           dispatch(

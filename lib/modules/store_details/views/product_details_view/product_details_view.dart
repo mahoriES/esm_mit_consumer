@@ -2,11 +2,13 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_appbar.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_image_carausel.dart';
-import 'package:eSamudaay/presentations/product_count_widget.dart';
+import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,11 +25,24 @@ class ProductDetailsView extends StatelessWidget {
         Product selectedProduct = snapshot.selectedProduct;
         Business selectedMerchant = snapshot.selectedMerchant;
         return Scaffold(
-          appBar: ProductDetailsAppBar(
+          appBar: CustomAppBar(
             title: selectedProduct.productName,
             subTitle: selectedMerchant.businessName,
-            productId: selectedProduct.productId.toString(),
-            businessId: selectedMerchant.businessId.toString(),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.share),
+                iconSize: 30.toFont,
+                onPressed: () async {
+                  LoadingDialog.show();
+                  await LinkSharingService().shareProductLink(
+                    productId: selectedProduct.productId.toString(),
+                    businessId: selectedMerchant.businessId,
+                    storeName: selectedMerchant.businessName,
+                  );
+                  LoadingDialog.hide();
+                },
+              ),
+            ],
           ),
           bottomSheet: AnimatedContainer(
             height: (snapshot.localCartListing.isEmpty &&
@@ -133,6 +148,7 @@ class ProductDetailsView extends StatelessWidget {
                               ProductCountWidget(
                                 product: selectedProduct,
                                 isSku: false,
+                                selectedMerchant: snapshot.selectedMerchant,
                               ),
                             ],
                           ),
@@ -194,11 +210,11 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      freeFormItemsList: state.productState.localFreeFormCartItems,
+      freeFormItemsList: state.cartState.localFreeFormCartItems,
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed('/CartView'));
       },
-      localCartListing: state.productState.localCartItems,
+      localCartListing: state.cartState.localCartItems,
       selectedMerchant: state.productState.selectedMerchant,
       selectedProduct: state.productState.selectedProductForDetails,
     );

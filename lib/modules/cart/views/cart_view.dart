@@ -16,7 +16,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/jit_catalog/views/customer_images_view.dart';
 import 'package:eSamudaay/modules/jit_catalog/views/free_form_items_view.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/views/stepper_view.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
@@ -84,7 +84,7 @@ class _CartViewState extends State<CartView> {
                         : 2
                     : 0
                 : widget.radioValue;
-            if (store.state.productState.localCartItems.isNotEmpty) {
+            if (store.state.cartState.localCartItems.isNotEmpty) {
               store.dispatch(GetOrderTaxAction());
             }
           },
@@ -180,50 +180,15 @@ class _CartViewState extends State<CartView> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: <Widget>[
-                                                        CSStepper(
-                                                          isDisabled: false,
-                                                          fillColor: true,
-                                                          count: snapshot
+                                                        ProductCountWidget(
+                                                          product: snapshot
+                                                              .localCart[index],
+                                                          selectedMerchant: snapshot
+                                                              .selectedMerchant,
+                                                          isSku: true,
+                                                          skuIndex: snapshot
                                                               .localCart[index]
-                                                              .count,
-                                                          addButtonAction: () {
-                                                            var item = snapshot
-                                                                    .localCart[
-                                                                index];
-                                                            item.count =
-                                                                ((item?.count ??
-                                                                            0) +
-                                                                        1)
-                                                                    .clamp(
-                                                                        0,
-                                                                        double
-                                                                            .nan);
-                                                            snapshot.addToCart(
-                                                                item, context);
-                                                            snapshot.getOrderTax(
-                                                                widget
-                                                                    .radioValue);
-                                                          },
-                                                          removeButtonAction:
-                                                              () {
-                                                            var item = snapshot
-                                                                    .localCart[
-                                                                index];
-                                                            item.count =
-                                                                ((item?.count ??
-                                                                            0) -
-                                                                        1)
-                                                                    .clamp(
-                                                                        0,
-                                                                        double
-                                                                            .nan);
-                                                            snapshot
-                                                                .removeFromCart(
-                                                                    item);
-                                                            snapshot.getOrderTax(
-                                                                widget
-                                                                    .radioValue);
-                                                          },
+                                                              .selectedSkuIndex,
                                                         ),
                                                         // ₹ 55.00
                                                         Padding(
@@ -231,7 +196,7 @@ class _CartViewState extends State<CartView> {
                                                               const EdgeInsets
                                                                   .all(8.0),
                                                           child: Text(
-                                                              "₹ ${snapshot.localCart[index].skus[snapshot.localCart[index].selectedVariant].basePrice / 100}",
+                                                              "₹ ${snapshot.localCart[index].selectedSkuPrice}",
                                                               style: const TextStyle(
                                                                   color: const Color(
                                                                       0xff5091cd),
@@ -256,14 +221,8 @@ class _CartViewState extends State<CartView> {
                                               ),
                                               // 500GMS
                                               Text(
-                                                  snapshot
-                                                          .localCart[index]
-                                                          .skus[snapshot
-                                                              .localCart[index]
-                                                              .selectedVariant]
-                                                          .variationOptions
-                                                          .weight ??
-                                                      "",
+                                                  snapshot.localCart[index]
+                                                      .selectedSkuWeight,
                                                   style: const TextStyle(
                                                       color: const Color(
                                                           0xffa7a7a7),
@@ -910,23 +869,22 @@ class _CartViewState extends State<CartView> {
                                   );
                                 } else {
                                   // var address = await UserManager.getAddress();
-                                  List<Product> cart =
-                                      await CartDataSource.getListOfCartWith();
-                                  var merchats =
-                                      await CartDataSource.getListOfMerchants();
-                                  List<JITProduct> freeFormItems =
+                                  final List<Product> cart =
+                                      await CartDataSource.getListOfProducts();
+                                  final Business merchats =
+                                      await CartDataSource.getCartMerchant();
+                                  final List<JITProduct> freeFormItems =
                                       snapshot.localFreeFormItems ?? [];
                                   freeFormItems.removeWhere((element) =>
                                       element.quantity == 0 ||
                                       element.itemName == "");
                                   if (cart.isEmpty && freeFormItems.isEmpty)
                                     return;
-                                  List<String> customerNoteImages =
+                                  final List<String> customerNoteImages =
                                       snapshot.customerNoteImages ?? [];
-                                  PlaceOrderRequest request =
+                                  final PlaceOrderRequest request =
                                       PlaceOrderRequest();
-                                  request.businessId =
-                                      merchats.first.businessId;
+                                  request.businessId = merchats?.businessId;
                                   request.deliveryAddressId =
                                       widget.radioValue == 1
                                           ? snapshot.selectedAddress?.addressId
@@ -939,7 +897,7 @@ class _CartViewState extends State<CartView> {
                                     request.orderItems = cart
                                         .map((e) => OrderItems(
                                             skuId:
-                                                e.skus[e.selectedVariant].skuId,
+                                                e.skus[e.selectedSkuIndex].skuId,
                                             quantity: e.count))
                                         .toList();
                                   request.customerNote =
@@ -1075,8 +1033,6 @@ class EmptyView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   List<Product> localCart;
-  Function(Product, BuildContext) addToCart;
-  Function(Product) removeFromCart;
   VoidCallback navigateToCart;
   Business selectedMerchant;
   List<Charge> charges;
@@ -1106,8 +1062,6 @@ class _ViewModel extends BaseModel<AppState> {
     this.placeOrder,
     this.user,
     this.getCartTotal,
-    this.addToCart,
-    this.removeFromCart,
     this.navigateToCart,
     this.selectedMerchant,
     this.selectedAddress,
@@ -1132,9 +1086,9 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        customerNoteImages: state.productState.customerNoteImages,
-        localFreeFormItems: state.productState.localFreeFormCartItems,
-        charges: state.productState.charges,
+        customerNoteImages: state.cartState.customerNoteImages,
+        localFreeFormItems: state.cartState.localFreeFormCartItems,
+        charges: state.cartState.charges,
         selectedAddress: state.addressState.selectedAddressForDelivery ??
             (state.addressState.savedAddressList != null &&
                     state.addressState.savedAddressList.isNotEmpty
@@ -1142,21 +1096,17 @@ class _ViewModel extends BaseModel<AppState> {
                 : null),
         isAddressLoading: state.addressState.isLoading,
         selectedMerchant: state.productState.selectedMerchant,
-        localCart: state.productState.localCartItems,
+        localCart: state.cartState.localCartItems,
         user: state.authState.user,
         loadingStatus: state.authState.loadingStatus,
         navigateToStore: () {
           dispatch(UpdateSelectedTabAction(0));
         },
         getCartTotal: () {
-          if (state.productState.localCartItems.isNotEmpty) {
+          if (state.cartState.localCartItems.isNotEmpty) {
             var total =
-                state.productState.localCartItems.fold(0, (previous, current) {
-                      double price = double.parse(
-                              (current.skus[current.selectedVariant].basePrice /
-                                      100)
-                                  .toString()) *
-                          current.count;
+                state.cartState.localCartItems.fold(0, (previous, current) {
+                      double price = current.selectedSkuPrice * current.count;
 
                       return (double.parse(previous.toString()) + price);
                     }) ??
@@ -1176,12 +1126,6 @@ class _ViewModel extends BaseModel<AppState> {
         getTaxOfOrder: (request) {
           dispatch(GetOrderTaxAction());
         },
-        addToCart: (item, context) {
-          dispatch(AddToCartLocalAction(product: item, context: context));
-        },
-        removeFromCart: (item) {
-          dispatch(RemoveFromCartLocalAction(product: item));
-        },
         navigateToCart: () {
           dispatch(NavigateAction.pushNamed('/CartView'));
         },
@@ -1191,21 +1135,17 @@ class _ViewModel extends BaseModel<AppState> {
               NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));
         },
         getOrderTax: (value) {
-          if (state.productState.localCartItems.isNotEmpty) {
+          if (state.cartState.localCartItems.isNotEmpty) {
             var total =
-                state.productState.localCartItems.fold(0, (previous, current) {
-                      double price = double.parse(
-                              (current.skus[current.selectedVariant].basePrice /
-                                      100)
-                                  .toString()) *
-                          current.count;
+                state.cartState.localCartItems.fold(0, (previous, current) {
+                      double price = current.selectedSkuPrice * current.count;
 
                       return (double.parse(previous.toString()) + price);
                     }) ??
                     0.0;
 
             num sum = 0;
-            state.productState.charges.forEach((e) {
+            state.cartState.charges.forEach((e) {
               sum += e.chargeName.contains("DELIVERY") && value == 2
                   ? 0
                   : e.chargeValue / 100;

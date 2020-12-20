@@ -54,7 +54,7 @@ class JITProduct {
 
 class Product {
   int productId;
-  int selectedVariant;
+  int selectedSkuIndex;
   String productName;
   String productDescription;
   bool isActive;
@@ -88,7 +88,7 @@ class Product {
       this.spotlight});
 
   Product.fromJson(Map<String, dynamic> json) {
-    selectedVariant = json['selectedVariant'];
+    selectedSkuIndex = json['selectedVariant'];
     count = json['count'];
     productId = json['product_id'];
     productName = json['product_name'];
@@ -138,9 +138,23 @@ class Product {
       ? ""
       : (this.images.first?.photoUrl ?? "");
 
+  String get selectedSkuId =>
+      this.skus[selectedSkuIndex ?? 0]?.skuId?.toString() ?? "";
+
+  double get selectedSkuPrice {
+    try {
+      return (this.skus[selectedSkuIndex ?? 0]?.basePrice ?? 0) / 100;
+    } catch (e) {
+      return 0.0;
+    }
+  }
+
+  String get selectedSkuWeight =>
+      this.skus[selectedSkuIndex ?? 0]?.variationOptions?.weight ?? "";
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['selectedVariant'] = this.selectedVariant;
+    data['selectedVariant'] = this.selectedSkuIndex;
     data['count'] = this.count;
     data['product_id'] = this.productId;
     data['product_name'] = this.productName;

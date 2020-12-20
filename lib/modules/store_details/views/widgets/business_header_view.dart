@@ -43,12 +43,14 @@ class BusinessHeaderView extends StatelessWidget {
               : "",
           onBackPressed: () async {
             if (resetMerchantOnBack) {
-              List<Business> merchants =
-                  await CartDataSource.getListOfMerchants();
-              if (merchants.isNotEmpty &&
-                  merchants.first.businessId !=
+              // TODO : this logic to update selected merchant from cart data doesn't seems right.
+              // [High]
+              Business merchants =
+                  await CartDataSource.getCartMerchant();
+              if (merchants != null &&
+                  merchants.businessId !=
                       snapshot.selectedMerchant.businessId) {
-                var localMerchant = merchants.first;
+                var localMerchant = merchants;
                 snapshot.updateSelectedMerchant(localMerchant);
               }
             }
