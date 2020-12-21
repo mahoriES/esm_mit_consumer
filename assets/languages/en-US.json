@@ -92,7 +92,8 @@
     "empty_hint": "Look like you haven't added anything to your cart yet",
     "please_collect": "Please collect order from the store when its ready",
     "customize": "+ Customize",
-    "generic_error": "Some error occured while updating cart"
+    "generic_error": "Some error occured while updating cart",
+    "cart_fetch_error": "Could not fetch cart items"
   },
   "screen_account": {
     "title": "Account",

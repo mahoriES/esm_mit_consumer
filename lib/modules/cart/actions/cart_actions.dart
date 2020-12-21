@@ -46,7 +46,7 @@ class GetCartFromLocal extends ReduxAction<AppState> {
         ),
       );
     } catch (_) {
-      Fluttertoast.showToast(msg: "Could not fetch cart items");
+      Fluttertoast.showToast(msg: "cart.cart_fetch_error");
       return null;
     }
   }
