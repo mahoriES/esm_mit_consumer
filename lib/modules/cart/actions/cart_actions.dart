@@ -54,13 +54,11 @@ class GetCartFromLocal extends ReduxAction<AppState> {
 
 class AddToCartLocalAction extends ReduxAction<AppState> {
   final Product product;
-  // final VoidCallback showReplaceCartAlert;
   final Business selectedMerchant;
 
   AddToCartLocalAction({
     @required this.product,
     @required this.selectedMerchant,
-    // @required this.showReplaceCartAlert,
   });
 
   @override
@@ -70,30 +68,22 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       final Business cartMerchant = state.cartState.cartMerchant;
 
       if (cartMerchant != null) {
-        // if cart store is diffrent from current store.
-        if (cartMerchant.businessId != selectedMerchant.businessId) {
-          // showReplaceCartAlert();
-          // return null;
-        }
-        // otherwise if cart store is same as current store
-        else {
-          // check if the product is already present in the cart
-          final bool isInCart = state.cartState.isAvailableInCart(product);
+        // check if the product is already present in the cart
+        final bool isInCart = state.cartState.isAvailableInCart(product);
 
-          if (isInCart) {
-            await CartDataSource.updateCartProduct(product);
-          } else {
-            await CartDataSource.insertProduct(product);
-          }
-          final List<Product> localCartItems =
-              await CartDataSource.getListOfProducts();
-
-          return state.copyWith(
-            cartState: state.cartState.copyWith(
-              localCartItems: localCartItems,
-            ),
-          );
+        if (isInCart) {
+          await CartDataSource.updateCartProduct(product);
+        } else {
+          await CartDataSource.insertProduct(product);
         }
+        final List<Product> localCartItems =
+            await CartDataSource.getListOfProducts();
+
+        return state.copyWith(
+          cartState: state.cartState.copyWith(
+            localCartItems: localCartItems,
+          ),
+        );
       }
       // if cart is empty yet
       else {

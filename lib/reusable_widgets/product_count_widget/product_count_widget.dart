@@ -188,14 +188,15 @@ class _ViewModel extends BaseModel<AppState> {
 
                 if (updatedMerchant.businessId == selectedMerchant.businessId) {
                   _updateQuantity(
-                    isAddAction,
-                    () => dispatch(
+                    isAddAction: isAddAction,
+                    addAction: () => dispatch(
                       AddToCartLocalAction(
                         product: product,
                         selectedMerchant: selectedMerchant,
                       ),
                     ),
-                    () => dispatch(RemoveFromCartAction(product: product)),
+                    removeAction: () =>
+                        dispatch(RemoveFromCartAction(product: product)),
                   );
                 }
               },
@@ -203,25 +204,26 @@ class _ViewModel extends BaseModel<AppState> {
           );
         } else {
           _updateQuantity(
-            isAddAction,
-            () => dispatch(
+            isAddAction: isAddAction,
+            addAction: () => dispatch(
               AddToCartLocalAction(
                 product: product,
                 selectedMerchant: selectedMerchant,
               ),
             ),
-            () => dispatch(RemoveFromCartAction(product: product)),
+            removeAction: () =>
+                dispatch(RemoveFromCartAction(product: product)),
           );
         }
       },
     );
   }
 
-  _updateQuantity(
-    bool isAddAction,
-    VoidCallback addAction,
-    VoidCallback removeAction,
-  ) {
+  _updateQuantity({
+    @required bool isAddAction,
+    @required VoidCallback addAction,
+    @required VoidCallback removeAction,
+  }) {
     // increment/decrement the sku count.
     product.selectedSkuIndex = isSku ? skuIndex : 0;
 
