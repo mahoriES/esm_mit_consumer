@@ -92,8 +92,8 @@ class CircleTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileWidth = 149.5 / 375 * SizeConfig.screenWidth;
-    final tileHeight = 163.8 / 375 * SizeConfig.screenWidth;
+    final double tileWidth = 149.5 / 375 * SizeConfig.screenWidth;
+    final double tileHeight = 163.8 / 375 * SizeConfig.screenWidth;
     return SizedBox(
       width: tileWidth,
       height: tileHeight,
@@ -131,7 +131,7 @@ class CircleTileWidget extends StatelessWidget {
                     ),
                     Positioned(
                       child: Padding(
-                        padding: EdgeInsets.only(left: 12, right: 8, top: 5),
+                        padding: const EdgeInsets.only(left: 12, right: 8, top: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -195,23 +195,25 @@ class CircleTileWidget extends StatelessWidget {
               ),
               Expanded(
                   flex: 35,
-                  child: Column(
-                    children: [
-                      Text(
-                        circleName,
-                        maxLines: 1,
-                        style: CustomTheme.of(context).textStyles.cardTitle,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        circleDescription,
-                        maxLines: 1,
-                        style: CustomTheme.of(context).textStyles.body1,
-                      ),
-                    ],
-                  ))
+                  child: Padding(padding: const EdgeInsets.only(left: 12,top: 5),
+                    child: Column(
+                      children: [
+                        Text(
+                          circleName,
+                          maxLines: 1,
+                          style: CustomTheme.of(context).textStyles.cardTitle,
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          circleDescription,
+                          maxLines: 1,
+                          style: CustomTheme.of(context).textStyles.body1,
+                        ),
+                      ],
+                    ),
+                  ),),
             ],
           ),
         ),
@@ -269,13 +271,13 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
   }
 }
 
-class SuggestedCirclesView extends StatelessWidget {
+class SuggestedNearbyCirclesView extends StatelessWidget {
   final List<CircleTileType> suggestedCirclesList;
   final bool isLocationDisabled;
   final Function(String) onSelectCircle;
   final VoidCallback onTapLocationAction;
 
-  const SuggestedCirclesView(
+  const SuggestedNearbyCirclesView(
       {Key key,
       this.suggestedCirclesList,
       this.onSelectCircle,

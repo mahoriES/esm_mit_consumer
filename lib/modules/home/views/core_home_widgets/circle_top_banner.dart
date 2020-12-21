@@ -115,9 +115,11 @@ class CircleTopBannerView extends StatelessWidget with PreferredSizeWidget {
               width: 134.5 / 375 * SizeConfig.screenWidth,
               color: CustomTheme.of(context).colors.backgroundColor,
             ),
-            if (!isBannerShownOnCircleScreen)
+            if (!isBannerShownOnCircleScreen)...[
+              const SizedBox(width: AppSizes.widgetPadding,),
               CircleActionButton(
                   circleName: circleName, onTap: onTapCircleButton),
+            ]
           ],
         ),
       ),
@@ -155,6 +157,8 @@ class CircleActionButton extends StatelessWidget {
               ),
               Text(
                 circleName,
+                textAlign: TextAlign.center,
+                maxLines: 1,
                 style: CustomTheme.of(context)
                     .textStyles
                     .sectionHeading2

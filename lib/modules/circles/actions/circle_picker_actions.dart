@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
@@ -11,6 +11,7 @@ import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GetNearbyCirclesAction extends ReduxAction<AppState> {
   @override
@@ -25,14 +26,16 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
     if (!_serviceEnabled) _serviceEnabled = await location.requestService();
     if (!_serviceEnabled)
       return state.copyWith(
-          authState: state.authState.copyWith(locationEnabled: false,nearbyClusters: null));
+          authState: state.authState
+              .copyWith(locationEnabled: false, nearbyClusters: null));
 
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         return state.copyWith(
-            authState: state.authState.copyWith(locationEnabled: false,nearbyClusters: null));
+            authState: state.authState
+                .copyWith(locationEnabled: false, nearbyClusters: null));
       }
     }
 
@@ -44,7 +47,8 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
         _locationData.latitude == null ||
         _locationData.longitude == null)
       return state.copyWith(
-          authState: state.authState.copyWith(locationEnabled: true,nearbyClusters: null));
+          authState: state.authState
+              .copyWith(locationEnabled: true, nearbyClusters: null));
     debugPrint('The location is ${_locationData.toString()}');
     var response = await APIManager.shared.request(
         url: ApiURL.getClustersUrl,
@@ -69,17 +73,13 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
         authState: state.authState.copyWith(
           locationEnabled: true,
           nearbyClusters: nearbyCircles,
-//          cluster: state.authState.myClusters == null
-//              ? state.authState.cluster == null
-//                  ? nearbyCircles.first
-//                  : state.authState.cluster
-//              : state.authState.myClusters.first,
         ),
       );
     } else {
       debugPrint('Error occurred fetching nearby circles');
       return state.copyWith(
-          authState: state.authState.copyWith(locationEnabled: true,nearbyClusters: null));
+          authState: state.authState
+              .copyWith(locationEnabled: true, nearbyClusters: null));
     }
   }
 
@@ -145,6 +145,55 @@ class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
   }
 }
 
+class SetCurrentCircleFromPrefsAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String jsonEncodedCircle = prefs.getString('selectedCircle');
+      final Cluster selectedCircle =
+          Cluster.fromJson(jsonDecode(jsonEncodedCircle));
+      return state.copyWith(
+        authState: state.authState.copyWith(cluster: selectedCircle),
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+class ClearCurrentCircleFromPrefsAction extends ReduxAction<AppState> {
+
+  @override
+  FutureOr<AppState> reduce() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('selectedCircle');
+    return null;
+  }
+}
+
+class SaveCurrentCircleToPrefsAction extends ReduxAction<AppState> {
+  final String circleCode;
+
+  SaveCurrentCircleToPrefsAction(this.circleCode);
+
+  @override
+  FutureOr<AppState> reduce() async {
+      final Cluster toBeSavedCircle = [
+        ...state.authState.nearbyClusters ?? <Cluster>[],
+        ...state.authState.myClusters ?? <Cluster>[],
+        ...state.authState.suggestedClusters ?? <Cluster>[],
+      ].toSet().toList().firstWhere(
+          (element) => element.clusterCode == circleCode,
+          orElse: () => null);
+      if (toBeSavedCircle == null) return null;
+      final prefs = await SharedPreferences.getInstance();
+      final String jsonEncodedCircle = jsonEncode(toBeSavedCircle.toJson());
+      prefs.setString('selectedCircle', jsonEncodedCircle);
+      return null;
+  }
+}
+
 class AddCircleToProfileAction extends ReduxAction<AppState> {
   final String circleCode;
 
@@ -161,7 +210,7 @@ class AddCircleToProfileAction extends ReduxAction<AppState> {
 
     if (response.status == ResponseStatus.success200) {
       await dispatchFuture(GetClusterDetailsAction());
-      await dispatchFuture(GetNearbyCirclesAction());
+//      await dispatchFuture(GetNearbyCirclesAction());
       Fluttertoast.showToast(
           msg: 'Successfully added the circle to '
               'profile!');
@@ -208,8 +257,8 @@ class RemoveCircleFromProfileAction extends ReduxAction<AppState> {
         params: {"cluster_code": circleCode});
     debugPrint('2 ${response.toString()}');
     if (response.status == ResponseStatus.success200) {
-      await dispatchFuture(GetClusterDetailsAction());
-      await dispatchFuture(GetNearbyCirclesAction());
+      dispatch(ClearCurrentCircleFromPrefsAction());
+      dispatch(GetClusterDetailsAction());
       Fluttertoast.showToast(
           msg: 'Successfully removed the circle from '
               'profile!');

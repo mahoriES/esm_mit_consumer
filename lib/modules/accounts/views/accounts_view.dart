@@ -113,7 +113,7 @@ class _ViewModel extends BaseModel<AppState> {
     _AccountItem(
       imagePath: "assets/images/location2.png",
       title: 'screen_account.circles',
-      routeName: "/circles",
+      routeName: RouteNames.CIRCLE_PICKER,
     ),
     _AccountItem(
       imagePath: "assets/images/Group_240.png",

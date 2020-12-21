@@ -3,8 +3,11 @@ import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
+import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
 import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
+import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
@@ -39,10 +42,9 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
 
   GlobalKey globalKey = new GlobalKey(debugLabel: 'btm_app_bar');
 
-  Widget currentPage({index: int}) {
+  Widget currentPage({index: int, bool shouldShowCircleScreenInstead}) {
     if (index == 0) {
-      return HomePageMainView(
-          );
+      return shouldShowCircleScreenInstead ? CirclePickerView() : HomePageMainView();
     }
     else if (index == 1) {
       return OrdersView();
@@ -125,7 +127,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           builder: (context, snapshot) {
             return PageStorage(
                 bucket: bucket,
-                child: currentPage(index: snapshot.currentIndex));
+                child: currentPage(index: snapshot.currentIndex, shouldShowCircleScreenInstead: snapshot.selectedCluster == null));
           }),
     );
   }
@@ -155,6 +157,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function updateCurrentIndex;
   VoidCallback getMerchants;
   Function(Business) updateSelectedMerchant;
+  Cluster selectedCluster;
   int currentIndex;
 
   _ViewModel.build(
@@ -162,14 +165,16 @@ class _ViewModel extends BaseModel<AppState> {
       this.getMerchants,
       this.navigateToProductSearch,
       this.updateCurrentIndex,
+      this.selectedCluster,
       this.updateSelectedMerchant,
       this.currentIndex})
-      : super(equals: [currentIndex]);
+      : super(equals: [currentIndex, selectedCluster]);
 
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
+        selectedCluster: state.authState.cluster,
         updateSelectedMerchant: (merchant) {
           dispatch(UpdateSelectedMerchantAction(selectedMerchant: merchant));
         },

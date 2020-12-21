@@ -144,6 +144,7 @@ class _ViewModel extends BaseModel<AppState> {
             -1) dispatch(AddCircleToProfileAction(circleCode: circleCode));
         await dispatchFuture(
             ChangeSelectedCircleUsingCircleCodeAction(circleCode: circleCode));
+        dispatch(SaveCurrentCircleToPrefsAction(circleCode));
         dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
       },
     );

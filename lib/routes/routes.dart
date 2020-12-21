@@ -49,7 +49,6 @@ class SetupRoutes {
       "/about": (BuildContext context) => AboutView(),
       "/onBoarding": (BuildContext context) => OnboardingWidget(),
       "/payment": (BuildContext context) => Payments(),
-      "/circles": (BuildContext context) => CirclePicker(),
       RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
           MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>

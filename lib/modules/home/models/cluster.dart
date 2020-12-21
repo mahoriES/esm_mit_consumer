@@ -54,8 +54,10 @@ class Cluster {
     data['cluster_name'] = this.clusterName;
     data['description'] = this.description;
     data['cluster_code'] = this.clusterCode;
-    data['intro'] = this.introPhoto.toJson();
-    data['thumb'] = this.thumbnail.toJson();
+    if (data['intro'] != null)
+      data['intro'] = this.introPhoto.toJson();
+    if (data['thumb'] != null)
+      data['thumb'] = this.thumbnail.toJson();
     return data;
   }
 }

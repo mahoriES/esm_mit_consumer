@@ -21,40 +21,43 @@ class CirclePickerView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       onInit: (store) async {
-        await store.dispatchFuture(GetNearbyCirclesAction());
+        await store.dispatchFuture(GetClusterDetailsAction());
       },
       builder: (context, snapshot) {
-        return Scaffold(
-          appBar: CircleTopBannerView(
-            imageUrl: '',
-            isBannerShownOnCircleScreen: true,
-          ),
-          body: Material(
-            type: MaterialType.transparency,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  CirclesSearchBar(onTap: () {
-                    snapshot.navigateToSearchCirclesScreen();
-                  }),
-                  snapshot.savedClustersLoading
-                      ? const CirclesLoadingIndicator()
-                      : SavedCirclesView(
-                          onTap: snapshot.setSelectedCircleAction,
-                          onDelete: snapshot.removeCircleAction,
-                          savedCirclesList: snapshot.savedCirclesList),
-                  snapshot.suggestedClustersLoading
-                      ? const CirclesLoadingIndicator()
-                      : SuggestedCirclesView(
-                          onSelectCircle: snapshot.setSelectedCircleAction,
-                          onTapLocationAction: () {
-                            snapshot.onTapLocationAction();
-                          },
-                          isLocationDisabled: !snapshot.locationEnabled,
-                          suggestedCirclesList: snapshot.suggestedCirclesList,
-                        ),
-                  const CircleInfoFooter(),
-                ],
+        return WillPopScope(
+          onWillPop: ()=>Future.value(false),
+          child: Scaffold(
+            appBar: CircleTopBannerView(
+              imageUrl: '',
+              isBannerShownOnCircleScreen: true,
+            ),
+            body: Material(
+              type: MaterialType.transparency,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CirclesSearchBar(onTap: () {
+                      snapshot.navigateToSearchCirclesScreen();
+                    }),
+                    snapshot.savedClustersLoading
+                        ? const CirclesLoadingIndicator()
+                        : SavedCirclesView(
+                            onTap: snapshot.setSelectedCircleAction,
+                            onDelete: snapshot.removeCircleAction,
+                            savedCirclesList: snapshot.savedCirclesList),
+                    snapshot.suggestedClustersLoading
+                        ? const CirclesLoadingIndicator()
+                        : SuggestedNearbyCirclesView(
+                            onSelectCircle: snapshot.setSelectedCircleAction,
+                            onTapLocationAction: () {
+                              snapshot.onTapLocationAction();
+                            },
+                            isLocationDisabled: !snapshot.locationEnabled,
+                            suggestedCirclesList: snapshot.suggestedNearbyCirclesList,
+                          ),
+                    const CircleInfoFooter(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -128,7 +131,6 @@ class _ViewModel extends BaseModel<AppState> {
   List<Cluster> myClusters;
   List<Cluster> nearbyClusters;
   Cluster selectedCluster;
-  List<Cluster> suggestedClusters;
   Function(String circleCode, String circleId) removeCircleAction;
   Function(String textualQuery) getCircleSuggestionsAction;
   VoidCallback navigateToSearchCirclesScreen;
@@ -147,7 +149,6 @@ class _ViewModel extends BaseModel<AppState> {
       @required this.navigateToSearchCirclesScreen,
       @required this.locationEnabled,
       @required this.onTapLocationAction,
-      @required this.suggestedClusters,
       @required this.nearbyClusters,
       @required this.savedClustersLoading,
       @required this.suggestedClustersLoading,
@@ -160,7 +161,6 @@ class _ViewModel extends BaseModel<AppState> {
           suggestedClustersLoading,
           myClusters,
           nearbyClusters,
-          suggestedClusters,
           locationEnabled,
         ]);
 
@@ -173,7 +173,6 @@ class _ViewModel extends BaseModel<AppState> {
         suggestedClustersLoading:
             state.componentsLoadingState.savedCirclesLoading,
         myClusters: state.authState.myClusters,
-        suggestedClusters: state.authState.suggestedClusters,
         nearbyClusters: state.authState.nearbyClusters,
         removeCircleAction: (String circleCode, String circleId) async {
           await dispatchFuture(RemoveCircleFromProfileAction(
@@ -194,6 +193,7 @@ class _ViewModel extends BaseModel<AppState> {
               -1) dispatch(AddCircleToProfileAction(circleCode: circleCode));
           await dispatchFuture(ChangeSelectedCircleUsingCircleCodeAction(
               circleCode: circleCode));
+          dispatch(SaveCurrentCircleToPrefsAction(circleCode));
           dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
         },
         onTapLocationAction: () async {
@@ -220,13 +220,13 @@ class _ViewModel extends BaseModel<AppState> {
     return savedCircles;
   }
 
-  List<CircleTileType> get suggestedCirclesList {
+  List<CircleTileType> get suggestedNearbyCirclesList {
     final List<CircleTileType> suggestedCircles = [];
     nearbyClusters?.forEach((circle) {
       suggestedCircles.add(CircleTileType(
           circleCode: circle.clusterCode,
           circleId: circle.clusterId,
-          imageUrl: circle.thumbnail.photoUrl,
+          imageUrl: circle.thumbnail?.photoUrl ?? '',
           isSelected: false,
           circleName: circle.clusterName,
           circleDescription: circle.description));

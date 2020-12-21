@@ -155,12 +155,10 @@ class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
       store.dispatch(GetAddressFromLocal());
     }
 
-    if (store.state.authState.cluster == null) {
-      await store.dispatchFuture(GetClusterDetailsAction());
-      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-      store.dispatch(LoadVideoFeed());
-      store.dispatch(GetHomePageCategoriesAction());
-    }
+    await store.dispatchFuture(GetClusterDetailsAction());
+    store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+    store.dispatch(LoadVideoFeed());
+    store.dispatch(GetHomePageCategoriesAction());
     store.dispatch(GetCartFromLocal());
     store.dispatch(GetUserFromLocalStorageAction());
     store.dispatch(GetBannerDetailsAction());
@@ -269,11 +267,17 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       response.data.forEach((item) {
         result.add(Cluster.fromJson(item));
       });
+      await dispatchFuture(SetCurrentCircleFromPrefsAction());
+      if (state.authState.cluster == null)
+        return state.copyWith(
+            authState: state.authState.copyWith(
+              cluster: result.first,
+              myClusters: result,
+            ));
       return state.copyWith(
           authState: state.authState.copyWith(
-        cluster: result.first,
-        myClusters: result,
-      ));
+            myClusters: result,
+          ));
     }
   }
 
