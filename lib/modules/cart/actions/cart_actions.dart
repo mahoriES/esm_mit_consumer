@@ -101,7 +101,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
         );
       }
     } catch (_) {
-      Fluttertoast.showToast(msg: "Some error occured while updating cart");
+      Fluttertoast.showToast(msg: tr("cart.generic_error"));
       return null;
     }
   }
@@ -134,7 +134,7 @@ class RemoveFromCartAction extends ReduxAction<AppState> {
         cartMerchant: await CartDataSource.getCartMerchant(),
       ));
     } catch (_) {
-      Fluttertoast.showToast(msg: "Some error occured while updating cart");
+      Fluttertoast.showToast(msg: tr("cart.generic_error"));
       return null;
     }
   }
@@ -154,7 +154,7 @@ class UpdateCartMerchantAction extends ReduxAction<AppState> {
         ),
       );
     } catch (_) {
-      Fluttertoast.showToast(msg: "Some error occured while updating cart");
+      Fluttertoast.showToast(msg: tr("cart.generic_error"));
       return null;
     }
   }

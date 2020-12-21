@@ -51,7 +51,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // TODO : this logic to update selected merchant from cart data doesn't seems right.
+        // TODO : this logic to update selected merchant from cart data doesn't seem right.
         // [High]
         Business merchants = await CartDataSource.getCartMerchant();
         if (merchants != null &&
@@ -136,7 +136,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                       .images.first.photoUrl
                                                   : "",
                                               onBackPressed: () async {
-                                                 // TODO : this logic to update selected merchant from cart data doesn't seems right.
+                                                 // TODO : this logic to update selected merchant from cart data doesn't seem right.
                                                  // [High]
                                                 Business merchants =
                                                     await CartDataSource

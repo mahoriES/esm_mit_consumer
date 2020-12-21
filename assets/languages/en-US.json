@@ -91,7 +91,8 @@
     "empty_cart": "Empty Cart",
     "empty_hint": "Look like you haven't added anything to your cart yet",
     "please_collect": "Please collect order from the store when its ready",
-    "customize": "+ Customize"
+    "customize": "+ Customize",
+    "generic_error": "Some error occured while updating cart"
   },
   "screen_account": {
     "title": "Account",
@@ -260,7 +261,6 @@
     "filters": "Filters",
     "off": "Off"
   },
-
   "address_picker": {
     "select_an_address": "Select an Address",
     "saved_addresses": "Saved Addresses",
@@ -284,5 +284,4 @@
     "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
     "delete": "Delete"
   }
-
 }

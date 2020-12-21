@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/repository/database_manage.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +29,9 @@ class CartDataSource {
       var id = await dbClient.insert(_cartTable, cart);
       debugPrint(id.toString());
       debugPrint(error.toString());
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
   }
 
@@ -40,36 +45,48 @@ class CartDataSource {
         jsonDecodedJITItems.add(JITProduct.fromJson(jsonDecode(element)));
       });
       return jsonDecodedJITItems;
-    } catch (e) {
-      debugPrint("Error occurred getting free form items ${e.toString()}");
-      return <JITProduct>[];
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
+    return [];
   }
 
   static Future<void> insertFreeFormItemsList(
       List<JITProduct> freeFormItemsList) async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> jsonEncodedJITItems = [];
-    freeFormItemsList.forEach((element) {
-      jsonEncodedJITItems.add(jsonEncode(element.toJson()));
-    });
-    prefs.setStringList(_freeFormItemsKey, jsonEncodedJITItems);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> jsonEncodedJITItems = [];
+      freeFormItemsList.forEach((element) {
+        jsonEncodedJITItems.add(jsonEncode(element.toJson()));
+      });
+      prefs.setStringList(_freeFormItemsKey, jsonEncodedJITItems);
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+    }
   }
 
   static Future<List<String>> getCustomerNoteImagesList() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getStringList(_listImagesKey) ?? [];
-    } catch (e) {
-      debugPrint("Error occurred getting customer note images ${e.toString()}");
-      return <String>[];
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
+    return [];
   }
 
   static Future<void> insertCustomerNoteImagesList(
       List<String> customerNoteImages) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(_listImagesKey, customerNoteImages);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setStringList(_listImagesKey, customerNoteImages);
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+    }
   }
 
   ///This function will drop the cart SQL table and recreate it. It is a fix to
@@ -103,6 +120,7 @@ class CartDataSource {
       prefs.setString(_merchantKey, data);
     } catch (error) {
       debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
   }
 
@@ -114,63 +132,106 @@ class CartDataSource {
       return merchant;
     } catch (error) {
       debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
       return null;
     }
   }
 
   static Future<List<Product>> getListOfProducts() async {
     final dbClient = await DatabaseManager().db;
-
-    final List<Map> list = await dbClient.query(_cartTable);
-    final List<Product> products = list.map(
-      (item) {
-        Map<String, dynamic> products = jsonDecode(item["product"].toString());
-        return Product.fromJson(products);
-      },
-    ).toList();
-    return products ?? [];
+    try {
+      final List<Map> list = await dbClient.query(_cartTable);
+      final List<Product> products = list.map(
+        (item) {
+          Map<String, dynamic> products =
+              jsonDecode(item["product"].toString());
+          return Product.fromJson(products);
+        },
+      ).toList();
+      return products ?? [];
+    } on DatabaseException catch (_) {
+      await CartDataSource.reCreateCartTable();
+      final List<Map> list = await dbClient.query(_cartTable);
+      final List<Product> products = list.map(
+        (item) {
+          Map<String, dynamic> products =
+              jsonDecode(item["product"].toString());
+          return Product.fromJson(products);
+        },
+      ).toList();
+      return products ?? [];
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+    }
+    return [];
   }
 
   static Future<void> deleteAllProducts() async {
-    var dbClient = await DatabaseManager().db;
-    await dbClient.delete(_cartTable);
+    try {
+      var dbClient = await DatabaseManager().db;
+      await dbClient.delete(_cartTable);
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+    }
   }
 
   static Future<void> deleteCartMerchant() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove(_merchantKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove(_merchantKey);
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+    }
   }
 
-  static Future<int> deleteCartProduct(Product product) async {
+  static Future<void> deleteCartProduct(Product product) async {
     final dbClient = await DatabaseManager().db;
-    return await dbClient.delete(
-      _cartTable,
-      where: "id = ? AND variation = ?",
-      whereArgs: [product.productId, product.selectedSkuId],
-    );
+    try {
+      return await dbClient.delete(
+        _cartTable,
+        where: "id = ? AND variation = ?",
+        whereArgs: [product.productId, product.selectedSkuId],
+      );
+    } on DatabaseException catch (_) {
+      await CartDataSource.reCreateCartTable();
+      return await dbClient.delete(
+        _cartTable,
+        where: 'id = ? AND variation = ?',
+        whereArgs: [product.productId, product.selectedSkuId],
+      );
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+    }
   }
 
-  static Future<int> updateCartProduct(Product product) async {
+  static Future<void> updateCartProduct(Product product) async {
     var dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
     cart["product"] = jsonEncode(product.toJson());
     cart['id'] = product.productId.toString();
-    cart['variation'] = product.selectedSkuId.toString();
+    cart['variation'] = product.selectedSkuId;
     try {
-      return await dbClient.update(
+      await dbClient.update(
         _cartTable,
         cart,
         where: 'id = ? AND variation = ?',
-        whereArgs: [product.productId, product.selectedSkuId.toString()],
+        whereArgs: [product.productId, product.selectedSkuId],
       );
     } on DatabaseException catch (_) {
       await CartDataSource.reCreateCartTable();
-      return await dbClient.update(
+      await dbClient.update(
         _cartTable,
         cart,
         where: 'id = ? AND variation = ?',
-        whereArgs: [product.productId, product.selectedSkuId.toString()],
+        whereArgs: [product.productId, product.selectedSkuId],
       );
+    } catch (error) {
+      debugPrint(error?.toString());
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
   }
 }
