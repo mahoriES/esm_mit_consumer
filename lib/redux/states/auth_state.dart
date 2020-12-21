@@ -17,6 +17,7 @@ class AuthState {
   final List<Cluster> myClusters;
   final List<Cluster> nearbyClusters;
   final List<Cluster> suggestedClusters;
+  final bool locationEnabled;
 
   final String token;
   final bool isLoggedIn;
@@ -32,6 +33,7 @@ class AuthState {
     @required this.isOtpEntered,
     @required this.isPhoneNumberValid,
     @required this.user,
+    @required this.locationEnabled,
     @required this.isOnboardingCompleted,
     @required this.loadingStatus,
     @required this.token,
@@ -55,6 +57,7 @@ class AuthState {
       isLoggedIn: false,
       loadingStatus: LoadingStatusApp.success,
       isOnboardingCompleted: false,
+      locationEnabled: true,
       user: null,
       isPhoneNumberValid: true,
       isOtpEntered: false,
@@ -71,6 +74,7 @@ class AuthState {
     LoadingStatusApp loadingStatus,
     String mobileNumber,
     bool emailError,
+    bool locationEnabled,
     Cluster cluster,
     bool mobileNumberError,
     String emailErrorMessage,
@@ -95,6 +99,7 @@ class AuthState {
     List<Cluster> suggestedClusters,
   }) {
     return new AuthState(
+        locationEnabled: locationEnabled ?? this.locationEnabled,
         deviceToken: token,
         cluster: cluster ?? this.cluster,
         myClusters: myClusters ?? this.myClusters,

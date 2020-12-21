@@ -8,6 +8,7 @@ import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
+import 'package:eSamudaay/modules/circles/views/circle_search_view.dart';
 import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
@@ -60,6 +61,7 @@ class SetupRoutes {
       RouteNames.ADD_NEW_ADDRESS: (BuildContext context) => AddNewAddressView(),
       RouteNames.SEARCH_ADDRESS: (BuildContext context) => SearchAddressView(),
       RouteNames.CIRCLE_PICKER: (BuildContext context) => const CirclePickerView(),
+      RouteNames.CIRCLE_SEARCH: (BuildContext context) => CircleSearchView(),
     };
   }
 }
@@ -76,4 +78,5 @@ class RouteNames {
   static const ADD_NEW_ADDRESS = "/addNewAddress";
   static const SEARCH_ADDRESS = "/searchAddress";
   static const CIRCLE_PICKER = "/circlePicker";
+  static const CIRCLE_SEARCH = "/circleSearch";
 }

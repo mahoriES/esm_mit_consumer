@@ -293,7 +293,8 @@
     "location": "Turn on your device's location to get suggestions for Circles near you",
     "branding": "eSamudaay Circles",
     "info_1": "A 'Circle' is a community of shop owners, restaurants and merchants that serve in a locality",
-    "info_2": "You can add a circle by turning your location or searching for a specific circle"
+    "info_2": "You can add a circle by turning your location or searching for a specific circle",
+    "search_info": "Try searching for a Circle by typing in your city name. For e.g. Udupi, Chandigarh."
   }
 
 }

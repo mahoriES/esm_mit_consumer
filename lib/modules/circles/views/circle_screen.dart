@@ -8,35 +8,49 @@ import 'package:flutter/material.dart';
 
 class CircleTileGridView extends StatelessWidget {
   final List<CircleTileType> tilesDataList;
-  final VoidCallback onDelete;
-  final VoidCallback onTap;
+  final Function(String, String) onDelete;
+  final Function(String) onTap;
 
   const CircleTileGridView(
       {Key key,
       @required this.tilesDataList,
-      @required this.onDelete,
+      this.onDelete,
       @required this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      primary: false,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisSpacing: 27.0,
-        mainAxisSpacing: 18.0,
-        crossAxisCount: 2,
+    return SizedBox(
+      width: SizeConfig.screenWidth,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        primary: false,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisSpacing: 27.0,
+          mainAxisSpacing: 18.0,
+          childAspectRatio: 149.5 / 163.8,
+          crossAxisCount: 2,
+        ),
+        itemBuilder: (context, index) {
+          return CircleTileWidget(
+              imageUrl: tilesDataList[index].imageUrl,
+              onTap: () {
+                onTap(tilesDataList[index].circleCode);
+              },
+              isSelected: tilesDataList[index].isSelected,
+              onDelete: onDelete != null
+                  ? () {
+                      onDelete(tilesDataList[index].circleCode,
+                          tilesDataList[index].circleId);
+                    }
+                  : onDelete,
+              circleName: tilesDataList[index].circleName,
+              circleDescription: tilesDataList[index].circleDescription);
+        },
+        itemCount: tilesDataList.length,
       ),
-      itemBuilder: (context, index) {
-        return CircleTileWidget(
-            imageUrl: tilesDataList[index].imageUrl,
-            onTap: null,
-            isSelected: false,
-            onDelete: null,
-            circleName: tilesDataList[index].circleName,
-            circleDescription: tilesDataList[index].circleDescription);
-      },
-      itemCount: tilesDataList.length,
     );
   }
 }
@@ -46,9 +60,16 @@ class CircleTileType {
   final String circleName;
   final String circleDescription;
   final bool isSelected;
+  final String circleCode;
+  final String circleId;
 
   CircleTileType(
-      this.imageUrl, this.circleName, this.circleDescription, this.isSelected);
+      {@required this.imageUrl,
+      @required this.circleId,
+      @required this.circleCode,
+      @required this.circleName,
+      @required this.circleDescription,
+      @required this.isSelected});
 }
 
 class CircleTileWidget extends StatelessWidget {
@@ -72,16 +93,22 @@ class CircleTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tileWidth = 149.5 / 375 * SizeConfig.screenWidth;
-
+    final tileHeight = 163.8 / 375 * SizeConfig.screenWidth;
     return SizedBox(
       width: tileWidth,
-      child: AspectRatio(
-        aspectRatio: 149.5 / 163.8,
+      height: tileHeight,
+      child: GestureDetector(
+        onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: CustomTheme.of(context).colors.backgroundColor,
-            borderRadius: BorderRadius.circular(4),
-          ),
+              color: CustomTheme.of(context).colors.backgroundColor,
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 6.0,
+                    offset: Offset(0, 3),
+                    color: CustomTheme.of(context).colors.shadowColor16)
+              ]),
           child: Column(
             children: [
               Expanded(
@@ -104,31 +131,55 @@ class CircleTileWidget extends StatelessWidget {
                     ),
                     Positioned(
                       child: Padding(
-                        padding: EdgeInsets.only(left: 12, right: 8),
+                        padding: EdgeInsets.only(left: 12, right: 8, top: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             isSelected
                                 ? Container(
                                     padding: EdgeInsets.all(4),
-                                    decoration:
-                                        ShapeDecoration(shape: CircleBorder()),
+                                    decoration: ShapeDecoration(
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .backgroundColor,
+                                        shape: CircleBorder(),
+                                        shadows: [
+                                          BoxShadow(
+                                              blurRadius: 3.0,
+                                              offset: Offset(0, 3),
+                                              color: CustomTheme.of(context)
+                                                  .colors
+                                                  .shadowColor16)
+                                        ]),
                                     child: Icon(
                                       Icons.check,
+                                      size: 16,
                                       color: CustomTheme.of(context)
                                           .colors
                                           .primaryColor,
                                     ),
                                   )
                                 : Spacer(),
-                            InkWell(
+                            onDelete == null ? Spacer() : InkWell(
                               onTap: onDelete,
                               child: Container(
                                 padding: EdgeInsets.all(4),
-                                decoration:
-                                    ShapeDecoration(shape: CircleBorder()),
+                                decoration: ShapeDecoration(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .backgroundColor,
+                                    shape: CircleBorder(),
+                                    shadows: [
+                                      BoxShadow(
+                                          blurRadius: 3.0,
+                                          offset: Offset(0, 3),
+                                          color: CustomTheme.of(context)
+                                              .colors
+                                              .shadowColor16)
+                                    ]),
                                 child: Icon(
                                   Icons.delete,
+                                  size: 16,
                                   color: CustomTheme.of(context)
                                       .colors
                                       .disabledAreaColor,
@@ -170,6 +221,8 @@ class CircleTileWidget extends StatelessWidget {
 }
 
 class CircleInfoFooter extends StatefulWidget {
+  const CircleInfoFooter();
+
   @override
   _CircleInfoFooterState createState() => _CircleInfoFooterState();
 }
@@ -178,13 +231,38 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 35),
       child: Column(
         children: [
+          const SizedBox(
+            height: 50,
+          ),
           Text(
             'circle.branding',
+            style: CustomTheme.of(context).textStyles.topTileTitle.copyWith(
+                color: CustomTheme.of(context).colors.disabledAreaColor),
           ).tr(),
-          Text('circle.info_1').tr(),
-          Text('circle.info_2').tr(),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            'circle.info_1',
+            style: CustomTheme.of(context).textStyles.sectionHeading1.copyWith(
+                color: CustomTheme.of(context).colors.disabledAreaColor),
+            textAlign: TextAlign.center,
+          ).tr(),
+          const SizedBox(
+            height: 30,
+          ),
+          Text(
+            'circle.info_2',
+            style: CustomTheme.of(context).textStyles.sectionHeading1.copyWith(
+                color: CustomTheme.of(context).colors.disabledAreaColor),
+            textAlign: TextAlign.center,
+          ).tr(),
+          const SizedBox(
+            height: 50,
+          ),
         ],
       ),
     );
@@ -194,28 +272,41 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
 class SuggestedCirclesView extends StatelessWidget {
   final List<CircleTileType> suggestedCirclesList;
   final bool isLocationDisabled;
+  final Function(String) onSelectCircle;
   final VoidCallback onTapLocationAction;
 
   const SuggestedCirclesView(
       {Key key,
       this.suggestedCirclesList,
+      this.onSelectCircle,
       this.onTapLocationAction,
       @required this.isLocationDisabled})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (!isLocationDisabled && suggestedCirclesList.isEmpty)
+      return const SizedBox.shrink();
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'circle.suggested',
-            style: CustomTheme.of(context).textStyles.sectionHeading2,
-          ).tr(),
+          Padding(
+            padding:
+                const EdgeInsets.only(top: AppSizes.widgetPadding, left: 24),
+            child: Text(
+              'circle.suggested',
+              style: CustomTheme.of(context).textStyles.sectionHeading2,
+            ).tr(),
+          ),
           if (isLocationDisabled)
-            LocationDisabledView(onTapLocationAction: () {
-              onTapLocationAction();
-            }),
+            LocationDisabledView(onTapLocationAction: onTapLocationAction),
+          if (suggestedCirclesList.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: CircleTileGridView(
+                  tilesDataList: suggestedCirclesList, onTap: onSelectCircle),
+            )
         ],
       ),
     );
@@ -224,19 +315,33 @@ class SuggestedCirclesView extends StatelessWidget {
 
 class SavedCirclesView extends StatelessWidget {
   final List<CircleTileType> savedCirclesList;
+  final Function onTap;
+  final Function onDelete;
 
-  const SavedCirclesView({Key key, @required this.savedCirclesList})
+  const SavedCirclesView(
+      {Key key,
+      @required this.savedCirclesList,
+      @required this.onDelete,
+      @required this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (savedCirclesList.isEmpty) return SizedBox.shrink();
+    debugPrint('Saved list ${savedCirclesList.toSet()}');
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'circle.saved',
-            style: CustomTheme.of(context).textStyles.sectionHeading2,
-          ).tr(),
+          Padding(
+            padding: const EdgeInsets.only(left: 24),
+            child: Text(
+              'circle.saved',
+              style: CustomTheme.of(context).textStyles.sectionHeading2,
+            ).tr(),
+          ),
+          CircleTileGridView(
+              tilesDataList: savedCirclesList, onDelete: onDelete, onTap: onTap)
         ],
       ),
     );
@@ -255,33 +360,52 @@ class LocationDisabledView extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          Text(
-            'circle.location',
-            style: CustomTheme.of(context).textStyles.sectionHeading2,
-          ).tr(),
+          const SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: Text(
+              'circle.location',
+              textAlign: TextAlign.center,
+              style: CustomTheme.of(context)
+                  .textStyles
+                  .sectionHeading2
+                  .copyWith(
+                      color: CustomTheme.of(context).colors.disabledAreaColor),
+            ).tr(),
+          ),
           const SizedBox(
             height: AppSizes.widgetPadding,
           ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4.0),
-              border: Border.all(
-                  color: CustomTheme.of(context).colors.primaryColor),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: CustomTheme.of(context).colors.primaryColor,
-                ),
-                const SizedBox(
-                  width: AppSizes.separatorPadding,
-                ),
-                Text(
-                  'circle.turn_on',
-                  style: CustomTheme.of(context).textStyles.sectionHeading1,
-                ).tr(),
-              ],
+          InkWell(
+            onTap: onTapLocationAction,
+            child: Container(
+              padding:
+                  EdgeInsets.symmetric(vertical: AppSizes.separatorPadding),
+              width: 234 / 375 * SizeConfig.screenWidth,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.0),
+                border: Border.all(
+                    width: 1.5,
+                    color: CustomTheme.of(context).colors.primaryColor),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/location2.png',
+                    color: CustomTheme.of(context).colors.primaryColor,
+                  ),
+                  const SizedBox(
+                    width: AppSizes.separatorPadding / 2,
+                  ),
+                  Text(
+                    'circle.turn_on',
+                    style: CustomTheme.of(context).textStyles.sectionHeading1,
+                  ).tr(),
+                ],
+              ),
             ),
           )
         ],
