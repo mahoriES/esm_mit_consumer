@@ -21,53 +21,72 @@ class CirclePickerView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       onInit: (store) async {
+        store.dispatch(GetTrendingCirclesListAction());
         await store.dispatchFuture(GetClusterDetailsAction());
         store.dispatch(GetNearbyCirclesAction());
       },
       builder: (context, snapshot) {
-        return WillPopScope(
-          onWillPop: () => Future.value(false),
-          child: Scaffold(
-            appBar: CircleTopBannerView(
-              imageUrl: '',
-              isBannerShownOnCircleScreen: true,
-            ),
-            body: Material(
-              type: MaterialType.transparency,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CirclesSearchBar(onTap: () {
-                      snapshot.navigateToSearchCirclesScreen();
-                    }),
-                    snapshot.savedClustersLoading
-                        ? const CirclesLoadingIndicator()
-                        : SavedCirclesView(
-                            onTap: snapshot.setSelectedCircleAction,
-                            onDelete: snapshot.removeCircleAction,
-                            savedCirclesList: snapshot.savedCirclesList),
-                    snapshot.suggestedClustersLoading
-                        ? const CirclesLoadingIndicator()
-                        : SuggestedNearbyCirclesView(
-                            onSelectCircle: snapshot.setSelectedCircleAction,
-                            onTapLocationAction: () {
-                              snapshot.onTapLocationAction();
-                            },
-                            isLocationDisabled: !snapshot.locationEnabled,
-                            suggestedCirclesList:
-                                snapshot.suggestedNearbyCirclesList,
-                          ),
-                    CircleInfoFooter(
-                      onTapCallBack: () {},
-                    ),
-                  ],
-                ),
+        return Scaffold(
+          appBar: CircleTopBannerView(
+            imageUrl: snapshot.selectedCluster?.introPhoto?.photoUrl ?? '',
+            isBannerShownOnCircleScreen: true,
+          ),
+          body: Material(
+            type: MaterialType.transparency,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CirclesSearchBar(onTap: () {
+                    snapshot.navigateToSearchCirclesScreen();
+                  }),
+                  TrendingCirclesCarouselView(
+                    onTap: snapshot.setSelectedCircleAction,
+                    trendingCirclesList: snapshot.trendingCirclesList,
+                  ),
+                  snapshot.savedClustersLoading
+                      ? const CirclesLoadingIndicator()
+                      : SavedCirclesView(
+                          onTap: snapshot.setSelectedCircleAction,
+                          onDelete: snapshot.removeCircleAction,
+                          savedCirclesList: snapshot.savedCirclesList),
+                  snapshot.suggestedClustersLoading
+                      ? const CirclesLoadingIndicator()
+                      : SuggestedNearbyCirclesView(
+                          onSelectCircle: snapshot.setSelectedCircleAction,
+                          onTapLocationAction: () {
+                            snapshot.onTapLocationAction();
+                          },
+                          isLocationDisabled: !snapshot.locationEnabled,
+                          suggestedCirclesList:
+                              snapshot.suggestedNearbyCirclesList,
+                        ),
+                  CircleInfoFooter(
+                    onTapCallBack: () {
+                      showSecretCircleAdderDialog(
+                          context, snapshot.setSelectedCircleAction);
+                    },
+                  ),
+                ],
               ),
             ),
           ),
         );
       },
     );
+  }
+
+  void showSecretCircleAdderDialog(
+      BuildContext context, Function onAddCallback) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: SecretCircleBottomSheet(
+              onAddCircle: onAddCallback,
+            ),
+          );
+        });
   }
 }
 
@@ -134,6 +153,7 @@ class CirclesSearchBar extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   List<Cluster> myClusters;
   List<Cluster> nearbyClusters;
+  List<Cluster> trendingClusters;
   Cluster selectedCluster;
   Function(String circleCode, String circleId) removeCircleAction;
   Function(String textualQuery) getCircleSuggestionsAction;
@@ -154,6 +174,7 @@ class _ViewModel extends BaseModel<AppState> {
       @required this.locationEnabled,
       @required this.onTapLocationAction,
       @required this.nearbyClusters,
+      @required this.trendingClusters,
       @required this.savedClustersLoading,
       @required this.suggestedClustersLoading,
       @required this.setSelectedCircleAction,
@@ -165,6 +186,7 @@ class _ViewModel extends BaseModel<AppState> {
           suggestedClustersLoading,
           myClusters,
           selectedCluster,
+          trendingClusters,
           nearbyClusters,
           locationEnabled,
         ]);
@@ -172,6 +194,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+        trendingClusters: state.authState.trendingClusters,
         locationEnabled: state.authState.locationEnabled,
         selectedCluster: state.authState.cluster,
         savedClustersLoading: state.componentsLoadingState.circleDetailsLoading,
@@ -190,6 +213,7 @@ class _ViewModel extends BaseModel<AppState> {
         getSavedCircles: () {},
         navigateToSearchCirclesScreen: () {
           debugPrint('Navigate to search circles called');
+          dispatch(ClearPreviousCircleSearchResultAction());
           dispatch(NavigateAction.pushNamed(RouteNames.CIRCLE_SEARCH));
         },
         setSelectedCircleAction: (String circleCode) async {
@@ -228,10 +252,30 @@ class _ViewModel extends BaseModel<AppState> {
     return savedCircles;
   }
 
+  List<CircleTileType> get trendingCirclesList {
+    final List<CircleTileType> trendingCircles = [];
+    trendingClusters?.forEach((circle) {
+      trendingCircles.add(CircleTileType(
+          circleId: circle.clusterId,
+          circleCode: circle.clusterCode,
+          imageUrl: circle.thumbnail?.photoUrl ?? '',
+          isSelected: selectedCluster == null
+              ? false
+              : circle.clusterId == selectedCluster.clusterId
+              ? true
+              : false,
+          circleName: circle.clusterName,
+          circleDescription: circle.description));
+    });
+    return trendingCircles;
+  }
+
   List<CircleTileType> get suggestedNearbyCirclesList {
     final List<CircleTileType> suggestedCircles = [];
     nearbyClusters?.forEach((circle) {
-      if (myClusters.indexWhere((element) => element.clusterId==circle.clusterId) == -1)
+      if (myClusters
+              .indexWhere((element) => element.clusterId == circle.clusterId) ==
+          -1)
         suggestedCircles.add(CircleTileType(
             circleCode: circle.clusterCode,
             circleId: circle.clusterId,

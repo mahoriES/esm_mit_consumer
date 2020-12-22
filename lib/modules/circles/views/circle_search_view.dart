@@ -135,6 +135,7 @@ class _ViewModel extends BaseModel<AppState> {
       searchResultsCircles: state.authState.suggestedClusters ?? [],
       onSearchAction: (String queryKeyword) {
         if (queryKeyword.isEmpty) return;
+        dispatch(ClearPreviousCircleSearchResultAction());
         dispatch(GetSuggestionsForCircleAction(queryText: queryKeyword));
       },
       onTapSearchResultCircle: (String circleCode) async {

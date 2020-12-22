@@ -145,6 +145,47 @@ class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
   }
 }
 
+class ClearPreviousCircleSearchResultAction extends ReduxAction<AppState> {
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      authState: state.authState.copyWith(
+        suggestedClusters: [],
+      )
+    );
+  }
+}
+
+class GetTrendingCirclesListAction extends ReduxAction<AppState> {
+
+  @override
+  FutureOr<AppState> reduce() async {
+    final response = await APIManager.shared.request(
+      url: ApiURL.getClustersUrl,
+      requestType: RequestType.get,
+      params: {'trending':true},
+    );
+    if (response.status == ResponseStatus.success200) {
+      if (response.data != null && response.data is List && response.data.isNotEmpty) {
+        final List<Cluster> trendingCircles = [];
+        response.data.forEach((circle){
+          trendingCircles.add(Cluster.fromJson(circle));
+        });
+        return state.copyWith(
+          authState: state.authState.copyWith(
+            trendingClusters: trendingCircles,
+          ),
+        );
+      }
+    } else {
+      Fluttertoast.showToast(msg: response.data['status']);
+    }
+    return null;
+  }
+
+}
+
 class SetCurrentCircleFromPrefsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {

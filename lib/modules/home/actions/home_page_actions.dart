@@ -265,7 +265,7 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       List<Cluster> result = [];
-      response.data.forEach((item) {
+      response?.data?.forEach((item) {
         result.add(Cluster.fromJson(item));
       });
       await dispatchFuture(SetCurrentCircleFromPrefsAction());

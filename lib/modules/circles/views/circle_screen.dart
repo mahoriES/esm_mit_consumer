@@ -7,6 +7,57 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class TrendingCirclesCarouselView extends StatelessWidget {
+  final List<CircleTileType> trendingCirclesList;
+  final Function(String) onTap;
+
+  const TrendingCirclesCarouselView(
+      {Key key, @required this.trendingCirclesList, @required this.onTap})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (trendingCirclesList.isEmpty) return SizedBox.shrink();
+    return Column(mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(padding: const EdgeInsets.only(left: 23),
+          child: Text(
+            'circle.trending',
+            style: CustomTheme.of(context).textStyles.sectionHeading2,
+          ).tr(),
+        ),
+        const SizedBox(width: 20,),
+        SizedBox(
+          width: SizeConfig.screenWidth,
+          height: 163.8 / 375 * SizeConfig.screenWidth + 20,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 23),
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final CircleTileType circle = trendingCirclesList[index];
+                return CircleTileWidget(
+                    imageUrl: circle.imageUrl,
+                    onTap: () {
+                      onTap(circle.circleCode);
+                    },
+                    isSelected: circle.isSelected,
+                    onDelete: null,
+                    circleName: circle.circleName,
+                    circleDescription: circle.circleDescription);
+              },
+              separatorBuilder: (_, __) => const SizedBox(
+                    width: 20,
+                  ),
+              itemCount: trendingCirclesList.length),
+        ),
+        const SizedBox(width: 20,),
+      ],
+    );
+  }
+}
+
 class CircleTileGridView extends StatelessWidget {
   final List<CircleTileType> tilesDataList;
   final Function(String, String) onDelete;
@@ -29,8 +80,8 @@ class CircleTileGridView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         primary: false,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisSpacing: 27.0,
-          mainAxisSpacing: 18.0,
+          crossAxisSpacing: 20.0,
+          mainAxisSpacing: 16.0,
           childAspectRatio: 149.5 / 163.8,
           crossAxisCount: 2,
         ),
@@ -200,8 +251,8 @@ class CircleTileWidget extends StatelessWidget {
               Expanded(
                 flex: 35,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 12, top: 5),
-                  child: Column(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         circleName,
@@ -249,49 +300,67 @@ class _SecretCircleBottomSheetState extends State<SecretCircleBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: CustomTheme.of(context).colors.backgroundColor),
-      padding: EdgeInsets.symmetric(
-          horizontal: AppSizes.widgetPadding, vertical: AppSizes.widgetPadding),
-      child: Row(
-        children: [
-          TextField(
-            controller: _textEditingController,
-            decoration: InputDecoration(
-              hintText: tr('circle.search'),
-              hintStyle: CustomTheme.of(context)
-                  .themeData
-                  .textTheme
-                  .subtitle1
-                  .copyWith(
-                      color: CustomTheme.of(context).colors.disabledAreaColor),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: CustomTheme.of(context).colors.shadowColor16),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              contentPadding: EdgeInsets.zero,
-            ),
-          ),
-          InkWell(
-            onTap: widget.onAddCircle(_textEditingController.text),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: CustomTheme.of(context).colors.disabledAreaColor,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(4),
-                      bottomRight: Radius.circular(4))),
-              child: Center(
-                child: Icon(
-                  Icons.add,
-                  color: CustomTheme.of(context).colors.backgroundColor,
+    return Material(
+      type: MaterialType.transparency,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: SizeConfig.screenWidth,
+        height: 180 / 595 * SizeConfig.screenHeight +
+            MediaQuery.of(context).viewInsets.bottom,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: CustomTheme.of(context).colors.backgroundColor),
+        padding: EdgeInsets.symmetric(
+            horizontal: AppSizes.widgetPadding,
+            vertical: AppSizes.widgetPadding),
+        child: Column(
+          children: [
+            TextField(
+              controller: _textEditingController,
+              decoration: InputDecoration(
+                hintText: tr('circle.search'),
+                hintStyle: CustomTheme.of(context)
+                    .themeData
+                    .textTheme
+                    .subtitle1
+                    .copyWith(
+                        color:
+                            CustomTheme.of(context).colors.disabledAreaColor),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: CustomTheme.of(context).colors.shadowColor16),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: CustomTheme.of(context).colors.secondaryColor),
+                  borderRadius: BorderRadius.circular(5),
                 ),
               ),
             ),
-          )
-        ],
+            const SizedBox(
+              height: 16,
+            ),
+            InkWell(
+              onTap: () {
+                widget.onAddCircle(_textEditingController.text.toUpperCase());
+                Navigator.pop(context);
+              },
+              child: Container(
+                height: 42.toHeight,
+                decoration: BoxDecoration(
+                    color: CustomTheme.of(context).colors.secondaryColor,
+                    borderRadius: BorderRadius.circular(4)),
+                child: Center(
+                  child: Icon(
+                    Icons.add,
+                    color: CustomTheme.of(context).colors.backgroundColor,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -307,17 +376,27 @@ class CircleInfoFooter extends StatefulWidget {
 }
 
 class _CircleInfoFooterState extends State<CircleInfoFooter> {
-  bool isAdvancedUser;
+  bool _isAdvancedUser;
   int tapCount;
 
   @override
   void initState() {
     checkAdvancedUser();
+    tapCount = 0;
     super.initState();
   }
 
-  void checkAdvancedUser() {
-
+  void checkAdvancedUser() async {
+    debugPrint('Check advance user called');
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      final bool isAdvancedUser = prefs.getBool('isAdvancedUser');
+      _isAdvancedUser = isAdvancedUser ?? false;
+    } catch (e) {
+      debugPrint('Catch block called');
+      _isAdvancedUser = false;
+      prefs.setBool('isAdvancedUser', false);
+    }
   }
 
   @override
@@ -364,14 +443,14 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
   }
 
   void secretCodeActionHandler() async {
-    if (isAdvancedUser) {
+    if (_isAdvancedUser) {
       widget.onTapCallBack();
     } else {
       tapCount++;
       if (tapCount % 3 == 0) {
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool('isAdvancedUser', true);
-        isAdvancedUser = true;
+        _isAdvancedUser = true;
         widget.onTapCallBack();
       }
     }
