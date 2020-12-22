@@ -22,10 +22,11 @@ class CirclePickerView extends StatelessWidget {
       model: _ViewModel(),
       onInit: (store) async {
         await store.dispatchFuture(GetClusterDetailsAction());
+        store.dispatch(GetNearbyCirclesAction());
       },
       builder: (context, snapshot) {
         return WillPopScope(
-          onWillPop: ()=>Future.value(false),
+          onWillPop: () => Future.value(false),
           child: Scaffold(
             appBar: CircleTopBannerView(
               imageUrl: '',
@@ -53,9 +54,12 @@ class CirclePickerView extends StatelessWidget {
                               snapshot.onTapLocationAction();
                             },
                             isLocationDisabled: !snapshot.locationEnabled,
-                            suggestedCirclesList: snapshot.suggestedNearbyCirclesList,
+                            suggestedCirclesList:
+                                snapshot.suggestedNearbyCirclesList,
                           ),
-                    const CircleInfoFooter(),
+                    CircleInfoFooter(
+                      onTapCallBack: () {},
+                    ),
                   ],
                 ),
               ),
@@ -92,7 +96,7 @@ class CirclesSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
           vertical: AppSizes.widgetPadding, horizontal: AppSizes.widgetPadding),
       child: Container(
         child: InkWell(
@@ -160,6 +164,7 @@ class _ViewModel extends BaseModel<AppState> {
           savedClustersLoading,
           suggestedClustersLoading,
           myClusters,
+          selectedCluster,
           nearbyClusters,
           locationEnabled,
         ]);
@@ -171,7 +176,7 @@ class _ViewModel extends BaseModel<AppState> {
         selectedCluster: state.authState.cluster,
         savedClustersLoading: state.componentsLoadingState.circleDetailsLoading,
         suggestedClustersLoading:
-            state.componentsLoadingState.savedCirclesLoading,
+            state.componentsLoadingState.nearbyCirclesLoading,
         myClusters: state.authState.myClusters,
         nearbyClusters: state.authState.nearbyClusters,
         removeCircleAction: (String circleCode, String circleId) async {
@@ -188,12 +193,15 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(NavigateAction.pushNamed(RouteNames.CIRCLE_SEARCH));
         },
         setSelectedCircleAction: (String circleCode) async {
-          if (state.authState.myClusters
-                  .indexWhere((element) => element.clusterCode == circleCode) ==
-              -1) dispatch(AddCircleToProfileAction(circleCode: circleCode));
+          if (state.authState.myClusters == null ||
+              state.authState.myClusters.indexWhere(
+                      (element) => element.clusterCode == circleCode) ==
+                  -1)
+            await dispatchFuture(
+                AddCircleToProfileAction(circleCode: circleCode));
           await dispatchFuture(ChangeSelectedCircleUsingCircleCodeAction(
               circleCode: circleCode));
-          dispatch(SaveCurrentCircleToPrefsAction(circleCode));
+          await dispatchFuture(SaveCurrentCircleToPrefsAction(circleCode));
           dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
         },
         onTapLocationAction: () async {
@@ -223,13 +231,14 @@ class _ViewModel extends BaseModel<AppState> {
   List<CircleTileType> get suggestedNearbyCirclesList {
     final List<CircleTileType> suggestedCircles = [];
     nearbyClusters?.forEach((circle) {
-      suggestedCircles.add(CircleTileType(
-          circleCode: circle.clusterCode,
-          circleId: circle.clusterId,
-          imageUrl: circle.thumbnail?.photoUrl ?? '',
-          isSelected: false,
-          circleName: circle.clusterName,
-          circleDescription: circle.description));
+      if (myClusters.indexWhere((element) => element.clusterId==circle.clusterId) == -1)
+        suggestedCircles.add(CircleTileType(
+            circleCode: circle.clusterCode,
+            circleId: circle.clusterId,
+            imageUrl: circle.thumbnail?.photoUrl ?? '',
+            isSelected: false,
+            circleName: circle.clusterName,
+            circleDescription: circle.description));
     });
     return suggestedCircles;
   }

@@ -5,6 +5,7 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CircleTileGridView extends StatelessWidget {
   final List<CircleTileType> tilesDataList;
@@ -131,7 +132,8 @@ class CircleTileWidget extends StatelessWidget {
                     ),
                     Positioned(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 8, top: 5),
+                        padding:
+                            const EdgeInsets.only(left: 12, right: 8, top: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -160,32 +162,34 @@ class CircleTileWidget extends StatelessWidget {
                                     ),
                                   )
                                 : Spacer(),
-                            onDelete == null ? Spacer() : InkWell(
-                              onTap: onDelete,
-                              child: Container(
-                                padding: EdgeInsets.all(4),
-                                decoration: ShapeDecoration(
-                                    color: CustomTheme.of(context)
-                                        .colors
-                                        .backgroundColor,
-                                    shape: CircleBorder(),
-                                    shadows: [
-                                      BoxShadow(
-                                          blurRadius: 3.0,
-                                          offset: Offset(0, 3),
+                            onDelete == null
+                                ? Spacer()
+                                : InkWell(
+                                    onTap: onDelete,
+                                    child: Container(
+                                      padding: EdgeInsets.all(4),
+                                      decoration: ShapeDecoration(
                                           color: CustomTheme.of(context)
                                               .colors
-                                              .shadowColor16)
-                                    ]),
-                                child: Icon(
-                                  Icons.delete,
-                                  size: 16,
-                                  color: CustomTheme.of(context)
-                                      .colors
-                                      .disabledAreaColor,
-                                ),
-                              ),
-                            )
+                                              .backgroundColor,
+                                          shape: CircleBorder(),
+                                          shadows: [
+                                            BoxShadow(
+                                                blurRadius: 3.0,
+                                                offset: Offset(0, 3),
+                                                color: CustomTheme.of(context)
+                                                    .colors
+                                                    .shadowColor16)
+                                          ]),
+                                      child: Icon(
+                                        Icons.delete,
+                                        size: 16,
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .disabledAreaColor,
+                                      ),
+                                    ),
+                                  )
                           ],
                         ),
                       ),
@@ -194,26 +198,28 @@ class CircleTileWidget extends StatelessWidget {
                 ),
               ),
               Expanded(
-                  flex: 35,
-                  child: Padding(padding: const EdgeInsets.only(left: 12,top: 5),
-                    child: Column(
-                      children: [
-                        Text(
-                          circleName,
-                          maxLines: 1,
-                          style: CustomTheme.of(context).textStyles.cardTitle,
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          circleDescription,
-                          maxLines: 1,
-                          style: CustomTheme.of(context).textStyles.body1,
-                        ),
-                      ],
-                    ),
-                  ),),
+                flex: 35,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12, top: 5),
+                  child: Column(
+                    children: [
+                      Text(
+                        circleName,
+                        maxLines: 1,
+                        style: CustomTheme.of(context).textStyles.cardTitle,
+                      ),
+                      const SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        circleDescription,
+                        maxLines: 1,
+                        style: CustomTheme.of(context).textStyles.body1,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -222,14 +228,98 @@ class CircleTileWidget extends StatelessWidget {
   }
 }
 
+class SecretCircleBottomSheet extends StatefulWidget {
+  final Function(String) onAddCircle;
+
+  const SecretCircleBottomSheet({Key key, this.onAddCircle}) : super(key: key);
+
+  @override
+  _SecretCircleBottomSheetState createState() =>
+      _SecretCircleBottomSheetState();
+}
+
+class _SecretCircleBottomSheetState extends State<SecretCircleBottomSheet> {
+  TextEditingController _textEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: CustomTheme.of(context).colors.backgroundColor),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppSizes.widgetPadding, vertical: AppSizes.widgetPadding),
+      child: Row(
+        children: [
+          TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              hintText: tr('circle.search'),
+              hintStyle: CustomTheme.of(context)
+                  .themeData
+                  .textTheme
+                  .subtitle1
+                  .copyWith(
+                      color: CustomTheme.of(context).colors.disabledAreaColor),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: CustomTheme.of(context).colors.shadowColor16),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              contentPadding: EdgeInsets.zero,
+            ),
+          ),
+          InkWell(
+            onTap: widget.onAddCircle(_textEditingController.text),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: CustomTheme.of(context).colors.disabledAreaColor,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(4),
+                      bottomRight: Radius.circular(4))),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  color: CustomTheme.of(context).colors.backgroundColor,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class CircleInfoFooter extends StatefulWidget {
-  const CircleInfoFooter();
+  final Function onTapCallBack;
+
+  const CircleInfoFooter({@required this.onTapCallBack});
 
   @override
   _CircleInfoFooterState createState() => _CircleInfoFooterState();
 }
 
 class _CircleInfoFooterState extends State<CircleInfoFooter> {
+  bool isAdvancedUser;
+  int tapCount;
+
+  @override
+  void initState() {
+    checkAdvancedUser();
+    super.initState();
+  }
+
+  void checkAdvancedUser() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -239,11 +329,14 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
           const SizedBox(
             height: 50,
           ),
-          Text(
-            'circle.branding',
-            style: CustomTheme.of(context).textStyles.topTileTitle.copyWith(
-                color: CustomTheme.of(context).colors.disabledAreaColor),
-          ).tr(),
+          GestureDetector(
+            onTap: secretCodeActionHandler,
+            child: Text(
+              'circle.branding',
+              style: CustomTheme.of(context).textStyles.topTileTitle.copyWith(
+                  color: CustomTheme.of(context).colors.disabledAreaColor),
+            ).tr(),
+          ),
           const SizedBox(
             height: 16,
           ),
@@ -268,6 +361,20 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
         ],
       ),
     );
+  }
+
+  void secretCodeActionHandler() async {
+    if (isAdvancedUser) {
+      widget.onTapCallBack();
+    } else {
+      tapCount++;
+      if (tapCount % 3 == 0) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isAdvancedUser', true);
+        isAdvancedUser = true;
+        widget.onTapCallBack();
+      }
+    }
   }
 }
 

@@ -38,8 +38,6 @@ class BusinessCategoryTile extends StatelessWidget {
               children: [
                 Positioned.fill(
                     child: CachedNetworkImage(
-                      memCacheHeight: tileWidth.toInt(),
-                      memCacheWidth: tileWidth.toInt(),
                       imageUrl: imageUrl,
                       errorWidget: (_, __, ___) => placeHolderImage,
                       placeholder: (_, __) => placeHolderImage,

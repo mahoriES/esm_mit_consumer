@@ -42,7 +42,7 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
     ///If location fetching takes more than 20 seconds(average for A-GPS) we
     ///stop further wait; so yeah, timeout!
     _locationData = await location.getLocation().timeout(Duration(seconds: 20));
-
+    Fluttertoast.showToast(msg: 'Location data ${_locationData.toString() ?? 'NA'}');
     if (_locationData == null ||
         _locationData.latitude == null ||
         _locationData.longitude == null)
@@ -68,7 +68,7 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
             nearbyCircles.add(Cluster.fromJson(item));
         }
       });
-
+      nearbyCircles?.forEach((element) {Fluttertoast.showToast(msg: 'Nearby circle - ${element.clusterName}');});
       return state.copyWith(
         authState: state.authState.copyWith(
           locationEnabled: true,
@@ -211,9 +211,9 @@ class AddCircleToProfileAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       await dispatchFuture(GetClusterDetailsAction());
 //      await dispatchFuture(GetNearbyCirclesAction());
-      Fluttertoast.showToast(
-          msg: 'Successfully added the circle to '
-              'profile!');
+//      Fluttertoast.showToast(
+//          msg: 'Successfully added the circle to '
+//              'profile!');
     } else {
       Fluttertoast.showToast(
           msg: 'Error : '
@@ -259,9 +259,9 @@ class RemoveCircleFromProfileAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       dispatch(ClearCurrentCircleFromPrefsAction());
       dispatch(GetClusterDetailsAction());
-      Fluttertoast.showToast(
-          msg: 'Successfully removed the circle from '
-              'profile!');
+//      Fluttertoast.showToast(
+//          msg: 'Successfully removed the circle from '
+//              'profile!');
     } else {
       Fluttertoast.showToast(
           msg: 'Error : '

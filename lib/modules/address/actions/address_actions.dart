@@ -69,7 +69,7 @@ class GetAddressAction extends ReduxAction<AppState> {
         }
         final List<AddressResponse> responseModel = List<AddressResponse>();
 
-        response.data.forEach((e) {
+        response?.data?.forEach((e) {
           responseModel.add(AddressResponse.fromJson(e));
         });
 
@@ -82,11 +82,12 @@ class GetAddressAction extends ReduxAction<AppState> {
         );
       } else {
         Fluttertoast.showToast(
-            msg: response.data['message'] ?? tr("common.some_error_occured"));
+            msg: response.data != null ? response?.data['message'] ?? tr("common.some_error_occured") : tr("common.some_error_occured") );
         return null;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+
+      Fluttertoast.showToast(msg: "${e.toString()}"+tr("common.some_error_occured"));
       return null;
     }
   }
@@ -94,6 +95,7 @@ class GetAddressAction extends ReduxAction<AppState> {
 
 class DeleteAddressAction extends ReduxAction<AppState> {
   final String addressId;
+
   DeleteAddressAction(this.addressId);
 
   @override
@@ -153,7 +155,9 @@ class GetAddressFromLocal extends ReduxAction<AppState> {
 
 class UpdateIsRegisterFlow extends ReduxAction<AppState> {
   final bool isRegisterView;
+
   UpdateIsRegisterFlow(this.isRegisterView);
+
   @override
   FutureOr<AppState> reduce() async {
     return state.copyWith(
@@ -200,7 +204,9 @@ class GetInitialLocation extends ReduxAction<AppState> {
 
 class GetAddressForLocation extends ReduxAction<AppState> {
   final LatLng position;
+
   GetAddressForLocation(this.position);
+
   @override
   FutureOr<AppState> reduce() async {
     final List<Address> address =
@@ -236,7 +242,9 @@ class GetAddressForLocation extends ReduxAction<AppState> {
 
 class UpdateAddressLoadingStatus extends ReduxAction<AppState> {
   final bool isLoading;
+
   UpdateAddressLoadingStatus(this.isLoading);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -249,7 +257,9 @@ class UpdateAddressLoadingStatus extends ReduxAction<AppState> {
 
 class UpdateSelectedAddressForRegister extends ReduxAction<AppState> {
   final AddressRequest addressRequest;
+
   UpdateSelectedAddressForRegister(this.addressRequest);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -262,7 +272,9 @@ class UpdateSelectedAddressForRegister extends ReduxAction<AppState> {
 
 class UpdateCurrentPosition extends ReduxAction<AppState> {
   final LatLng position;
+
   UpdateCurrentPosition(this.position);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -278,7 +290,9 @@ class UpdateCurrentPosition extends ReduxAction<AppState> {
 
 class UpdateAddressName extends ReduxAction<AppState> {
   final String addressName;
+
   UpdateAddressName(this.addressName);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -293,7 +307,9 @@ class UpdateAddressName extends ReduxAction<AppState> {
 
 class UpdateAddressLandmark extends ReduxAction<AppState> {
   final String landmark;
+
   UpdateAddressLandmark(this.landmark);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -308,7 +324,9 @@ class UpdateAddressLandmark extends ReduxAction<AppState> {
 
 class UpdateAddressHouse extends ReduxAction<AppState> {
   final String house;
+
   UpdateAddressHouse(this.house);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
@@ -323,7 +341,9 @@ class UpdateAddressHouse extends ReduxAction<AppState> {
 
 class GetSuggestionsAction extends ReduxAction<AppState> {
   final String input;
+
   GetSuggestionsAction(this.input);
+
   @override
   FutureOr<AppState> reduce() async {
     final PlacesAutocompleteResponse geocodingResponse =
@@ -349,7 +369,9 @@ class GetSuggestionsAction extends ReduxAction<AppState> {
 
 class GetAddressDetailsAction extends ReduxAction<AppState> {
   final String placeId;
+
   GetAddressDetailsAction(this.placeId);
+
   @override
   FutureOr<AppState> reduce() async {
     final PlacesDetailsResponse placesDetailsResponse =
@@ -404,7 +426,9 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
 
 class UpdateSelectedAddressForDelivery extends ReduxAction<AppState> {
   final AddressResponse address;
+
   UpdateSelectedAddressForDelivery(this.address);
+
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(

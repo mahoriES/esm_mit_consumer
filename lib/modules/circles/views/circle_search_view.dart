@@ -29,7 +29,6 @@ class _CircleSearchViewState extends State<CircleSearchView> {
       child: Material(
         child: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
-            onInit: (store) {},
             builder: (context, snapshot) {
               return Column(
                 children: [
@@ -139,12 +138,12 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(GetSuggestionsForCircleAction(queryText: queryKeyword));
       },
       onTapSearchResultCircle: (String circleCode) async {
-        if (state.authState.myClusters
+        if (state.authState.myClusters == null || state.authState.myClusters
                 .indexWhere((element) => element.clusterCode == circleCode) ==
-            -1) dispatch(AddCircleToProfileAction(circleCode: circleCode));
+            -1) await dispatchFuture(AddCircleToProfileAction(circleCode: circleCode));
         await dispatchFuture(
             ChangeSelectedCircleUsingCircleCodeAction(circleCode: circleCode));
-        dispatch(SaveCurrentCircleToPrefsAction(circleCode));
+        await dispatchFuture(SaveCurrentCircleToPrefsAction(circleCode));
         dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
       },
     );

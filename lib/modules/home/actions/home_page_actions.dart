@@ -32,7 +32,7 @@ class GetMerchantDetails extends ReduxAction<AppState> {
     var response = await APIManager.shared.request(
         url: getUrl,
         params: {
-          "cluster_id": state.authState.cluster.clusterId,
+          "cluster_id": state.authState.cluster?.clusterId ?? '',
           "ag_cat": true
         },
         requestType: RequestType.get);
@@ -109,7 +109,6 @@ class ChangeSelectedCircleUsingCircleCodeAction extends ReduxAction<AppState> {
     store.dispatch(GetHomePageCategoriesAction());
     super.after();
   }
-
 }
 
 class ChangeSelectedCircleAction extends ReduxAction<AppState> {
@@ -155,14 +154,16 @@ class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
       store.dispatch(GetAddressFromLocal());
     }
 
-    await store.dispatchFuture(GetClusterDetailsAction());
-    store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-    store.dispatch(LoadVideoFeed());
-    store.dispatch(GetHomePageCategoriesAction());
-    store.dispatch(GetCartFromLocal());
-    store.dispatch(GetUserFromLocalStorageAction());
-    store.dispatch(GetBannerDetailsAction());
-    store.dispatch(GetTopBannerImageAction());
+    if (state.authState.cluster != null) {
+      await store.dispatchFuture(GetClusterDetailsAction());
+      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(LoadVideoFeed());
+      store.dispatch(GetHomePageCategoriesAction());
+      store.dispatch(GetCartFromLocal());
+      store.dispatch(GetUserFromLocalStorageAction());
+      store.dispatch(GetBannerDetailsAction());
+      store.dispatch(GetTopBannerImageAction());
+    }
     return null;
   }
 }
@@ -268,16 +269,17 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
         result.add(Cluster.fromJson(item));
       });
       await dispatchFuture(SetCurrentCircleFromPrefsAction());
+      if (result == null || result.isEmpty) return null;
       if (state.authState.cluster == null)
         return state.copyWith(
             authState: state.authState.copyWith(
-              cluster: result.first,
-              myClusters: result,
-            ));
+          cluster: result?.first,
+          myClusters: result,
+        ));
       return state.copyWith(
           authState: state.authState.copyWith(
-            myClusters: result,
-          ));
+        myClusters: result,
+      ));
     }
   }
 

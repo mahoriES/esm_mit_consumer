@@ -6,7 +6,6 @@ import 'package:eSamudaay/modules/address/view/change_address_view/manage_addres
 import 'package:eSamudaay/modules/address/view/search_view/search_view.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
-import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_search_view.dart';
 import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dart';
