@@ -168,7 +168,7 @@ class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
       store.dispatch(GetBannerDetailsAction());
       store.dispatch(GetTopBannerImageAction());
     }
-    return null;
+    return state.copyWith(isInitializationDone: true);
   }
 }
 
