@@ -79,6 +79,7 @@ class GetMerchantDetails extends ReduxAction<AppState> {
 
 class ChangeSelectedCircleUsingCircleCodeAction extends ReduxAction<AppState> {
   final String circleCode;
+  bool _didCircleGotChanged = false;
 
   ChangeSelectedCircleUsingCircleCodeAction({@required this.circleCode});
 
@@ -93,6 +94,7 @@ class ChangeSelectedCircleUsingCircleCodeAction extends ReduxAction<AppState> {
         (element) => element.clusterCode == circleCode,
         orElse: () => null);
     if (toBeSelectedCluster == null) return null;
+    _didCircleGotChanged = true;
     return state.copyWith(
       authState: state.authState.copyWith(
         cluster: toBeSelectedCluster,
@@ -102,11 +104,13 @@ class ChangeSelectedCircleUsingCircleCodeAction extends ReduxAction<AppState> {
 
   @override
   void after() async {
-    store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
-    store.dispatch(LoadVideoFeed());
-    store.dispatch(GetBannerDetailsAction());
-    store.dispatch(GetTopBannerImageAction());
-    store.dispatch(GetHomePageCategoriesAction());
+    if (_didCircleGotChanged) {
+      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(LoadVideoFeed());
+      store.dispatch(GetBannerDetailsAction());
+      store.dispatch(GetTopBannerImageAction());
+      store.dispatch(GetHomePageCategoriesAction());
+    }
     super.after();
   }
 }

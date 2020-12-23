@@ -27,8 +27,8 @@ class _CircleSearchViewState extends State<CircleSearchView> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Material(
-        child: StoreConnector<AppState, _ViewModel>(
+      child: Scaffold(
+        body: StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
               return Column(
@@ -135,7 +135,7 @@ class _ViewModel extends BaseModel<AppState> {
           state.componentsLoadingState.suggestedCirclesLoading,
       searchResultsCircles: state.authState.suggestedClusters ?? [],
       onSearchAction: (String queryKeyword) {
-        if (queryKeyword.isEmpty) return;
+        if (queryKeyword.isEmpty || state.componentsLoadingState.suggestedCirclesLoading) return;
         dispatch(ClearPreviousCircleSearchResultAction());
         dispatch(GetSuggestionsForCircleAction(queryText: queryKeyword));
       },

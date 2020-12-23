@@ -1,6 +1,6 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/shared_preferences_util.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 ///
@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 /// makes you an advanced user and you can then
 ///
 
+//TODO: The advanced user value should be coming from Redux Store. Also for shared preferences need to create a new store, and it shall act as the interface for the same
 class CircleInfoFooter extends StatefulWidget {
   final Function onTapCallBack;
 
@@ -31,16 +32,7 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
   }
 
   void checkAdvancedUser() async {
-    debugPrint('Check advance user called');
-    final prefs = await SharedPreferences.getInstance();
-    try {
-      final bool isAdvancedUser = prefs.getBool('isAdvancedUser');
-      _isAdvancedUser = isAdvancedUser ?? false;
-    } catch (e) {
-      debugPrint('Catch block called');
-      _isAdvancedUser = false;
-      prefs.setBool('isAdvancedUser', false);
-    }
+    _isAdvancedUser = await SharedPreferencesUtility.isAdvancedUser();
   }
 
   @override
@@ -87,13 +79,12 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
   }
 
   void secretCodeActionHandler() async {
-    if (_isAdvancedUser) {
+    if (_isAdvancedUser ?? false) {
       widget.onTapCallBack();
     } else {
       tapCount++;
       if (tapCount % 3 == 0) {
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setBool('isAdvancedUser', true);
+        SharedPreferencesUtility.setCurrentUserAsAdvanced();
         _isAdvancedUser = true;
         widget.onTapCallBack();
       }

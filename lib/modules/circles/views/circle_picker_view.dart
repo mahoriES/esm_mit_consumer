@@ -27,7 +27,8 @@ class CirclePickerView extends StatelessWidget {
       model: _ViewModel(),
       onInit: (store) async {
         store.dispatch(GetTrendingCirclesListAction());
-        await store.dispatchFuture(GetClusterDetailsAction());
+        if (store.state.authState.cluster == null || store.state.authState.myClusters == null)
+          await store.dispatchFuture(GetClusterDetailsAction());
         store.dispatch(GetNearbyCirclesAction());
       },
       builder: (context, snapshot) {
