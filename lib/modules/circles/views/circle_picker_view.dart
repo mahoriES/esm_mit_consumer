@@ -1,6 +1,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
-import 'package:eSamudaay/modules/circles/views/circle_screen.dart';
+import 'package:eSamudaay/modules/circles/model/circle_tile_type.dart';
+import 'package:eSamudaay/modules/circles/views/core_widgets/circle_info_footer.dart';
+import 'package:eSamudaay/modules/circles/views/core_widgets/saved_circle_view.dart';
+import 'package:eSamudaay/modules/circles/views/core_widgets/secret_circle_sheet_widget.dart';
+import 'package:eSamudaay/modules/circles/views/core_widgets/suggested_circle_view.dart';
+import 'package:eSamudaay/modules/circles/views/core_widgets/trending_circle_carousel.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/views/core_home_widgets/circle_top_banner.dart';

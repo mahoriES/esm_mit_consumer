@@ -1,7 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
+import 'package:eSamudaay/modules/circles/model/circle_tile_type.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
-import 'package:eSamudaay/modules/circles/views/circle_screen.dart';
+import 'package:eSamudaay/modules/circles/views/core_widgets/circles_grid_view.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';

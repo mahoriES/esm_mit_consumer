@@ -286,6 +286,7 @@
   },
 
   "circle" : {
+    "nearby_msg": "Based on your current location",
     "trending": "Trending Circles",
     "saved": "Saved Circles",
     "enter_code": "Enter Circle Code",
