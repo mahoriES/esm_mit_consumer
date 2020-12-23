@@ -8,7 +8,8 @@ class CartState {
   final List<JITProduct> localFreeFormCartItems;
   final List<String> customerNoteImages;
   final Business cartMerchant;
-  final List<Charge> charges;
+  final CartCharges charges;
+  final bool isCartLoading;
 
   CartState({
     @required this.localCartItems,
@@ -16,6 +17,7 @@ class CartState {
     @required this.customerNoteImages,
     @required this.cartMerchant,
     @required this.charges,
+    @required this.isCartLoading,
   });
 
   factory CartState.initial() {
@@ -24,7 +26,8 @@ class CartState {
       localFreeFormCartItems: [],
       localCartItems: [],
       cartMerchant: null,
-      charges: [],
+      charges: null,
+      isCartLoading: false,
     );
   }
 
@@ -40,19 +43,24 @@ class CartState {
   }
 
   CartState copyWith({
+    // we need to set cartMerchant as null when no products are added in cart.
+    bool isMerchantAllowedToBeNull = false,
     List<Product> localCartItems,
     List<JITProduct> localFreeFormCartItems,
     List<String> customerNoteImages,
     Business cartMerchant,
-    List<Charge> charges,
+    CartCharges charges,
+    bool isCartLoading,
   }) {
     return new CartState(
       customerNoteImages: customerNoteImages ?? this.customerNoteImages,
       localCartItems: localCartItems ?? this.localCartItems,
       localFreeFormCartItems:
           localFreeFormCartItems ?? this.localFreeFormCartItems,
-      cartMerchant: cartMerchant ?? this.cartMerchant,
+      cartMerchant: cartMerchant ??
+          (isMerchantAllowedToBeNull ? null : this.cartMerchant),
       charges: charges ?? this.charges,
+      isCartLoading: isCartLoading ?? this.isCartLoading,
     );
   }
 }

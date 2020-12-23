@@ -196,31 +196,31 @@ class PossibleVariations {
   }
 }
 
-class Charges {
-  int packing;
-  int service;
+// class Charges {
+//   int packing;
+//   int service;
 
-  Charges({this.packing, this.service});
+//   Charges({this.packing, this.service});
 
-  Charges.fromJson(Map<String, dynamic> json) {
-    packing = json['Packing'];
-    service = json['Service'];
-  }
+//   Charges.fromJson(Map<String, dynamic> json) {
+//     packing = json['Packing'];
+//     service = json['Service'];
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Packing'] = this.packing;
-    data['Service'] = this.service;
-    return data;
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['Packing'] = this.packing;
+//     data['Service'] = this.service;
+//     return data;
+//   }
+// }
 
 class Skus {
   int skuId;
   String skuCode;
   bool isActive;
   bool inStock;
-  Charges charges;
+  // Charges charges;
   int basePrice;
   VariationOptions variationOptions;
 
@@ -229,7 +229,7 @@ class Skus {
       this.skuCode,
       this.isActive,
       this.inStock,
-      this.charges,
+      // this.charges,
       this.basePrice,
       this.variationOptions});
 
@@ -238,8 +238,8 @@ class Skus {
     skuCode = json['sku_code'];
     isActive = json['is_active'];
     inStock = json['in_stock'];
-    charges =
-        json['charges'] != null ? new Charges.fromJson(json['charges']) : null;
+    // charges =
+    //     json['charges'] != null ? new Charges.fromJson(json['charges']) : null;
     basePrice = json['base_price'];
     variationOptions = json['variation_options'] != null
         ? new VariationOptions.fromJson(json['variation_options'])
@@ -252,9 +252,9 @@ class Skus {
     data['sku_code'] = this.skuCode;
     data['is_active'] = this.isActive;
     data['in_stock'] = this.inStock;
-    if (this.charges != null) {
-      data['charges'] = this.charges.toJson();
-    }
+    // if (this.charges != null) {
+    //   data['charges'] = this.charges.toJson();
+    // }
     data['base_price'] = this.basePrice;
     if (this.variationOptions != null) {
       data['variation_options'] = this.variationOptions.toJson();

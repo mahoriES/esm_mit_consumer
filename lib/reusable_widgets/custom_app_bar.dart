@@ -8,8 +8,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final List<Widget> actions;
   const CustomAppBar({
     @required this.title,
-    @required this.subTitle,
-    @required this.actions,
+    this.subTitle,
+    this.actions,
   });
 
   @override
@@ -28,7 +28,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             style: CustomTheme.of(context).textStyles.topTileTitle,
             maxLines: 1,
           ),
-          if (subTitle != null) ...[
+          if (subTitle != null && subTitle != "") ...[
             Text(
               subTitle,
               style: CustomTheme.of(context).textStyles.body1,

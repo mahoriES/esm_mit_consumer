@@ -93,7 +93,19 @@
     "please_collect": "Please collect order from the store when its ready",
     "customize": "+ Customize",
     "generic_error": "Some error occured while updating cart",
-    "cart_fetch_error": "Could not fetch cart items"
+    "cart_fetch_error": "Could not fetch cart items",
+    "catalogue_items": "Catalogue Items",
+    "item_total": "Item Total",
+    "delivery_partner_fee": "Delivery Partner fee",
+    "merchant_charges": "Merchant Charges",
+    "packing_charges": "Packaging Charges",
+    "service_charges": "Service Charges",
+    "grand_total": "Grand Total",
+    "list_items": "List Items",
+    "upload_list": "Upload List",
+    "list_placeholder_message": "Shop directly by uploading a photo of your shopping list or medical prescription",
+    "cart_message": "Send order request and the merchant Will get back to you with confirmation.",
+    "delivery_charge_info": "This fee goes towards fairly paying the Delivery Partner"
   },
   "screen_account": {
     "title": "Account",

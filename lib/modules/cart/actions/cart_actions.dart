@@ -35,6 +35,9 @@ class GetCartFromLocal extends ReduxAction<AppState> {
 
         CartDataSource.deleteAllProducts();
         CartDataSource.deleteCartMerchant();
+      } else {
+        // fetch order charges if the cart data is not null.
+        dispatch(GetOrderTaxAction(merchant));
       }
 
       return state.copyWith(
@@ -50,6 +53,12 @@ class GetCartFromLocal extends ReduxAction<AppState> {
       return null;
     }
   }
+
+  @override
+  void before() => dispatch(ToggleCartLoadingState(true));
+
+  @override
+  void after() => dispatch(ToggleCartLoadingState(false));
 }
 
 class AddToCartLocalAction extends ReduxAction<AppState> {
@@ -92,6 +101,8 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
 
         final List<Product> localCartItems =
             await CartDataSource.getListOfProducts();
+        // fetch order charges for selected merchant.
+        dispatch(GetOrderTaxAction(selectedMerchant));
 
         return state.copyWith(
           cartState: state.cartState.copyWith(
@@ -128,11 +139,16 @@ class RemoveFromCartAction extends ReduxAction<AppState> {
       if (localCartItems.isEmpty) {
         await CartDataSource.deleteCartMerchant();
       }
+
+      final Business merchant = await CartDataSource.getCartMerchant();
+
       return state.copyWith(
-          cartState: state.cartState.copyWith(
-        localCartItems: localCartItems,
-        cartMerchant: await CartDataSource.getCartMerchant(),
-      ));
+        cartState: state.cartState.copyWith(
+          isMerchantAllowedToBeNull: true,
+          localCartItems: localCartItems,
+          cartMerchant: merchant,
+        ),
+      );
     } catch (_) {
       Fluttertoast.showToast(msg: tr("cart.generic_error"));
       return null;
@@ -142,15 +158,16 @@ class RemoveFromCartAction extends ReduxAction<AppState> {
 
 // Delete existing data in cart and add new merchant as cart store along with the selected product.
 class UpdateCartMerchantAction extends ReduxAction<AppState> {
-  // final Business newMerchant;
-  // UpdateCartMerchantAction({@required this.newMerchant});
-
   @override
   FutureOr<AppState> reduce() async {
     try {
+      Business merchant = await CartDataSource.getCartMerchant();
+      // fetch order charges for selected merchant.
+      dispatch(GetOrderTaxAction(merchant));
+
       return state.copyWith(
         cartState: state.cartState.copyWith(
-          cartMerchant: await CartDataSource.getCartMerchant(),
+          cartMerchant: merchant,
         ),
       );
     } catch (_) {
@@ -201,33 +218,36 @@ class PlaceOrderAction extends ReduxAction<AppState> {
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
-// TODO : Refactor this action.
 class GetOrderTaxAction extends ReduxAction<AppState> {
+  Business merchant;
+  GetOrderTaxAction(this.merchant);
   @override
   FutureOr<AppState> reduce() async {
-    var merchant = state.cartState.cartMerchant;
+    if (merchant?.businessId == null) return null;
 
-    var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl + "${merchant?.businessId}" + "/charges",
-        params: {"": ""},
-        requestType: RequestType.get);
+    final response = await APIManager.shared.request(
+      url: ApiURL.getChargesUrl(merchant.businessId),
+      params: null,
+      requestType: RequestType.get,
+    );
+
     if (response.status == ResponseStatus.success200) {
-      List<Charge> charge = new List<Charge>();
-      response.data.forEach((v) {
-        charge.add(new Charge.fromJson(v));
-      });
+      final CartCharges cartCharges = CartCharges.fromJson(response.data);
       return state.copyWith(
-          cartState: state.cartState.copyWith(charges: charge));
+        cartState: state.cartState.copyWith(charges: cartCharges),
+      );
     } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+      Fluttertoast.showToast(
+          msg: response.data['message'] ?? tr("common.some_error_occured"));
       return null;
     }
   }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  @override
+  void before() => dispatch(ToggleCartLoadingState(true));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  @override
+  void after() => dispatch(ToggleCartLoadingState(false));
 }
 
 // TODO : Refactor this action.
@@ -259,4 +279,18 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
   void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+}
+
+class ToggleCartLoadingState extends ReduxAction<AppState> {
+  bool isLoading;
+  ToggleCartLoadingState(this.isLoading);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      cartState: state.cartState.copyWith(
+        isCartLoading: isLoading,
+      ),
+    );
+  }
 }

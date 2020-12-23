@@ -51,15 +51,16 @@ class _ViewModel extends BaseModel<AppState> {
                   }) ??
                   0.0;
           if (state.cartState.charges != null &&
-              state.cartState.charges.isNotEmpty) {
-            state.cartState.charges.forEach((element) {
-              debugPrint('Getting here to add price ${element.chargeValue}');
-              if (element.businessId ==
-                  state.cartState.cartMerchant.businessId) {
-                debugPrint('PRice to be added ${element.chargeValue}');
-                total += (element.chargeValue / 100).toDouble();
-              }
-            });
+              state.cartState.charges != null) {
+            // TODO : this widget will be refactored.
+            // state.cartState.charges.forEach((element) {
+            //   debugPrint('Getting here to add price ${element.chargeValue}');
+            //   if (element.businessId ==
+            //       state.cartState.cartMerchant.businessId) {
+            //     debugPrint('PRice to be added ${element.chargeValue}');
+            //     total += (element.chargeValue / 100).toDouble();
+            //   }
+            // });
           } else {
             debugPrint('This is null man:(');
           }

@@ -4,7 +4,7 @@ import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/address/view/add_new_address_view.dart/add_new_address_view.dart';
 import 'package:eSamudaay/modules/address/view/change_address_view/manage_address_view.dart';
 import 'package:eSamudaay/modules/address/view/search_view/search_view.dart';
-import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/cart/views/cart.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
 import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dart';
@@ -34,7 +34,7 @@ class SetupRoutes {
       "/mobileNumber": (BuildContext context) => new LoginView(),
       "/registration": (BuildContext context) => new Registration(),
       "/myHomeView": (BuildContext context) => new MyHomeView(),
-      "/CartView": (BuildContext context) => CartView(),
+      RouteNames.CART_VIEW: (BuildContext context) => CartScreen(),
       "/AccountsView": (BuildContext context) => AccountsView(),
       "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
       RouteNames.PRODUCT_CATALOGUE: (BuildContext context) =>
@@ -73,4 +73,5 @@ class RouteNames {
   static const CHANGE_ADDRESS = "/changeAddress";
   static const ADD_NEW_ADDRESS = "/addNewAddress";
   static const SEARCH_ADDRESS = "/searchAddress";
+  static const CART_VIEW = "/CartView";
 }

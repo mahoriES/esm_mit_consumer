@@ -6,6 +6,7 @@ abstract class _AppThemeColors {
   Color get primaryColor;
   Color get secondaryColor;
   Color get placeHolderColor;
+  Color get lighterPlaceHolderColor;
   Color get backgroundColor;
   Color get positiveColor;
   Color get textColor;
@@ -16,6 +17,7 @@ abstract class _AppThemeColors {
   Color get storeCoreColor;
   Color get shadowColor16;
   Color get categoryTileTextUnderlay;
+  Color get dividerColor;
   Brightness get brightness;
 }
 
@@ -73,6 +75,14 @@ class _AppTextStyles {
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.21,
+      );
+
+  TextStyle get cardTitleFaded => cardTitle.copyWith(
+        color: themeColors.disabledAreaColor,
+      );
+
+  TextStyle get cardTitleSecondary => cardTitle.copyWith(
+        color: themeColors.secondaryColor,
       );
 
   TextStyle get body1 => TextStyle(
@@ -145,6 +155,11 @@ class _LightThemeColors with _AppThemeColors {
   Color get storeCoreColor => _brandOrange;
   @override
   Color get shadowColor => const Color(0x0d242424);
+  @override
+  Color get dividerColor => const Color(0xFFe8e8e8);
+
+  @override
+  Color get lighterPlaceHolderColor => const Color(0x0Ffafafa);
 
   ///16 here refers to opacity which is 16%
   @override

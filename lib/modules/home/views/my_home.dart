@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/modules/cart/views/cart_view.dart';
+import 'package:eSamudaay/modules/cart/views/cart.dart';
 import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -48,7 +48,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       return OrdersView();
 
     } else if (index == 2) {
-      return CartView();
+      return CartScreen();
     } else {
       return AccountsView();
     }
