@@ -136,7 +136,7 @@ class CircleTopBannerView extends StatelessWidget with PreferredSizeWidget {
               : MainAxisAlignment.spaceBetween,
           children: [
             Image.asset(
-              'assets/images/splash.png',
+              ImagePathConstants.appBrandingImage,
               width: 134.5 / 375 * SizeConfig.screenWidth,
               color: CustomTheme.of(context).colors.backgroundColor,
             ),

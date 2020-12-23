@@ -1,8 +1,15 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+///
+///This view is shown when user does not allow location or location is disabled
+///It shows info regarding why is location essential as well as a button to enable
+///the same. Upon tapping, user is taken to app settings page where they can allow/enable location.
+///
 
 class LocationDisabledView extends StatelessWidget {
   final VoidCallback onTapLocationAction;
@@ -50,7 +57,7 @@ class LocationDisabledView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/location2.png',
+                    ImagePathConstants.locationPointerImage,
                     color: CustomTheme.of(context).colors.primaryColor,
                   ),
                   const SizedBox(

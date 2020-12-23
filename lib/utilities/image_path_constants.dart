@@ -6,4 +6,6 @@ class ImagePathConstants {
   static const topBannerImage = _prefix + "top_banner_placeholder.jpg";
   static const profilePlaceHolder = _prefix + "profile_placeholder.png";
   static const circleTilePlaceholder = _prefix + "circle_tile_placeholder.png";
+  static const appBrandingImage = _prefix + "splash.png";
+  static const locationPointerImage = _prefix + "location2.png";
 }

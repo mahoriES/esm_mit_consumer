@@ -4,8 +4,18 @@ import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CircleTileGridView extends StatelessWidget {
+  ///
+  ///List of tiles to be shown in the grid
+  ///
   final List<CircleTileType> tilesDataList;
+  ///
+  ///The function to be invoked if user taps on delete icon. If this is null
+  ///the delete icon is not shown
+  ///
   final Function(String, String) onDelete;
+  ///
+  ///Function to be invoked if user taps on the circle tile
+  ///
   final Function(String) onTap;
 
   const CircleTileGridView(
@@ -27,6 +37,7 @@ class CircleTileGridView extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisSpacing: 20.0,
           mainAxisSpacing: 16.0,
+          ///Aspect ratio for the tile. Picked from the design for screen size 375 sp
           childAspectRatio: 149.5 / 163.8,
           crossAxisCount: 2,
         ),
