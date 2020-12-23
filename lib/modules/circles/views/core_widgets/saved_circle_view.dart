@@ -4,9 +4,22 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+///
+///This is a grid view which shows the saved / profile circles in a grid layout
+///
+
 class SavedCirclesView extends StatelessWidget {
+  ///
+  ///List of saved circles to be shown in a grid view
+  ///
   final List<CircleTileType> savedCirclesList;
+  ///
+  /// The function to be invoked when user taps on the circle tile
+  ///
   final Function onTap;
+  ///
+  /// Function to be invoked when user taps on the delete icon button
+  ///
   final Function onDelete;
 
   const SavedCirclesView(

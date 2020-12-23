@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+///
+/// This footer is shown at the bottom of the circle screen. It provides
+/// info regarding the circles. A brief definition of circles. Apart
+/// from that this also has the embedded secret circles feature. Tapping on "eSamudaay Circles" thrice
+/// makes you an advanced user and you can then
+///
+
 class CircleInfoFooter extends StatefulWidget {
   final Function onTapCallBack;
 

@@ -4,7 +4,15 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+///
+/// This widget is the builder for the bottom sheet to be shown when
+/// adding a circle using its code
+///
+
 class SecretCircleBottomSheet extends StatefulWidget {
+  ///
+  /// Function to be invoked when user taps on the add circle button
+  ///
   final Function(String) onAddCircle;
 
   const SecretCircleBottomSheet({Key key, this.onAddCircle}) : super(key: key);
@@ -30,6 +38,10 @@ class _SecretCircleBottomSheetState extends State<SecretCircleBottomSheet> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         width: SizeConfig.screenWidth,
+        ///
+        /// By using MediaQuery we build the widget everytime when insets change
+        /// This helps in expanding/contracting when keyboards shows/hides respectively
+        ///
         height: 180 / 595 * SizeConfig.screenHeight +
             MediaQuery.of(context).viewInsets.bottom,
         decoration: BoxDecoration(

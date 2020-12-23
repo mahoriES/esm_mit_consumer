@@ -6,8 +6,18 @@ import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+///
+/// This widget builds the grid for the suggested(nearby circles)
+///
+
 class SuggestedNearbyCirclesView extends StatelessWidget {
+  ///
+  ///List of circles to be displayed in the grid
+  ///
   final List<CircleTileType> suggestedCirclesList;
+  ///
+  /// If location is disabled/permission denied we don't show the grid
+  /// but the button to enable it
   final bool isLocationDisabled;
   final Function(String) onSelectCircle;
   final VoidCallback onTapLocationAction;

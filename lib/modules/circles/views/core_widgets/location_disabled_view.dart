@@ -12,6 +12,9 @@ import 'package:easy_localization/easy_localization.dart';
 ///
 
 class LocationDisabledView extends StatelessWidget {
+  ///
+  /// This callback is invoked when user taps on the button to enable/allow location
+  ///
   final VoidCallback onTapLocationAction;
 
   const LocationDisabledView({Key key, @required this.onTapLocationAction})
