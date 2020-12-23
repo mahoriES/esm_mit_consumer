@@ -87,7 +87,7 @@ class GetAddressAction extends ReduxAction<AppState> {
       }
     } catch (e) {
 
-      Fluttertoast.showToast(msg: "${e.toString()}"+tr("common.some_error_occured"));
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
       return null;
     }
   }

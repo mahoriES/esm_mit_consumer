@@ -144,30 +144,29 @@ class GetSuggestionsForCircleAction extends ReduxAction<AppState> {
 }
 
 class ClearPreviousCircleSearchResultAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-      authState: state.authState.copyWith(
-        suggestedClusters: [],
-      )
-    );
+        authState: state.authState.copyWith(
+      suggestedClusters: [],
+    ));
   }
 }
 
 class GetTrendingCirclesListAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() async {
     final response = await APIManager.shared.request(
       url: ApiURL.getClustersUrl,
       requestType: RequestType.get,
-      params: {'trending':true},
+      params: {'trending': true},
     );
     if (response.status == ResponseStatus.success200) {
-      if (response.data != null && response.data is List && response.data.isNotEmpty) {
+      if (response.data != null &&
+          response.data is List &&
+          response.data.isNotEmpty) {
         final List<Cluster> trendingCircles = [];
-        response.data.forEach((circle){
+        response.data.forEach((circle) {
           trendingCircles.add(Cluster.fromJson(circle));
         });
         return state.copyWith(
@@ -181,7 +180,6 @@ class GetTrendingCirclesListAction extends ReduxAction<AppState> {
     }
     return null;
   }
-
 }
 
 class SetCurrentCircleFromPrefsAction extends ReduxAction<AppState> {
@@ -202,7 +200,6 @@ class SetCurrentCircleFromPrefsAction extends ReduxAction<AppState> {
 }
 
 class ClearCurrentCircleFromPrefsAction extends ReduxAction<AppState> {
-
   @override
   FutureOr<AppState> reduce() async {
     final prefs = await SharedPreferences.getInstance();
@@ -218,18 +215,18 @@ class SaveCurrentCircleToPrefsAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-      final Cluster toBeSavedCircle = [
-        ...state.authState.nearbyClusters ?? <Cluster>[],
-        ...state.authState.myClusters ?? <Cluster>[],
-        ...state.authState.suggestedClusters ?? <Cluster>[],
-      ].toSet().toList().firstWhere(
-          (element) => element.clusterCode == circleCode,
-          orElse: () => null);
-      if (toBeSavedCircle == null) return null;
-      final prefs = await SharedPreferences.getInstance();
-      final String jsonEncodedCircle = jsonEncode(toBeSavedCircle.toJson());
-      prefs.setString('selectedCircle', jsonEncodedCircle);
-      return null;
+    final Cluster toBeSavedCircle = [
+      ...state.authState.nearbyClusters ?? <Cluster>[],
+      ...state.authState.myClusters ?? <Cluster>[],
+      ...state.authState.suggestedClusters ?? <Cluster>[],
+    ].toSet().toList().firstWhere(
+        (element) => element.clusterCode == circleCode,
+        orElse: () => null);
+    if (toBeSavedCircle == null) return null;
+    final prefs = await SharedPreferences.getInstance();
+    final String jsonEncodedCircle = jsonEncode(toBeSavedCircle.toJson());
+    prefs.setString('selectedCircle', jsonEncodedCircle);
+    return null;
   }
 }
 
