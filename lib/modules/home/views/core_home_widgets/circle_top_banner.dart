@@ -50,43 +50,51 @@ class CircleTopBannerView extends StatelessWidget with PreferredSizeWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                  child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: imageUrl ?? "",
-                      placeholder: (context, url) => Image.asset(
-                            ImagePathConstants.topBannerImage,
-                            fit: BoxFit.cover,
-                          ),
-                      errorWidget: (context, url, error) => Image.asset(
-                            ImagePathConstants.topBannerImage,
-                            fit: BoxFit.cover,
-                          ))),
-              Positioned.fill(
-                  child: FractionallySizedBox(
-                alignment: Alignment.bottomCenter,
-                widthFactor: 1,
-                heightFactor: 94 / 134,
-                child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                    colors: [
-                      CustomTheme.of(context).colors.textColorDarker,
-                      CustomTheme.of(context)
-                          .colors
-                          .textColorDarker
-                          .withOpacity(0.76),
-                      Colors.transparent,
-                    ],
-                    stops: [0.0, 0.39, 1.0],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  )),
-                ),
-              )),
+                child: isBannerShownOnCircleScreen
+                    ? getGradientContainer(context)
+                    : CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: imageUrl ?? "",
+                        placeholder: (context, url) => Image.asset(
+                          ImagePathConstants.topBannerImage,
+                          fit: BoxFit.cover,
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          ImagePathConstants.topBannerImage,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+              ),
+              if (!isBannerShownOnCircleScreen)
+                Positioned.fill(
+                    child: FractionallySizedBox(
+                  alignment: Alignment.bottomCenter,
+                  widthFactor: 1,
+                  heightFactor: 94 / 134,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                      colors: [
+                        CustomTheme.of(context).colors.textColorDarker,
+                        CustomTheme.of(context)
+                            .colors
+                            .textColorDarker
+                            .withOpacity(0.76),
+                        Colors.transparent,
+                      ],
+                      stops: [0.0, 0.39, 1.0],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    )),
+                  ),
+                )),
               isBannerShownOnCircleScreen
                   ? Align(
                       alignment: Alignment.center,
-                      child: buildCustomOverChild(context),
+                      child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: AppSizes.widgetPadding),
+                          child: buildCustomOverChild(context),),
                     )
                   : Positioned(
                       bottom: AppSizes.separatorPadding,
@@ -94,6 +102,23 @@ class CircleTopBannerView extends StatelessWidget with PreferredSizeWidget {
                     ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget getGradientContainer(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            CustomTheme.of(context).colors.storeCoreColor,
+            CustomTheme.of(context).colors.secondaryColor,
+            CustomTheme.of(context).colors.primaryColor,
+          ],
+          stops: [0.0, 0.35, 1.0],
         ),
       ),
     );
@@ -115,8 +140,10 @@ class CircleTopBannerView extends StatelessWidget with PreferredSizeWidget {
               width: 134.5 / 375 * SizeConfig.screenWidth,
               color: CustomTheme.of(context).colors.backgroundColor,
             ),
-            if (!isBannerShownOnCircleScreen)...[
-              const SizedBox(width: AppSizes.widgetPadding,),
+            if (!isBannerShownOnCircleScreen) ...[
+              const SizedBox(
+                width: AppSizes.widgetPadding,
+              ),
               CircleActionButton(
                   circleName: circleName, onTap: onTapCircleButton),
             ]

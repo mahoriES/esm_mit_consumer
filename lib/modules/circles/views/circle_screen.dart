@@ -18,21 +18,25 @@ class TrendingCirclesCarouselView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (trendingCirclesList.isEmpty) return SizedBox.shrink();
-    return Column(mainAxisSize: MainAxisSize.min,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(padding: const EdgeInsets.only(left: 23),
+        Padding(
+          padding: const EdgeInsets.only(left: 23),
           child: Text(
             'circle.trending',
             style: CustomTheme.of(context).textStyles.sectionHeading2,
           ).tr(),
         ),
-        const SizedBox(width: 20,),
+        const SizedBox(
+          width: 20,
+        ),
         SizedBox(
           width: SizeConfig.screenWidth,
           height: 163.8 / 375 * SizeConfig.screenWidth + 20,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 23),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 23),
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemBuilder: (context, index) {
@@ -52,7 +56,9 @@ class TrendingCirclesCarouselView extends StatelessWidget {
                   ),
               itemCount: trendingCirclesList.length),
         ),
-        const SizedBox(width: 20,),
+        const SizedBox(
+          width: 20,
+        ),
       ],
     );
   }
@@ -162,21 +168,27 @@ class CircleTileWidget extends StatelessWidget {
                     color: CustomTheme.of(context).colors.shadowColor16)
               ]),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 flex: 65,
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: imageUrl ?? "",
-                        placeholder: (context, url) =>
-                            const CupertinoActivityIndicator(),
-                        errorWidget: (context, url, error) => Center(
-                          child: Icon(
-                            Icons.image,
-                            size: AppSizes.productItemIconSize,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(4),
+                            topLeft: Radius.circular(4)),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: imageUrl ?? "",
+                          placeholder: (context, url) =>
+                              const CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) => Center(
+                            child: Icon(
+                              Icons.image,
+                              size: AppSizes.productItemIconSize,
+                            ),
                           ),
                         ),
                       ),
@@ -251,12 +263,14 @@ class CircleTileWidget extends StatelessWidget {
               Expanded(
                 flex: 35,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                  padding: const EdgeInsets.only(top: 5, left: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         circleName,
                         maxLines: 1,
+                        textAlign: TextAlign.start,
                         style: CustomTheme.of(context).textStyles.cardTitle,
                       ),
                       const SizedBox(
@@ -318,7 +332,7 @@ class _SecretCircleBottomSheetState extends State<SecretCircleBottomSheet> {
             TextField(
               controller: _textEditingController,
               decoration: InputDecoration(
-                hintText: tr('circle.search'),
+                hintText: tr('circle.enter_code'),
                 hintStyle: CustomTheme.of(context)
                     .themeData
                     .textTheme

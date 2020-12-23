@@ -116,7 +116,7 @@ class CirclesSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          vertical: AppSizes.widgetPadding, horizontal: AppSizes.widgetPadding),
+          vertical: AppSizes.widgetPadding, horizontal: 23),
       child: Container(
         child: InkWell(
           onTap: onTap,

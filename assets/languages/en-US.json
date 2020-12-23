@@ -288,6 +288,7 @@
   "circle" : {
     "trending": "Trending Circles",
     "saved": "Saved Circles",
+    "enter_code": "Enter Circle Code",
     "search": "Search for a Circle",
     "turn_on": "Turn Location On",
     "suggested": "Suggested Circles",
