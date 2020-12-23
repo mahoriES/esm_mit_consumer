@@ -42,7 +42,6 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
     ///If location fetching takes more than 20 seconds(average for A-GPS) we
     ///stop further wait; so yeah, timeout!
     _locationData = await location.getLocation().timeout(Duration(seconds: 20));
-    Fluttertoast.showToast(msg: 'Location data ${_locationData.toString() ?? 'NA'}');
     if (_locationData == null ||
         _locationData.latitude == null ||
         _locationData.longitude == null)
@@ -68,7 +67,6 @@ class GetNearbyCirclesAction extends ReduxAction<AppState> {
             nearbyCircles.add(Cluster.fromJson(item));
         }
       });
-      nearbyCircles?.forEach((element) {Fluttertoast.showToast(msg: 'Nearby circle - ${element.clusterName}');});
       return state.copyWith(
         authState: state.authState.copyWith(
           locationEnabled: true,

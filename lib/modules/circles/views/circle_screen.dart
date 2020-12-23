@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -184,12 +185,7 @@ class CircleTileWidget extends StatelessWidget {
                           imageUrl: imageUrl ?? "",
                           placeholder: (context, url) =>
                               const CupertinoActivityIndicator(),
-                          errorWidget: (context, url, error) => Center(
-                            child: Icon(
-                              Icons.image,
-                              size: AppSizes.productItemIconSize,
-                            ),
-                          ),
+                          errorWidget: (context, url, error) => Container(color: CustomTheme.of(context).colors.placeHolderColor,child: Image.asset(ImagePathConstants.circleTilePlaceholder,fit: BoxFit.contain,)),
                         ),
                       ),
                     ),
@@ -435,7 +431,7 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
           ),
           Text(
             'circle.info_1',
-            style: CustomTheme.of(context).textStyles.sectionHeading1.copyWith(
+            style: CustomTheme.of(context).textStyles.sectionHeading1.copyWith(fontWeight: FontWeight.w400,
                 color: CustomTheme.of(context).colors.disabledAreaColor),
             textAlign: TextAlign.center,
           ).tr(),
@@ -445,7 +441,7 @@ class _CircleInfoFooterState extends State<CircleInfoFooter> {
           Text(
             'circle.info_2',
             style: CustomTheme.of(context).textStyles.sectionHeading1.copyWith(
-                color: CustomTheme.of(context).colors.disabledAreaColor),
+                color: CustomTheme.of(context).colors.disabledAreaColor, fontWeight: FontWeight.w400),
             textAlign: TextAlign.center,
           ).tr(),
           const SizedBox(
