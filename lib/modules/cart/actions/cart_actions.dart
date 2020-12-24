@@ -8,6 +8,7 @@ import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
@@ -398,5 +399,77 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
       Fluttertoast.showToast(msg: "Error ocuured while removing the image");
       return null;
     }
+  }
+}
+
+class CheckToReplaceCartAction extends ReduxAction<AppState> {
+  Business selectedMerchant;
+  VoidCallback onSuccess;
+  BuildContext context;
+  CheckToReplaceCartAction({
+    @required this.selectedMerchant,
+    @required this.onSuccess,
+    @required this.context,
+  });
+  @override
+  FutureOr<AppState> reduce() async {
+    Business cartMerchant = state.cartState.cartMerchant;
+
+    bool isSameMerchantAddedInCart =
+        state.cartState.cartMerchant?.businessId == selectedMerchant.businessId;
+
+    if (cartMerchant == null) {
+      await CartDataSource.resetCart();
+      await CartDataSource.insertCartMerchant(
+        state.productState.selectedMerchant,
+      );
+      await dispatchFuture(GetCartFromLocal());
+      Business updatedMerchant = await CartDataSource.getCartMerchant();
+      if (updatedMerchant.businessId ==
+          state.productState.selectedMerchant.businessId) {
+        onSuccess();
+      }
+      return null;
+    } else if (isSameMerchantAddedInCart) {
+      onSuccess();
+      return null;
+    } else if (state.cartState.localCartItems.isEmpty &&
+        state.cartState.customerNoteImages.isEmpty) {
+      await CartDataSource.resetCart();
+      await CartDataSource.insertCartMerchant(selectedMerchant);
+      await dispatchFuture(GetCartFromLocal());
+      Business updatedMerchant = await CartDataSource.getCartMerchant();
+
+      if (updatedMerchant.businessId == selectedMerchant.businessId) {
+        onSuccess();
+        return null;
+      }
+    } else {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: CustomConfirmationDialog(
+          title: tr("product_details.replace_cart_items"),
+          message: tr('new_changes.clear_info'),
+          positiveButtonText: tr('new_changes.continue'),
+          negativeButtonText: tr("screen_account.cancel"),
+          positiveAction: () async {
+            Navigator.pop(context);
+            await CartDataSource.resetCart();
+            await CartDataSource.insertCartMerchant(
+                state.productState.selectedMerchant);
+            await dispatchFuture(GetCartFromLocal());
+            Business updatedMerchant = await CartDataSource.getCartMerchant();
+
+            if (updatedMerchant.businessId ==
+                state.productState.selectedMerchant.businessId) {
+              onSuccess();
+              return null;
+            }
+          },
+        ),
+      );
+    }
+    return null;
   }
 }

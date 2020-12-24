@@ -1,6 +1,5 @@
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
-import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -10,7 +9,6 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/reusable_widgets/product_count_widget/widgets/cart_sku_bottom_sheet.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import '../../presentations/custom_confirmation_dialog.dart';
 part 'widgets/add_button.dart';
 part 'widgets/stepper_button.dart';
 
@@ -144,7 +142,7 @@ class _ViewModel extends BaseModel<AppState> {
         }
       },
       updateCart: (bool isAddAction, VoidCallback showMultipleSkuOptions,
-          BuildContext context) {
+          BuildContext context) async {
         // if product skus are null or 0 then show error message.
         if (product.skus?.isEmpty ?? true) {
           Fluttertoast.showToast(msg: 'Item not available');
@@ -157,57 +155,25 @@ class _ViewModel extends BaseModel<AppState> {
           return;
         }
 
-        bool isDiffrentMerchantAddedInCart =
-            state.cartState.cartMerchant != null &&
-                state.cartState.cartMerchant.businessId !=
-                    selectedMerchant.businessId;
-
-        if (isDiffrentMerchantAddedInCart) {
-          showDialog(
+        dispatch(
+          CheckToReplaceCartAction(
+            selectedMerchant: selectedMerchant,
+            onSuccess: () {
+              _updateQuantity(
+                isAddAction: isAddAction,
+                addAction: () => dispatch(
+                  AddToCartLocalAction(
+                    product: product,
+                    selectedMerchant: selectedMerchant,
+                  ),
+                ),
+                removeAction: () =>
+                    dispatch(RemoveFromCartAction(product: product)),
+              );
+            },
             context: context,
-            barrierDismissible: false,
-            child: CustomConfirmationDialog(
-              title: tr("product_details.replace_cart_items"),
-              message: tr('new_changes.clear_info'),
-              positiveButtonText: tr('new_changes.continue'),
-              negativeButtonText: tr("screen_account.cancel"),
-              positiveAction: () async {
-                Navigator.pop(context);
-                await CartDataSource.resetCart();
-                await CartDataSource.insertCartMerchant(selectedMerchant);
-                await dispatchFuture(GetCartFromLocal());
-                Business updatedMerchant =
-                    await CartDataSource.getCartMerchant();
-
-                if (updatedMerchant.businessId == selectedMerchant.businessId) {
-                  _updateQuantity(
-                    isAddAction: isAddAction,
-                    addAction: () => dispatch(
-                      AddToCartLocalAction(
-                        product: product,
-                        selectedMerchant: selectedMerchant,
-                      ),
-                    ),
-                    removeAction: () =>
-                        dispatch(RemoveFromCartAction(product: product)),
-                  );
-                }
-              },
-            ),
-          );
-        } else {
-          _updateQuantity(
-            isAddAction: isAddAction,
-            addAction: () => dispatch(
-              AddToCartLocalAction(
-                product: product,
-                selectedMerchant: selectedMerchant,
-              ),
-            ),
-            removeAction: () =>
-                dispatch(RemoveFromCartAction(product: product)),
-          );
-        }
+          ),
+        );
       },
     );
   }

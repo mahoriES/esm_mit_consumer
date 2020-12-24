@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
@@ -18,6 +19,13 @@ class DeliveryOptionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
+      onDidChange: (snapshot) {
+        if (snapshot.isAddressLoading) {
+          LoadingDialog.show();
+        } else {
+          LoadingDialog.hide();
+        }
+      },
       builder: (context, snapshot) => Column(
         children: [
           Container(
@@ -243,6 +251,7 @@ class _ViewModel extends BaseModel<AppState> {
   Business cartMerchant;
   Function(String) updateDeliveryType;
   VoidCallback goToAddNewAddress;
+  bool isAddressLoading;
 
   _ViewModel.build({
     this.selectedAddress,
@@ -250,7 +259,8 @@ class _ViewModel extends BaseModel<AppState> {
     this.updateDeliveryType,
     this.cartMerchant,
     this.goToAddNewAddress,
-  }) : super(equals: [selectedAddress, selectedDeliveryType]);
+    this.isAddressLoading,
+  }) : super(equals: [selectedAddress, selectedDeliveryType, isAddressLoading]);
 
   @override
   BaseModel fromStore() {
@@ -261,6 +271,7 @@ class _ViewModel extends BaseModel<AppState> {
               ? state.addressState.savedAddressList.first
               : null),
       selectedDeliveryType: state.cartState.selectedDeliveryType,
+      isAddressLoading: state.addressState.isLoading,
       cartMerchant: state.cartState.cartMerchant,
       goToAddNewAddress: () {
         dispatch(NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));

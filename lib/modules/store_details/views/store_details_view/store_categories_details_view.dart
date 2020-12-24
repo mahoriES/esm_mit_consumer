@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
-import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
 import 'package:eSamudaay/presentations/no_iems_view.dart';
@@ -530,120 +530,60 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-        singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
-        spotlightItems: state.productState.spotlightItems,
-        videoFeedResponse: state.productState.videosResponse,
-        freeFormItemsList: state.cartState.localFreeFormCartItems,
-        localCartListing: state.cartState.localCartItems,
-        categories: state.productState?.categories ?? [],
-        updateSelectedCategory: (category) {
-          dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
-          category is CustomCategoryForAllProducts
-              ? dispatch(GetAllProducts())
-              : dispatch(GetSubCategoriesAction());
-        },
-        updateSelectedVideo: (video) async {
-          dispatch(UpdateSelectedVideoAction(selectedVideo: video));
-        },
-        loadVideoFeedForMerchant: () {
-          dispatch(GetBusinessVideosAction(
-              businessId: state.productState.selectedMerchant.businessId));
-        },
-        navigateToProductCatalog: () {
-          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
-        },
-        navigateToCart: () {
-          dispatch(NavigateAction.pushNamed('/CartView'));
-        },
-        loadingStatus: state.authState.loadingStatus,
-        selectedMerchant: state.productState.selectedMerchant,
-        navigateToProductSearch: () {
-          dispatch(ClearSearchResultProductsAction());
-          dispatch(
-            NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH),
-          );
-        },
-        updateSelectedProduct: (selectedProduct) {
-          dispatch(UpdateSelectedProductAction(selectedProduct));
-        },
-        navigateToProductDetailsPage: () {
-          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
-        },
-        navigateToVideoView: () {
-          dispatch(NavigateAction.pushNamed("/videoPlayer"));
-        },
-        checkForPreviouslyAddedListItems: (context) async {
-          // TODO : Handle this case later. [HIGH]
-          final Business merchant = await CartDataSource.getCartMerchant();
-          if (merchant != null) {
-            if (merchant.businessId !=
-                state.productState.selectedMerchant.businessId) {
-              showDialog(
-                  context: context,
-                  child: AlertDialog(
-                    title: Text("E-samudaay"),
-                    content: Text(
-                      'new_changes.clear_info',
-                      style: const TextStyle(
-                          color: const Color(0xff6f6d6d),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16.0),
-                    ).tr(),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text(
-                          'screen_account.cancel',
-                          style: const TextStyle(
-                              color: const Color(0xff6f6d6d),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "Avenir-Medium",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                        ).tr(),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      FlatButton(
-                        child: Text(
-                          'new_changes.continue',
-                          style: const TextStyle(
-                              color: const Color(0xff6f6d6d),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "Avenir-Medium",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                        ).tr(),
-                        onPressed: () async {
-                          await CartDataSource.deleteCartMerchant();
-                          await CartDataSource.deleteAllProducts();
-                          await CartDataSource.insertCartMerchant(
-                              state.productState.selectedMerchant);
-                          await CartDataSource.insertFreeFormItemsList([]);
-                          await CartDataSource.insertCustomerNoteImagesList([]);
-                          Navigator.pop(context);
-                          dispatch(ClearLocalFreeFormItemsAction());
-                          dispatch(NavigateAction.pushNamed('/CartView'));
-                        },
-                      )
-                    ],
-                  ));
-            } else {
-              await CartDataSource.deleteCartMerchant();
-              await CartDataSource.insertCartMerchant(
-                  state.productState.selectedMerchant);
-              dispatch(NavigateAction.pushNamed('/CartView'));
-            }
-          } else {
-            await CartDataSource.deleteCartMerchant();
-            await CartDataSource.insertCartMerchant(
-                state.productState.selectedMerchant);
-            dispatch(ClearLocalFreeFormItemsAction());
-            dispatch(NavigateAction.pushNamed('/CartView'));
-          }
-        });
+      singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
+      spotlightItems: state.productState.spotlightItems,
+      videoFeedResponse: state.productState.videosResponse,
+      freeFormItemsList: state.cartState.localFreeFormCartItems,
+      localCartListing: state.cartState.localCartItems,
+      categories: state.productState?.categories ?? [],
+      updateSelectedCategory: (category) {
+        dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+        category is CustomCategoryForAllProducts
+            ? dispatch(GetAllProducts())
+            : dispatch(GetSubCategoriesAction());
+      },
+      updateSelectedVideo: (video) async {
+        dispatch(UpdateSelectedVideoAction(selectedVideo: video));
+      },
+      loadVideoFeedForMerchant: () {
+        dispatch(GetBusinessVideosAction(
+            businessId: state.productState.selectedMerchant.businessId));
+      },
+      navigateToProductCatalog: () {
+        dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
+      },
+      navigateToCart: () {
+        dispatch(NavigateAction.pushNamed('/CartView'));
+      },
+      loadingStatus: state.authState.loadingStatus,
+      selectedMerchant: state.productState.selectedMerchant,
+      navigateToProductSearch: () {
+        dispatch(ClearSearchResultProductsAction());
+        dispatch(
+          NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH),
+        );
+      },
+      updateSelectedProduct: (selectedProduct) {
+        dispatch(UpdateSelectedProductAction(selectedProduct));
+      },
+      navigateToProductDetailsPage: () {
+        dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
+      },
+      navigateToVideoView: () {
+        dispatch(NavigateAction.pushNamed("/videoPlayer"));
+      },
+      checkForPreviouslyAddedListItems: (context) async {
+        dispatch(
+          CheckToReplaceCartAction(
+            selectedMerchant: state.productState.selectedMerchant,
+            onSuccess: () {
+              dispatch(NavigateAction.pushNamed(RouteNames.CART_VIEW));
+            },
+            context: context,
+          ),
+        );
+      },
+    );
   }
 
   bool get showNoProductsWidget {
