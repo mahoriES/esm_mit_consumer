@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/models/loading_status.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -268,23 +268,7 @@ class _MerchantProductsSearchViewState
                                 ),
                               ),
 
-                            ///Bottom cart total view
-                            AnimatedContainer(
-                              height: (snapshot.localCartListing.isEmpty &&
-                                      snapshot.freeFormItemsList.isEmpty)
-                                  ? 0
-                                  : AppSizes.cartTotalBottomViewHeight,
-                              duration: Duration(milliseconds: 300),
-                              child: BottomView(
-                                height: snapshot.localCartListing.isEmpty
-                                    ? 0
-                                    : AppSizes.cartTotalBottomViewHeight,
-                                buttonTitle: tr('cart.view_cart'),
-                                didPressButton: () {
-                                  snapshot.navigateToCart();
-                                },
-                              ),
-                            ),
+                            CartDetailsBottomSheet(),
                           ],
                         ),
                       ),
@@ -574,5 +558,4 @@ class _SearchProductListingItemViewState
     debugPrint('Total count is $count');
     return count;
   }
-
 }

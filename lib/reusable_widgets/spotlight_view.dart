@@ -23,14 +23,14 @@ class SpotlightTile extends StatelessWidget {
   final Business selectedMerchant;
 
   const SpotlightTile({
-      @required this.itemName,
-      @required this.product,
-      @required this.imageUrl,
-      @required this.price,
-      @required this.onTapItemImage,
-      @required this.quantityDescription,
-      @required this.itemQuantity,
-      @required this.selectedMerchant,
+    @required this.itemName,
+    @required this.product,
+    @required this.imageUrl,
+    @required this.price,
+    @required this.onTapItemImage,
+    @required this.quantityDescription,
+    @required this.itemQuantity,
+    @required this.selectedMerchant,
   });
 
   @override
@@ -139,18 +139,18 @@ class SpotlightItemsScroller extends StatelessWidget {
               itemBuilder: (context, index) {
                 Product product = spotlightProducts[index];
                 return SpotlightTile(
-                    product: product,
-                    onTapItemImage: onImageTap,
-                    itemName: product.productName,
-                    imageUrl: product.images.first.photoUrl,
-                    price:
-                        (product.skus.first.basePrice / 100).toStringAsFixed(2),
-                    quantityDescription:
-                        product.skus.first.variationOptions.weight,
-                    itemQuantity: product.count == 0
-                        ? tr("new_changes.add")
-                        : product.count.toString(),
-                    selectedMerchant: selectedMerchant,
+                  product: product,
+                  onTapItemImage: onImageTap,
+                  itemName: product.productName,
+                  imageUrl: product.images.first.photoUrl,
+                  price:
+                      (product.skus.first.basePrice / 100).toStringAsFixed(2),
+                  quantityDescription:
+                      product.skus.first.variationOptions.weight,
+                  itemQuantity: product.count == 0
+                      ? tr("new_changes.add")
+                      : product.count.toString(),
+                  selectedMerchant: selectedMerchant,
                 );
               },
               separatorBuilder: (_, __) => const SizedBox(

@@ -7,7 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/cart/views/cart_sku_bottom_sheet.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/widgets/cart_sku_bottom_sheet.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import '../../presentations/custom_confirmation_dialog.dart';
@@ -30,17 +30,12 @@ class ProductCountWidget extends StatelessWidget {
   final bool isSku;
 
   // If isSku is true , then skuIndex is required. otherwise ignore this value.
-  final int skuIndex;
 
   const ProductCountWidget({
     @required this.product,
     @required this.selectedMerchant,
-    @required this.isSku,
-    this.skuIndex,
-  }) : assert(
-            (isSku == true && skuIndex != null) ||
-                (isSku == false && skuIndex == null),
-            "skuIndex is required when isSkusBottomSheet = true");
+    this.isSku = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +60,11 @@ class ProductCountWidget extends StatelessWidget {
         product: product,
         selectedMerchant: selectedMerchant,
         isSku: isSku,
-        skuIndex: skuIndex,
       ),
       builder: (context, snapshot) {
-        return snapshot.getItemCount() == 0
+        final int count = snapshot.getItemCount();
+
+        return count == 0
             ? _AddButton(
                 isDisabled: snapshot.isItemOutOfStock,
                 buttonAction: () => snapshot.updateCart(
@@ -83,7 +79,7 @@ class ProductCountWidget extends StatelessWidget {
                   _showMultipleSkusBottomSheet,
                   context,
                 ),
-                count: snapshot.getItemCount(),
+                count: count,
               );
       },
     );
@@ -94,13 +90,12 @@ class _ViewModel extends BaseModel<AppState> {
   final Product product;
   final Business selectedMerchant;
   final bool isSku;
-  final int skuIndex;
 
-  _ViewModel(
-      {@required this.product,
-      @required this.selectedMerchant,
-      @required this.isSku,
-      @required this.skuIndex});
+  _ViewModel({
+    @required this.product,
+    @required this.selectedMerchant,
+    @required this.isSku,
+  });
 
   List<Product> localCartItems;
   Function(bool, VoidCallback, BuildContext) updateCart;
@@ -111,15 +106,15 @@ class _ViewModel extends BaseModel<AppState> {
     this.product,
     this.selectedMerchant,
     this.isSku,
-    this.skuIndex,
     this.localCartItems,
     this.updateCart,
     this.getItemCount,
     this.cartMerchant,
   }) : super(equals: [localCartItems, cartMerchant]);
 
-  bool get isItemOutOfStock =>
-      isSku ? !product.skus[skuIndex].inStock : !product.inStock;
+  bool get isItemOutOfStock => isSku
+      ? !product.skus[product.selectedSkuIndex].inStock
+      : !product.inStock;
 
   @override
   BaseModel fromStore() {
@@ -127,7 +122,6 @@ class _ViewModel extends BaseModel<AppState> {
       product: this.product,
       selectedMerchant: this.selectedMerchant,
       isSku: this.isSku,
-      skuIndex: this.skuIndex,
       localCartItems: state.cartState.localCartItems,
       cartMerchant: state.cartState.cartMerchant,
       getItemCount: () {
@@ -136,8 +130,7 @@ class _ViewModel extends BaseModel<AppState> {
           Product prod = state.cartState.localCartItems.firstWhere(
             (element) {
               return element.productId == product.productId &&
-                  element.selectedSkuId ==
-                      product.skus[skuIndex].skuId.toString();
+                  element.selectedSkuId == product.selectedSkuId;
             },
             orElse: () => null,
           );
@@ -155,6 +148,7 @@ class _ViewModel extends BaseModel<AppState> {
         // if product skus are null or 0 then show error message.
         if (product.skus?.isEmpty ?? true) {
           Fluttertoast.showToast(msg: 'Item not available');
+          return;
         }
 
         // if there are multiple skus , show bottom sheet with sku items.
@@ -179,10 +173,9 @@ class _ViewModel extends BaseModel<AppState> {
               negativeButtonText: tr("screen_account.cancel"),
               positiveAction: () async {
                 Navigator.pop(context);
-                await CartDataSource.deleteCartMerchant();
-                await CartDataSource.deleteAllProducts();
+                await CartDataSource.resetCart();
                 await CartDataSource.insertCartMerchant(selectedMerchant);
-                await dispatchFuture(UpdateCartMerchantAction());
+                await dispatchFuture(GetCartFromLocal());
                 Business updatedMerchant =
                     await CartDataSource.getCartMerchant();
 
@@ -225,7 +218,6 @@ class _ViewModel extends BaseModel<AppState> {
     @required VoidCallback removeAction,
   }) {
     // increment/decrement the sku count.
-    product.selectedSkuIndex = isSku ? skuIndex : 0;
 
     Product productInLocalCart = state.cartState.localCartItems?.firstWhere(
       (element) {

@@ -3,6 +3,11 @@ import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/material.dart';
 
+class DeliveryType {
+  static const String DeliveryToHome = "DA_DELIVERY";
+  static const String StorePickup = "SELF_PICK_UP";
+}
+
 class ItemsEnhanced {
   Product item;
   int number;
@@ -480,6 +485,28 @@ class OrderItems {
       data['sku_charges'] = this.skuCharges.toJson();
     }
     return data;
+  }
+
+  OrderItems.fromProductModel(Product data) {
+    skuId = data.skus[data.selectedSkuIndex].skuId;
+    quantity = data.count;
+    unitPrice = (data.selectedSkuPrice * 100).toInt();
+    productName = data.productName;
+    skuCode = data.skus[data.selectedSkuIndex].skuCode;
+    if (data.images != null) {
+      images = new List<Photo>();
+      data.images.forEach((v) {
+        images.add(v);
+      });
+    }
+    // productStatus = data.s;
+    // unitName = json['unit_name'];
+    // variationOption = json['variation_option'] != null
+    //     ? new VariationOption.fromJson(json['variation_option'])
+    //     : null;
+    // skuCharges = json['sku_charges'] != null
+    //     ? new SkuCharges.fromJson(json['sku_charges'])
+    //     : null;
   }
 }
 

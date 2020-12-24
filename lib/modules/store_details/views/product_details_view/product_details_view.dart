@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_image_carausel.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';
 import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -44,21 +44,7 @@ class ProductDetailsView extends StatelessWidget {
               ),
             ],
           ),
-          bottomSheet: AnimatedContainer(
-            height: (snapshot.localCartListing.isEmpty &&
-                    snapshot.freeFormItemsList.isEmpty)
-                ? 0
-                : 65.toHeight,
-            duration: Duration(milliseconds: 300),
-            child: BottomView(
-              height: (snapshot.localCartListing.isEmpty &&
-                      snapshot.freeFormItemsList.isEmpty)
-                  ? 0
-                  : 65.toHeight,
-              buttonTitle: tr('cart.view_cart'),
-              didPressButton: snapshot.navigateToCart,
-            ),
-          ),
+          bottomSheet: CartDetailsBottomSheet(),
           body: ListView(
             children: [
               Hero(

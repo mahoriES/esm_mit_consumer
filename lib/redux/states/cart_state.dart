@@ -1,3 +1,4 @@
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
@@ -7,17 +8,23 @@ class CartState {
   final List<Product> localCartItems;
   final List<JITProduct> localFreeFormCartItems;
   final List<String> customerNoteImages;
+  final TextEditingController customerNoteMessage;
+  final String selectedDeliveryType;
   final Business cartMerchant;
   final CartCharges charges;
   final bool isCartLoading;
+  final bool isImageUploading;
 
   CartState({
     @required this.localCartItems,
     @required this.localFreeFormCartItems,
     @required this.customerNoteImages,
+    @required this.customerNoteMessage,
+    @required this.selectedDeliveryType,
     @required this.cartMerchant,
     @required this.charges,
     @required this.isCartLoading,
+    @required this.isImageUploading,
   });
 
   factory CartState.initial() {
@@ -28,6 +35,9 @@ class CartState {
       cartMerchant: null,
       charges: null,
       isCartLoading: false,
+      isImageUploading: false,
+      selectedDeliveryType: DeliveryType.StorePickup,
+      customerNoteMessage: new TextEditingController(),
     );
   }
 
@@ -51,6 +61,8 @@ class CartState {
     Business cartMerchant,
     CartCharges charges,
     bool isCartLoading,
+    String selectedDeliveryType,
+    bool isImageUploading,
   }) {
     return new CartState(
       customerNoteImages: customerNoteImages ?? this.customerNoteImages,
@@ -61,6 +73,9 @@ class CartState {
           (isMerchantAllowedToBeNull ? null : this.cartMerchant),
       charges: charges ?? this.charges,
       isCartLoading: isCartLoading ?? this.isCartLoading,
+      customerNoteMessage: this.customerNoteMessage,
+      selectedDeliveryType: selectedDeliveryType ?? this.selectedDeliveryType,
+      isImageUploading: isImageUploading ?? this.isImageUploading,
     );
   }
 }

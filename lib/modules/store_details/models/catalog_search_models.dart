@@ -72,6 +72,7 @@ class Product {
 
   Product(
       {this.productId,
+      this.selectedSkuIndex,
       this.productName,
       this.productDescription,
       this.isActive,
@@ -177,6 +178,27 @@ class Product {
     data['rating_num'] = this.ratingNum;
     data['spotlight'] = this.spotlight;
     return data;
+  }
+
+  Product copy(int skuIndex) {
+    return new Product(
+      productId: this.productId,
+      productName: this.productName,
+      selectedSkuIndex: skuIndex,
+      productDescription: this.productDescription,
+      isActive: this.isActive,
+      inStock: this.inStock,
+      count: this.count,
+      images: this.images,
+      longDescription: this.longDescription,
+      displayLine1: this.displayLine1,
+      unitName: this.unitName,
+      possibleVariations: this.possibleVariations,
+      skus: this.skus,
+      ratingVal: this.ratingVal,
+      ratingNum: this.ratingNum,
+      spotlight: this.spotlight,
+    );
   }
 }
 

@@ -69,6 +69,18 @@ class _AppTextStyles {
         height: 1.18,
       );
 
+  TextStyle get sectionHeading3 => TextStyle(
+        color: themeColors.backgroundColor,
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.2,
+      );
+
+  TextStyle get sectionHeading2Positive => sectionHeading2.copyWith(
+        color: themeColors.positiveColor,
+      );
+
   TextStyle get cardTitle => TextStyle(
         color: themeColors.textColor,
         fontSize: 14,

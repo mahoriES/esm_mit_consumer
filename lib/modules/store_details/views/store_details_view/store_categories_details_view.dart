@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
@@ -12,6 +10,7 @@ import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets
 import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_category_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
 import 'package:eSamudaay/routes/routes.dart';
@@ -31,7 +30,6 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -75,9 +73,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                   GetBusinessVideosAction(businessId: businessId));
               store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
             },
-            onDidChange: (snapshot){
-
-            },
+            onDidChange: (snapshot) {},
             builder: (context, snapshot) {
               return ModalProgressHUD(
                 progressIndicator: Card(
@@ -115,7 +111,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             BusinessTitleTile(
-                                              businessId: snapshot.selectedMerchant.businessId,
+                                              businessId: snapshot
+                                                  .selectedMerchant.businessId,
                                               businessName: snapshot
                                                       .selectedMerchant
                                                       .businessName ??
@@ -136,8 +133,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                       .images.first.photoUrl
                                                   : "",
                                               onBackPressed: () async {
-                                                 // TODO : this logic to update selected merchant from cart data doesn't seem right.
-                                                 // [High]
+                                                // TODO : this logic to update selected merchant from cart data doesn't seem right.
+                                                // [High]
                                                 Business merchants =
                                                     await CartDataSource
                                                         .getCartMerchant();
@@ -148,8 +145,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                             .productState
                                                             .selectedMerchant
                                                             .businessId) {
-                                                  var localMerchant =
-                                                      merchants;
+                                                  var localMerchant = merchants;
                                                   store.dispatch(
                                                       UpdateSelectedMerchantAction(
                                                           selectedMerchant:
@@ -203,8 +199,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                                 .disabledAreaColor),
                                                     prefixIcon: Icon(
                                                       Icons.search_rounded,
-                                                      color:
-                                                          CustomTheme.of(context).colors.primaryColor,
+                                                      color: CustomTheme.of(
+                                                              context)
+                                                          .colors
+                                                          .primaryColor,
                                                     ),
                                                     enabledBorder:
                                                         OutlineInputBorder(
@@ -286,22 +284,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                 ],
                               ),
                             ),
-                            AnimatedContainer(
-                              height: (snapshot.localCartListing.isEmpty &&
-                                      snapshot.freeFormItemsList.isEmpty)
-                                  ? 0
-                                  : AppSizes.cartTotalBottomViewHeight,
-                              duration: Duration(milliseconds: 300),
-                              child: BottomView(
-                                height: snapshot.localCartListing.isEmpty
-                                    ? 0
-                                    : AppSizes.cartTotalBottomViewHeight,
-                                buttonTitle: tr('cart.view_cart').toString(),
-                                didPressButton: () {
-                                  snapshot.navigateToCart();
-                                },
-                              ),
-                            ),
+                            CartDetailsBottomSheet(),
                           ],
                         ),
                       ),
@@ -313,8 +296,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                               bottom: (snapshot.localCartListing.isEmpty &&
                                       snapshot.freeFormItemsList.isEmpty)
                                   ? AppSizes.separatorPadding
-                                  : AppSizes.cartTotalBottomViewHeight +
-                                      AppSizes.separatorPadding),
+                                  : 86 + AppSizes.separatorPadding),
                           child: GestureDetector(
                             onTap: () {
                               snapshot
@@ -394,11 +376,12 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
             childAspectRatio: 1),
         itemBuilder: (context, index) {
           return BusinessCategoryTile(
-            imageUrl: snapshot.categories[index].images.isEmpty ? ""
-                  : snapshot.categories[index].images?.first?.photoUrl ?? "",
+            imageUrl: snapshot.categories[index].images.isEmpty
+                ? ""
+                : snapshot.categories[index].images?.first?.photoUrl ?? "",
             tileWidth: 75.toWidth,
             categoryName: snapshot.categories[index].categoryName ?? '',
-            onTap: (){
+            onTap: () {
               snapshot.updateSelectedCategory(snapshot.categories[index]);
               snapshot.navigateToProductCatalog();
             },

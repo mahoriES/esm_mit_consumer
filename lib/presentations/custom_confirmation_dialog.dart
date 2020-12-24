@@ -11,6 +11,7 @@ class CustomConfirmationDialog extends StatelessWidget {
   final VoidCallback positiveAction;
   final VoidCallback negativeAction;
   final Color actionButtonColor;
+  final IconData positiveButtonIcon;
   const CustomConfirmationDialog({
     @required this.title,
     @required this.message,
@@ -19,6 +20,7 @@ class CustomConfirmationDialog extends StatelessWidget {
     this.negativeButtonText,
     this.negativeAction,
     this.actionButtonColor,
+    this.positiveButtonIcon,
     Key key,
   }) : super(key: key);
 
@@ -70,11 +72,10 @@ class CustomConfirmationDialog extends StatelessWidget {
                         icon: Icons.clear,
                         text: negativeButtonText,
                         onTap: () {
-                          if(negativeAction != null){
+                          if (negativeAction != null) {
                             negativeAction();
-                          }
-                          else{
-                              Navigator.pop(context);
+                          } else {
+                            Navigator.pop(context);
                           }
                         },
                       ),
@@ -82,7 +83,7 @@ class CustomConfirmationDialog extends StatelessWidget {
                   ],
                   Expanded(
                     child: CustomIconButton(
-                      icon: Icons.check,
+                      icon: positiveButtonIcon ?? Icons.check,
                       text: positiveButtonText,
                       onTap: positiveAction,
                       color: actionButtonColor ??

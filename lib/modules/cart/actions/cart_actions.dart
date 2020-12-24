@@ -1,13 +1,13 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/models/loading_status.dart';
+import 'package:dio/dio.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
@@ -16,6 +16,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GetCartFromLocal extends ReduxAction<AppState> {
   @override
@@ -136,7 +137,8 @@ class RemoveFromCartAction extends ReduxAction<AppState> {
           await CartDataSource.getListOfProducts();
 
       // if all products are removed clear the cart data.
-      if (localCartItems.isEmpty) {
+      if (localCartItems.isEmpty &&
+          state.cartState.customerNoteImages.isEmpty) {
         await CartDataSource.deleteCartMerchant();
       }
 
@@ -156,28 +158,6 @@ class RemoveFromCartAction extends ReduxAction<AppState> {
   }
 }
 
-// Delete existing data in cart and add new merchant as cart store along with the selected product.
-class UpdateCartMerchantAction extends ReduxAction<AppState> {
-  @override
-  FutureOr<AppState> reduce() async {
-    try {
-      Business merchant = await CartDataSource.getCartMerchant();
-      // fetch order charges for selected merchant.
-      dispatch(GetOrderTaxAction(merchant));
-
-      return state.copyWith(
-        cartState: state.cartState.copyWith(
-          cartMerchant: merchant,
-        ),
-      );
-    } catch (_) {
-      Fluttertoast.showToast(msg: tr("cart.generic_error"));
-      return null;
-    }
-  }
-}
-
-// TODO : Refactor this action.
 class PlaceOrderAction extends ReduxAction<AppState> {
   final PlaceOrderRequest request;
 
@@ -185,37 +165,37 @@ class PlaceOrderAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-    final response = await APIManager.shared.request(
+    try {
+      final response = await APIManager.shared.request(
         url: ApiURL.placeOrderUrl,
         params: request.toJson(),
-        requestType: RequestType.post);
+        requestType: RequestType.post,
+      );
 
-    if (response.status == ResponseStatus.success200) {
-//      request.order.status = "UNCONFIRMED";
-      final responseModel = PlaceOrderResponse.fromJson(response.data);
-      Fluttertoast.showToast(msg: 'Order Placed');
-      await CartDataSource.deleteCartMerchant();
-      await CartDataSource.deleteAllProducts();
-      await CartDataSource.insertCustomerNoteImagesList([]);
-      await CartDataSource.insertFreeFormItemsList([]);
-
-      dispatch(GetCartFromLocal());
-      dispatch(UpdateSelectedTabAction(1));
-      dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
-      return state.copyWith(
-          productState:
-              state.productState.copyWith(placeOrderResponse: responseModel));
-    } else {
-//      request.order.status = "COMPLETED";
-      Fluttertoast.showToast(msg: response.data['message']);
+      if (response.status == ResponseStatus.success200) {
+        final responseModel = PlaceOrderResponse.fromJson(response.data);
+        Fluttertoast.showToast(msg: 'Order Placed');
+        await CartDataSource.resetCart();
+        dispatch(GetCartFromLocal());
+        dispatch(UpdateSelectedTabAction(1));
+        dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+        return state.copyWith(
+          productState: state.productState.copyWith(
+            placeOrderResponse: responseModel,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(msg: response.data['message']);
+      }
+    } catch (_) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
     return null;
   }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() => dispatch(ToggleCartLoadingState(true));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void after() => dispatch(ToggleCartLoadingState(false));
 }
 
 class GetOrderTaxAction extends ReduxAction<AppState> {
@@ -250,7 +230,6 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
   void after() => dispatch(ToggleCartLoadingState(false));
 }
 
-// TODO : Refactor this action.
 class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
   final PlaceOrderRequest request;
 
@@ -258,27 +237,30 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
-    var merchant = await CartDataSource.getCartMerchant();
-    var response = await APIManager.shared.request(
-        url: ApiURL.getBusinessesUrl + "${merchant?.businessId}" + "/open",
-        params: {"": ""},
-        requestType: RequestType.get);
-    if (response.status == ResponseStatus.success200) {
-      if (response.data['is_open']) {
-        dispatch(PlaceOrderAction(request: request));
+    try {
+      var response = await APIManager.shared.request(
+        url: ApiURL.getStoreStatusUrl(request?.businessId),
+        params: null,
+        requestType: RequestType.get,
+      );
+      if (response.status == ResponseStatus.success200) {
+        if (response.data['is_open']) {
+          dispatch(PlaceOrderAction(request: request));
+        } else {
+          Fluttertoast.showToast(msg: tr('new_changes.shop_closed'));
+        }
       } else {
-        Fluttertoast.showToast(msg: tr('new_changes.shop_closed'));
+        Fluttertoast.showToast(msg: response.data['message']);
       }
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
-      return null;
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
+    return null;
   }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() => dispatch(ToggleCartLoadingState(true));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void after() => dispatch(ToggleCartLoadingState(false));
 }
 
 class ToggleCartLoadingState extends ReduxAction<AppState> {
@@ -292,5 +274,129 @@ class ToggleCartLoadingState extends ReduxAction<AppState> {
         isCartLoading: isLoading,
       ),
     );
+  }
+}
+
+class ToggleImageUploadingState extends ReduxAction<AppState> {
+  bool isLoading;
+  ToggleImageUploadingState(this.isLoading);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+      cartState: state.cartState.copyWith(
+        isImageUploading: isLoading,
+      ),
+    );
+  }
+}
+
+class UpdateDeliveryType extends ReduxAction<AppState> {
+  String type;
+  UpdateDeliveryType(this.type);
+
+  @override
+  FutureOr<AppState> reduce() async {
+    return state.copyWith(
+      cartState: state.cartState.copyWith(
+        selectedDeliveryType: type,
+      ),
+    );
+  }
+}
+
+class AddCustomerNoteImageAction extends ReduxAction<AppState> {
+  final ImageSource imageSource;
+  AddCustomerNoteImageAction({@required this.imageSource});
+
+  Future<dynamic> getImage() async {
+    final _picker = ImagePicker();
+    var imageFile = await _picker.getImage(
+      source: imageSource,
+      imageQuality: 25,
+    );
+    if (imageFile == null) {
+      return false;
+    }
+    return File(imageFile.path);
+  }
+
+  @override
+  FutureOr<AppState> reduce() async {
+    try {
+      final imageFile = await getImage();
+      if (imageFile == false) return null;
+
+      var response = await APIManager.shared.request(
+        requestType: RequestType.post,
+        url: ApiURL.imageUpload,
+        params: FormData.fromMap(
+          {
+            "file": await MultipartFile.fromFile(
+              imageFile.path,
+              filename: 'customerImage.jpg',
+            )
+          },
+        ),
+      );
+      if (response.status == ResponseStatus.success200) {
+        final Photo photo = Photo.fromJson(response.data);
+        if (photo.photoUrl == null) {
+          throw Exception();
+        }
+        List<String> updatedImageList = state.cartState.customerNoteImages
+          ..add(photo.photoUrl);
+        CartDataSource.insertCustomerNoteImagesList(updatedImageList);
+        return state.copyWith(
+          cartState: state.cartState.copyWith(
+            customerNoteImages: updatedImageList,
+          ),
+        );
+      } else {
+        throw Exception();
+      }
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Error ocuured while uploading the image");
+      return null;
+    }
+  }
+
+  void before() => dispatch(ToggleImageUploadingState(true));
+
+  void after() => dispatch(ToggleImageUploadingState(false));
+}
+
+class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
+  final int imageIndex;
+  RemoveCustomerNoteImageAction({@required this.imageIndex});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    try {
+      List<String> updatedImageList = state.cartState.customerNoteImages
+        ..removeAt(imageIndex);
+
+      await CartDataSource.insertCustomerNoteImagesList(updatedImageList);
+
+      List<String> updatedList =
+          await CartDataSource.getCustomerNoteImagesList();
+
+      if (state.cartState.localCartItems.isEmpty && updatedList.isEmpty) {
+        await CartDataSource.deleteCartMerchant();
+      }
+
+      final Business merchant = await CartDataSource.getCartMerchant();
+
+      return state.copyWith(
+        cartState: state.cartState.copyWith(
+          isMerchantAllowedToBeNull: true,
+          customerNoteImages: updatedImageList,
+          cartMerchant: merchant,
+        ),
+      );
+    } catch (_) {
+      Fluttertoast.showToast(msg: "Error ocuured while removing the image");
+      return null;
+    }
   }
 }

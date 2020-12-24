@@ -12,6 +12,13 @@ class CartDataSource {
   static const String _freeFormItemsKey = "freeFormItemsList";
   static const String _listImagesKey = "customerNoteImagesList";
 
+  static Future<void> resetCart() async {
+    await CartDataSource.deleteCartMerchant();
+    await CartDataSource.deleteAllProducts();
+    await CartDataSource.insertCustomerNoteImagesList([]);
+    await CartDataSource.insertFreeFormItemsList([]);
+  }
+
   static Future<void> insertProduct(Product product) async {
     final dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
