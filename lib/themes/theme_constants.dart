@@ -57,14 +57,14 @@ class _AppTextStyles {
   TextStyle get sectionHeading1 => TextStyle(
         color: themeColors.primaryColor,
         fontSize: 16,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         fontFamily: _AppFontFamily.archivo,
       );
 
   TextStyle get sectionHeading2 => TextStyle(
         color: themeColors.textColor,
         fontSize: 16,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         fontFamily: _AppFontFamily.lato,
         height: 1.18,
       );

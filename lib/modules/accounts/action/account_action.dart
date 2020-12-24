@@ -28,6 +28,7 @@ class LogoutAction extends ReduxAction<AppState> {
     dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
 
     return state.copyWith(
+        isInitializationDone: false,
         authState: AuthState.initial(),
         isLoading: false,
         productState: ProductState.initial(),

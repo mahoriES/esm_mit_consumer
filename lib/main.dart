@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/presentations/check_user_widget.dart';
@@ -113,6 +114,7 @@ class _MyAppState extends State<MyApp> {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         onInit: (store) {
+          store.dispatch(SetCurrentCircleFromPrefsAction());
           store.dispatch(CheckOnBoardingStatusAction());
           store.dispatch(CheckTokenAction());
           store.dispatch(GetUserFromLocalStorageAction());

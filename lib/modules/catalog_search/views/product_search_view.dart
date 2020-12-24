@@ -28,6 +28,12 @@ class _MerchantProductsSearchViewState
   TextEditingController _controller = TextEditingController();
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
