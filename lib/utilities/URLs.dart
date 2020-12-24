@@ -7,7 +7,7 @@ class ApiURL {
   static const liveURL = "https://api.esamudaay.com/";
 
   ///Modify below to switch between development and production servers
-  static const baseURL = liveURL;
+  static const baseURL = eSamudayDevelopmentURL;
 
   static const generateOTPUrl = "api/v1/auth/token/";
   static const generateOtpRegisterUrl = "api/v1/auth/user/";

@@ -6,7 +6,8 @@ import 'package:eSamudaay/modules/address/view/change_address_view/manage_addres
 import 'package:eSamudaay/modules/address/view/search_view/search_view.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
 import 'package:eSamudaay/modules/catalog_search/views/product_search_view.dart';
-import 'package:eSamudaay/modules/circles/views/circle_picker_screen.dart';
+import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
+import 'package:eSamudaay/modules/circles/views/circle_search_view.dart';
 import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
@@ -47,17 +48,18 @@ class SetupRoutes {
       "/about": (BuildContext context) => AboutView(),
       "/onBoarding": (BuildContext context) => OnboardingWidget(),
       "/payment": (BuildContext context) => Payments(),
-      "/circles": (BuildContext context) => CirclePicker(),
       RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
           MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
           ProductDetailsView(),
       '/videoPlayer': (BuildContext context) => VideoPlayerScreen(),
       RouteNames.CATEGORY_BUSINESSES: (BuildContext context) =>
-          BusinessesListUnderSelectedCategoryScreen(),
+          const BusinessesListUnderSelectedCategoryScreen(),
       RouteNames.CHANGE_ADDRESS: (BuildContext context) => ChangeAddressView(),
       RouteNames.ADD_NEW_ADDRESS: (BuildContext context) => AddNewAddressView(),
       RouteNames.SEARCH_ADDRESS: (BuildContext context) => SearchAddressView(),
+      RouteNames.CIRCLE_PICKER: (BuildContext context) => const CirclePickerView(),
+      RouteNames.CIRCLE_SEARCH: (BuildContext context) => CircleSearchView(),
     };
   }
 }
@@ -73,4 +75,6 @@ class RouteNames {
   static const CHANGE_ADDRESS = "/changeAddress";
   static const ADD_NEW_ADDRESS = "/addNewAddress";
   static const SEARCH_ADDRESS = "/searchAddress";
+  static const CIRCLE_PICKER = "/circlePicker";
+  static const CIRCLE_SEARCH = "/circleSearch";
 }

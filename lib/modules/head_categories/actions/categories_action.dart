@@ -335,20 +335,6 @@ class ChangeCircleCategoriesLoadingAction extends ReduxAction<AppState> {
   }
 }
 
-class ChangeNearbyCircleLoadingAction extends ReduxAction<AppState> {
-  final bool value;
-
-  ChangeNearbyCircleLoadingAction(this.value);
-
-  @override
-  FutureOr<AppState> reduce() {
-    return state.copyWith(
-      componentsLoadingState: state.componentsLoadingState.copyWith(
-        nearbyCirclesLoading: value,
-      ),
-    );
-  }
-}
 
 class ChangeBusinessUnderCategoryLoadingAction extends ReduxAction<AppState> {
   final bool value;

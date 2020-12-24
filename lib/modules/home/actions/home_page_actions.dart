@@ -32,7 +32,7 @@ class GetMerchantDetails extends ReduxAction<AppState> {
     var response = await APIManager.shared.request(
         url: getUrl,
         params: {
-          "cluster_id": state.authState.cluster.clusterId,
+          "cluster_id": state.authState.cluster?.clusterId ?? '',
           "ag_cat": true
         },
         requestType: RequestType.get);
@@ -60,8 +60,7 @@ class GetMerchantDetails extends ReduxAction<AppState> {
       }
       return state.copyWith(
           homePageState: state.homePageState.copyWith(
-              merchants: responseModel.results,
-              response: responseModel));
+              merchants: responseModel.results, response: responseModel));
     }
   }
 
@@ -74,6 +73,44 @@ class GetMerchantDetails extends ReduxAction<AppState> {
   @override
   void after() {
     dispatch(ChangeBusinessListLoadingAction(false));
+    super.after();
+  }
+}
+
+class ChangeSelectedCircleUsingCircleCodeAction extends ReduxAction<AppState> {
+  final String circleCode;
+  bool _didCircleGotChanged = false;
+
+  ChangeSelectedCircleUsingCircleCodeAction({@required this.circleCode});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    if (state.authState.cluster != null &&
+        state.authState.cluster.clusterCode == circleCode) return null;
+    final Cluster toBeSelectedCluster = [
+      ...state.authState.myClusters ?? <Cluster>[],
+      ...state.authState.nearbyClusters ?? <Cluster>[],
+    ].toSet().toList().firstWhere(
+        (element) => element.clusterCode == circleCode,
+        orElse: () => null);
+    if (toBeSelectedCluster == null) return null;
+    _didCircleGotChanged = true;
+    return state.copyWith(
+      authState: state.authState.copyWith(
+        cluster: toBeSelectedCluster,
+      ),
+    );
+  }
+
+  @override
+  void after() async {
+    if (_didCircleGotChanged) {
+      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(LoadVideoFeed());
+      store.dispatch(GetBannerDetailsAction());
+      store.dispatch(GetTopBannerImageAction());
+      store.dispatch(GetHomePageCategoriesAction());
+    }
     super.after();
   }
 }
@@ -106,6 +143,7 @@ class ChangeSelectedCircleAction extends ReduxAction<AppState> {
     );
   }
 }
+
 ///This action is dispatched on init of application. It hits mutiple APIs and makes
 ///things ready for the home page screen.
 ///This should be called elsewhere but only ONCE when app starts up
@@ -113,25 +151,24 @@ class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     // adress must be fetched isrrespective of cluster is null or not.
-     var address = await UserManager.getAddress();
+    var address = await UserManager.getAddress();
     if (address == null) {
       store.dispatch(GetAddressAction());
     } else {
       store.dispatch(GetAddressFromLocal());
     }
 
-    if (store.state.authState.cluster == null) {
+    if (state.authState.cluster != null) {
       await store.dispatchFuture(GetClusterDetailsAction());
-      store.dispatch(
-          GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
+      store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
       store.dispatch(LoadVideoFeed());
       store.dispatch(GetHomePageCategoriesAction());
+      store.dispatch(GetCartFromLocal());
+      store.dispatch(GetUserFromLocalStorageAction());
+      store.dispatch(GetBannerDetailsAction());
+      store.dispatch(GetTopBannerImageAction());
     }
-    store.dispatch(GetCartFromLocal());
-    store.dispatch(GetUserFromLocalStorageAction());
-    store.dispatch(GetBannerDetailsAction());
-    store.dispatch(GetTopBannerImageAction());
-    return null;
+    return state.copyWith(isInitializationDone: true);
   }
 }
 
@@ -232,12 +269,19 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
       throw UserException('Something went wrong');
     else {
       List<Cluster> result = [];
-      response.data.forEach((item) {
+      response?.data?.forEach((item) {
         result.add(Cluster.fromJson(item));
       });
+      await dispatchFuture(SetCurrentCircleFromPrefsAction());
+      if (result == null || result.isEmpty) return null;
+      if (state.authState.cluster == null)
+        return state.copyWith(
+            authState: state.authState.copyWith(
+          cluster: result?.first,
+          myClusters: result,
+        ));
       return state.copyWith(
           authState: state.authState.copyWith(
-        cluster: result.first,
         myClusters: result,
       ));
     }

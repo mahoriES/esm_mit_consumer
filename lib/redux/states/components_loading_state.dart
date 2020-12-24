@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ComponentsLoadingState {
   final bool videosLoading;
@@ -9,11 +10,15 @@ class ComponentsLoadingState {
   final bool nearbyCirclesLoading;
   final bool businessesUnderCategoryLoading;
   final bool circleDetailsLoading;
+  final bool savedCirclesLoading;
+  final bool suggestedCirclesLoading;
 
   ComponentsLoadingState(
       {@required this.videosLoading,
       @required this.circleDetailsLoading,
       @required this.circleBannersLoading,
+      @required this.savedCirclesLoading,
+      @required this.suggestedCirclesLoading,
       @required this.circleTopBannerLoading,
       @required this.businessesUnderCategoryLoading,
       @required this.circleCategoriesLoading,
@@ -23,6 +28,8 @@ class ComponentsLoadingState {
   factory ComponentsLoadingState.initial() {
     return ComponentsLoadingState(
         videosLoading: false,
+        savedCirclesLoading: false,
+        suggestedCirclesLoading: false,
         circleDetailsLoading: false,
         businessesUnderCategoryLoading: false,
         circleBannersLoading: false,
@@ -40,8 +47,13 @@ class ComponentsLoadingState {
       bool businessesUnderCategoryLoading,
       bool nearbyCirclesLoading,
       bool circleDetailsLoading,
+      bool savedCirclesLoading,
+      bool suggestedCirclesLoading,
       bool businessListLoading}) {
     return ComponentsLoadingState(
+        savedCirclesLoading: savedCirclesLoading ?? this.savedCirclesLoading,
+        suggestedCirclesLoading:
+            suggestedCirclesLoading ?? this.suggestedCirclesLoading,
         circleDetailsLoading: circleDetailsLoading ?? this.circleDetailsLoading,
         businessesUnderCategoryLoading: businessesUnderCategoryLoading ??
             this.businessesUnderCategoryLoading,

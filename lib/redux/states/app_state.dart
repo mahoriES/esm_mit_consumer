@@ -17,10 +17,12 @@ class AppState {
   final ComponentsLoadingState componentsLoadingState;
   final AddressState addressState;
   final String versionString;
+  final bool isInitializationDone;
 
   const AppState({
     this.authState,
     this.isLoading,
+    this.isInitializationDone,
     this.componentsLoadingState,
     this.homeCategoriesState,
     this.homePageState,
@@ -45,6 +47,7 @@ class AppState {
   factory AppState.initial() => AppState(
         authState: AuthState.initial(),
         isLoading: false,
+        isInitializationDone: false,
         componentsLoadingState: ComponentsLoadingState.initial(),
         productState: ProductState.initial(),
         homePageState: HomePageState.initial(),
@@ -56,6 +59,7 @@ class AppState {
 
   AppState copyWith({
     AuthState authState,
+    bool isInitializationDone,
     ComponentsLoadingState componentsLoadingState,
     bool isLoading,
     HomePageState homePageState,
@@ -66,6 +70,7 @@ class AppState {
     String versionString,
   }) {
     return AppState(
+      isInitializationDone: isInitializationDone ?? this.isInitializationDone,
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
       componentsLoadingState:
@@ -90,6 +95,7 @@ class AppState {
           homeCategoriesState == other.homeCategoriesState &&
           productState == other.productState &&
           videosState == other.videosState &&
+          isInitializationDone == other.isInitializationDone &&
           isLoading == other.isLoading &&
           addressState == other.addressState &&
           versionString == other.versionString;
