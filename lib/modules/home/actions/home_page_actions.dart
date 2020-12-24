@@ -167,8 +167,9 @@ class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
       store.dispatch(GetUserFromLocalStorageAction());
       store.dispatch(GetBannerDetailsAction());
       store.dispatch(GetTopBannerImageAction());
+      return state.copyWith(isInitializationDone: true);
     }
-    return state.copyWith(isInitializationDone: true);
+    return null;
   }
 }
 
@@ -297,6 +298,9 @@ class GetClusterDetailsAction extends ReduxAction<AppState> {
   void after() {
     dispatch(ChangeClusterDetailsLoadingAction(false));
     if (state.authState.cluster == null) dispatch(GetNearbyCirclesAction());
+    debugPrint("Value of home page init*** ${state.isInitializationDone}");
+    if (!state.isInitializationDone)
+      dispatch(HomePageOnInitMultipleDispatcherAction());
     super.after();
   }
 }
