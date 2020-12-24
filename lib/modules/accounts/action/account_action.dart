@@ -3,10 +3,14 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/redux/states/address_state.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/redux/states/auth_state.dart';
+import 'package:eSamudaay/redux/states/components_loading_state.dart';
 import 'package:eSamudaay/redux/states/home_page_state.dart';
+import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
+import 'package:eSamudaay/redux/states/videos_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
@@ -26,19 +30,33 @@ class LogoutAction extends ReduxAction<AppState> {
     await UserManager.deleteAddress();
     PushNotificationsManager().signOut();
     dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
-
-    return state.copyWith(
-        isInitializationDone: false,
-        authState: AuthState.initial(),
-        isLoading: false,
-        productState: ProductState.initial(),
-        homePageState: HomePageState.initial());
+    return null;
   }
 
   void before() =>
       dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void after() {
+    dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  }
+}
+
+class InitialiseStoreOnLogoutAction extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() {
+    print('******Init store called');
+    return state.copyWith(
+        isInitializationDone: false,
+        authState: AuthState.initial(),
+        componentsLoadingState: ComponentsLoadingState.initial(),
+        videosState: VideosState.initial(),
+        homeCategoriesState: LandingPageComponentsState.initial(),
+        addressState: AddressState.initial(),
+        versionString: '',
+        isLoading: false,
+        productState: ProductState.initial(),
+        homePageState: HomePageState.initial());
+  }
 }
 
 class GetVersionString extends ReduxAction<AppState> {
