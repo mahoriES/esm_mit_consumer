@@ -175,7 +175,7 @@ class PlaceOrderAction extends ReduxAction<AppState> {
 
       if (response.status == ResponseStatus.success200) {
         final responseModel = PlaceOrderResponse.fromJson(response.data);
-        Fluttertoast.showToast(msg: 'Order Placed');
+        Fluttertoast.showToast(msg: tr("cart.order_placed"));
         await CartDataSource.resetCart();
         dispatch(GetCartFromLocal());
         dispatch(UpdateSelectedTabAction(1));
@@ -357,7 +357,7 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
         throw Exception();
       }
     } catch (_) {
-      Fluttertoast.showToast(msg: "Error ocuured while uploading the image");
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
       return null;
     }
   }
@@ -396,7 +396,7 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
         ),
       );
     } catch (_) {
-      Fluttertoast.showToast(msg: "Error ocuured while removing the image");
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
       return null;
     }
   }

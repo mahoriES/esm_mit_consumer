@@ -5,7 +5,9 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/image_picker_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,47 +50,20 @@ class CartCustomerNoteImagesWidget extends StatelessWidget {
               const SizedBox(height: 16),
               ActionButton(
                 text: tr("cart.upload_list"),
-                icon: Icons.camera,
+                icon: Icons.add_a_photo,
                 onTap: () {
                   if (!snapshot.isImageUploading) {
                     if (snapshot.customerNoteImagesCount < 5) {
                       showModalBottomSheet(
                         context: context,
-                        builder: (BuildContext bc) {
-                          return Container(
-                            child: new Wrap(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Center(
-                                      child: Text("Image Upload From ?")),
-                                ),
-                                new ListTile(
-                                  leading: new Icon(Icons.photo_camera),
-                                  title: new Text('Camera'),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    snapshot.addCustomerNoteImage(
-                                        ImageSource.camera);
-                                  },
-                                ),
-                                new ListTile(
-                                  leading: new Icon(Icons.photo_album),
-                                  title: new Text('Gallery'),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    snapshot.addCustomerNoteImage(
-                                        ImageSource.gallery);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                        builder: (context) => ImagePickerDialog(
+                          (ImageSource source) =>
+                              snapshot.addCustomerNoteImage(source),
+                        ),
                       );
                     } else {
                       Fluttertoast.showToast(
-                        msg: "Maximum 5 lists can be uploaded",
+                        msg: "cart.max_list_images".tr(),
                       );
                     }
                   }

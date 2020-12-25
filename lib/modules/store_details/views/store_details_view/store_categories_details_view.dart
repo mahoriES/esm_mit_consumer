@@ -483,7 +483,6 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> spotlightItems;
   List<Product> singleCategoryFewProducts;
   List<JITProduct> freeFormItemsList;
-  Function navigateToCart;
   Function(BuildContext) checkForPreviouslyAddedListItems;
   VideoFeedResponse videoFeedResponse;
   Function onVideoTap;
@@ -514,8 +513,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateSelectedVideo,
       this.updateSelectedCategory,
       this.navigateToProductSearch,
-      this.localCartListing,
-      this.navigateToCart})
+      this.localCartListing})
       : super(equals: [
           selectedMerchant,
           videoFeedResponse,
@@ -551,9 +549,6 @@ class _ViewModel extends BaseModel<AppState> {
       },
       navigateToProductCatalog: () {
         dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
-      },
-      navigateToCart: () {
-        dispatch(NavigateAction.pushNamed('/CartView'));
       },
       loadingStatus: state.authState.loadingStatus,
       selectedMerchant: state.productState.selectedMerchant,

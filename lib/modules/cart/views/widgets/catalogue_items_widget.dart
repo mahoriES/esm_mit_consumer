@@ -57,7 +57,6 @@ class CartCatalogueItemsWidget extends StatelessWidget {
                         product: _currentProduct,
                         selectedMerchant: snapshot.cartMerchant,
                         isSku: true,
-                        // skuIndex: _currentProduct.selectedSkuIndex,
                       ),
                     ),
                     Expanded(

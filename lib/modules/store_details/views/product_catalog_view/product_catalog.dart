@@ -146,7 +146,6 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Map<int, bool> isLoadingMore;
   Function(int) updateSelectedCategory;
-  Function navigateToCart;
   List<Product> localCartListing;
   List<JITProduct> freeFormItemsList;
 
@@ -158,7 +157,6 @@ class _ViewModel extends BaseModel<AppState> {
     this.loadingStatus,
     this.updateSelectedCategory,
     this.isLoadingMore,
-    this.navigateToCart,
     this.freeFormItemsList,
     this.localCartListing,
   }) : super(equals: [
@@ -193,9 +191,6 @@ class _ViewModel extends BaseModel<AppState> {
             : dispatch(GetAllProducts());
       },
       freeFormItemsList: state.cartState.localFreeFormCartItems,
-      navigateToCart: () {
-        dispatch(NavigateAction.pushNamed('/CartView'));
-      },
       localCartListing: state.cartState.localCartItems,
     );
   }

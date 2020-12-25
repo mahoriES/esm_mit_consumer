@@ -26,7 +26,7 @@ class _AddButton extends StatelessWidget {
       child: InkWell(
         onTap: () async {
           if (isDisabled) {
-            Fluttertoast.showToast(msg: 'Item not in stock!');
+            Fluttertoast.showToast(msg: tr("common.out_of_stock_error"));
             return;
           }
           buttonAction();

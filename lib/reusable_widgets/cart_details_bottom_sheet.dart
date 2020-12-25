@@ -6,6 +6,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -64,7 +65,9 @@ class CartDetailsBottomSheet extends StatelessWidget {
                             SizedBox(width: 8),
                             Flexible(
                               child: Text(
-                                isOnCartScreen ? "Send request" : "View Cart ",
+                                isOnCartScreen
+                                    ? tr("cart.send_request")
+                                    : tr("cart.view_cart"),
                                 style: CustomTheme.of(context)
                                     .textStyles
                                     .sectionHeading3,
@@ -112,7 +115,7 @@ class _ViewModel extends BaseModel<AppState> {
         if (state.cartState.selectedDeliveryType ==
                 DeliveryType.DeliveryToHome &&
             state.addressState.selectedAddressForDelivery == null) {
-          Fluttertoast.showToast(msg: "Please add a valid delivery address");
+          Fluttertoast.showToast(msg: "cart.no_address_error".tr());
         } else {
           PlaceOrderRequest orderRequest = new PlaceOrderRequest(
             businessId: state.cartState.cartMerchant.businessId,
@@ -140,10 +143,14 @@ class _ViewModel extends BaseModel<AppState> {
 
   String get itemsCountString {
     if (totalCount == 0) return "";
-    return (productsCount > 0 ? "$productsCount Item" : "") +
-        (productsCount > 1 ? "s" : "") +
-        (productsCount > 0 && customerNoteImagesCount > 0 ? " , " : "") +
-        (customerNoteImagesCount > 0 ? "$customerNoteImagesCount List" : "") +
-        (customerNoteImagesCount > 1 ? "s" : "");
+    return (productsCount > 0
+            ? ("$productsCount " +
+                tr("cart.${productsCount > 1 ? 'items' : 'item'}"))
+            : "") +
+        ((productsCount > 0 && customerNoteImagesCount > 0) ? " , " : "") +
+        (customerNoteImagesCount > 0
+            ? ("$customerNoteImagesCount " +
+                tr("cart.${customerNoteImagesCount > 1 ? 'lists' : 'list'}"))
+            : "");
   }
 }

@@ -41,12 +41,15 @@ class _ImageList extends StatelessWidget {
         Row(
           children: [
             Text(
-              "${snapshot.customerNoteImagesCount} Images added",
+              tr(
+                "cart.n_images_added",
+                args: [snapshot.customerNoteImagesCount.toString()],
+              ),
               style: CustomTheme.of(context).textStyles.cardTitle,
             ),
             Spacer(),
             Text(
-              "Max. 5 images",
+              tr("cart.max_images"),
               style: CustomTheme.of(context).textStyles.cardTitle,
             ),
           ],
@@ -98,10 +101,9 @@ class _CustomCachedImage extends StatelessWidget {
               onTap: () => showDialog(
                 context: context,
                 builder: (context) => CustomConfirmationDialog(
-                  title: "Delete List Image?",
-                  message:
-                      "Are you sure you want to deletethe uploaded list image?",
-                  positiveButtonText: "Delete",
+                  title: tr("cart.delete_image_alert_title"),
+                  message: tr("cart.delete_image_alert_message"),
+                  positiveButtonText: tr("address_picker.delete"),
                   positiveAction: () {
                     Navigator.pop(context);
                     onRemove();
@@ -109,7 +111,7 @@ class _CustomCachedImage extends StatelessWidget {
                   actionButtonColor:
                       CustomTheme.of(context).colors.secondaryColor,
                   positiveButtonIcon: Icons.delete,
-                  negativeButtonText: "Cancel",
+                  negativeButtonText: tr("screen_account.cancel"),
                   negativeAction: () => Navigator.pop(context),
                 ),
               ),
@@ -151,7 +153,11 @@ class _PlaceHolder extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 34),
       child: Row(
         children: [
-          Icon(Icons.list),
+          Image.asset(
+            ImagePathConstants.listUploadIcon,
+            width: 60,
+            fit: BoxFit.cover,
+          ),
           const SizedBox(width: 20),
           Flexible(
             child: Text(

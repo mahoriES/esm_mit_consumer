@@ -170,7 +170,6 @@ class ProductDetailsView extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  Function navigateToCart;
   List<Product> localCartListing;
   List<JITProduct> freeFormItemsList;
   Business selectedMerchant;
@@ -179,7 +178,6 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   _ViewModel.build({
-    this.navigateToCart,
     this.freeFormItemsList,
     this.localCartListing,
     this.selectedMerchant,
@@ -197,9 +195,6 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       freeFormItemsList: state.cartState.localFreeFormCartItems,
-      navigateToCart: () {
-        dispatch(NavigateAction.pushNamed('/CartView'));
-      },
       localCartListing: state.cartState.localCartItems,
       selectedMerchant: state.productState.selectedMerchant,
       selectedProduct: state.productState.selectedProductForDetails,

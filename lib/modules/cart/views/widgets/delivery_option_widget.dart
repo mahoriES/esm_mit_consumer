@@ -38,7 +38,7 @@ class DeliveryOptionWidget extends StatelessWidget {
                     isActive: snapshot.isDeliveryToHomeSelected,
                     onChanged: () => snapshot
                         .updateDeliveryType(DeliveryType.DeliveryToHome),
-                    title: "Delivery at doorstep",
+                    title: "cart.delivery_at_doorstep".tr(),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -47,7 +47,7 @@ class DeliveryOptionWidget extends StatelessWidget {
                     isActive: !snapshot.isDeliveryToHomeSelected,
                     onChanged: () =>
                         snapshot.updateDeliveryType(DeliveryType.StorePickup),
-                    title: "Pickup at store",
+                    title: "cart.pickup_at_store".tr(),
                     mainAxisAlignment: MainAxisAlignment.end,
                   ),
                 ),
@@ -83,7 +83,7 @@ class DeliveryOptionWidget extends StatelessWidget {
                                     const SizedBox(width: 10),
                                     Flexible(
                                       child: Text(
-                                        "Delivering to Home",
+                                        "cart.delivery_to_home".tr(),
                                         style: CustomTheme.of(context)
                                             .textStyles
                                             .cardTitle,
@@ -280,8 +280,10 @@ class _ViewModel extends BaseModel<AppState> {
         if (type == DeliveryType.DeliveryToHome &&
             !state.cartState.cartMerchant.hasDelivery) {
           Fluttertoast.showToast(
-              msg:
-                  "${state.cartState.cartMerchant.businessName} does not support delivery at doorestep");
+            msg: "cart.delivery_not_available_error".tr(
+              args: [state.cartState.cartMerchant?.businessName],
+            ),
+          );
         } else {
           dispatch(UpdateDeliveryType(type));
         }
@@ -299,7 +301,9 @@ class _ViewModel extends BaseModel<AppState> {
   String get deliveryAddress =>
       (_deliveryHouse == null ? "" : "$_deliveryHouse, ") +
       (_deliveryAddress ?? "") +
-      (_deliveryLandmark == null ? "" : "\nLandmark : $_deliveryLandmark");
+      (_deliveryLandmark == null
+          ? ""
+          : ("\n" + "${tr('cart.landmark')} : $_deliveryLandmark"));
 
   String get _deliveryHouse => selectedAddress?.geoAddr?.house;
   String get _deliveryLandmark => selectedAddress?.geoAddr?.landmark;
@@ -308,7 +312,9 @@ class _ViewModel extends BaseModel<AppState> {
   String get storeAddress =>
       (_storeHouse == null ? "" : "$_storeHouse, ") +
       (_storeAddress ?? "") +
-      (_storeLandmark == null ? "" : "\nLandmark : $_storeLandmark");
+      (_storeLandmark == null
+          ? ""
+          : ("\n" + "${tr('cart.landmark')} : $_storeLandmark"));
 
   String get _storeHouse => cartMerchant.address?.geoAddr?.house;
   String get _storeLandmark => cartMerchant.address?.geoAddr?.landmark;
