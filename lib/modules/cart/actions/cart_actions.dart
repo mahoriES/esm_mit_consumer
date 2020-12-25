@@ -393,6 +393,10 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
       return null;
     }
   }
+
+  void before() => dispatch(ToggleImageUploadingState(true));
+
+  void after() => dispatch(ToggleImageUploadingState(false));
 }
 
 class CheckToReplaceCartAction extends ReduxAction<AppState> {

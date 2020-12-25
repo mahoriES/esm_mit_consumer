@@ -139,17 +139,20 @@ class CartCount extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   List<Product> products;
   List<String> customerNoteImages;
+  bool isImageUploading;
   _ViewModel();
 
   _ViewModel.build({
     this.products,
     this.customerNoteImages,
-  }) : super(equals: [products, customerNoteImages]);
+    this.isImageUploading,
+  }) : super(equals: [products, isImageUploading]);
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
       products: state.cartState.localCartItems ?? [],
       customerNoteImages: state.cartState.customerNoteImages ?? [],
+      isImageUploading: state.cartState.isImageUploading,
     );
   }
 

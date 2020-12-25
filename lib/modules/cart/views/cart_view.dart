@@ -20,6 +20,11 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
+      onDidChange: (snapshot) {
+        if (snapshot.isCartEmpty) {
+          Navigator.maybePop(context);
+        }
+      },
       builder: (context, snapshot) => GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
         child: ModalProgressHUD(
@@ -149,4 +154,6 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   bool get isMerchantSelected => cartMerchant != null;
+
+  bool get isCartEmpty => productsList.isEmpty && customerNoteImages.isEmpty;
 }

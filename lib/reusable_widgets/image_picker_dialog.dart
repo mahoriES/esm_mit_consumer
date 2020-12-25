@@ -11,7 +11,7 @@ class ImagePickerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Column(
+      child: new Wrap(
         children: <Widget>[
           new ListTile(
             leading: new Icon(Icons.photo_camera),

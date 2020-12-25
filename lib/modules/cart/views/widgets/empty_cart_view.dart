@@ -14,45 +14,48 @@ class EmptycartView extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
-      builder: (context, snapshot) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 65),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 161,
-              height: 161,
-              child: CircleAvatar(
-                backgroundColor:
-                    CustomTheme.of(context).colors.placeHolderColor,
-                backgroundImage: AssetImage(
-                  ImagePathConstants.emptyCartImage,
+      builder: (context, snapshot) => Scaffold(
+        body: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 65),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 161,
+                height: 161,
+                child: CircleAvatar(
+                  backgroundColor:
+                      CustomTheme.of(context).colors.placeHolderColor,
+                  backgroundImage: AssetImage(
+                    ImagePathConstants.emptyCartImage,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 55),
-            Text(
-              snapshot.circleNameString,
-              style:
-                  CustomTheme.of(context).textStyles.sectionHeading1.copyWith(
-                        color: CustomTheme.of(context).colors.textColor,
-                      ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              tr("cart.empty_cart_message"),
-              style: CustomTheme.of(context).textStyles.body1Faded,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            ActionButton(
-              text: tr("cart.browse_stores"),
-              onTap: snapshot.goToHome,
-              isDisabled: false,
-            ),
-          ],
+              const SizedBox(height: 55),
+              Text(
+                snapshot.circleNameString,
+                style:
+                    CustomTheme.of(context).textStyles.sectionHeading1.copyWith(
+                          color: CustomTheme.of(context).colors.textColor,
+                        ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                tr("cart.empty_cart_message"),
+                style: CustomTheme.of(context).textStyles.body1Faded,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              ActionButton(
+                text: tr("cart.browse_stores"),
+                onTap: snapshot.goToHome,
+                isDisabled: false,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -72,7 +75,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      // circleName: state.ci,
+      circleName: state.authState.cluster?.clusterName,
       goToHome: () => dispatch(UpdateSelectedTabAction(0)),
     );
   }
