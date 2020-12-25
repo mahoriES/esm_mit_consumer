@@ -171,14 +171,12 @@ class ProductDetailsView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   List<Product> localCartListing;
-  List<JITProduct> freeFormItemsList;
   Business selectedMerchant;
   Product selectedProduct;
 
   _ViewModel();
 
   _ViewModel.build({
-    this.freeFormItemsList,
     this.localCartListing,
     this.selectedMerchant,
     this.selectedProduct,
@@ -186,7 +184,6 @@ class _ViewModel extends BaseModel<AppState> {
           equals: [
             localCartListing,
             selectedMerchant,
-            freeFormItemsList,
             selectedProduct,
           ],
         );
@@ -194,7 +191,6 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      freeFormItemsList: state.cartState.localFreeFormCartItems,
       localCartListing: state.cartState.localCartItems,
       selectedMerchant: state.productState.selectedMerchant,
       selectedProduct: state.productState.selectedProductForDetails,

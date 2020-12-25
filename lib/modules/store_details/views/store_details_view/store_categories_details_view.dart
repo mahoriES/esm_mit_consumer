@@ -50,7 +50,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
     return WillPopScope(
       onWillPop: () async {
         // TODO : this logic to update selected merchant from cart data doesn't seem right.
-        // [High]
+        // Can't update now as it may cause errors in store details.
         Business merchants = await CartDataSource.getCartMerchant();
         if (merchants != null &&
             merchants.businessId !=
@@ -134,7 +134,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                   : "",
                                               onBackPressed: () async {
                                                 // TODO : this logic to update selected merchant from cart data doesn't seem right.
-                                                // [High]
+                                                // Can't update now as it may cause errors in store details.
                                                 Business merchants =
                                                     await CartDataSource
                                                         .getCartMerchant();
@@ -294,9 +294,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                           duration: Duration(milliseconds: 300),
                           padding: EdgeInsets.only(
                               bottom: (snapshot.localCartListing.isEmpty &&
-                                      snapshot.freeFormItemsList.isEmpty)
+                                      snapshot.customerNoteImagesList.isEmpty)
                                   ? AppSizes.separatorPadding
-                                  : 86 + AppSizes.separatorPadding),
+                                  : AppSizes.cartTotalBottomViewHeight +
+                                      AppSizes.separatorPadding),
                           child: GestureDetector(
                             onTap: () {
                               snapshot
@@ -482,7 +483,7 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> localCartListing;
   List<Product> spotlightItems;
   List<Product> singleCategoryFewProducts;
-  List<JITProduct> freeFormItemsList;
+  List<String> customerNoteImagesList;
   Function(BuildContext) checkForPreviouslyAddedListItems;
   VideoFeedResponse videoFeedResponse;
   Function onVideoTap;
@@ -505,7 +506,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.singleCategoryFewProducts,
       this.spotlightItems,
       this.onRefresh,
-      this.freeFormItemsList,
+      this.customerNoteImagesList,
       this.checkForPreviouslyAddedListItems,
       this.categories,
       this.videoFeedResponse,
@@ -522,7 +523,7 @@ class _ViewModel extends BaseModel<AppState> {
           categories,
           localCartListing,
           singleCategoryFewProducts,
-          freeFormItemsList,
+          customerNoteImagesList,
         ]);
 
   @override
@@ -531,7 +532,7 @@ class _ViewModel extends BaseModel<AppState> {
       singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
       spotlightItems: state.productState.spotlightItems,
       videoFeedResponse: state.productState.videosResponse,
-      freeFormItemsList: state.cartState.localFreeFormCartItems,
+      customerNoteImagesList: state.cartState.customerNoteImages,
       localCartListing: state.cartState.localCartItems,
       categories: state.productState?.categories ?? [],
       updateSelectedCategory: (category) {

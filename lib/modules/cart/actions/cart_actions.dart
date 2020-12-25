@@ -25,18 +25,12 @@ class GetCartFromLocal extends ReduxAction<AppState> {
     try {
       final List<Product> localCartList =
           await CartDataSource.getListOfProducts();
-      final List<JITProduct> freeFormItemsList =
-          await CartDataSource.getFreeFormItems() ?? [];
       final List<String> customerNoteImages =
           await CartDataSource.getCustomerNoteImagesList();
       final Business merchant = await CartDataSource.getCartMerchant();
 
       if (merchant == null) {
-        // as we changed the merchant table to merchant key_value in sharedPref , merchant will be null even if cart had some products in older version.
-        // this condition will make sure that older version data is deleted.
-
-        CartDataSource.deleteAllProducts();
-        CartDataSource.deleteCartMerchant();
+        CartDataSource.resetCart();
       } else {
         // fetch order charges if the cart data is not null.
         dispatch(GetOrderTaxAction(merchant));
@@ -45,7 +39,6 @@ class GetCartFromLocal extends ReduxAction<AppState> {
       return state.copyWith(
         cartState: state.cartState.copyWith(
           localCartItems: localCartList,
-          localFreeFormCartItems: freeFormItemsList,
           customerNoteImages: customerNoteImages,
           cartMerchant: merchant,
         ),

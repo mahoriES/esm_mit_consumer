@@ -44,9 +44,8 @@ class BusinessHeaderView extends StatelessWidget {
           onBackPressed: () async {
             if (resetMerchantOnBack) {
               // TODO : this logic to update selected merchant from cart data doesn't seem right.
-              // [High]
-              Business merchants =
-                  await CartDataSource.getCartMerchant();
+              // Can't update now as it may cause errors in store details.
+              Business merchants = await CartDataSource.getCartMerchant();
               if (merchants != null &&
                   merchants.businessId !=
                       snapshot.selectedMerchant.businessId) {

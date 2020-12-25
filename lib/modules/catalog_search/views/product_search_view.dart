@@ -293,7 +293,6 @@ class _ViewModel extends BaseModel<AppState> {
   Business selectedMerchant;
   Function(String) getSearchedProductsForMerchant;
   List<Product> localCartListing;
-  List<JITProduct> freeFormItemsList;
   List<Product> searchProductsForMerchant;
   Function closeSearchWindowAction;
   Function clearSearchResults;
@@ -306,7 +305,6 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel.build(
       {@required this.loadingStatusApp,
       @required this.selectedCategory,
-      @required this.freeFormItemsList,
       @required this.searchProductsQueryCompleted,
       @required this.closeSearchWindowAction,
       @required this.selectedMerchant,
@@ -319,7 +317,6 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatusApp,
           selectedMerchant,
           localCartListing,
-          freeFormItemsList,
           searchProductsForMerchant,
           selectedCategory,
           searchProductsQueryCompleted,
@@ -328,7 +325,6 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      freeFormItemsList: state.cartState.localFreeFormCartItems,
       searchProductsQueryCompleted:
           state.productState.searchForProductsComplete,
       selectedCategory: state.productState.selectedCategory ??

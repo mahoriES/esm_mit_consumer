@@ -147,7 +147,6 @@ class _ViewModel extends BaseModel<AppState> {
   Map<int, bool> isLoadingMore;
   Function(int) updateSelectedCategory;
   List<Product> localCartListing;
-  List<JITProduct> freeFormItemsList;
 
   _ViewModel();
 
@@ -157,12 +156,10 @@ class _ViewModel extends BaseModel<AppState> {
     this.loadingStatus,
     this.updateSelectedCategory,
     this.isLoadingMore,
-    this.freeFormItemsList,
     this.localCartListing,
   }) : super(equals: [
           loadingStatus,
           isLoadingMore,
-          freeFormItemsList,
           localCartListing,
         ]);
 
@@ -190,7 +187,6 @@ class _ViewModel extends BaseModel<AppState> {
             ? dispatch(GetSubCategoriesAction())
             : dispatch(GetAllProducts());
       },
-      freeFormItemsList: state.cartState.localFreeFormCartItems,
       localCartListing: state.cartState.localCartItems,
     );
   }

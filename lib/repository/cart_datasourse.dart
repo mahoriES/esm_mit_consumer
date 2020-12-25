@@ -9,14 +9,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CartDataSource {
   static const String _cartTable = DatabaseManager.cartTable;
   static const String _merchantKey = "business";
-  static const String _freeFormItemsKey = "freeFormItemsList";
   static const String _listImagesKey = "customerNoteImagesList";
 
   static Future<void> resetCart() async {
     await CartDataSource.deleteCartMerchant();
     await CartDataSource.deleteAllProducts();
     await CartDataSource.insertCustomerNoteImagesList([]);
-    await CartDataSource.insertFreeFormItemsList([]);
   }
 
   static Future<void> insertProduct(Product product) async {
@@ -31,27 +29,6 @@ class CartDataSource {
       await CartDataSource.reCreateCartTable();
       await dbClient.insert(_cartTable, cart);
     }
-  }
-
-  static Future<List<JITProduct>> getFreeFormItems() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<JITProduct> jsonDecodedJITItems = [];
-    final List<String> jsonEncodedJITItems =
-        prefs.getStringList(_freeFormItemsKey) ?? [];
-    jsonEncodedJITItems.forEach((element) {
-      jsonDecodedJITItems.add(JITProduct.fromJson(jsonDecode(element)));
-    });
-    return jsonDecodedJITItems ?? [];
-  }
-
-  static Future<void> insertFreeFormItemsList(
-      List<JITProduct> freeFormItemsList) async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> jsonEncodedJITItems = [];
-    freeFormItemsList.forEach((element) {
-      jsonEncodedJITItems.add(jsonEncode(element.toJson()));
-    });
-    await prefs.setStringList(_freeFormItemsKey, jsonEncodedJITItems);
   }
 
   static Future<List<String>> getCustomerNoteImagesList() async {
@@ -100,6 +77,22 @@ class CartDataSource {
     String data = prefs.getString(_merchantKey);
     if (data == null) return null;
     Business merchant = Business.fromJson(jsonDecode(data));
+
+    if (merchant == null) {
+      // check if merchant is stored in older format
+      var dbClient = await DatabaseManager().db;
+      List<Map> list = await dbClient.query("Merchants");
+      List<Business> merchantsList = list
+          .map((item) => Business.fromJson(jsonDecode(item["business"])))
+          .toList();
+      if (merchantsList != null && merchantsList.isNotEmpty) {
+        // if yes, then store merchant value in new key and return the data.
+        await insertCartMerchant(merchantsList.first);
+        return merchantsList.first;
+      } else {
+        return null;
+      }
+    }
     return merchant;
   }
 

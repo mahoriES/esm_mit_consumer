@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 class CartState {
   final List<Product> localCartItems;
-  final List<JITProduct> localFreeFormCartItems;
   final List<String> customerNoteImages;
   final TextEditingController customerNoteMessage;
   final String selectedDeliveryType;
@@ -17,7 +16,6 @@ class CartState {
 
   CartState({
     @required this.localCartItems,
-    @required this.localFreeFormCartItems,
     @required this.customerNoteImages,
     @required this.customerNoteMessage,
     @required this.selectedDeliveryType,
@@ -30,7 +28,6 @@ class CartState {
   factory CartState.initial() {
     return new CartState(
       customerNoteImages: [],
-      localFreeFormCartItems: [],
       localCartItems: [],
       cartMerchant: null,
       charges: null,
@@ -56,7 +53,6 @@ class CartState {
     // we need to set cartMerchant as null when no products are added in cart.
     bool isMerchantAllowedToBeNull = false,
     List<Product> localCartItems,
-    List<JITProduct> localFreeFormCartItems,
     List<String> customerNoteImages,
     Business cartMerchant,
     CartCharges charges,
@@ -67,8 +63,6 @@ class CartState {
     return new CartState(
       customerNoteImages: customerNoteImages ?? this.customerNoteImages,
       localCartItems: localCartItems ?? this.localCartItems,
-      localFreeFormCartItems:
-          localFreeFormCartItems ?? this.localFreeFormCartItems,
       cartMerchant: cartMerchant ??
           (isMerchantAllowedToBeNull ? null : this.cartMerchant),
       charges: charges ?? this.charges,
