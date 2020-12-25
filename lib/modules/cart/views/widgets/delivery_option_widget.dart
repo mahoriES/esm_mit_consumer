@@ -19,6 +19,10 @@ class DeliveryOptionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
+      onInit: (store) async {
+        await store.dispatchFuture(GetInitialDeliveryType());
+        await store.dispatchFuture(GetInitialSelectedAddress());
+      },
       onDidChange: (snapshot) {
         if (snapshot.isAddressLoading) {
           LoadingDialog.show();
@@ -265,11 +269,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      selectedAddress: state.addressState.selectedAddressForDelivery ??
-          (state.addressState.savedAddressList != null &&
-                  state.addressState.savedAddressList.isNotEmpty
-              ? state.addressState.savedAddressList.first
-              : null),
+      selectedAddress: state.addressState.selectedAddressForDelivery,
       selectedDeliveryType: state.cartState.selectedDeliveryType,
       isAddressLoading: state.addressState.isLoading,
       cartMerchant: state.cartState.cartMerchant,

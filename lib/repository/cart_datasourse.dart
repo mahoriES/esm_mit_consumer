@@ -86,7 +86,8 @@ class CartDataSource {
           .map((item) => Business.fromJson(jsonDecode(item["business"])))
           .toList();
       if (merchantsList != null && merchantsList.isNotEmpty) {
-        // if yes, then store merchant value in new key and return the data.
+        // if yes, then save the value in new key, delete old one and return the data.
+        await dbClient.delete("Merchants");
         await insertCartMerchant(merchantsList.first);
         return merchantsList.first;
       } else {

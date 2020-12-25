@@ -1,4 +1,3 @@
-import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
@@ -33,7 +32,7 @@ class CartState {
       charges: null,
       isCartLoading: false,
       isImageUploading: false,
-      selectedDeliveryType: DeliveryType.StorePickup,
+      selectedDeliveryType: null,
       customerNoteMessage: new TextEditingController(),
     );
   }

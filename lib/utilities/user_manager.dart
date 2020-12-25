@@ -34,8 +34,7 @@ class UserManager {
     await saveSkipStatus(status: false);
     prefs.remove(tokenKey);
     int resp = await dbClient.delete('User');
-    await dbClient.delete(DatabaseManager.cartTable);
-    await CartDataSource.deleteCartMerchant();
+    await CartDataSource.resetCart();
     print(resp);
   }
 

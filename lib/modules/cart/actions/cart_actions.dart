@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:async_redux/async_redux.dart';
 import 'package:dio/dio.dart';
+import 'package:eSamudaay/modules/address/models/addess_models.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
@@ -38,6 +39,7 @@ class GetCartFromLocal extends ReduxAction<AppState> {
 
       return state.copyWith(
         cartState: state.cartState.copyWith(
+          isMerchantAllowedToBeNull: true,
           localCartItems: localCartList,
           customerNoteImages: customerNoteImages,
           cartMerchant: merchant,
@@ -296,6 +298,45 @@ class UpdateDeliveryType extends ReduxAction<AppState> {
         selectedDeliveryType: type,
       ),
     );
+  }
+}
+
+class GetInitialDeliveryType extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    if (store.state.cartState.selectedDeliveryType == null) {
+      bool isDeliveryAvailable =
+          store.state.cartState.cartMerchant?.hasDelivery ?? false;
+      String type = isDeliveryAvailable
+          ? DeliveryType.DeliveryToHome
+          : DeliveryType.StorePickup;
+      return state.copyWith(
+        cartState: state.cartState.copyWith(
+          selectedDeliveryType: type,
+        ),
+      );
+    }
+    return null;
+  }
+}
+
+class GetInitialSelectedAddress extends ReduxAction<AppState> {
+  @override
+  FutureOr<AppState> reduce() async {
+    AddressResponse selectedAddress =
+        store.state.addressState.selectedAddressForDelivery;
+    if (selectedAddress == null) {
+      if (store.state.addressState.savedAddressList != null &&
+          store.state.addressState.savedAddressList.isNotEmpty) {
+        return state.copyWith(
+          addressState: state.addressState.copyWith(
+            selectedAddressForDelivery:
+                store.state.addressState.savedAddressList.first,
+          ),
+        );
+      }
+    }
+    return null;
   }
 }
 
