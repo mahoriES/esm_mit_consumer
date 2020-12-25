@@ -32,7 +32,9 @@ class _ChargesListTile extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           price.withRupeePrefix,
-          style: style ?? CustomTheme.of(context).textStyles.body1,
+          style: (style ?? CustomTheme.of(context).textStyles.body1).copyWith(
+            decoration: TextDecoration.none,
+          ),
         ),
       ],
     );

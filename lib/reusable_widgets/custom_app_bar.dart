@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       leading: IconButton(
         icon: Icon(Icons.chevron_left),
         iconSize: 36.toFont,
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => Navigator.maybePop(context),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

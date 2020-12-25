@@ -27,13 +27,16 @@ class CartChargesListWidget extends StatelessWidget {
             chargeName: tr("cart.item_total"),
             price: snapshot.getCartTotal,
           ),
+          const SizedBox(height: 2),
           Container(
             key: deliveryChargeKey,
-            margin: const EdgeInsets.symmetric(vertical: 12),
+            margin: const EdgeInsets.symmetric(vertical: 14),
             child: _ChargesListTile(
               chargeName: tr("cart.delivery_partner_fee"),
               price: snapshot.deliveryCharge,
-              style: CustomTheme.of(context).textStyles.body1Faded,
+              style: CustomTheme.of(context)
+                  .textStyles
+                  .body1FadedWithDottedUnderline,
               onTap: () => CustomPositionedDialog.show(
                 key: deliveryChargeKey,
                 content: _DeliveryChargeInfoCard(),
@@ -47,7 +50,9 @@ class CartChargesListWidget extends StatelessWidget {
             child: _ChargesListTile(
               chargeName: tr("cart.merchant_charges"),
               price: snapshot.merchantCharge,
-              style: CustomTheme.of(context).textStyles.body1Faded,
+              style: CustomTheme.of(context)
+                  .textStyles
+                  .body1FadedWithDottedUnderline,
               onTap: () => CustomPositionedDialog.show(
                 key: merchantChargeKey,
                 context: context,

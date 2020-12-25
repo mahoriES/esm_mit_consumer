@@ -34,7 +34,10 @@ class CartDetailsBottomSheet extends StatelessWidget {
                     snapshot.itemsCountString.toUpperCase(),
                     style: CustomTheme.of(context)
                         .textStyles
-                        .sectionHeading2Positive,
+                        .sectionHeading2
+                        .copyWith(
+                          color: CustomTheme.of(context).colors.positiveColor,
+                        ),
                   ),
                 ),
               ),

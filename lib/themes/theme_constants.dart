@@ -6,7 +6,6 @@ abstract class _AppThemeColors {
   Color get primaryColor;
   Color get secondaryColor;
   Color get placeHolderColor;
-  Color get lighterPlaceHolderColor;
   Color get backgroundColor;
   Color get positiveColor;
   Color get textColor;
@@ -77,10 +76,6 @@ class _AppTextStyles {
         height: 1.2,
       );
 
-  TextStyle get sectionHeading2Positive => sectionHeading2.copyWith(
-        color: themeColors.positiveColor,
-      );
-
   TextStyle get cardTitle => TextStyle(
         color: themeColors.textColor,
         fontSize: 14,
@@ -109,6 +104,21 @@ class _AppTextStyles {
         color: themeColors.disabledAreaColor,
       );
 
+  TextStyle get body1FadedWithDottedUnderline => body1.copyWith(
+        // As there is no option available to give space between underline and text,
+        // this is a hack to add some space for the same.
+        shadows: [
+          Shadow(
+            color: themeColors.disabledAreaColor,
+            offset: Offset(0, -4),
+          )
+        ],
+        color: Colors.transparent,
+        decoration: TextDecoration.underline,
+        decorationColor: themeColors.disabledAreaColor,
+        decorationThickness: 2,
+        decorationStyle: TextDecorationStyle.dashed,
+      );
   TextStyle get buttonText2 => TextStyle(
         color: themeColors.primaryColor,
         fontSize: 10,
@@ -169,9 +179,6 @@ class _LightThemeColors with _AppThemeColors {
   Color get shadowColor => const Color(0x0d242424);
   @override
   Color get dividerColor => const Color(0xFFe8e8e8);
-
-  @override
-  Color get lighterPlaceHolderColor => const Color(0x0Ffafafa);
 
   ///16 here refers to opacity which is 16%
   @override
