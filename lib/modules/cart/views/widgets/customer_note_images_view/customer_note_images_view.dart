@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
-import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/image_picker_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
@@ -23,13 +22,6 @@ class CartCustomerNoteImagesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
-      onDidChange: (snapshot) {
-        if (snapshot.isImageUploading) {
-          LoadingDialog.show();
-        } else {
-          LoadingDialog.hide();
-        }
-      },
       builder: (context, snapshot) => Card(
         elevation: 4,
         child: Container(
@@ -92,7 +84,7 @@ class _ViewModel extends BaseModel<AppState> {
     this.addCustomerNoteImage,
     this.removeCustomerNoteImage,
     this.isImageUploading,
-  }) : super(equals: [isImageUploading]);
+  });
 
   @override
   BaseModel fromStore() {

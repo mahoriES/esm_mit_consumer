@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/cart/views/widgets/customer_note_images_view/c
 import 'package:eSamudaay/modules/cart/views/widgets/empty_cart_view.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/presentations/loading_indicator.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';
@@ -21,6 +22,12 @@ class CartView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       onDidChange: (snapshot) {
+        if (snapshot.isImageUploading) {
+          LoadingDialog.show();
+        } else {
+          LoadingDialog.hide();
+        }
+
         if (snapshot.isCartEmpty) {
           Navigator.maybePop(context);
         }
@@ -110,6 +117,7 @@ class _ViewModel extends BaseModel<AppState> {
   List<String> customerNoteImages;
   bool isCartLoading;
   TextEditingController noteController;
+  bool isImageUploading;
 
   _ViewModel.build({
     this.cartMerchant,
@@ -117,7 +125,8 @@ class _ViewModel extends BaseModel<AppState> {
     this.customerNoteImages,
     this.isCartLoading,
     this.noteController,
-  }) : super(equals: [cartMerchant, isCartLoading]);
+    this.isImageUploading,
+  }) : super(equals: [cartMerchant, isCartLoading, isImageUploading]);
 
   @override
   BaseModel fromStore() {
@@ -127,6 +136,7 @@ class _ViewModel extends BaseModel<AppState> {
       customerNoteImages: state.cartState.customerNoteImages ?? [],
       isCartLoading: state.cartState.isCartLoading ?? false,
       noteController: state.cartState.customerNoteMessage,
+      isImageUploading: state.cartState.isImageUploading,
     );
   }
 

@@ -234,7 +234,7 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     try {
-      var response = await APIManager.shared.request(
+      final response = await APIManager.shared.request(
         url: ApiURL.getStoreStatusUrl(request?.businessId),
         params: null,
         requestType: RequestType.get,
@@ -305,9 +305,9 @@ class GetInitialDeliveryType extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     if (store.state.cartState.selectedDeliveryType == null) {
-      bool isDeliveryAvailable =
+      final bool isDeliveryAvailable =
           store.state.cartState.cartMerchant?.hasDelivery ?? false;
-      String type = isDeliveryAvailable
+      final String type = isDeliveryAvailable
           ? DeliveryType.DeliveryToHome
           : DeliveryType.StorePickup;
       return state.copyWith(
@@ -323,7 +323,7 @@ class GetInitialDeliveryType extends ReduxAction<AppState> {
 class GetInitialSelectedAddress extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
-    AddressResponse selectedAddress =
+    final AddressResponse selectedAddress =
         store.state.addressState.selectedAddressForDelivery;
     if (selectedAddress == null) {
       if (store.state.addressState.savedAddressList != null &&
@@ -345,8 +345,7 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
   AddCustomerNoteImageAction({@required this.imageSource});
 
   Future<dynamic> getImage() async {
-    final _picker = ImagePicker();
-    var imageFile = await _picker.getImage(
+    final PickedFile imageFile = await ImagePicker().getImage(
       source: imageSource,
       imageQuality: 25,
     );
@@ -362,7 +361,7 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
       final imageFile = await getImage();
       if (imageFile == false) return null;
 
-      var response = await APIManager.shared.request(
+      final response = await APIManager.shared.request(
         requestType: RequestType.post,
         url: ApiURL.imageUpload,
         params: FormData.fromMap(
@@ -379,7 +378,7 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
         if (photo.photoUrl == null) {
           throw Exception();
         }
-        List<String> updatedImageList = state.cartState.customerNoteImages
+        final List<String> updatedImageList = state.cartState.customerNoteImages
           ..add(photo.photoUrl);
         CartDataSource.insertCustomerNoteImagesList(updatedImageList);
         return state.copyWith(
@@ -408,12 +407,12 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     try {
-      List<String> updatedImageList = state.cartState.customerNoteImages
+      final List<String> updatedImageList = state.cartState.customerNoteImages
         ..removeAt(imageIndex);
 
       await CartDataSource.insertCustomerNoteImagesList(updatedImageList);
 
-      List<String> updatedList =
+      final List<String> updatedList =
           await CartDataSource.getCustomerNoteImagesList();
 
       if (state.cartState.localCartItems.isEmpty && updatedList.isEmpty) {
@@ -451,38 +450,46 @@ class CheckToReplaceCartAction extends ReduxAction<AppState> {
   });
   @override
   FutureOr<AppState> reduce() async {
-    Business cartMerchant = state.cartState.cartMerchant;
+    final Business cartMerchant = state.cartState.cartMerchant;
 
-    bool isSameMerchantAddedInCart =
+    final bool isSameMerchantAddedInCart =
         state.cartState.cartMerchant?.businessId == selectedMerchant.businessId;
 
+    // if no merchant is selected
     if (cartMerchant == null) {
       await CartDataSource.resetCart();
       await CartDataSource.insertCartMerchant(
         state.productState.selectedMerchant,
       );
       await dispatchFuture(GetCartFromLocal());
-      Business updatedMerchant = await CartDataSource.getCartMerchant();
+      final Business updatedMerchant = await CartDataSource.getCartMerchant();
       if (updatedMerchant.businessId ==
           state.productState.selectedMerchant.businessId) {
         onSuccess();
       }
       return null;
-    } else if (isSameMerchantAddedInCart) {
+    }
+    // if same merchant is selected.
+    else if (isSameMerchantAddedInCart) {
       onSuccess();
       return null;
-    } else if (state.cartState.localCartItems.isEmpty &&
+    }
+
+    // if diffrent merchant is selected but no items are added.
+    else if (state.cartState.localCartItems.isEmpty &&
         state.cartState.customerNoteImages.isEmpty) {
       await CartDataSource.resetCart();
       await CartDataSource.insertCartMerchant(selectedMerchant);
       await dispatchFuture(GetCartFromLocal());
-      Business updatedMerchant = await CartDataSource.getCartMerchant();
+      final Business updatedMerchant = await CartDataSource.getCartMerchant();
 
       if (updatedMerchant.businessId == selectedMerchant.businessId) {
         onSuccess();
         return null;
       }
-    } else {
+    }
+    // if diffrent merchant is selected and items are added.
+    else {
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -497,7 +504,8 @@ class CheckToReplaceCartAction extends ReduxAction<AppState> {
             await CartDataSource.insertCartMerchant(
                 state.productState.selectedMerchant);
             await dispatchFuture(GetCartFromLocal());
-            Business updatedMerchant = await CartDataSource.getCartMerchant();
+            final Business updatedMerchant =
+                await CartDataSource.getCartMerchant();
 
             if (updatedMerchant.businessId ==
                 state.productState.selectedMerchant.businessId) {
