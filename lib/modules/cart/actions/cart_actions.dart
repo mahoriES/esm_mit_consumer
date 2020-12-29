@@ -14,6 +14,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/image_compression_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -344,22 +345,13 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
   final ImageSource imageSource;
   AddCustomerNoteImageAction({@required this.imageSource});
 
-  Future<dynamic> getImage() async {
-    final PickedFile imageFile = await ImagePicker().getImage(
-      source: imageSource,
-      imageQuality: 25,
-    );
-    if (imageFile == null) {
-      return false;
-    }
-    return File(imageFile.path);
-  }
-
   @override
   FutureOr<AppState> reduce() async {
     try {
-      final imageFile = await getImage();
-      if (imageFile == false) return null;
+      final File imageFile =
+          await ImageCompressionService.getCompressedImage(imageSource);
+
+      if (imageFile == null) return null;
 
       final response = await APIManager.shared.request(
         requestType: RequestType.post,
