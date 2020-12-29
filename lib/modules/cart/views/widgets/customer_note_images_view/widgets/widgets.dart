@@ -74,69 +74,76 @@ class _CustomCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: showMargin ? 12 : 0),
-      height: 176,
-      width: width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: CustomTheme.of(context).colors.placeHolderColor,
+    return InkWell(
+      onTap: () => Navigator.pushNamed(
+        context,
+        RouteNames.IMAGE_ZOOM_VIEW,
+        arguments: url,
       ),
-      child: CachedNetworkImage(
-        imageUrl: url,
+      child: Container(
+        margin: EdgeInsets.only(right: showMargin ? 12 : 0),
         height: 176,
         width: width,
-        imageBuilder: (context, provider) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            image: DecorationImage(
-              image: provider,
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: InkWell(
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) => CustomConfirmationDialog(
-                  title: tr("cart.delete_image_alert_title"),
-                  message: tr("cart.delete_image_alert_message"),
-                  positiveButtonText: tr("address_picker.delete"),
-                  positiveAction: () {
-                    Navigator.pop(context);
-                    onRemove();
-                  },
-                  actionButtonColor:
-                      CustomTheme.of(context).colors.secondaryColor,
-                  positiveButtonIcon: Icons.delete,
-                  negativeButtonText: tr("screen_account.cancel"),
-                  negativeAction: () => Navigator.pop(context),
-                ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: CustomTheme.of(context).colors.placeHolderColor,
+        ),
+        child: CachedNetworkImage(
+          imageUrl: url,
+          height: 176,
+          width: width,
+          imageBuilder: (context, provider) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: provider,
+                fit: BoxFit.cover,
               ),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            ),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: InkWell(
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (context) => CustomConfirmationDialog(
+                    title: tr("cart.delete_image_alert_title"),
+                    message: tr("cart.delete_image_alert_message"),
+                    positiveButtonText: tr("address_picker.delete"),
+                    positiveAction: () {
+                      Navigator.pop(context);
+                      onRemove();
+                    },
+                    actionButtonColor:
+                        CustomTheme.of(context).colors.secondaryColor,
+                    positiveButtonIcon: Icons.delete,
+                    negativeButtonText: tr("screen_account.cancel"),
+                    negativeAction: () => Navigator.pop(context),
+                  ),
                 ),
-                child: Container(
-                  height: 24,
-                  width: 24,
-                  child: Center(
-                    child: Icon(
-                      Icons.delete,
-                      color: CustomTheme.of(context).colors.disabledAreaColor,
-                      size: 15,
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Container(
+                    height: 24,
+                    width: 24,
+                    child: Center(
+                      child: Icon(
+                        Icons.delete,
+                        color: CustomTheme.of(context).colors.disabledAreaColor,
+                        size: 15,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
+          errorWidget: (_, __, ___) => SizedBox.shrink(),
+          placeholder: (_, __) => CupertinoActivityIndicator(),
         ),
-        errorWidget: (_, __, ___) => SizedBox.shrink(),
-        placeholder: (_, __) => CupertinoActivityIndicator(),
       ),
     );
   }

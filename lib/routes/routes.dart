@@ -24,6 +24,7 @@ import 'package:eSamudaay/modules/store_details/views/product_catalog_view/produ
 import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/store_categories_details_view.dart';
 import 'package:eSamudaay/presentations/alert.dart';
+import 'package:eSamudaay/reusable_widgets/image_zoom_view.dart';
 import 'package:flutter/material.dart';
 
 class SetupRoutes {
@@ -61,6 +62,9 @@ class SetupRoutes {
       RouteNames.CIRCLE_PICKER: (BuildContext context) =>
           const CirclePickerView(),
       RouteNames.CIRCLE_SEARCH: (BuildContext context) => CircleSearchView(),
+      RouteNames.IMAGE_ZOOM_VIEW: (BuildContext context) => ImageZoomView(
+            ModalRoute.of(context).settings.arguments,
+          ),
     };
   }
 }
@@ -79,4 +83,5 @@ class RouteNames {
   static const CART_VIEW = "/CartView";
   static const CIRCLE_PICKER = "/circlePicker";
   static const CIRCLE_SEARCH = "/circleSearch";
+  static const IMAGE_ZOOM_VIEW = "/imageZoomView";
 }

@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/image_picker_dialog.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -55,7 +56,7 @@ class CartCustomerNoteImagesWidget extends StatelessWidget {
                       );
                     } else {
                       Fluttertoast.showToast(
-                        msg: "cart.max_list_images".tr(),
+                        msg: "cart.max_list_images_error".tr(),
                       );
                     }
                   }
