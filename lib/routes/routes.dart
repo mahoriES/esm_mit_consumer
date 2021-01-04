@@ -35,7 +35,7 @@ class SetupRoutes {
       "/otpScreen": (BuildContext context) => new OtpScreen(),
       "/mobileNumber": (BuildContext context) => new LoginView(),
       "/registration": (BuildContext context) => new Registration(),
-      "/myHomeView": (BuildContext context) => new MyHomeView(),
+      RouteNames.HOME_PAGE: (BuildContext context) => new MyHomeView(),
       RouteNames.CART_VIEW: (BuildContext context) => CartView(),
       "/AccountsView": (BuildContext context) => AccountsView(),
       "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
@@ -73,6 +73,7 @@ class SetupRoutes {
 // this makes it easier to use various route names in diffrent files.
 // Haven't changed the existing routenames yet, but let's use this utility to create new screens from now on.
 class RouteNames {
+  static const HOME_PAGE = "/myHomeView";
   static const PRODUCT_DETAILS = "/productDeails";
   static const PRODUCT_CATALOGUE = "/StoreProductListingView";
   static const PRODUCT_SEARCH = "/productSearch";

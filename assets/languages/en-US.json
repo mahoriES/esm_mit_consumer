@@ -4,7 +4,9 @@
     "view_store": "View Store",
     "some_error_occured": "Some Error Occured",
     "location_error": "Couldn't fetch you location",
-    "out_of_stock_error": "Item not in stock!"
+    "out_of_stock_error": "Item not in stock!",
+    "camera": "Camera",
+    "gallery": "Gallery"
   },
   "screen_language": {
     "title": "Choose your Preferred Language"
@@ -129,7 +131,8 @@
     "delete_image_alert_message": "Are you sure you want to delete the uploaded list image?",
     "send_request": "Send request",
     "no_address_error": "Please add delivery address",
-    "order_placed": "Order Placed"
+    "order_placed": "Order Placed",
+    "upload_shopping_list": "Upload Shopping List"
   },
   "screen_account": {
     "title": "Account",

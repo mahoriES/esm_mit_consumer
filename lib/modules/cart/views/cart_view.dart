@@ -22,14 +22,11 @@ class CartView extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       onDidChange: (snapshot) {
+        // TODO : use a common action to handle loading dialog.
         if (snapshot.isImageUploading) {
           LoadingDialog.show();
         } else {
           LoadingDialog.hide();
-        }
-
-        if (snapshot.isCartEmpty) {
-          Navigator.maybePop(context);
         }
       },
       builder: (context, snapshot) => GestureDetector(
