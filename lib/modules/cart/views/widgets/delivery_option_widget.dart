@@ -33,7 +33,7 @@ class DeliveryOptionWidget extends StatelessWidget {
       builder: (context, snapshot) => Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 17, horizontal: 26),
+            padding: const EdgeInsets.symmetric(vertical: 17, horizontal: 26),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -313,14 +313,18 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                               ),
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/notepad.png',
-                                    color: AppColors.solidWhite,
+                                  Icon(
+                                    Icons.add_a_photo_outlined,
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .backgroundColor,
+                                    size: 20,
                                   ),
                                   const SizedBox(
                                       width: AppSizes.separatorPadding),
                                   Text(
-                                    'List Items',
+                                    tr("cart.upload_shopping_list")
+                                        .toUpperCase(),
                                     style: CustomTheme.of(context)
                                         .textStyles
                                         .body1

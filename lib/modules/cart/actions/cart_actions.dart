@@ -12,6 +12,7 @@ import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dar
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/image_compression_service.dart';
@@ -94,6 +95,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
       }
       // if cart is empty yet
       else {
+        await CartDataSource.resetCart();
         await CartDataSource.insertCartMerchant(selectedMerchant);
         await CartDataSource.insertProduct(product);
 
@@ -175,14 +177,15 @@ class PlaceOrderAction extends ReduxAction<AppState> {
         await CartDataSource.resetCart();
         dispatch(GetCartFromLocal());
         dispatch(UpdateSelectedTabAction(1));
-        dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+        dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
         return state.copyWith(
           productState: state.productState.copyWith(
             placeOrderResponse: responseModel,
           ),
         );
       } else {
-        Fluttertoast.showToast(msg: response.data['message']);
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
       }
     } catch (_) {
       Fluttertoast.showToast(msg: tr("common.some_error_occured"));
@@ -247,7 +250,8 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
           Fluttertoast.showToast(msg: tr('new_changes.shop_closed'));
         }
       } else {
-        Fluttertoast.showToast(msg: response.data['message']);
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
       }
     } catch (e) {
       Fluttertoast.showToast(msg: tr("common.some_error_occured"));

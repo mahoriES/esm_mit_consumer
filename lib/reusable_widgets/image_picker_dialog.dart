@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,7 +16,7 @@ class ImagePickerDialog extends StatelessWidget {
         children: <Widget>[
           new ListTile(
             leading: new Icon(Icons.photo_camera),
-            title: new Text('Camera'),
+            title: new Text(tr("common.camera")),
             onTap: () {
               Navigator.pop(context);
               onSelect(ImageSource.camera);
@@ -23,7 +24,7 @@ class ImagePickerDialog extends StatelessWidget {
           ),
           new ListTile(
             leading: new Icon(Icons.photo_album),
-            title: new Text('Gallery'),
+            title: new Text(tr("common.gallery")),
             onTap: () {
               Navigator.pop(context);
               onSelect(ImageSource.gallery);

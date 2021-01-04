@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -76,7 +77,10 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       circleName: state.authState.cluster?.clusterName,
-      goToHome: () => dispatch(UpdateSelectedTabAction(0)),
+      goToHome: () async {
+        dispatch(UpdateSelectedTabAction(0));
+        dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
+      },
     );
   }
 
