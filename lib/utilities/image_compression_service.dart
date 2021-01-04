@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:flutter/foundation.dart';
 
 class ImageCompressionService {
   static Future<File> getCompressedImage(
@@ -44,11 +45,12 @@ class ImageCompressionService {
         rotate: 0,
       );
 
-      // check new file size.
-      updatedFile.length().then((newSize) {
-        debugPrint("updated size => $newSize");
-      });
-
+      // check new file size if debug mode.
+      if (kDebugMode) {
+        updatedFile.length().then((newSize) {
+          debugPrint("updated size => $newSize");
+        });
+      }
       // return compressed file.
       return updatedFile;
     } catch (e) {
