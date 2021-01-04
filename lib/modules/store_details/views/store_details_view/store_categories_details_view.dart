@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
@@ -300,8 +301,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                       AppSizes.separatorPadding),
                           child: GestureDetector(
                             onTap: () {
-                              snapshot
-                                  .checkForPreviouslyAddedListItems(context);
+                              snapshot.checkForPreviouslyAddedListItems(
+                                  _showReplaceCartAlert);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(
@@ -474,6 +475,23 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
               isDeliveryAvailable: snapshot.selectedMerchant.hasDelivery);
         });
   }
+
+  void _showReplaceCartAlert(VoidCallback onReplace) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      child: CustomConfirmationDialog(
+        title: tr("product_details.replace_cart_items"),
+        message: tr('new_changes.clear_info'),
+        positiveButtonText: tr('new_changes.continue'),
+        negativeButtonText: tr("screen_account.cancel"),
+        positiveAction: () async {
+          Navigator.pop(context);
+          onReplace();
+        },
+      ),
+    );
+  }
 }
 
 class _ViewModel extends BaseModel<AppState> {
@@ -488,7 +506,7 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> spotlightItems;
   List<Product> singleCategoryFewProducts;
   List<String> customerNoteImagesList;
-  Function(BuildContext) checkForPreviouslyAddedListItems;
+  Function(Function(VoidCallback)) checkForPreviouslyAddedListItems;
   VideoFeedResponse videoFeedResponse;
   Function onVideoTap;
   Function loadVideoFeedForMerchant;
@@ -572,14 +590,15 @@ class _ViewModel extends BaseModel<AppState> {
       navigateToVideoView: () {
         dispatch(NavigateAction.pushNamed("/videoPlayer"));
       },
-      checkForPreviouslyAddedListItems: (context) async {
+      checkForPreviouslyAddedListItems:
+          (Function(VoidCallback) showReplaceAlert) async {
         dispatch(
           CheckToReplaceCartAction(
             selectedMerchant: state.productState.selectedMerchant,
             onSuccess: () {
               dispatch(NavigateAction.pushNamed(RouteNames.CART_VIEW));
             },
-            context: context,
+            showReplaceAlert: showReplaceAlert,
           ),
         );
       },
