@@ -1,5 +1,6 @@
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -53,6 +54,23 @@ class ProductCountWidget extends StatelessWidget {
       );
     }
 
+    void _showReplaceCartAlert(VoidCallback onReplace) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: CustomConfirmationDialog(
+          title: tr("product_details.replace_cart_items"),
+          message: tr('new_changes.clear_info'),
+          positiveButtonText: tr('new_changes.continue'),
+          negativeButtonText: tr("screen_account.cancel"),
+          positiveAction: () async {
+            Navigator.pop(context);
+            onReplace();
+          },
+        ),
+      );
+    }
+
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(
         product: product,
@@ -68,14 +86,14 @@ class ProductCountWidget extends StatelessWidget {
                 buttonAction: () => snapshot.updateCart(
                   true,
                   _showMultipleSkusBottomSheet,
-                  context,
+                  _showReplaceCartAlert,
                 ),
               )
             : _StepperButton(
                 buttonAction: (bool isAddAction) => snapshot.updateCart(
                   isAddAction,
                   _showMultipleSkusBottomSheet,
-                  context,
+                  _showReplaceCartAlert,
                 ),
                 count: count,
               );
@@ -96,7 +114,7 @@ class _ViewModel extends BaseModel<AppState> {
   });
 
   List<Product> localCartItems;
-  Function(bool, VoidCallback, BuildContext) updateCart;
+  Function(bool, VoidCallback, Function(VoidCallback)) updateCart;
   int Function() getItemCount;
   Business cartMerchant;
 
@@ -141,8 +159,11 @@ class _ViewModel extends BaseModel<AppState> {
           return count;
         }
       },
-      updateCart: (bool isAddAction, VoidCallback showMultipleSkuOptions,
-          BuildContext context) async {
+      updateCart: (
+        bool isAddAction,
+        VoidCallback showMultipleSkuOptions,
+        Function(VoidCallback) showReplaceAlert,
+      ) async {
         // if product skus are null or 0 then show error message.
         if (product.skus?.isEmpty ?? true) {
           Fluttertoast.showToast(msg: 'Item not available');
@@ -171,7 +192,7 @@ class _ViewModel extends BaseModel<AppState> {
                     dispatch(RemoveFromCartAction(product: product)),
               );
             },
-            context: context,
+            showReplaceAlert: (onSuccess) => showReplaceAlert(onSuccess),
           ),
         );
       },
