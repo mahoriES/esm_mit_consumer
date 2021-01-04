@@ -45,9 +45,10 @@ class ImageCompressionService {
       );
 
       // check new file size.
-      final int newSize = updatedFile.lengthSync();
+      updatedFile.length().then((newSize) {
+        debugPrint("updated size => $newSize");
+      });
 
-      debugPrint("updated size => $newSize");
       // return compressed file.
       return updatedFile;
     } catch (e) {
