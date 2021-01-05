@@ -63,4 +63,29 @@ class HomePageState {
         response: response ?? this.response,
         banners: banners ?? this.banners);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HomePageState &&
+          runtimeType == other.runtimeType &&
+          response == other.response &&
+          loadingStatus == other.loadingStatus &&
+          merchants == other.merchants &&
+          businessDS == other.businessDS &&
+          homePageLoadedDate == other.homePageLoadedDate &&
+          currentIndex == other.currentIndex &&
+          banners == other.banners &&
+          topBanner == other.topBanner;
+
+  @override
+  int get hashCode =>
+      response.hashCode ^
+      loadingStatus.hashCode ^
+      merchants.hashCode ^
+      businessDS.hashCode ^
+      homePageLoadedDate.hashCode ^
+      currentIndex.hashCode ^
+      banners.hashCode ^
+      topBanner.hashCode;
 }

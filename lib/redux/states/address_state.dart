@@ -79,4 +79,31 @@ class AddressState {
       selectedAddressForDelivery: this.selectedAddressForDelivery,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AddressState &&
+          runtimeType == other.runtimeType &&
+          savedAddressList == other.savedAddressList &&
+          isLoading == other.isLoading &&
+          isRegisterFlow == other.isRegisterFlow &&
+          fetchedAddressDetails == other.fetchedAddressDetails &&
+          addressRequest == other.addressRequest &&
+          selectedAddressForRegister == other.selectedAddressForRegister &&
+          placesSearchResponse == other.placesSearchResponse &&
+          sessionToken == other.sessionToken &&
+          selectedAddressForDelivery == other.selectedAddressForDelivery;
+
+  @override
+  int get hashCode =>
+      savedAddressList.hashCode ^
+      isLoading.hashCode ^
+      isRegisterFlow.hashCode ^
+      fetchedAddressDetails.hashCode ^
+      addressRequest.hashCode ^
+      selectedAddressForRegister.hashCode ^
+      placesSearchResponse.hashCode ^
+      sessionToken.hashCode ^
+      selectedAddressForDelivery.hashCode;
 }

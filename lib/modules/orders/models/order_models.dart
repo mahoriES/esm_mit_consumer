@@ -1,4 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:equatable/equatable.dart';
 
 class GetOrderListRequest {
   String phoneNumber;
@@ -16,7 +17,7 @@ class GetOrderListRequest {
   }
 }
 
-class GetOrderListResponse {
+class GetOrderListResponse extends Equatable{
   int count;
   String next;
   String previous;
@@ -46,6 +47,13 @@ class GetOrderListResponse {
     }
     return data;
   }
+
+  @override
+  List<Object> get props => [count, next, previous, results];
+
+  @override
+  bool get stringify => true;
+
 }
 
 class AddReviewRequest {

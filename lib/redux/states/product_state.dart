@@ -209,4 +209,63 @@ class ProductState {
       singleCategoryFewProducts: this.singleCategoryFewProducts,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProductState &&
+          runtimeType == other.runtimeType &&
+          productListingDataSource == other.productListingDataSource &&
+          searchResultProducts == other.searchResultProducts &&
+          singleCategoryFewProducts == other.singleCategoryFewProducts &&
+          searchResults == other.searchResults &&
+          currentOrderIsPickUp == other.currentOrderIsPickUp &&
+          searchForProductsComplete == other.searchForProductsComplete &&
+          localCartItems == other.localCartItems &&
+          spotlightItems == other.spotlightItems &&
+          localFreeFormCartItems == other.localFreeFormCartItems &&
+          charges == other.charges &&
+          customerNoteImages == other.customerNoteImages &&
+          selectedCategory == other.selectedCategory &&
+          placeOrderResponse == other.placeOrderResponse &&
+          videosResponse == other.videosResponse &&
+          selectedMerchant == other.selectedMerchant &&
+          getOrderListResponse == other.getOrderListResponse &&
+          supportOrder == other.supportOrder &&
+          categories == other.categories &&
+          selectedCluster == other.selectedCluster &&
+          upiApps == other.upiApps &&
+          selectedProductForDetails == other.selectedProductForDetails &&
+          categoryIdToSubCategoryData == other.categoryIdToSubCategoryData &&
+          subCategoryIdToProductData == other.subCategoryIdToProductData &&
+          isLoadingMore == other.isLoadingMore &&
+          allProductsForMerchant == other.allProductsForMerchant;
+
+  @override
+  int get hashCode =>
+      productListingDataSource.hashCode ^
+      searchResultProducts.hashCode ^
+      singleCategoryFewProducts.hashCode ^
+      searchResults.hashCode ^
+      currentOrderIsPickUp.hashCode ^
+      searchForProductsComplete.hashCode ^
+      localCartItems.hashCode ^
+      spotlightItems.hashCode ^
+      localFreeFormCartItems.hashCode ^
+      charges.hashCode ^
+      customerNoteImages.hashCode ^
+      selectedCategory.hashCode ^
+      placeOrderResponse.hashCode ^
+      videosResponse.hashCode ^
+      selectedMerchant.hashCode ^
+      getOrderListResponse.hashCode ^
+      supportOrder.hashCode ^
+      categories.hashCode ^
+      selectedCluster.hashCode ^
+      upiApps.hashCode ^
+      selectedProductForDetails.hashCode ^
+      categoryIdToSubCategoryData.hashCode ^
+      subCategoryIdToProductData.hashCode ^
+      isLoadingMore.hashCode ^
+      allProductsForMerchant.hashCode;
 }

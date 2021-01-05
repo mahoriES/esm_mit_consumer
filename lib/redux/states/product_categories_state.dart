@@ -48,4 +48,27 @@ class LandingPageComponentsState {
         selectedCategory: selectedCategory ?? this.selectedCategory,
         homePageCategories: homePageCategories ?? this.homePageCategories);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LandingPageComponentsState &&
+          runtimeType == other.runtimeType &&
+          homePageCategories == other.homePageCategories &&
+          selectedCategory == other.selectedCategory &&
+          previouslyBoughtBusinesses == other.previouslyBoughtBusinesses &&
+          previouslyBoughtBusinessUnderSelectedCategory ==
+              other.previouslyBoughtBusinessUnderSelectedCategory &&
+          businessesUnderSelectedCategory ==
+              other.businessesUnderSelectedCategory &&
+          currentBusinessResponse == other.currentBusinessResponse;
+
+  @override
+  int get hashCode =>
+      homePageCategories.hashCode ^
+      selectedCategory.hashCode ^
+      previouslyBoughtBusinesses.hashCode ^
+      previouslyBoughtBusinessUnderSelectedCategory.hashCode ^
+      businessesUnderSelectedCategory.hashCode ^
+      currentBusinessResponse.hashCode;
 }

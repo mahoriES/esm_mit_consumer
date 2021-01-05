@@ -40,4 +40,21 @@ class VideosState {
       selectedVideo: selectedVideo ?? this.selectedVideo,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VideosState &&
+          runtimeType == other.runtimeType &&
+          videosResponse == other.videosResponse &&
+          loadingStatus == other.loadingStatus &&
+          currentIndex == other.currentIndex &&
+          selectedVideo == other.selectedVideo;
+
+  @override
+  int get hashCode =>
+      videosResponse.hashCode ^
+      loadingStatus.hashCode ^
+      currentIndex.hashCode ^
+      selectedVideo.hashCode;
 }
