@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/product_count_widget.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -10,9 +11,11 @@ import 'package:flutter/material.dart';
 class ProductTile extends StatelessWidget {
   final Product product;
   final Function navigateToDetails;
+  final Business selectedMerchant;
   const ProductTile({
     @required this.product,
     @required this.navigateToDetails,
+    @required this.selectedMerchant,
   });
   @override
   Widget build(BuildContext context) {
@@ -92,6 +95,7 @@ class ProductTile extends StatelessWidget {
           ProductCountWidget(
             product: product,
             isSku: false,
+            selectedMerchant: selectedMerchant,
           )
         ],
       ),

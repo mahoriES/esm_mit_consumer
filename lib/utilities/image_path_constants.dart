@@ -8,4 +8,6 @@ class ImagePathConstants {
   static const circleTilePlaceholder = _prefix + "circle_tile_placeholder.png";
   static const appBrandingImage = _prefix + "splash.png";
   static const locationPointerImage = _prefix + "location2.png";
+  static const emptyCartImage = _prefix + "cart_placeholder.png";
+  static const listUploadIcon = _prefix + "Icon_list_upload.png";
 }

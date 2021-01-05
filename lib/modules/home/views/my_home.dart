@@ -44,11 +44,11 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
 
   Widget currentPage({index: int, bool shouldShowCircleScreenInstead}) {
     if (index == 0) {
-      return shouldShowCircleScreenInstead ? CirclePickerView() : HomePageMainView();
-    }
-    else if (index == 1) {
+      return shouldShowCircleScreenInstead
+          ? CirclePickerView()
+          : HomePageMainView();
+    } else if (index == 1) {
       return OrdersView();
-
     } else if (index == 2) {
       return CartView();
     } else {
@@ -128,7 +128,10 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           builder: (context, snapshot) {
             return PageStorage(
                 bucket: bucket,
-                child: currentPage(index: snapshot.currentIndex, shouldShowCircleScreenInstead: snapshot.selectedCluster == null));
+                child: currentPage(
+                    index: snapshot.currentIndex,
+                    shouldShowCircleScreenInstead:
+                        snapshot.selectedCluster == null));
           }),
     );
   }

@@ -117,7 +117,6 @@ class _MyAppState extends State<MyApp> {
           store.dispatch(SetCurrentCircleFromPrefsAction());
           store.dispatch(CheckOnBoardingStatusAction());
           store.dispatch(CheckTokenAction());
-          store.dispatch(GetCartFromLocal());
           store.dispatch(GetUserFromLocalStorageAction());
         },
         builder: (context, snapshot) {

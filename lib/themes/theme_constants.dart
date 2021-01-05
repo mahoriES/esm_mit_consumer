@@ -16,6 +16,7 @@ abstract class _AppThemeColors {
   Color get storeCoreColor;
   Color get shadowColor16;
   Color get categoryTileTextUnderlay;
+  Color get dividerColor;
   Brightness get brightness;
 }
 
@@ -67,12 +68,28 @@ class _AppTextStyles {
         height: 1.18,
       );
 
+  TextStyle get sectionHeading3 => TextStyle(
+        color: themeColors.backgroundColor,
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+        fontFamily: _AppFontFamily.lato,
+        height: 1.2,
+      );
+
   TextStyle get cardTitle => TextStyle(
         color: themeColors.textColor,
         fontSize: 14,
         fontWeight: FontWeight.w400,
         fontFamily: _AppFontFamily.lato,
         height: 1.21,
+      );
+
+  TextStyle get cardTitleFaded => cardTitle.copyWith(
+        color: themeColors.disabledAreaColor,
+      );
+
+  TextStyle get cardTitleSecondary => cardTitle.copyWith(
+        color: themeColors.secondaryColor,
       );
 
   TextStyle get body1 => TextStyle(
@@ -87,6 +104,21 @@ class _AppTextStyles {
         color: themeColors.disabledAreaColor,
       );
 
+  TextStyle get body1FadedWithDottedUnderline => body1.copyWith(
+        // As there is no option available to give space between underline and text,
+        // this is a hack to add some space for the same.
+        shadows: [
+          Shadow(
+            color: themeColors.disabledAreaColor,
+            offset: Offset(0, -4),
+          )
+        ],
+        color: Colors.transparent,
+        decoration: TextDecoration.underline,
+        decorationColor: themeColors.disabledAreaColor,
+        decorationThickness: 2,
+        decorationStyle: TextDecorationStyle.dashed,
+      );
   TextStyle get buttonText2 => TextStyle(
         color: themeColors.primaryColor,
         fontSize: 10,
@@ -145,6 +177,8 @@ class _LightThemeColors with _AppThemeColors {
   Color get storeCoreColor => _brandOrange;
   @override
   Color get shadowColor => const Color(0x0d242424);
+  @override
+  Color get dividerColor => const Color(0xFFe8e8e8);
 
   ///16 here refers to opacity which is 16%
   @override

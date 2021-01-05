@@ -18,12 +18,12 @@ class TopTile extends StatelessWidget {
           title,
           style: CustomTheme.of(context).textStyles.topTileTitle,
         ),
-        TextButton(
+        InkWell(
           child: Icon(
             Icons.clear,
             color: CustomTheme.of(context).colors.primaryColor,
           ),
-          onPressed: () => Navigator.pop(context),
+          onTap: () => Navigator.pop(context),
         ),
       ],
     );

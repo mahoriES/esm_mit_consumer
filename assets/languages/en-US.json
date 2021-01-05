@@ -3,7 +3,10 @@
     "closed": "Closed",
     "view_store": "View Store",
     "some_error_occured": "Some Error Occured",
-    "location_error": "Couldn't fetch you location"
+    "location_error": "Couldn't fetch you location",
+    "out_of_stock_error": "Item not in stock!",
+    "camera": "Camera",
+    "gallery": "Gallery"
   },
   "screen_language": {
     "title": "Choose your Preferred Language"
@@ -91,7 +94,45 @@
     "empty_cart": "Empty Cart",
     "empty_hint": "Look like you haven't added anything to your cart yet",
     "please_collect": "Please collect order from the store when its ready",
-    "customize": "+ Customize"
+    "customize": "+ Customize",
+    "generic_error": "Some error occured while updating cart",
+    "cart_fetch_error": "Could not fetch cart items",
+    "catalogue_items": "Catalogue Items",
+    "item_total": "Item Total",
+    "delivery_partner_fee": "Delivery Partner fee",
+    "merchant_charges": "Merchant Charges",
+    "packing_charges": "Packaging Charges",
+    "service_charges": "Service Charges",
+    "grand_total": "Grand Total",
+    "list_items": "List Items",
+    "upload_list": "Upload List",
+    "list_placeholder_message": "Shop directly by uploading a photo of your shopping list or medical prescription",
+    "cart_message": "Send order request and the merchant Will get back to you with confirmation.",
+    "delivery_charge_info": "This fee goes towards fairly paying the Delivery Partner",
+    "add_a_note": "Add a note for {}",
+    "item": "Item",
+    "items": "Items",
+    "list": "List",
+    "lists": "Lists",
+    "added": "added",
+    "delivery_at_doorstep": "Delivery at doorstep",
+    "pickup_at_store": "Pickup at store",
+    "delivery_to_home": "Delivering to Home",
+    "delivery_not_available_error": "{} does not support delivery at doorestep",
+    "landmark": "Landmark",
+    "empty_cart_message": "Add items to your cart.\nBrowse trusted neighbourhood stores and restaurant in your area.",
+    "browse_stores": "Browse Stores",
+    "empty_cart_title_with_circle_name": "There's a lot to discover in {}",
+    "empty_cart_title_without_circle_name": "There's a lot to discover",
+    "max_list_images_error": "Maximum 5 lists can be uploaded",
+    "n_images_added": "{} Images added",
+    "max_images": "Max. 5 images",
+    "delete_image_alert_title": "Delete List Image?",
+    "delete_image_alert_message": "Are you sure you want to delete the uploaded list image?",
+    "send_request": "Send request",
+    "no_address_error": "Please add delivery address",
+    "order_placed": "Order Placed",
+    "upload_shopping_list": "Upload Shopping List"
   },
   "screen_account": {
     "title": "Account",
@@ -260,7 +301,6 @@
     "filters": "Filters",
     "off": "Off"
   },
-
   "address_picker": {
     "select_an_address": "Select an Address",
     "saved_addresses": "Saved Addresses",
@@ -284,8 +324,7 @@
     "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
     "delete": "Delete"
   },
-
-  "circle" : {
+  "circle": {
     "nearby_msg": "Based on your current location",
     "trending": "Trending Circles",
     "saved": "Saved Circles",
@@ -299,5 +338,4 @@
     "info_2": "You can add a circle by turning your location or searching for a specific circle",
     "search_info": "Try searching for a Circle by typing in your city name. For e.g. Udupi, Chandigarh."
   }
-
 }

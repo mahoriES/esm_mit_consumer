@@ -34,14 +34,8 @@ class UserManager {
     await saveSkipStatus(status: false);
     prefs.remove(tokenKey);
     int resp = await dbClient.delete('User');
-    await dbClient.delete(cartTable);
-    await dbClient.delete(merchantTable);
+    await CartDataSource.resetCart();
     print(resp);
-  }
-
-  static Future<void> deleteCart() async {
-    var dbClient = await DatabaseManager().db;
-//    await dbClient.delete(cartTable);
   }
 
   static Future<bool> getSkipStatus() async {

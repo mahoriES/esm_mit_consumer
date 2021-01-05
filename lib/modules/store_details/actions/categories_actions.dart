@@ -60,13 +60,7 @@ class ResetCatalogueAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     return state.copyWith(
-      productState: state.productState.reset(
-        categories: [],
-        categoryIdToSubCategoryData: {},
-        subCategoryIdToProductData: {},
-        isLoadingMore: {},
-        allProductsForMerchant: null,
-      ),
+      productState: state.productState.reset(),
     );
   }
 }
@@ -128,7 +122,7 @@ class GetBusinessSpotlightItems extends ReduxAction<AppState> {
       ///the selected quantity for each [product] to zero.
       var products = items.map((item) {
         item.count = 0;
-        item.selectedVariant = 0;
+        item.selectedSkuIndex = 0;
         return item;
       }).toList();
 
@@ -213,13 +207,13 @@ class GetProductsForJustOneCategoryAction extends ReduxAction<AppState> {
 
       ///Getting the list of all items currently persisted in the local cart
       ///data source, since products might have been already added to cart by customer
-      List<Product> allCartItems = await CartDataSource.getListOfCartWith();
+      List<Product> allCartItems = await CartDataSource.getListOfProducts();
 
       ///Initialising the selected SKU for each product (in the fetched product
       ///list) and if the item has already been added to the local cart, then
       ///updating it's quantity to that in the local cart.
       preparedProductsForSingleCategory.forEach((item) {
-        item.selectedVariant = 0;
+        item.selectedSkuIndex = 0;
         allCartItems.forEach((localCartItem) {
           if (item.productId == localCartItem.productId) {
             item.count = localCartItem.count;

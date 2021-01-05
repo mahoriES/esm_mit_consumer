@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
-import 'package:eSamudaay/modules/jit_catalog/actions/free_form_items_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/presentations/no_iems_view.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_category_tile.dart';
 import 'package:eSamudaay/reusable_widgets/spotlight_view.dart';
 import 'package:eSamudaay/routes/routes.dart';
@@ -31,7 +31,6 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -51,11 +50,13 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        List<Business> merchants = await CartDataSource.getListOfMerchants();
-        if (merchants.isNotEmpty &&
-            merchants.first.businessId !=
+        // TODO : this logic to update selected merchant from cart data doesn't seem right.
+        // Can't update now as it may cause errors in store details.
+        Business merchants = await CartDataSource.getCartMerchant();
+        if (merchants != null &&
+            merchants.businessId !=
                 store.state.productState.selectedMerchant.businessId) {
-          var localMerchant = merchants.first;
+          var localMerchant = merchants;
           store.dispatch(
               UpdateSelectedMerchantAction(selectedMerchant: localMerchant));
         }
@@ -73,9 +74,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                   GetBusinessVideosAction(businessId: businessId));
               store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
             },
-            onDidChange: (snapshot){
-
-            },
+            onDidChange: (snapshot) {},
             builder: (context, snapshot) {
               return ModalProgressHUD(
                 progressIndicator: Card(
@@ -113,7 +112,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             BusinessTitleTile(
-                                              businessId: snapshot.selectedMerchant.businessId,
+                                              businessId: snapshot
+                                                  .selectedMerchant.businessId,
                                               businessName: snapshot
                                                       .selectedMerchant
                                                       .businessName ??
@@ -134,19 +134,19 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                       .images.first.photoUrl
                                                   : "",
                                               onBackPressed: () async {
-                                                List<Business> merchants =
+                                                // TODO : this logic to update selected merchant from cart data doesn't seem right.
+                                                // Can't update now as it may cause errors in store details.
+                                                Business merchants =
                                                     await CartDataSource
-                                                        .getListOfMerchants();
-                                                if (merchants.isNotEmpty &&
-                                                    merchants
-                                                            .first.businessId !=
+                                                        .getCartMerchant();
+                                                if (merchants != null &&
+                                                    merchants.businessId !=
                                                         store
                                                             .state
                                                             .productState
                                                             .selectedMerchant
                                                             .businessId) {
-                                                  var localMerchant =
-                                                      merchants.first;
+                                                  var localMerchant = merchants;
                                                   store.dispatch(
                                                       UpdateSelectedMerchantAction(
                                                           selectedMerchant:
@@ -200,8 +200,10 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                                 .disabledAreaColor),
                                                     prefixIcon: Icon(
                                                       Icons.search_rounded,
-                                                      color:
-                                                          CustomTheme.of(context).colors.primaryColor,
+                                                      color: CustomTheme.of(
+                                                              context)
+                                                          .colors
+                                                          .primaryColor,
                                                     ),
                                                     enabledBorder:
                                                         OutlineInputBorder(
@@ -244,9 +246,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                         },
                                         spotlightProducts:
                                             snapshot.spotlightItems,
-                                        onAddProduct: snapshot.addToCart,
-                                        onRemoveProduct:
-                                            snapshot.removeFromCart,
+                                        selectedMerchant:
+                                            snapshot.selectedMerchant,
                                       ),
                                     ],
                                   ),
@@ -284,22 +285,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                 ],
                               ),
                             ),
-                            AnimatedContainer(
-                              height: (snapshot.localCartListing.isEmpty &&
-                                      snapshot.freeFormItemsList.isEmpty)
-                                  ? 0
-                                  : AppSizes.cartTotalBottomViewHeight,
-                              duration: Duration(milliseconds: 300),
-                              child: BottomView(
-                                height: snapshot.localCartListing.isEmpty
-                                    ? 0
-                                    : AppSizes.cartTotalBottomViewHeight,
-                                buttonTitle: tr('cart.view_cart').toString(),
-                                didPressButton: () {
-                                  snapshot.navigateToCart();
-                                },
-                              ),
-                            ),
+                            CartDetailsBottomSheet(),
                           ],
                         ),
                       ),
@@ -309,14 +295,14 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                           duration: Duration(milliseconds: 300),
                           padding: EdgeInsets.only(
                               bottom: (snapshot.localCartListing.isEmpty &&
-                                      snapshot.freeFormItemsList.isEmpty)
+                                      snapshot.customerNoteImagesList.isEmpty)
                                   ? AppSizes.separatorPadding
                                   : AppSizes.cartTotalBottomViewHeight +
                                       AppSizes.separatorPadding),
                           child: GestureDetector(
                             onTap: () {
-                              snapshot
-                                  .checkForPreviouslyAddedListItems(context);
+                              snapshot.checkForPreviouslyAddedListItems(
+                                  _showReplaceCartAlert);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(
@@ -328,14 +314,18 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                               ),
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/images/notepad.png',
-                                    color: AppColors.solidWhite,
+                                  Icon(
+                                    Icons.add_a_photo_outlined,
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .backgroundColor,
+                                    size: 20,
                                   ),
                                   const SizedBox(
                                       width: AppSizes.separatorPadding),
                                   Text(
-                                    'List Items',
+                                    tr("cart.upload_shopping_list")
+                                        .toUpperCase(),
                                     style: CustomTheme.of(context)
                                         .textStyles
                                         .body1
@@ -392,11 +382,12 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
             childAspectRatio: 1),
         itemBuilder: (context, index) {
           return BusinessCategoryTile(
-            imageUrl: snapshot.categories[index].images.isEmpty ? ""
-                  : snapshot.categories[index].images?.first?.photoUrl ?? "",
+            imageUrl: snapshot.categories[index].images.isEmpty
+                ? ""
+                : snapshot.categories[index].images?.first?.photoUrl ?? "",
             tileWidth: 75.toWidth,
             categoryName: snapshot.categories[index].categoryName ?? '',
-            onTap: (){
+            onTap: () {
               snapshot.updateSelectedCategory(snapshot.categories[index]);
               snapshot.navigateToProductCatalog();
             },
@@ -484,11 +475,26 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
               isDeliveryAvailable: snapshot.selectedMerchant.hasDelivery);
         });
   }
+
+  void _showReplaceCartAlert(VoidCallback onReplace) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      child: CustomConfirmationDialog(
+        title: tr("product_details.replace_cart_items"),
+        message: tr('new_changes.clear_info'),
+        positiveButtonText: tr('new_changes.continue'),
+        negativeButtonText: tr("screen_account.cancel"),
+        positiveAction: () async {
+          Navigator.pop(context);
+          onReplace();
+        },
+      ),
+    );
+  }
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  Function(Product, BuildContext, int) addToCart;
-  Function(Product, int) removeFromCart;
   Function() navigateToProductCatalog;
   Function(VideoItem) updateSelectedVideo;
   Function(CategoriesNew) updateSelectedCategory;
@@ -499,9 +505,8 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> localCartListing;
   List<Product> spotlightItems;
   List<Product> singleCategoryFewProducts;
-  List<JITProduct> freeFormItemsList;
-  Function navigateToCart;
-  Function(BuildContext) checkForPreviouslyAddedListItems;
+  List<String> customerNoteImagesList;
+  Function(Function(VoidCallback)) checkForPreviouslyAddedListItems;
   VideoFeedResponse videoFeedResponse;
   Function onVideoTap;
   Function loadVideoFeedForMerchant;
@@ -520,12 +525,10 @@ class _ViewModel extends BaseModel<AppState> {
       this.loadingStatus,
       this.onVideoTap,
       this.navigateToProductDetailsPage,
-      this.addToCart,
       this.singleCategoryFewProducts,
-      this.removeFromCart,
       this.spotlightItems,
       this.onRefresh,
-      this.freeFormItemsList,
+      this.customerNoteImagesList,
       this.checkForPreviouslyAddedListItems,
       this.categories,
       this.videoFeedResponse,
@@ -533,8 +536,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.updateSelectedVideo,
       this.updateSelectedCategory,
       this.navigateToProductSearch,
-      this.localCartListing,
-      this.navigateToCart})
+      this.localCartListing})
       : super(equals: [
           selectedMerchant,
           videoFeedResponse,
@@ -543,169 +545,64 @@ class _ViewModel extends BaseModel<AppState> {
           categories,
           localCartListing,
           singleCategoryFewProducts,
-          freeFormItemsList,
+          customerNoteImagesList,
         ]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-        singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
-        spotlightItems: state.productState.spotlightItems,
-        videoFeedResponse: state.productState.videosResponse,
-        freeFormItemsList: state.productState.localFreeFormCartItems,
-        localCartListing: state.productState.localCartItems,
-        categories: state.productState?.categories ?? [],
-        updateSelectedCategory: (category) {
-          dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
-          category is CustomCategoryForAllProducts
-              ? dispatch(GetAllProducts())
-              : dispatch(GetSubCategoriesAction());
-        },
-        updateSelectedVideo: (video) async {
-          dispatch(UpdateSelectedVideoAction(selectedVideo: video));
-        },
-        loadVideoFeedForMerchant: () {
-          dispatch(GetBusinessVideosAction(
-              businessId: state.productState.selectedMerchant.businessId));
-        },
-        navigateToProductCatalog: () {
-          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
-        },
-        navigateToCart: () {
-          dispatch(NavigateAction.pushNamed('/CartView'));
-        },
-        addToCart: (item, context, index) {
-          if (!item.skus[index].inStock) {
-            Fluttertoast.showToast(msg: 'Item not in stock!');
-            return;
-          }
-          item.selectedVariant = index;
-          int count = getCountOfExistingSpotlightItemInCart(item, index);
-          item.count = count + 1;
-          dispatch(AddToCartLocalAction(product: item, context: context));
-        },
-        removeFromCart: (item, index) {
-          if (!item.skus[index].inStock) {
-            Fluttertoast.showToast(msg: 'Item not in stock!');
-            return;
-          }
-          item.selectedVariant = index;
-          int count = getCountOfExistingSpotlightItemInCart(item, index);
-          if (count == 0) return;
-          item.count = count - 1;
-          dispatch(RemoveFromCartLocalAction(product: item));
-        },
-        loadingStatus: state.authState.loadingStatus,
-        selectedMerchant: state.productState.selectedMerchant,
-        navigateToProductSearch: () {
-          dispatch(ClearSearchResultProductsAction());
-          dispatch(
-            NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH),
-          );
-        },
-        updateSelectedProduct: (selectedProduct) {
-          dispatch(UpdateSelectedProductAction(selectedProduct));
-        },
-        navigateToProductDetailsPage: () {
-          dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
-        },
-        navigateToVideoView: () {
-          dispatch(NavigateAction.pushNamed("/videoPlayer"));
-        },
-        checkForPreviouslyAddedListItems: (context) async {
-          var merchant = await CartDataSource.getListOfMerchants();
-          if (merchant.isNotEmpty) {
-            if (merchant.first.businessId !=
-                state.productState.selectedMerchant.businessId) {
-              showDialog(
-                  context: context,
-                  child: AlertDialog(
-                    title: Text("E-samudaay"),
-                    content: Text(
-                      'new_changes.clear_info',
-                      style: const TextStyle(
-                          color: const Color(0xff6f6d6d),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16.0),
-                    ).tr(),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text(
-                          'screen_account.cancel',
-                          style: const TextStyle(
-                              color: const Color(0xff6f6d6d),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "Avenir-Medium",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                        ).tr(),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      FlatButton(
-                        child: Text(
-                          'new_changes.continue',
-                          style: const TextStyle(
-                              color: const Color(0xff6f6d6d),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "Avenir-Medium",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16.0),
-                        ).tr(),
-                        onPressed: () async {
-                          await CartDataSource.deleteAllMerchants();
-                          await CartDataSource.deleteAll();
-                          await CartDataSource.insertToMerchants(
-                              business: state.productState.selectedMerchant);
-                          await CartDataSource.insertFreeFormItemsList([]);
-                          await CartDataSource.insertCustomerNoteImagesList([]);
-                          Navigator.pop(context);
-                          dispatch(ClearLocalFreeFormItemsAction());
-                          dispatch(NavigateAction.pushNamed('/CartView'));
-                        },
-                      )
-                    ],
-                  ));
-            } else {
-              await CartDataSource.deleteAllMerchants();
-              await CartDataSource.insertToMerchants(
-                  business: state.productState.selectedMerchant);
-              dispatch(NavigateAction.pushNamed('/CartView'));
-            }
-          } else {
-            await CartDataSource.deleteAllMerchants();
-            await CartDataSource.insertToMerchants(
-                business: state.productState.selectedMerchant);
-            dispatch(ClearLocalFreeFormItemsAction());
-            dispatch(NavigateAction.pushNamed('/CartView'));
-          }
-        });
-  }
-
-  int getCountOfExistingSpotlightItemInCart(Product product, int index) {
-    if (localCartListing.isEmpty)
-      return 0;
-    else {
-      Product prod;
-      try {
-        prod = localCartListing.firstWhere(
-          (element) =>
-              element.productId == product.productId &&
-              element.skus[element.selectedVariant].variationOptions.weight ==
-                  product.skus[index].variationOptions.weight &&
-              element.selectedVariant == index,
+      singleCategoryFewProducts: state.productState.singleCategoryFewProducts,
+      spotlightItems: state.productState.spotlightItems,
+      videoFeedResponse: state.productState.videosResponse,
+      customerNoteImagesList: state.cartState.customerNoteImages,
+      localCartListing: state.cartState.localCartItems,
+      categories: state.productState?.categories ?? [],
+      updateSelectedCategory: (category) {
+        dispatch(UpdateSelectedCategoryAction(selectedCategory: category));
+        category is CustomCategoryForAllProducts
+            ? dispatch(GetAllProducts())
+            : dispatch(GetSubCategoriesAction());
+      },
+      updateSelectedVideo: (video) async {
+        dispatch(UpdateSelectedVideoAction(selectedVideo: video));
+      },
+      loadVideoFeedForMerchant: () {
+        dispatch(GetBusinessVideosAction(
+            businessId: state.productState.selectedMerchant.businessId));
+      },
+      navigateToProductCatalog: () {
+        dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_CATALOGUE));
+      },
+      loadingStatus: state.authState.loadingStatus,
+      selectedMerchant: state.productState.selectedMerchant,
+      navigateToProductSearch: () {
+        dispatch(ClearSearchResultProductsAction());
+        dispatch(
+          NavigateAction.pushNamed(RouteNames.PRODUCT_SEARCH),
         );
-      } catch (e) {
-        return 0;
-      }
-      if (prod == null)
-        return 0;
-      else
-        return prod.count;
-    }
+      },
+      updateSelectedProduct: (selectedProduct) {
+        dispatch(UpdateSelectedProductAction(selectedProduct));
+      },
+      navigateToProductDetailsPage: () {
+        dispatch(NavigateAction.pushNamed(RouteNames.PRODUCT_DETAILS));
+      },
+      navigateToVideoView: () {
+        dispatch(NavigateAction.pushNamed("/videoPlayer"));
+      },
+      checkForPreviouslyAddedListItems:
+          (Function(VoidCallback) showReplaceAlert) async {
+        dispatch(
+          CheckToReplaceCartAction(
+            selectedMerchant: state.productState.selectedMerchant,
+            onSuccess: () {
+              dispatch(NavigateAction.pushNamed(RouteNames.CART_VIEW));
+            },
+            showReplaceAlert: showReplaceAlert,
+          ),
+        );
+      },
+    );
   }
 
   bool get showNoProductsWidget {

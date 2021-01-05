@@ -1,7 +1,4 @@
-import 'dart:async';
 import 'dart:io';
-
-import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,6 +6,8 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseManager {
   static final DatabaseManager _instance = new DatabaseManager.internal();
   factory DatabaseManager() => _instance;
+
+  static const String cartTable = "Cart";
 
   static Database _db;
 
@@ -33,22 +32,11 @@ class DatabaseManager {
   void _onCreate(Database db, int version) async {
     try {
       await db.execute('''
-create table if not exists Cart (
+create table if not exists $cartTable (
   _id integer primary key autoincrement,
   id text,
   product text,
   variation text
-  )
-''');
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      await db.execute('''
-create table if not exists $merchantTable (
-  _id integer primary key autoincrement,
-  business text
   )
 ''');
     } catch (e) {

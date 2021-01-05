@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/repository/database_manage.dart';
@@ -7,66 +6,40 @@ import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final String cartTable = "Cart";
-final String merchantTable = "Merchants";
-
 class CartDataSource {
-  static Future<void> insert({Product product, String variation}) async {
-    var dbClient = await DatabaseManager().db;
+  static const String _cartTable = DatabaseManager.cartTable;
+  static const String _merchantKey = "business";
+  static const String _listImagesKey = "customerNoteImagesList";
+
+  static Future<void> resetCart() async {
+    await CartDataSource.deleteCartMerchant();
+    await CartDataSource.deleteAllProducts();
+    await CartDataSource.insertCustomerNoteImagesList([]);
+  }
+
+  static Future<void> insertProduct(Product product) async {
+    final dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
     cart["product"] = jsonEncode(product.toJson());
     cart['id'] = product.productId.toString();
-    cart['variation'] = variation;
+    cart['variation'] = product.selectedSkuId;
     try {
-      var id = await dbClient.insert(cartTable, cart);
-      print(id);
-    } on DatabaseException catch (error) {
+      await dbClient.insert(_cartTable, cart);
+    } on DatabaseException catch (_) {
       await CartDataSource.reCreateCartTable();
-      var id = await dbClient.insert(cartTable, cart);
-      print(id);
-      print(error);
+      await dbClient.insert(_cartTable, cart);
     }
-  }
-
-  static Future<List<JITProduct>> getFreeFormItems() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      List<JITProduct> jsonDecodedJITItems = [];
-      List<String> jsonEncodedJITItems = prefs.getStringList("freeFormItemsList");
-      jsonEncodedJITItems.forEach((element) {
-        jsonDecodedJITItems.add(JITProduct.fromJson(jsonDecode(element)));
-      });
-      return jsonDecodedJITItems;
-    } catch(e) {
-      debugPrint("Error occurred getting free form items ${e.toString()}");
-      return <JITProduct>[];
-    }
-  }
-
-  static Future<void> insertFreeFormItemsList(
-      List<JITProduct> freeFormItemsList) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> jsonEncodedJITItems = [];
-    freeFormItemsList.forEach((element) {
-      jsonEncodedJITItems.add(jsonEncode(element.toJson()));
-    });
-    prefs.setStringList('freeFormItemsList', jsonEncodedJITItems);
   }
 
   static Future<List<String>> getCustomerNoteImagesList() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getStringList("customerNoteImagesList") ?? [];
-    } catch(e) {
-      debugPrint("Error occurred getting customer note images ${e.toString()}");
-      return <String>[];
-    }
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_listImagesKey) ?? [];
   }
 
   static Future<void> insertCustomerNoteImagesList(
       List<String> customerNoteImages) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList("customerNoteImagesList", customerNoteImages);
+    await prefs.setStringList(_listImagesKey, customerNoteImages);
   }
 
   ///This function will drop the cart SQL table and recreate it. It is a fix to
@@ -76,15 +49,15 @@ class CartDataSource {
   ///modified to incorporate more horizontals.
   static Future<void> reCreateCartTable() async {
     debugPrint('INVOKED PERFORM UPDATE');
-    await CartDataSource.deleteAll();
-    var dbClient = await DatabaseManager().db;
+    await CartDataSource.deleteAllProducts();
+    final dbClient = await DatabaseManager().db;
 
     await dbClient.execute('''
-    drop table if exists $cartTable
+    drop table if exists $_cartTable
     ''');
 
     await dbClient.execute('''
-    create table if not exists $cartTable (
+    create table if not exists $_cartTable (
     _id integer primary key autoincrement,
     id text,
     product text,
@@ -93,89 +66,112 @@ class CartDataSource {
     ''');
   }
 
-  static Future<void> insertToMerchants({Business business}) async {
-    var dbClient = await DatabaseManager().db;
-    Map<String, String> data = Map<String, String>();
-    data['business'] = jsonEncode(business.toJson());
+  static Future<void> insertCartMerchant(Business business) async {
+    String data = jsonEncode(business?.toJson());
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_merchantKey, data);
+  }
+
+  static Future<Business> getCartMerchant() async {
+    final prefs = await SharedPreferences.getInstance();
+    String data = prefs.getString(_merchantKey);
+    if (data == null) return null;
+    Business merchant = Business.fromJson(jsonDecode(data));
+
+    if (merchant == null) {
+      // check if merchant is stored in older format
+      var dbClient = await DatabaseManager().db;
+      List<Map> list = await dbClient.query("Merchants");
+      List<Business> merchantsList = list
+          .map((item) => Business.fromJson(jsonDecode(item["business"])))
+          .toList();
+      if (merchantsList != null && merchantsList.isNotEmpty) {
+        // if yes, then save the value in new key, delete old one and return the data.
+        await dbClient.delete("Merchants");
+        await insertCartMerchant(merchantsList.first);
+        return merchantsList.first;
+      } else {
+        return null;
+      }
+    }
+    return merchant;
+  }
+
+  static Future<List<Product>> getListOfProducts() async {
+    final dbClient = await DatabaseManager().db;
     try {
-      var id = await dbClient.insert(merchantTable, data);
-      print(id);
-    } catch (error) {
-      print(error);
+      final List<Map> list = await dbClient.query(_cartTable);
+      final List<Product> products = list.map(
+        (item) {
+          Map<String, dynamic> products =
+              jsonDecode(item["product"].toString());
+          return Product.fromJson(products);
+        },
+      ).toList();
+      return products ?? [];
+    } on DatabaseException catch (_) {
+      await CartDataSource.reCreateCartTable();
+      final List<Map> list = await dbClient.query(_cartTable);
+      final List<Product> products = list.map(
+        (item) {
+          Map<String, dynamic> products =
+              jsonDecode(item["product"].toString());
+          return Product.fromJson(products);
+        },
+      ).toList();
+      return products ?? [];
     }
   }
 
-  static Future<List<Business>> getListOfMerchants() async {
+  static Future<void> deleteAllProducts() async {
     var dbClient = await DatabaseManager().db;
-    List<Map> list = await dbClient.query(merchantTable);
-    var products = list
-        .map((item) => Business.fromJson(jsonDecode(item["business"])))
-        .toList();
-    return products;
+    await dbClient.delete(_cartTable);
   }
 
-  static Future<List<Product>> getListOfCartWith() async {
-    var dbClient = await DatabaseManager().db;
+  static Future<void> deleteCartMerchant() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_merchantKey);
+  }
 
+  static Future<void> deleteCartProduct(Product product) async {
+    final dbClient = await DatabaseManager().db;
     try {
-      await dbClient.query(cartTable, columns: ['variation']);
-    } on DatabaseException catch (e) {
-      CartDataSource.reCreateCartTable();
+      await dbClient.delete(
+        _cartTable,
+        where: "id = ? AND variation = ?",
+        whereArgs: [product.productId, product.selectedSkuId],
+      );
+    } on DatabaseException catch (_) {
+      await CartDataSource.reCreateCartTable();
+      await dbClient.delete(
+        _cartTable,
+        where: 'id = ? AND variation = ?',
+        whereArgs: [product.productId, product.selectedSkuId],
+      );
     }
-    List<Map> list = await dbClient.query(cartTable);
-    var products = list.map((item) {
-      Map<String, dynamic> user = jsonDecode(item["product"].toString());
-
-      return Product.fromJson(user);
-    }).toList();
-    return products;
   }
 
-  static Future<bool> isAvailableInCart({String id, String variation}) async {
-    var dbClient = await DatabaseManager().db;
-    List<Map> list = await dbClient.query(cartTable,
-        where: 'id = ? AND variation = ?', whereArgs: [id, variation]);
-    return list.isNotEmpty;
-  }
-
-  static Future<int> deleteAll() async {
-    var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable);
-  }
-
-  static Future<int> deleteAllMerchants() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(merchantTable);
-  }
-
-  static Future<int> deleteCartItemWith(String id, String variation) async {
-    var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable,
-        where: "id = ? AND variation = ?", whereArgs: [id, variation]);
-  }
-
-  static Future<int> delete(String id, variation) async {
-    var dbClient = await DatabaseManager().db;
-    return await dbClient.delete(cartTable,
-        where: 'id = ? AND variation = ?', whereArgs: [id, variation]);
-  }
-
-  static Future<int> update(Product product, String variation) async {
+  static Future<void> updateCartProduct(Product product) async {
     var dbClient = await DatabaseManager().db;
     Map<String, String> cart = Map<String, String>();
     cart["product"] = jsonEncode(product.toJson());
     cart['id'] = product.productId.toString();
-    cart['variation'] = variation;
+    cart['variation'] = product.selectedSkuId;
     try {
-      return await dbClient.update(cartTable, cart,
-          where: 'id = ? AND variation = ?',
-          whereArgs: [product.productId, variation]);
-    } on DatabaseException catch (e) {
+      await dbClient.update(
+        _cartTable,
+        cart,
+        where: 'id = ? AND variation = ?',
+        whereArgs: [product.productId, product.selectedSkuId],
+      );
+    } on DatabaseException catch (_) {
       await CartDataSource.reCreateCartTable();
-      return await dbClient.update(cartTable, cart,
-          where: 'id = ? AND variation = ?',
-          whereArgs: [product.productId, variation]);
+      await dbClient.update(
+        _cartTable,
+        cart,
+        where: 'id = ? AND variation = ?',
+        whereArgs: [product.productId, product.selectedSkuId],
+      );
     }
   }
 }

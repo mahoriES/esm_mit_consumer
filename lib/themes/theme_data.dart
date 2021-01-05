@@ -23,6 +23,7 @@ class _CustomThemeData {
     themeData = ThemeData(
       brightness: colors.brightness,
       scaffoldBackgroundColor: colors.backgroundColor,
+      primaryColor: colors.primaryColor,
       appBarTheme: AppBarTheme(
         color: colors.backgroundColor,
         iconTheme: IconThemeData(
