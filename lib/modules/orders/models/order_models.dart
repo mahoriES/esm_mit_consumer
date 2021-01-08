@@ -1,6 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 class GetOrderListRequest {
   String phoneNumber;

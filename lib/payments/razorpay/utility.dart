@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 ///
@@ -12,6 +16,11 @@ class RazorpayUtility {
   ///Singleton which is null initially, but holds an instance of this class when
   ///invoked for the first time
   ///
+
+  VoidCallback _onSuccess;
+
+  VoidCallback _onFailure;
+
   static RazorpayUtility _instance;
 
   ///A static variable which holds instance of [Razorpay] class. Initialised when
@@ -56,28 +65,33 @@ class RazorpayUtility {
   ///options must be provided.
   ///This is obtained from the backend and held by the [RazorpayCheckoutOptions] class
   ///
-  void checkout(Map<String, dynamic> options) {
+  void checkout(Map<String, dynamic> options,
+      {VoidCallback onSuccess, VoidCallback onFailure}) {
+    _onSuccess = onSuccess;
+    _onFailure = onFailure;
     try {
       ///
       /// This shall launch the Razorpay checkout flow and the exection is delegated to Razorpay
       /// Upon completion, we get a response, depending on how the transaction went.
       ///
-      _razorpay.open(options ??
-          {
-            'key': 'rzp_test_HEfHoaeCTIXx8m',
-            'amount': 50000,
-            'currency': 'INR',
-            'order_id': 'order_GM6XNMa0Bys9IU',
-            'name': 'Kaustubh',
-            'description': 'Payment for order',
-            'prefill': {
-              'contact': '9540651948',
-              'email': 'kaustubh@esamudaay.com'
+      _razorpay.open(
+        options ??
+            {
+              'key': 'rzp_test_HEfHoaeCTIXx8m',
+              'amount': 50000,
+              'currency': 'INR',
+              'order_id': 'order_GMSOjrUgtjK6Pc',
+              'name': 'Kaustubh',
+              'description': 'Payment for order',
+              'prefill': {
+                'contact': '9540651948',
+                'email': 'kaustubh@esamudaay.com'
+              },
+              'external': {
+                'wallets': ['paytm']
+              }
             },
-            'external': {
-              'wallets': ['paytm']
-            }
-          });
+      );
     } catch (exception, stackTrace) {
       /// It is essential to record the error and send off the Crashlytics if the razorpay checkout
       /// option fails. This essentially happens due to a bug or server error.
@@ -90,6 +104,7 @@ class RazorpayUtility {
   ///Handles the payment success event.
   void _handlePaymentSuccess(PaymentSuccessResponse paymentSuccessResponse) {
     debugPrint('Payment was successful! ${paymentSuccessResponse.paymentId}');
+    showSplash(true);
     Fluttertoast.showToast(msg: 'Payment Successful!');
   }
 
@@ -171,7 +186,9 @@ class RazorpayUtility {
       ///
       case Razorpay.INVALID_OPTIONS:
         _recordErrorInCrashlytics(
-            "The checkout options provided is invalid. Commonly this happens due to passing an orderId which already has a successful transaction associated. Details -> $errorMsg");
+            "The checkout options provided is invalid. Commonly this happens due "
+                "to passing an orderId which already has a successful transaction "
+                "associated. Details -> $errorMsg");
         Fluttertoast.showToast(msg: 'Invalid Options');
         break;
 
@@ -200,5 +217,20 @@ class RazorpayUtility {
   ///
   static void clear() {
     _razorpay.clear();
+  }
+
+  void showSplash(bool isSuccess) {
+    showGeneralDialog(
+        context: NavigationHandler.navigatorKey.currentContext,
+        barrierDismissible: false,
+        barrierColor: Colors.black.withOpacity(0.6),
+        pageBuilder: (context, _, __) {
+          Future.delayed(const Duration(milliseconds: 2500))
+              .whenComplete((){Navigator.pop(context); isSuccess ? _onSuccess() : _onFailure();});
+          return SizedBox.expand(
+            child: Lottie.asset('assets/lottie/payment-failed.json',
+                repeat: false, frameRate: FrameRate(30.0)),
+          );
+        });
   }
 }

@@ -272,7 +272,10 @@
     "initiated": "Waiting for merchant to confirm payment",
     "approved": "Payment received by merchant",
     "pending": "Payment not done",
-    "rejected": "Payment not done"
+    "rejected": "Payment not done",
+    "success": "Payment of {} Successful!",
+    "fail": "Payment Failed. Please try again!",
+    "refunded": "Payment of {} refunded"
   },
   "product_details": {
     "options_available": "Options available",

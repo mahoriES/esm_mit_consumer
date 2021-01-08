@@ -162,7 +162,7 @@ class _OrdersViewState extends State<OrdersView> {
                           },
                           child: ListView.separated(
                             controller: _scrollController,
-                            shrinkWrap: true,
+                            //shrinkWrap: true,
                             itemBuilder:
                                 (BuildContext context, int merchantIndex) {
                               return NewWidget(
@@ -768,7 +768,9 @@ class OrderItemBottomView extends StatelessWidget {
       backgroundColor: buttonBkColor(
           snapshot.getOrderListResponse.results[index].paymentInfo),
       didPresButton: () async {
-        RazorpayUtility().checkout(null);return;
+        RazorpayUtility().showSplash(true);
+        //RazorpayUtility().checkout(null, onSuccess: (){snapshot.getOrderList(ApiURL.getBusinessesUrl);});
+        return;
         var order = snapshot.getOrderListResponse.results[index];
         if (order.paymentInfo.upi == null) {
           return;
