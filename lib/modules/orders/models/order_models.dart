@@ -1,4 +1,6 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 class GetOrderListRequest {
   String phoneNumber;
@@ -100,16 +102,42 @@ class UpdateOrderRequest {
 }
 
 class PaymentInfo {
+
   String upi;
+
+  /// The payment status of the order. Can have following possible values
+  ///   I) PENDING : Payment not done
+  ///   II) SUCCESS : Payment succeded. Could be online or COD.
+  ///   III) FAIL : Online payment failed
+  ///   IV) REFUNDED : Money refunded
+  ///
+  ///  Old Statuses:
+  ///   I) INITIATED : Customer marked paid
+  ///   II) APPROVED : Merchant approved payment
+  ///   III) REJECTED : Merchant rejected the payment claim
+  ///
   String status;
+
   String dt;
 
-  PaymentInfo({this.upi, this.status, this.dt});
+  /// A string containing info regarding the source of the payment
+  /// e.g. Direct UPI, Deutsche bank, PayTM, OlaMoney etc.
+  ///
+  String paymentMadeVia;
+
+  /// Amount paid via the [paymentMadeVia] channel in paise. This may be different
+  /// than the order total billed amount
+  ///
+  int amount;
+
+  PaymentInfo({this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
 
   PaymentInfo.fromJson(Map<String, dynamic> json) {
     upi = json['upi'];
     status = json['status'];
     dt = json['dt'];
+    amount = json['amount'];
+    paymentMadeVia = json['via'];
   }
 
   Map<String, dynamic> toJson() {
@@ -117,6 +145,58 @@ class PaymentInfo {
     data['upi'] = this.upi;
     data['status'] = this.status;
     data['dt'] = this.dt;
+    data['via'] = paymentMadeVia;
+    data['amount'] = amount;
     return data;
   }
+}
+
+class RazorpayCheckoutOptions extends Equatable {
+  final String key;
+  final int amount;
+  final String name;
+  final String orderId;
+  final String description;
+  final int timeout;
+  final String email;
+  final String phone;
+  final String currency;
+
+  RazorpayCheckoutOptions(this.key, this.amount, this.name, this.orderId,
+      this.description, this.timeout, this.email, this.phone, this.currency);
+
+  factory RazorpayCheckoutOptions.fromJson(Map<String, dynamic> json) {
+    final String key = json['key'];
+    final int amount = json['amount'] ?? 0;
+    final String name = json['name'] ?? 'eSamudaay';
+    final String orderId = json['order_id'];
+    final int timeout = json['timeout'] ?? 60;
+    final String currency = json['currency'] ?? "INR";
+    final String description = json['description'] ?? '';
+    final String phone = (json['prefill'] ?? const {})['contact'] ?? '';
+    final String email = (json['prefill'] ?? const {})['email'] ?? '';
+    if (key != null && orderId != null) return null;
+    return RazorpayCheckoutOptions(
+        key, amount, name, orderId, description, timeout, email, phone, currency);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> checkoutOptions = Map<String, dynamic>();
+    checkoutOptions['key'] = key;
+    checkoutOptions['amount'] = amount;
+    checkoutOptions['name'] = name;
+    checkoutOptions['order_id'] = orderId;
+    checkoutOptions['currency'] = currency;
+    checkoutOptions['timeout'] = timeout;
+    checkoutOptions['description'] = description;
+    checkoutOptions['prefill'] = {
+      'contact': phone,
+      'email': email
+    };
+    return checkoutOptions;
+  }
+
+  @override
+  List<Object> get props =>
+      [key, amount, name, orderId, description, timeout, email, phone, currency];
 }

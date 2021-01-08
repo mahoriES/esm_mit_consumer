@@ -7,13 +7,13 @@ import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/views/expandable_view.dart';
+import 'package:eSamudaay/payments/razorpay/utility.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/order_status_info.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +25,7 @@ import 'package:upi_india/upi_india.dart';
 import 'package:upi_pay/upi_pay.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 class OrdersView extends StatefulWidget {
   @override
@@ -763,10 +764,11 @@ class OrderItemBottomView extends StatelessWidget {
 
   CustomButton buildPaymentButton(_ViewModel snapshot, BuildContext context) {
     return CustomButton(
-      title: tr('screen_order.Pay_via_upi'),
+      title: tr('screen_order.pay') + " ${(snapshot.getOrderListResponse.results[index].orderTotal/100).withRupeePrefix}",
       backgroundColor: buttonBkColor(
           snapshot.getOrderListResponse.results[index].paymentInfo),
       didPresButton: () async {
+        RazorpayUtility().checkout(null);return;
         var order = snapshot.getOrderListResponse.results[index];
         if (order.paymentInfo.upi == null) {
           return;

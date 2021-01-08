@@ -46,10 +46,12 @@ class ApiURL {
       baseURL + getBusinessesUrl + businessId + "/catalog/products";
   static final getBookmarkBusinessUrl = (String businessId) =>
       baseURL + getBusinessesUrl + "$businessId/bookmark";
-  static final Function(String) getHomePageCategoriesUrl = (String circleId) =>
-      baseURL + getClustersUrl + "$circleId/categories";
-  static final Function(String ) getBannersUrl = (String circleId) =>
-       baseURL + getClustersUrl + circleId + "/banners";
+  static final Function(String) getHomePageCategoriesUrl =
+      (String circleId) => baseURL + getClustersUrl + "$circleId/categories";
+  static final Function(String) getBannersUrl =
+      (String circleId) => baseURL + getClustersUrl + circleId + "/banners";
   static final deleteAddressUrl =
       (String addressId) => "api/v1/addresses/$addressId";
+  static final getRazorpayOrderIdUrl =
+      (String orderId) => baseURL + placeOrderUrl + orderId + "/razorpay";
 }

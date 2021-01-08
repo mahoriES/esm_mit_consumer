@@ -83,6 +83,7 @@ dependencies:
   uuid: ^2.2.2
   google_maps_webservice: ^0.0.18
   app_settings: ^4.0.4
+  razorpay_flutter: ^1.2.2
 
 dev_dependencies:
   flutter_test:

@@ -11,6 +11,8 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:upi_pay/upi_pay.dart';
 
@@ -18,6 +20,7 @@ class GetOrderListAPIAction extends ReduxAction<AppState> {
   final String orderRequestApi;
 
   GetOrderListAPIAction({this.orderRequestApi});
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -55,6 +58,7 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
   final String orderId;
 
   GetOrderDetailsAPIAction({this.orderId});
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -100,6 +104,7 @@ class PaymentAPIAction extends ReduxAction<AppState> {
   final String orderId;
 
   PaymentAPIAction({this.orderId});
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -136,10 +141,12 @@ class PaymentAPIAction extends ReduxAction<AppState> {
 class AddRatingAPIAction extends ReduxAction<AppState> {
   final AddReviewRequest request;
   final String orderId;
+
   AddRatingAPIAction({
     this.request,
     this.orderId,
   });
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -167,6 +174,7 @@ class CancelOrderAPIAction extends ReduxAction<AppState> {
   final int index;
 
   CancelOrderAPIAction({this.orderId, this.index});
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -201,6 +209,7 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
     this.orderId,
     this.index,
   });
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -229,6 +238,7 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
 class CompleteOrderAPIAction extends ReduxAction<AppState> {
   final String orderId;
   final int index;
+
   CompleteOrderAPIAction({this.orderId, this.index});
 
   @override
@@ -261,6 +271,7 @@ class SupportAPIAction extends ReduxAction<AppState> {
   final SupportRequest request;
 
   SupportAPIAction({this.request});
+
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
@@ -326,7 +337,6 @@ class OrderSupportAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() {
-    // TODO: implement reduce
     return state.copyWith(
         productState: state.productState.copyWith(supportOrder: orderId));
   }
@@ -338,5 +348,42 @@ class GetUPIAppsAction extends ReduxAction<AppState> {
     List<ApplicationMeta> apps = await UpiPay.getInstalledUpiApplications();
     return state.copyWith(
         productState: state.productState.copyWith(upiApps: apps));
+  }
+}
+
+class RazorpayCheckoutAction extends ReduxAction<AppState> {
+  final String orderId;
+
+  RazorpayCheckoutAction({@required this.orderId});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    final response = await APIManager.shared.request(
+      url: ApiURL.getRazorpayOrderIdUrl(orderId),
+      params: null,
+      requestType: RequestType.get,
+    );
+    if (response.status == ResponseStatus.success200 &&
+        response.data != null &&
+        response.data is Map) {
+      final RazorpayCheckoutOptions checkoutOptions =
+          RazorpayCheckoutOptions.fromJson(response.data);
+      if (checkoutOptions != null) {
+        final Map<String, dynamic> standardisedRazorpayCheckoutOptions =
+            checkoutOptions.toJson();
+      } else
+        _handleErrorInCheckoutOptionsResponse(
+            message:
+                'Checkout options for orderId is not as per required format');
+    } else
+      _handleErrorInCheckoutOptionsResponse(
+          message:
+              'Error getting the checkout options for orderId. Either the response is not in proper format or it indicates a bug in getting response.');
+    return null;
+  }
+
+  void _handleErrorInCheckoutOptionsResponse({@required String message}) {
+    FirebaseCrashlytics.instance
+        .recordError(Exception([message]), StackTrace.current);
   }
 }

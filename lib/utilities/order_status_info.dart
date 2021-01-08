@@ -62,6 +62,7 @@ class OrderStatusInfoGenerator {
       case 'REJECTED':
         return tr('payment_statuses.rejected');
         break;
+
       default:
         return '';
     }
