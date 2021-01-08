@@ -1,12 +1,14 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_appbar.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/widgets/product_details_image_carausel.dart';
-import 'package:eSamudaay/presentations/product_count_widget.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
+import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,27 +25,26 @@ class ProductDetailsView extends StatelessWidget {
         Product selectedProduct = snapshot.selectedProduct;
         Business selectedMerchant = snapshot.selectedMerchant;
         return Scaffold(
-          appBar: ProductDetailsAppBar(
+          appBar: CustomAppBar(
             title: selectedProduct.productName,
             subTitle: selectedMerchant.businessName,
-            productId: selectedProduct.productId.toString(),
-            businessId: selectedMerchant.businessId.toString(),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.share),
+                iconSize: 30.toFont,
+                onPressed: () async {
+                  LoadingDialog.show();
+                  await LinkSharingService().shareProductLink(
+                    productId: selectedProduct.productId.toString(),
+                    businessId: selectedMerchant.businessId,
+                    storeName: selectedMerchant.businessName,
+                  );
+                  LoadingDialog.hide();
+                },
+              ),
+            ],
           ),
-          bottomSheet: AnimatedContainer(
-            height: (snapshot.localCartListing.isEmpty &&
-                    snapshot.freeFormItemsList.isEmpty)
-                ? 0
-                : 65.toHeight,
-            duration: Duration(milliseconds: 300),
-            child: BottomView(
-              height: (snapshot.localCartListing.isEmpty &&
-                      snapshot.freeFormItemsList.isEmpty)
-                  ? 0
-                  : 65.toHeight,
-              buttonTitle: tr('cart.view_cart'),
-              didPressButton: snapshot.navigateToCart,
-            ),
-          ),
+          bottomSheet: CartDetailsBottomSheet(),
           body: ListView(
             children: [
               Hero(
@@ -133,6 +134,7 @@ class ProductDetailsView extends StatelessWidget {
                               ProductCountWidget(
                                 product: selectedProduct,
                                 isSku: false,
+                                selectedMerchant: snapshot.selectedMerchant,
                               ),
                             ],
                           ),
@@ -168,17 +170,13 @@ class ProductDetailsView extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  Function navigateToCart;
   List<Product> localCartListing;
-  List<JITProduct> freeFormItemsList;
   Business selectedMerchant;
   Product selectedProduct;
 
   _ViewModel();
 
   _ViewModel.build({
-    this.navigateToCart,
-    this.freeFormItemsList,
     this.localCartListing,
     this.selectedMerchant,
     this.selectedProduct,
@@ -186,7 +184,6 @@ class _ViewModel extends BaseModel<AppState> {
           equals: [
             localCartListing,
             selectedMerchant,
-            freeFormItemsList,
             selectedProduct,
           ],
         );
@@ -194,11 +191,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      freeFormItemsList: state.productState.localFreeFormCartItems,
-      navigateToCart: () {
-        dispatch(NavigateAction.pushNamed('/CartView'));
-      },
-      localCartListing: state.productState.localCartItems,
+      localCartListing: state.cartState.localCartItems,
       selectedMerchant: state.productState.selectedMerchant,
       selectedProduct: state.productState.selectedProductForDetails,
     );

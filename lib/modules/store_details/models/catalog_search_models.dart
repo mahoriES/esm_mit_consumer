@@ -54,7 +54,7 @@ class JITProduct {
 
 class Product {
   int productId;
-  int selectedVariant;
+  int selectedSkuIndex;
   String productName;
   String productDescription;
   bool isActive;
@@ -72,6 +72,7 @@ class Product {
 
   Product(
       {this.productId,
+      this.selectedSkuIndex,
       this.productName,
       this.productDescription,
       this.isActive,
@@ -88,7 +89,7 @@ class Product {
       this.spotlight});
 
   Product.fromJson(Map<String, dynamic> json) {
-    selectedVariant = json['selectedVariant'];
+    selectedSkuIndex = json['selectedVariant'];
     count = json['count'];
     productId = json['product_id'];
     productName = json['product_name'];
@@ -138,9 +139,23 @@ class Product {
       ? ""
       : (this.images.first?.photoUrl ?? "");
 
+  String get selectedSkuId =>
+      this.skus[selectedSkuIndex ?? 0]?.skuId?.toString() ?? "";
+
+  double get selectedSkuPrice {
+    try {
+      return (this.skus[selectedSkuIndex ?? 0]?.basePrice ?? 0) / 100;
+    } catch (e) {
+      return 0.0;
+    }
+  }
+
+  String get selectedSkuWeight =>
+      this.skus[selectedSkuIndex ?? 0]?.variationOptions?.weight ?? "";
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['selectedVariant'] = this.selectedVariant;
+    data['selectedVariant'] = this.selectedSkuIndex;
     data['count'] = this.count;
     data['product_id'] = this.productId;
     data['product_name'] = this.productName;
@@ -163,6 +178,27 @@ class Product {
     data['rating_num'] = this.ratingNum;
     data['spotlight'] = this.spotlight;
     return data;
+  }
+
+  Product copy(int skuIndex) {
+    return new Product(
+      productId: this.productId,
+      productName: this.productName,
+      selectedSkuIndex: skuIndex,
+      productDescription: this.productDescription,
+      isActive: this.isActive,
+      inStock: this.inStock,
+      count: this.count,
+      images: this.images,
+      longDescription: this.longDescription,
+      displayLine1: this.displayLine1,
+      unitName: this.unitName,
+      possibleVariations: this.possibleVariations,
+      skus: this.skus,
+      ratingVal: this.ratingVal,
+      ratingNum: this.ratingNum,
+      spotlight: this.spotlight,
+    );
   }
 }
 

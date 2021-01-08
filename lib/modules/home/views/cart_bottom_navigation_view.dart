@@ -31,9 +31,7 @@ class NavigationCartItem extends StatelessWidget {
                 return Container(
                   padding: EdgeInsets.all(1),
                   decoration: new BoxDecoration(
-                    color: vm.localCart.length == 0
-                        ? Colors.transparent
-                        : Colors.red,
+                    color: vm.totalCount == 0 ? Colors.transparent : Colors.red,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   constraints: BoxConstraints(
@@ -41,7 +39,7 @@ class NavigationCartItem extends StatelessWidget {
                     minHeight: 12,
                   ),
                   child: new Text(
-                    (vm.localCart.length).toString(),
+                    (vm.totalCount).toString(),
                     style: new TextStyle(
                       color: Colors.white,
                       fontSize: 8,
@@ -139,44 +137,24 @@ class CartCount extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  List<String> cartListDataSource;
-  List<Product> localCart;
-  double getCartTotal;
-  Function getCartTotalPrice;
+  List<Product> products;
+  List<String> customerNoteImages;
+  bool isImageUploading;
   _ViewModel();
 
-  _ViewModel.build(
-      {this.cartListDataSource,
-      this.getCartTotalPrice,
-      this.localCart,
-      this.getCartTotal})
-      : super(equals: [cartListDataSource, localCart, getCartTotal]);
+  _ViewModel.build({
+    this.products,
+    this.customerNoteImages,
+    this.isImageUploading,
+  }) : super(equals: [products, isImageUploading]);
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      cartListDataSource: [], //state.productState.cartListingDataSource.items,
-      localCart: state.productState.localCartItems,
-      getCartTotalPrice: () {
-//        if (state.productState.localCartItems.isNotEmpty) {
-//          final formatCurrency = new NumberFormat.simpleCurrency(
-//            name: state.productState?.localCartItems?.first?.priceCurrency ??
-//                "INR",
-//          );
-        var total =
-//              state.productState.localCartItems.fold(0, (previous, current) {
-//                    double price =
-//                        double.parse(current.price.toString()) * current.inCart;
-//
-//                    return double.parse(previous.toString()) + price;
-//                  }) ??
-            0.0;
-
-//          return formatCurrency.format(total.toDouble());
-//        } else {
-//          return "Cart is empty";
-//        }
-      },
-      getCartTotal: 0.0,
+      products: state.cartState.localCartItems ?? [],
+      customerNoteImages: state.cartState.customerNoteImages ?? [],
+      isImageUploading: state.cartState.isImageUploading,
     );
   }
+
+  int get totalCount => products.length + customerNoteImages.length;
 }

@@ -14,6 +14,12 @@ class ApiURL {
   static const updateCustomerDetails = "api/v1/auth/profiles";
   static const addressUrl = "api/v1/addresses/";
   static const getBusinessesUrl = "api/v1/businesses/";
+  static final getStoreStatusUrl =
+      (String businessId) => "api/v1/businesses/$businessId/open";
+
+  static final getChargesUrl =
+      (String businessId) => "api/v1/businesses/$businessId/charges";
+
   static const bannerUrl = "Customer/v4/getLandingPageOffers";
   static const getCatalogUrl = "Customer/v4/getCatalog";
   static const placeOrderUrl = "api/v1/orders/";

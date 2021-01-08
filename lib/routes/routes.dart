@@ -24,6 +24,7 @@ import 'package:eSamudaay/modules/store_details/views/product_catalog_view/produ
 import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/store_categories_details_view.dart';
 import 'package:eSamudaay/presentations/alert.dart';
+import 'package:eSamudaay/reusable_widgets/image_zoom_view.dart';
 import 'package:flutter/material.dart';
 
 class SetupRoutes {
@@ -34,8 +35,8 @@ class SetupRoutes {
       "/otpScreen": (BuildContext context) => new OtpScreen(),
       "/mobileNumber": (BuildContext context) => new LoginView(),
       "/registration": (BuildContext context) => new Registration(),
-      "/myHomeView": (BuildContext context) => new MyHomeView(),
-      "/CartView": (BuildContext context) => CartView(),
+      RouteNames.HOME_PAGE: (BuildContext context) => new MyHomeView(),
+      RouteNames.CART_VIEW: (BuildContext context) => CartView(),
       "/AccountsView": (BuildContext context) => AccountsView(),
       "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
       RouteNames.PRODUCT_CATALOGUE: (BuildContext context) =>
@@ -58,8 +59,12 @@ class SetupRoutes {
       RouteNames.CHANGE_ADDRESS: (BuildContext context) => ChangeAddressView(),
       RouteNames.ADD_NEW_ADDRESS: (BuildContext context) => AddNewAddressView(),
       RouteNames.SEARCH_ADDRESS: (BuildContext context) => SearchAddressView(),
-      RouteNames.CIRCLE_PICKER: (BuildContext context) => const CirclePickerView(),
+      RouteNames.CIRCLE_PICKER: (BuildContext context) =>
+          const CirclePickerView(),
       RouteNames.CIRCLE_SEARCH: (BuildContext context) => CircleSearchView(),
+      RouteNames.IMAGE_ZOOM_VIEW: (BuildContext context) => ImageZoomView(
+            ModalRoute.of(context).settings.arguments,
+          ),
     };
   }
 }
@@ -68,6 +73,7 @@ class SetupRoutes {
 // this makes it easier to use various route names in diffrent files.
 // Haven't changed the existing routenames yet, but let's use this utility to create new screens from now on.
 class RouteNames {
+  static const HOME_PAGE = "/myHomeView";
   static const PRODUCT_DETAILS = "/productDeails";
   static const PRODUCT_CATALOGUE = "/StoreProductListingView";
   static const PRODUCT_SEARCH = "/productSearch";
@@ -75,6 +81,8 @@ class RouteNames {
   static const CHANGE_ADDRESS = "/changeAddress";
   static const ADD_NEW_ADDRESS = "/addNewAddress";
   static const SEARCH_ADDRESS = "/searchAddress";
+  static const CART_VIEW = "/CartView";
   static const CIRCLE_PICKER = "/circlePicker";
   static const CIRCLE_SEARCH = "/circleSearch";
+  static const IMAGE_ZOOM_VIEW = "/imageZoomView";
 }

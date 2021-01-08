@@ -313,8 +313,7 @@ class UpdateOrderAction extends ReduxAction<AppState> {
 
     if (response.data['statusCode'] == 200) {
       Fluttertoast.showToast(msg: response.data['status']);
-      await CartDataSource.deleteAllMerchants();
-      await CartDataSource.deleteAll();
+      await CartDataSource.resetCart();
       dispatch(GetCartFromLocal());
       dispatch(GetOrderListAPIAction());
     } else {

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/product_count_widget.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -17,21 +18,20 @@ class SpotlightTile extends StatelessWidget {
   final String quantityDescription;
   final String price;
   final String itemQuantity;
-  final Function decrementQuantityAction;
-  final Function incrementQuantityAction;
   final Product product;
   final Function onTapItemImage;
+  final Business selectedMerchant;
 
-  const SpotlightTile(
-      {@required this.itemName,
-      @required this.product,
-      @required this.imageUrl,
-      @required this.price,
-      @required this.onTapItemImage,
-      @required this.quantityDescription,
-      @required this.decrementQuantityAction,
-      @required this.incrementQuantityAction,
-      @required this.itemQuantity});
+  const SpotlightTile({
+    @required this.itemName,
+    @required this.product,
+    @required this.imageUrl,
+    @required this.price,
+    @required this.onTapItemImage,
+    @required this.quantityDescription,
+    @required this.itemQuantity,
+    @required this.selectedMerchant,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +90,7 @@ class SpotlightTile extends StatelessWidget {
           ProductCountWidget(
             product: product,
             isSku: false,
+            selectedMerchant: selectedMerchant,
           ),
         ],
       ),
@@ -99,15 +100,14 @@ class SpotlightTile extends StatelessWidget {
 
 class SpotlightItemsScroller extends StatelessWidget {
   final List<Product> spotlightProducts;
-  final Function onAddProduct;
-  final Function onRemoveProduct;
   final Function onImageTap;
+  final Business selectedMerchant;
 
-  const SpotlightItemsScroller(
-      {@required this.spotlightProducts,
-      @required this.onAddProduct,
-      @required this.onImageTap,
-      @required this.onRemoveProduct});
+  const SpotlightItemsScroller({
+    @required this.spotlightProducts,
+    @required this.onImageTap,
+    @required this.selectedMerchant,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -139,19 +139,19 @@ class SpotlightItemsScroller extends StatelessWidget {
               itemBuilder: (context, index) {
                 Product product = spotlightProducts[index];
                 return SpotlightTile(
-                    product: product,
-                    onTapItemImage: onImageTap,
-                    itemName: product.productName,
-                    imageUrl: product.images.first.photoUrl,
-                    price:
-                        (product.skus.first.basePrice / 100).toStringAsFixed(2),
-                    quantityDescription:
-                        product.skus.first.variationOptions.weight,
-                    decrementQuantityAction: onRemoveProduct,
-                    incrementQuantityAction: onAddProduct,
-                    itemQuantity: product.count == 0
-                        ? tr("new_changes.add")
-                        : product.count.toString());
+                  product: product,
+                  onTapItemImage: onImageTap,
+                  itemName: product.productName,
+                  imageUrl: product.images.first.photoUrl,
+                  price:
+                      (product.skus.first.basePrice / 100).toStringAsFixed(2),
+                  quantityDescription:
+                      product.skus.first.variationOptions.weight,
+                  itemQuantity: product.count == 0
+                      ? tr("new_changes.add")
+                      : product.count.toString(),
+                  selectedMerchant: selectedMerchant,
+                );
               },
               separatorBuilder: (_, __) => const SizedBox(
                     width: AppSizes.widgetPadding,
