@@ -174,7 +174,7 @@ class RazorpayCheckoutOptions extends Equatable {
     final String description = json['description'] ?? '';
     final String phone = (json['prefill'] ?? const {})['contact'] ?? '';
     final String email = (json['prefill'] ?? const {})['email'] ?? '';
-    if (key != null && orderId != null) return null;
+    if (key == null || orderId == null) return null;
     return RazorpayCheckoutOptions(
         key, amount, name, orderId, description, timeout, email, phone, currency);
   }

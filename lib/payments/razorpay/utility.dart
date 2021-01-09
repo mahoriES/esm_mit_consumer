@@ -1,6 +1,7 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -74,24 +75,7 @@ class RazorpayUtility {
       /// This shall launch the Razorpay checkout flow and the exection is delegated to Razorpay
       /// Upon completion, we get a response, depending on how the transaction went.
       ///
-      _razorpay.open(
-        options ??
-            {
-              'key': 'rzp_test_HEfHoaeCTIXx8m',
-              'amount': 50000,
-              'currency': 'INR',
-              'order_id': 'order_GMSOjrUgtjK6Pc',
-              'name': 'Kaustubh',
-              'description': 'Payment for order',
-              'prefill': {
-                'contact': '9540651948',
-                'email': 'kaustubh@esamudaay.com'
-              },
-              'external': {
-                'wallets': ['paytm']
-              }
-            },
-      );
+      _razorpay.open(options);
     } catch (exception, stackTrace) {
       /// It is essential to record the error and send off the Crashlytics if the razorpay checkout
       /// option fails. This essentially happens due to a bug or server error.
@@ -104,7 +88,7 @@ class RazorpayUtility {
   ///Handles the payment success event.
   void _handlePaymentSuccess(PaymentSuccessResponse paymentSuccessResponse) {
     debugPrint('Payment was successful! ${paymentSuccessResponse.paymentId}');
-    showSplash(true);
+    _showSplash(true);
     Fluttertoast.showToast(msg: 'Payment Successful!');
   }
 
@@ -144,7 +128,7 @@ class RazorpayUtility {
       case Razorpay.UNKNOWN_ERROR:
         _recordErrorInCrashlytics(
             "An unknown error occured. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: 'Unknown Error');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Unknown Error');
         break;
 
       /// This error indicates a code-level error.
@@ -154,7 +138,7 @@ class RazorpayUtility {
       case Razorpay.INCOMPATIBLE_PLUGIN:
         _recordErrorInCrashlytics(
             "There is some error with compatibility of the plugin. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: 'Incompatible Plugin');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Incompatible Plugin');
         break;
 
       /// This essentially indicates that there was some connectivity issue which led to failure
@@ -164,7 +148,7 @@ class RazorpayUtility {
       /// We, record this error in Crashlytics and also show a toast to the user.
       ///
       case Razorpay.NETWORK_ERROR:
-        Fluttertoast.showToast(msg: 'Network Error');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Network Error');
         break;
 
       /// Will be encountered only due to issues on the client side.
@@ -176,7 +160,7 @@ class RazorpayUtility {
       case Razorpay.TLS_ERROR:
         _recordErrorInCrashlytics(
             "User's device does not support secure payments over secure TLS layer. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: 'Secure payments not supported');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Secure payments not supported');
         break;
 
       /// The checkout options (A HashMap object containing the amount, name, key, order_id etc.) provided
@@ -189,7 +173,7 @@ class RazorpayUtility {
             "The checkout options provided is invalid. Commonly this happens due "
                 "to passing an orderId which already has a successful transaction "
                 "associated. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: 'Invalid Options');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Invalid Options');
         break;
 
       /// The payment was cancelled by the user. Either the user pressed back button on tapped the
@@ -198,7 +182,7 @@ class RazorpayUtility {
       /// Since this a voluntary action we simply let the user know about the same via a toast
       ///
       case Razorpay.PAYMENT_CANCELLED:
-        Fluttertoast.showToast(msg: 'Payment Cancelled');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Payment Cancelled');
         break;
     }
   }
@@ -219,7 +203,7 @@ class RazorpayUtility {
     _razorpay.clear();
   }
 
-  void showSplash(bool isSuccess) {
+  void _showSplash(bool isSuccess) {
     showGeneralDialog(
         context: NavigationHandler.navigatorKey.currentContext,
         barrierDismissible: false,
@@ -228,7 +212,7 @@ class RazorpayUtility {
           Future.delayed(const Duration(milliseconds: 2500))
               .whenComplete((){Navigator.pop(context); isSuccess ? _onSuccess() : _onFailure();});
           return SizedBox.expand(
-            child: Lottie.asset('assets/lottie/payment-failed.json',
+            child: Lottie.asset(isSuccess ? LottiePathConstants.paymentSuccess : LottiePathConstants.paymentFailed,
                 repeat: false, frameRate: FrameRate(30.0)),
           );
         });

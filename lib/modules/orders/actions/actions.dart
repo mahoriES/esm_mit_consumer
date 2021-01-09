@@ -350,10 +350,20 @@ class GetUPIAppsAction extends ReduxAction<AppState> {
   }
 }
 
-class RazorpayCheckoutAction extends ReduxAction<AppState> {
+class ClearPreviousRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
+
+  ClearPreviousRazorpayCheckoutOptionsAction();
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(orderPaymentCheckoutOptions: null);
+  }
+}
+
+class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
   final String orderId;
 
-  RazorpayCheckoutAction({@required this.orderId});
+  GetRazorpayCheckoutOptionsAction({@required this.orderId});
 
   @override
   FutureOr<AppState> reduce() async {
@@ -370,6 +380,8 @@ class RazorpayCheckoutAction extends ReduxAction<AppState> {
       if (checkoutOptions != null) {
         final Map<String, dynamic> standardisedRazorpayCheckoutOptions =
             checkoutOptions.toJson();
+        return state.copyWith(
+            orderPaymentCheckoutOptions: standardisedRazorpayCheckoutOptions);
       } else
         _handleErrorInCheckoutOptionsResponse(
             message:

@@ -20,12 +20,14 @@ class AppState {
   final String versionString;
   final CartState cartState;
   final bool isInitializationDone;
+  final Map<String, dynamic> orderPaymentCheckoutOptions;
 
   const AppState({
     this.authState,
     this.isLoading,
     this.isInitializationDone,
     this.componentsLoadingState,
+    this.orderPaymentCheckoutOptions,
     this.homeCategoriesState,
     this.homePageState,
     this.productState,
@@ -58,6 +60,7 @@ class AppState {
         homeCategoriesState: LandingPageComponentsState.initial(),
         addressState: AddressState.initial(),
         versionString: "",
+        orderPaymentCheckoutOptions: null,
         cartState: CartState.initial(),
       );
 
@@ -66,6 +69,7 @@ class AppState {
     bool isInitializationDone,
     ComponentsLoadingState componentsLoadingState,
     bool isLoading,
+    Map<String, dynamic> orderPaymentCheckoutOptions,
     HomePageState homePageState,
     ProductState productState,
     LandingPageComponentsState homeCategoriesState,
@@ -75,6 +79,7 @@ class AppState {
     CartState cartState,
   }) {
     return AppState(
+      orderPaymentCheckoutOptions: orderPaymentCheckoutOptions ?? this.orderPaymentCheckoutOptions,
       isInitializationDone: isInitializationDone ?? this.isInitializationDone,
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
@@ -101,6 +106,7 @@ class AppState {
           homeCategoriesState == other.homeCategoriesState &&
           productState == other.productState &&
           videosState == other.videosState &&
+          orderPaymentCheckoutOptions == other.orderPaymentCheckoutOptions &&
           isInitializationDone == other.isInitializationDone &&
           isLoading == other.isLoading &&
           addressState == other.addressState &&

@@ -273,9 +273,9 @@
     "approved": "Payment received by merchant",
     "pending": "Payment not done",
     "rejected": "Payment not done",
-    "success": "Payment of {} Successful!",
+    "success": "Payment of {} successful via {}!",
     "fail": "Payment Failed. Please try again!",
-    "refunded": "Payment of {} refunded"
+    "refunded": "{} refunded via {}"
   },
   "product_details": {
     "options_available": "Options available",
