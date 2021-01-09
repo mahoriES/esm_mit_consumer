@@ -1,4 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:equatable/equatable.dart';
 
 class GetOrderListRequest {
@@ -166,11 +167,11 @@ class RazorpayCheckoutOptions extends Equatable {
 
   factory RazorpayCheckoutOptions.fromJson(Map<String, dynamic> json) {
     final String key = json['key'];
-    final int amount = json['amount'] ?? 0;
-    final String name = json['name'] ?? 'eSamudaay';
+    final int amount = json['amount'] ?? razorpayDefaultAmountInInt;
+    final String name = json['name'] ?? razorpayDefaultName;
     final String orderId = json['order_id'];
-    final int timeout = json['timeout'] ?? 60;
-    final String currency = json['currency'] ?? "INR";
+    final int timeout = json['timeout'] ?? razorpayDefaultTimeout;
+    final String currency = json['currency'] ?? razorpayDefaultCurrency;
     final String description = json['description'] ?? '';
     final String phone = (json['prefill'] ?? const {})['contact'] ?? '';
     final String email = (json['prefill'] ?? const {})['email'] ?? '';
