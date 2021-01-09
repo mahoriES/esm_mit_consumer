@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -128,7 +129,7 @@ class RazorpayUtility {
       case Razorpay.UNKNOWN_ERROR:
         _recordErrorInCrashlytics(
             "An unknown error occured. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Unknown Error');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.unknown_error'));
         break;
 
       /// This error indicates a code-level error.
@@ -138,7 +139,7 @@ class RazorpayUtility {
       case Razorpay.INCOMPATIBLE_PLUGIN:
         _recordErrorInCrashlytics(
             "There is some error with compatibility of the plugin. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Incompatible Plugin');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.incompatible_plugin'));
         break;
 
       /// This essentially indicates that there was some connectivity issue which led to failure
@@ -148,7 +149,7 @@ class RazorpayUtility {
       /// We, record this error in Crashlytics and also show a toast to the user.
       ///
       case Razorpay.NETWORK_ERROR:
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Network Error');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.network_error'));
         break;
 
       /// Will be encountered only due to issues on the client side.
@@ -160,7 +161,7 @@ class RazorpayUtility {
       case Razorpay.TLS_ERROR:
         _recordErrorInCrashlytics(
             "User's device does not support secure payments over secure TLS layer. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Secure payments not supported');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.tls_error'));
         break;
 
       /// The checkout options (A HashMap object containing the amount, name, key, order_id etc.) provided
@@ -173,7 +174,7 @@ class RazorpayUtility {
             "The checkout options provided is invalid. Commonly this happens due "
                 "to passing an orderId which already has a successful transaction "
                 "associated. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Invalid Options');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.invalid_options'));
         break;
 
       /// The payment was cancelled by the user. Either the user pressed back button on tapped the
@@ -182,7 +183,7 @@ class RazorpayUtility {
       /// Since this a voluntary action we simply let the user know about the same via a toast
       ///
       case Razorpay.PAYMENT_CANCELLED:
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? 'Payment Cancelled');
+        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.payment_cancelled'));
         break;
     }
   }

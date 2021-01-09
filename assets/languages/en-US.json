@@ -277,6 +277,15 @@
     "fail": "Payment Failed. Please try again!",
     "refunded": "{} refunded via {}"
   },
+  "payment_info": {
+    "checkout_error": "Something went wrong. Contact support if problem persists.",
+    "unknown_error": "Unknown Error",
+    "incompatible_plugin": "Incompatible Plugin",
+    "network_error": "Network Error",
+    "payment_cancelled": "Payment Cancelled",
+    "invalid_options": "Invalid Options",
+    "tls_error": "Your device does not support secure payments"
+  },
   "product_details": {
     "options_available": "Options available",
     "product_information": "Product Information",

@@ -11,6 +11,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -394,6 +395,7 @@ class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
   }
 
   void _handleErrorInCheckoutOptionsResponse({@required String message}) {
+    Fluttertoast.showToast(msg: tr('payment_info.checkout_error'));
     FirebaseCrashlytics.instance
         .recordError(Exception([message]), StackTrace.current);
   }
