@@ -1,14 +1,12 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/models/loading_status.dart';
-import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
-import 'package:eSamudaay/modules/cart/views/cart_sku_bottom_sheet.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
-import 'package:eSamudaay/presentations/product_count_widget.dart';
+import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_widget.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -276,23 +274,7 @@ class _MerchantProductsSearchViewState
                                 ),
                               ),
 
-                            ///Bottom cart total view
-                            AnimatedContainer(
-                              height: (snapshot.localCartListing.isEmpty &&
-                                      snapshot.freeFormItemsList.isEmpty)
-                                  ? 0
-                                  : AppSizes.cartTotalBottomViewHeight,
-                              duration: Duration(milliseconds: 300),
-                              child: BottomView(
-                                height: snapshot.localCartListing.isEmpty
-                                    ? 0
-                                    : AppSizes.cartTotalBottomViewHeight,
-                                buttonTitle: tr('cart.view_cart'),
-                                didPressButton: () {
-                                  snapshot.navigateToCart();
-                                },
-                              ),
-                            ),
+                            CartDetailsBottomSheet(),
                           ],
                         ),
                       ),
@@ -311,10 +293,7 @@ class _ViewModel extends BaseModel<AppState> {
   Business selectedMerchant;
   Function(String) getSearchedProductsForMerchant;
   List<Product> localCartListing;
-  List<JITProduct> freeFormItemsList;
   List<Product> searchProductsForMerchant;
-  Function(Product, BuildContext) addToCart;
-  Function(Product) removeFromCart;
   Function closeSearchWindowAction;
   Function clearSearchResults;
   Function navigateToCart;
@@ -326,14 +305,11 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel.build(
       {@required this.loadingStatusApp,
       @required this.selectedCategory,
-      @required this.freeFormItemsList,
       @required this.searchProductsQueryCompleted,
       @required this.closeSearchWindowAction,
       @required this.selectedMerchant,
       @required this.getSearchedProductsForMerchant,
       @required this.localCartListing,
-      @required this.addToCart,
-      @required this.removeFromCart,
       @required this.clearSearchResults,
       @required this.searchProductsForMerchant,
       @required this.navigateToCart})
@@ -341,7 +317,6 @@ class _ViewModel extends BaseModel<AppState> {
           loadingStatusApp,
           selectedMerchant,
           localCartListing,
-          freeFormItemsList,
           searchProductsForMerchant,
           selectedCategory,
           searchProductsQueryCompleted,
@@ -350,7 +325,6 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      freeFormItemsList: state.productState.localFreeFormCartItems,
       searchProductsQueryCompleted:
           state.productState.searchForProductsComplete,
       selectedCategory: state.productState.selectedCategory ??
@@ -358,16 +332,10 @@ class _ViewModel extends BaseModel<AppState> {
       searchProductsForMerchant: state.productState.searchResultProducts,
       loadingStatusApp: state.authState.loadingStatus,
       selectedMerchant: state.productState.selectedMerchant,
-      addToCart: (item, context) {
-        dispatch(AddToCartLocalAction(product: item, context: context));
-      },
-      removeFromCart: (item) {
-        dispatch(RemoveFromCartLocalAction(product: item));
-      },
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed('/CartView'));
       },
-      localCartListing: state.productState.localCartItems,
+      localCartListing: state.cartState.localCartItems,
       getSearchedProductsForMerchant: (queryText) {
         dispatch(GetItemsForMerchantProductSearch(
             merchantId: state.productState.selectedMerchant.businessId,
@@ -567,6 +535,7 @@ class _SearchProductListingItemViewState
                             ),
                             ProductCountWidget(
                               product: widget.item,
+                              selectedMerchant: snapshot.selectedMerchant,
                               isSku: false,
                             ),
                           ],
@@ -590,21 +559,5 @@ class _SearchProductListingItemViewState
     });
     debugPrint('Total count is $count');
     return count;
-  }
-
-  ///A convenience method to wrap the necessary information to the
-  ///[SkuBottomSheet] class and present it modally in a bottom sheet.
-  void handleActionForMultipleSkus(
-      {Product product, String storeName, int productIndex}) {
-    showModalBottomSheet(
-        context: context,
-        elevation: 3.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-              Radius.circular(AppSizes.bottomSheetBorderRadius)),
-        ),
-        builder: (context) => Container(
-              child: SkuBottomSheet(product: product),
-            ));
   }
 }

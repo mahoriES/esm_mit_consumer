@@ -1,6 +1,5 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
-import 'package:eSamudaay/modules/cart/views/cart_bottom_view.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
@@ -9,6 +8,7 @@ import 'package:eSamudaay/modules/store_details/views/product_catalog_view/widge
 import 'package:eSamudaay/modules/store_details/views/widgets/business_header_view.dart';
 import 'package:eSamudaay/modules/store_details/views/widgets/product_list_view.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -132,21 +132,7 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
                 ],
               ],
             ),
-            bottomSheet: AnimatedContainer(
-              height: (snapshot.localCartListing.isEmpty &&
-                      snapshot.freeFormItemsList.isEmpty)
-                  ? 0
-                  : 65.toHeight,
-              duration: Duration(milliseconds: 300),
-              child: BottomView(
-                height: (snapshot.localCartListing.isEmpty &&
-                        snapshot.freeFormItemsList.isEmpty)
-                    ? 0
-                    : 65.toHeight,
-                buttonTitle: tr('cart.view_cart'),
-                didPressButton: snapshot.navigateToCart,
-              ),
-            ),
+            bottomSheet: CartDetailsBottomSheet(),
           ),
         );
       },
@@ -160,9 +146,7 @@ class _ViewModel extends BaseModel<AppState> {
   LoadingStatusApp loadingStatus;
   Map<int, bool> isLoadingMore;
   Function(int) updateSelectedCategory;
-  Function navigateToCart;
   List<Product> localCartListing;
-  List<JITProduct> freeFormItemsList;
 
   _ViewModel();
 
@@ -172,13 +156,10 @@ class _ViewModel extends BaseModel<AppState> {
     this.loadingStatus,
     this.updateSelectedCategory,
     this.isLoadingMore,
-    this.navigateToCart,
-    this.freeFormItemsList,
     this.localCartListing,
   }) : super(equals: [
           loadingStatus,
           isLoadingMore,
-          freeFormItemsList,
           localCartListing,
         ]);
 
@@ -206,11 +187,7 @@ class _ViewModel extends BaseModel<AppState> {
             ? dispatch(GetSubCategoriesAction())
             : dispatch(GetAllProducts());
       },
-      freeFormItemsList: state.productState.localFreeFormCartItems,
-      navigateToCart: () {
-        dispatch(NavigateAction.pushNamed('/CartView'));
-      },
-      localCartListing: state.productState.localCartItems,
+      localCartListing: state.cartState.localCartItems,
     );
   }
 }

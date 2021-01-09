@@ -24,8 +24,8 @@ class LogoutAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     final pref = await SharedPreferences.getInstance();
     await pref.clear();
-    await CartDataSource.deleteAllMerchants();
-    await CartDataSource.deleteAll();
+    await CartDataSource.deleteCartMerchant();
+    await CartDataSource.deleteAllProducts();
     await UserManager.deleteUser();
     await UserManager.deleteAddress();
     PushNotificationsManager().signOut();

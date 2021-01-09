@@ -83,6 +83,7 @@ dependencies:
   uuid: ^2.2.2
   google_maps_webservice: ^0.0.18
   app_settings: ^4.0.4
+  flutter_image_compress: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -167,6 +168,8 @@ flutter:
     - assets/images/top_banner_placeholder.jpg
     - assets/images/profile_placeholder.png
     - assets/images/circle_tile_placeholder.png
+    - assets/images/cart_placeholder.png
+    - assets/images/Icon_list_upload.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

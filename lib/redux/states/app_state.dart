@@ -1,3 +1,4 @@
+import 'package:eSamudaay/redux/states/cart_state.dart';
 import 'package:eSamudaay/redux/states/components_loading_state.dart';
 import 'package:eSamudaay/redux/states/address_state.dart';
 import 'package:eSamudaay/redux/states/home_page_state.dart';
@@ -17,6 +18,7 @@ class AppState {
   final ComponentsLoadingState componentsLoadingState;
   final AddressState addressState;
   final String versionString;
+  final CartState cartState;
   final bool isInitializationDone;
 
   const AppState({
@@ -30,6 +32,7 @@ class AppState {
     this.videosState,
     this.addressState,
     this.versionString,
+    this.cartState,
   });
 
   static AppState fromJson(dynamic json) => AppState(
@@ -55,6 +58,7 @@ class AppState {
         homeCategoriesState: LandingPageComponentsState.initial(),
         addressState: AddressState.initial(),
         versionString: "",
+        cartState: CartState.initial(),
       );
 
   AppState copyWith({
@@ -68,6 +72,7 @@ class AppState {
     VideosState videosState,
     AddressState addressState,
     String versionString,
+    CartState cartState,
   }) {
     return AppState(
       isInitializationDone: isInitializationDone ?? this.isInitializationDone,
@@ -81,6 +86,7 @@ class AppState {
       videosState: videosState ?? this.videosState,
       addressState: addressState ?? this.addressState,
       versionString: versionString ?? this.versionString,
+      cartState: cartState ?? this.cartState,
     );
   }
 
@@ -99,7 +105,8 @@ class AppState {
           componentsLoadingState == other.componentsLoadingState &&
           addressState == other.addressState &&
           versionString == other.versionString &&
-          isInitializationDone == other.isInitializationDone;
+          isInitializationDone == other.isInitializationDone &&
+          cartState == other.cartState;
 
   @override
   int get hashCode =>

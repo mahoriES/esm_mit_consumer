@@ -36,6 +36,7 @@ class ChangeAddressBottomSheet extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 24.toWidth),
                 child: TopTile(tr("address_picker.select_an_address")),
               ),
+              SizedBox(height: 12.toHeight),
               Expanded(
                 child: MultipleAddressWidget(
                   onTapOnAddress: (address) {

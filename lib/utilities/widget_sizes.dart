@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class AppSizes {
   static const widgetPadding = 15.0;
   static const separatorHeight = 0.3;
@@ -16,7 +14,7 @@ class AppSizes {
   static const adjustableFontTitleSize = 20.0;
   static const sliverPadding = 10.0;
   static const adjustableWidgetPadding = 20.0;
-  static const cartTotalBottomViewHeight = 86.0;
+  static const cartTotalBottomViewHeight = 65.0;
   static const productItemBorderRadius = 20.0;
   static const productItemIconSize = 30.0;
   static const productItemImageSize = 500.0;
