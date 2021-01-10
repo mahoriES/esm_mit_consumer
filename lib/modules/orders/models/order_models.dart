@@ -191,8 +191,6 @@ class RazorpayCheckoutOptions extends Equatable {
     checkoutOptions['description'] = description;
     checkoutOptions['send_sms_hash'] = true;
     checkoutOptions['readonly'] = {
-      'contact': true,
-      'email': true,
       'name': true
     };
     checkoutOptions['prefill'] = {
