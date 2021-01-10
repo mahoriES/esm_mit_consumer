@@ -23,7 +23,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:upi_india/upi_india.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
@@ -35,7 +34,6 @@ class OrdersView extends StatefulWidget {
 
 class _OrdersViewState extends State<OrdersView> {
 
-  List<UpiApp> apps;
   ScrollController _scrollController = new ScrollController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -98,7 +96,6 @@ class _OrdersViewState extends State<OrdersView> {
             onInit: (store) {
               store.dispatch(
                   GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
-              store.dispatch(GetUPIAppsAction());
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(

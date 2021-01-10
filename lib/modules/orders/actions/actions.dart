@@ -15,7 +15,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:upi_pay/upi_pay.dart';
 
 class GetOrderListAPIAction extends ReduxAction<AppState> {
   final String orderRequestApi;
@@ -339,15 +338,6 @@ class OrderSupportAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() {
     return state.copyWith(
         productState: state.productState.copyWith(supportOrder: orderId));
-  }
-}
-
-class GetUPIAppsAction extends ReduxAction<AppState> {
-  @override
-  FutureOr<AppState> reduce() async {
-    List<ApplicationMeta> apps = await UpiPay.getInstalledUpiApplications();
-    return state.copyWith(
-        productState: state.productState.copyWith(upiApps: apps));
   }
 }
 

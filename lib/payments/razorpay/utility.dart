@@ -200,7 +200,7 @@ class RazorpayUtility {
   /// Called on the singleton [Razorpay] instance to clear all the event listeners
   /// added in the initialisation method.
   ///
-  static void clear() {
+  void clear() {
     _razorpay.clear();
   }
 

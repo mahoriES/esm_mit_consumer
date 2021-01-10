@@ -61,10 +61,7 @@ dependencies:
   flutter_staggered_animations: ^0.1.2
   status_alert: ^0.1.2
   dropdown_formfield: ^0.1.2
-  flutter_upi: ^0.0.2
-  upi_pay: ^0.2.2
   smooth_page_indicator: ^0.2.0
-  upi_india: ^2.1.2
   package_info: ^0.4.0+16
   location: ^3.0.2
   fm_fit: ^0.0.3
