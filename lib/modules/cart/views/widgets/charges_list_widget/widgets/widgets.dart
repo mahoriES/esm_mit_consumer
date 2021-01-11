@@ -1,12 +1,16 @@
-part of "../charges_list_widget.dart";
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
-class _ChargesListTile extends StatelessWidget {
+class ChargesListTile extends StatelessWidget {
   final String chargeName;
   final double price;
   final TextStyle style;
   final VoidCallback onTap;
 
-  const _ChargesListTile({
+  const ChargesListTile({
     @required this.chargeName,
     @required this.price,
     this.style,
@@ -41,8 +45,8 @@ class _ChargesListTile extends StatelessWidget {
   }
 }
 
-class _DeliveryChargeInfoCard extends StatelessWidget {
-  const _DeliveryChargeInfoCard({Key key}) : super(key: key);
+class DeliveryChargeInfoCard extends StatelessWidget {
+  const DeliveryChargeInfoCard({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +67,14 @@ class _DeliveryChargeInfoCard extends StatelessWidget {
   }
 }
 
-class _MerchantChargesInfoCard extends StatelessWidget {
+class MerchantChargesInfoCard extends StatelessWidget {
   final double packingCharge;
   final double serviceCharge;
-  const _MerchantChargesInfoCard({
+  final double extraCharge;
+  const MerchantChargesInfoCard({
     @required this.packingCharge,
     @required this.serviceCharge,
+    @required this.extraCharge,
     Key key,
   }) : super(key: key);
 
@@ -94,15 +100,21 @@ class _MerchantChargesInfoCard extends StatelessWidget {
               height: 4,
             ),
             const SizedBox(height: 4),
-            _ChargesListTile(
+            ChargesListTile(
               chargeName: tr("cart.packing_charges"),
               price: packingCharge,
               style: CustomTheme.of(context).textStyles.body2Faded,
             ),
             const SizedBox(height: 4),
-            _ChargesListTile(
+            ChargesListTile(
               chargeName: tr("cart.service_charges"),
               price: serviceCharge,
+              style: CustomTheme.of(context).textStyles.body2Faded,
+            ),
+            const SizedBox(height: 4),
+            ChargesListTile(
+              chargeName: tr("cart.extra_charges"),
+              price: extraCharge,
               style: CustomTheme.of(context).textStyles.body2Faded,
             ),
           ],

@@ -5,6 +5,7 @@ import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/merchant_address_row.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
+import 'package:eSamudaay/utilities/generic_methods.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
@@ -165,7 +166,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                           scalingUnitaryValue: separatorPaddingAnimation),
                       MerchantAddressRow(
                         onOpenMap: () {
-                          openMap(widget.locationPoint?.lat,
+                          CommonMethods.openMap(widget.locationPoint?.lat,
                               widget.locationPoint?.lon);
                         },
                         onContactMerchant: widget.onContactMerchant,
@@ -184,20 +185,6 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
         ),
       ),
     );
-  }
-
-  static Future<void> openMap(double latitude, double longitude) async {
-    if (latitude == null || longitude == null) {
-      Fluttertoast.showToast(msg: tr('store_home.no_location'));
-      return;
-    }
-    String googleUrl =
-        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    if (await canLaunch(googleUrl)) {
-      await launch(googleUrl);
-    } else {
-      Fluttertoast.showToast(msg: tr('store_home.error_map'));
-    }
   }
 
   Widget buildMerchantTitleRowWithActions(String businessName) {
@@ -219,7 +206,9 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                BookmarkButton(businessId: widget.businessId,),
+                BookmarkButton(
+                  businessId: widget.businessId,
+                ),
                 ShareBusinessActionButton(onShare: widget.onShareMerchant),
               ],
             ),
@@ -243,7 +232,8 @@ class eSamudaayAnimatedLogo extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircularAppLogo(scaledHeight: scaledHeight, currentHeight: animation.value);
+    return CircularAppLogo(
+        scaledHeight: scaledHeight, currentHeight: animation.value);
   }
 }
 

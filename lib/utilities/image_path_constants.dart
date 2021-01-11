@@ -10,4 +10,5 @@ class ImagePathConstants {
   static const locationPointerImage = _prefix + "location2.png";
   static const emptyCartImage = _prefix + "cart_placeholder.png";
   static const listUploadIcon = _prefix + "Icon_list_upload.png";
+  static const categoryPlaceHolder = _prefix + "category_placeholder.png";
 }

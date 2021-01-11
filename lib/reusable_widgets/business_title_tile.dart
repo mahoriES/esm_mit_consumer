@@ -4,7 +4,7 @@ import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/business_delivery_status_widget.dart';
 import 'package:eSamudaay/reusable_widgets/merchant_core_widget_classes/merchant_address_row.dart';
 import 'package:eSamudaay/utilities/colors.dart';
-import 'package:eSamudaay/utilities/size_config.dart';
+import 'business_image_with_logo.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/mixins/merchant_components_mixin.dart';
@@ -76,7 +76,7 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
               )),
           GestureDetector(
               onTap: widget.onShowMerchantInfo,
-              child: buildMerchantDPTitle(widget.businessImageUrl)),
+              child: BusinessImageWithLogo(imageUrl: widget.businessImageUrl)),
           const SizedBox(
             width: AppSizes.separatorPadding / 2,
           ),
@@ -137,39 +137,6 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
                 deliveryStatus: widget.isDeliveryAvailable,
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildMerchantDPTitle(String imageUrl) {
-    return SizedBox(
-      height: 0.217 * SizeConfig.screenWidth,
-      width: 0.217 * SizeConfig.screenWidth,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              height: 0.168 * SizeConfig.screenWidth,
-              width: 0.168 * SizeConfig.screenWidth,
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: const ShapeDecoration(shape: CircleBorder()),
-                child: CachedNetworkImage(
-                  errorWidget: (_, __, ___) =>
-                      Image.asset('assets/images/shop1.png'),
-                  imageUrl: imageUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: eSamudaayLogo(scaledHeight: 0.093 * SizeConfig.screenWidth),
           ),
         ],
       ),

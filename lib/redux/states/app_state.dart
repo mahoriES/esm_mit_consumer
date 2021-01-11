@@ -2,6 +2,7 @@ import 'package:eSamudaay/redux/states/cart_state.dart';
 import 'package:eSamudaay/redux/states/components_loading_state.dart';
 import 'package:eSamudaay/redux/states/address_state.dart';
 import 'package:eSamudaay/redux/states/home_page_state.dart';
+import 'package:eSamudaay/redux/states/orders_state.dart';
 import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/redux/states/videos_state.dart';
@@ -19,6 +20,7 @@ class AppState {
   final AddressState addressState;
   final String versionString;
   final CartState cartState;
+  final OrdersState ordersState;
   final bool isInitializationDone;
 
   const AppState({
@@ -33,6 +35,7 @@ class AppState {
     this.addressState,
     this.versionString,
     this.cartState,
+    this.ordersState,
   });
 
   static AppState fromJson(dynamic json) => AppState(
@@ -59,6 +62,7 @@ class AppState {
         addressState: AddressState.initial(),
         versionString: "",
         cartState: CartState.initial(),
+        ordersState: OrdersState.initial(),
       );
 
   AppState copyWith({
@@ -73,6 +77,7 @@ class AppState {
     AddressState addressState,
     String versionString,
     CartState cartState,
+    OrdersState ordersState,
   }) {
     return AppState(
       isInitializationDone: isInitializationDone ?? this.isInitializationDone,
@@ -87,6 +92,7 @@ class AppState {
       addressState: addressState ?? this.addressState,
       versionString: versionString ?? this.versionString,
       cartState: cartState ?? this.cartState,
+      ordersState: ordersState ?? this.ordersState,
     );
   }
 
@@ -105,7 +111,8 @@ class AppState {
           isLoading == other.isLoading &&
           addressState == other.addressState &&
           versionString == other.versionString &&
-          cartState == other.cartState;
+          cartState == other.cartState &&
+          ordersState == other.ordersState;
 
   @override
   int get hashCode => authState.hashCode;

@@ -1,11 +1,19 @@
+import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DeliveryType {
   static const String DeliveryToHome = "DA_DELIVERY";
   static const String StorePickup = "SELF_PICK_UP";
+}
+
+class ProductStatus {
+  static const String Available = "IS_AVAILABLE";
+  static const String NotAvailable = "NOT_IN_STOCK";
 }
 
 class ItemsEnhanced {
@@ -107,41 +115,44 @@ class PlaceOrderResponse {
   List<String> customerPhones;
   List<OrderItems> orderItems;
   List<FreeFormOrderItems> freeFormOrderItems;
-  List<OtherChargesDetail> otherChargesDetail;
+  CartCharges otherChargesDetail;
   List<OrderTrail> orderTrail;
   List<String> customerNoteImages;
   String created;
   String modified;
   Rating rating;
   PaymentInfo paymentInfo;
+  String cancellationNote;
 
-  PlaceOrderResponse(
-      {this.deliveryCharges,
-      this.orderId,
-      this.customerNoteImages,
-      this.freeFormOrderItems,
-      this.paymentInfo,
-      this.orderShortNumber,
-      this.deliveryType,
-      this.orderStatus,
-      this.itemTotal,
-      this.otherCharges,
-      this.orderTotal,
-      this.businessImages,
-      this.businessName,
-      this.clusterName,
-      this.customerName,
-      this.pickupAddress,
-      this.deliveryAdress,
-      this.businessPhones,
-      this.customerPhones,
-      this.orderItems,
-      this.otherChargesDetail,
-      this.orderTrail,
-      this.created,
-      this.modified,
-      this.rating,
-      this.businessId});
+  PlaceOrderResponse({
+    this.deliveryCharges,
+    this.orderId,
+    this.customerNoteImages,
+    this.freeFormOrderItems,
+    this.paymentInfo,
+    this.orderShortNumber,
+    this.deliveryType,
+    this.orderStatus,
+    this.itemTotal,
+    this.otherCharges,
+    this.orderTotal,
+    this.businessImages,
+    this.businessName,
+    this.clusterName,
+    this.customerName,
+    this.pickupAddress,
+    this.deliveryAdress,
+    this.businessPhones,
+    this.customerPhones,
+    this.orderItems,
+    this.otherChargesDetail,
+    this.orderTrail,
+    this.created,
+    this.modified,
+    this.rating,
+    this.businessId,
+    this.cancellationNote,
+  });
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
@@ -199,10 +210,7 @@ class PlaceOrderResponse {
       });
     }
     if (json['other_charges_detail'] != null) {
-      otherChargesDetail = new List<OtherChargesDetail>();
-      json['other_charges_detail'].forEach((v) {
-        otherChargesDetail.add(new OtherChargesDetail.fromJson(v));
-      });
+      otherChargesDetail = CartCharges.fromJson(json['other_charges_detail']);
     }
     if (json['order_trail'] != null) {
       orderTrail = new List<OrderTrail>();
@@ -216,6 +224,46 @@ class PlaceOrderResponse {
     modified = json['modified'];
     rating =
         json['rating'] != null ? new Rating.fromJson(json['rating']) : null;
+    cancellationNote = json["cancellation_note"] ?? "";
+  }
+
+  String get createdTime => DateFormat('hh:mm a').format(
+        DateTime.parse(this.created).toLocal(),
+      );
+
+  String get createdDate => DateFormat('d MMM yyyy').format(
+        DateTime.parse(this.created).toLocal(),
+      );
+
+  String get businessContactNumber => this.businessPhones == null
+      ? null
+      : this.businessPhones.isEmpty
+          ? null
+          : this.businessPhones.first;
+
+  String get businessImageUrl => this.businessImages == null
+      ? null
+      : this.businessImages.isEmpty
+          ? null
+          : this.businessImages.first.photoUrl;
+
+  bool get isOrderAlreadyRated => this.rating.ratingValue != null;
+
+  String get totalCountString {
+    int _productsCount = this.orderItems?.length ?? 0;
+    int _customerNoteImagesCount = this.customerNoteImages?.length ?? 0;
+    int _totalCount = _productsCount + _customerNoteImagesCount;
+    if (_totalCount == 0) return "";
+    return (_productsCount > 0
+            ? ("$_productsCount " +
+                tr("cart.${_productsCount > 1 ? 'items' : 'item'}"))
+            : "") +
+        ((_productsCount > 0 && _customerNoteImagesCount > 0) ? " , " : "") +
+        (_customerNoteImagesCount > 0
+            ? ("$_customerNoteImagesCount " +
+                tr("cart.${_customerNoteImagesCount > 1 ? 'lists' : 'list'}"))
+            : "") +
+        " ";
   }
 
   Map<String, dynamic> toJson() {
@@ -252,8 +300,7 @@ class PlaceOrderResponse {
           this.freeFormOrderItems.map((e) => e.toJson()).toList();
     }
     if (this.otherChargesDetail != null) {
-      data['other_charges_detail'] =
-          this.otherChargesDetail.map((v) => v.toJson()).toList();
+      data['other_charges_detail'] = this.otherChargesDetail.toJson();
     }
     if (this.orderTrail != null) {
       data['order_trail'] = this.orderTrail.map((v) => v.toJson()).toList();
@@ -266,6 +313,7 @@ class PlaceOrderResponse {
     if (this.paymentInfo != null) {
       data['payment_info'] = this.paymentInfo.toJson();
     }
+    data["cancellation_note"] = this.cancellationNote;
     return data;
   }
 }
@@ -350,6 +398,18 @@ class PickupAddress {
     }
     return data;
   }
+
+  String get addressString {
+    String _house = this.geoAddr?.house;
+    String _landmark = this.geoAddr?.landmark;
+    String _address = this.prettyAddress;
+
+    return (_house == null ? "" : "$_house, ") +
+        (_address ?? "") +
+        (_landmark == null
+            ? ""
+            : ("\n" + "${tr('cart.landmark')} : $_landmark"));
+  }
 }
 
 class LocationPoint {
@@ -372,21 +432,41 @@ class LocationPoint {
 }
 
 class GeoAddr {
-  String city;
   String pincode;
+  String city;
+  String landmark;
+  String house;
 
-  GeoAddr({this.city, this.pincode});
+  GeoAddr({this.pincode, this.city, this.house, this.landmark});
 
   GeoAddr.fromJson(Map<String, dynamic> json) {
-    city = json['city'];
     pincode = json['pincode'];
+    city = json['city'];
+    landmark = json['landmark'];
+    house = json['house'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['city'] = this.city;
     data['pincode'] = this.pincode;
+    data['city'] = this.city;
+    data['landmark'] = this.landmark;
+    data['house'] = this.house;
     return data;
+  }
+
+  copyWith({
+    String pincode,
+    String city,
+    String landmark,
+    String house,
+  }) {
+    return GeoAddr(
+      pincode: pincode ?? this.pincode,
+      city: city ?? this.city,
+      landmark: landmark ?? this.landmark,
+      house: house ?? this.house,
+    );
   }
 }
 
@@ -508,6 +588,11 @@ class OrderItems {
     //     ? new SkuCharges.fromJson(json['sku_charges'])
     //     : null;
   }
+
+  double get totalPriceOfItem {
+    double _unitPriceInRupees = this.unitPrice / 100;
+    return this.quantity * _unitPriceInRupees;
+  }
 }
 
 class VariationOption {
@@ -516,12 +601,12 @@ class VariationOption {
   VariationOption({this.size});
 
   VariationOption.fromJson(Map<String, dynamic> json) {
-    size = json['Size'];
+    size = json['Weight'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Size'] = this.size;
+    data['Weight'] = this.size;
     return data;
   }
 }
@@ -545,24 +630,24 @@ class SkuCharges {
   }
 }
 
-class OtherChargesDetail {
-  String name;
-  int value;
+// class OtherChargesDetail {
+//   String name;
+//   int value;
 
-  OtherChargesDetail({this.name, this.value});
+//  OtherChargesDetail({this.name, this.value, this.amountInRupees});
 
-  OtherChargesDetail.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    value = json['value'];
-  }
+//  OtherChargesDetail.fromJson(Map<String, dynamic> json) {
+//    name = json['name'];
+//     value = json['value'];
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['value'] = this.value;
-    return data;
-  }
-}
+//  Map<String, dynamic> toJson() {
+//    final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['name'] = this.name;
+//     data['value'] = this.value;
+//    return data;
+//   }
+// }
 
 class OrderTrail {
   String eventName;

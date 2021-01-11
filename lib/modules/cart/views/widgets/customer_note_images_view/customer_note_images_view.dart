@@ -1,20 +1,15 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
-import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/image_picker_dialog.dart';
-import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-
-part "widgets/widgets.dart";
+import 'package:eSamudaay/modules/cart/views/widgets/customer_note_images_view/widgets/widgets.dart';
 
 class CartCustomerNoteImagesWidget extends StatelessWidget {
   const CartCustomerNoteImagesWidget({Key key}) : super(key: key);
@@ -36,9 +31,12 @@ class CartCustomerNoteImagesWidget extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               if (snapshot.customerNoteImagesCount == 0) ...[
-                _PlaceHolder(),
+                CustomerNoteImagePlaceHolder(),
               ] else ...[
-                _ImageList(snapshot),
+                CustomerNoteImageView(
+                  customerNoteImages: snapshot.customerNoteImages,
+                  onRemove: snapshot.removeCustomerNoteImage,
+                ),
               ],
               const SizedBox(height: 16),
               ActionButton(

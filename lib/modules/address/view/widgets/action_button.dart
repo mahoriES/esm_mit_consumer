@@ -7,16 +7,42 @@ class ActionButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final bool isDisabled;
+  final Color textColor;
+  final Color buttonColor;
+  final bool isFilled;
+  final bool showBorder;
+  final TextStyle textStyle;
   const ActionButton({
     @required this.text,
     this.icon,
     @required this.onTap,
-    @required this.isDisabled,
+    this.isDisabled = false,
+    this.textColor,
+    this.buttonColor,
+    this.isFilled = false,
+    this.showBorder = true,
+    this.textStyle,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Color _tempButtonColor = !showBorder
+        ? Colors.transparent
+        : isDisabled
+            ? CustomTheme.of(context).colors.placeHolderColor
+            : (buttonColor ?? CustomTheme.of(context).colors.primaryColor);
+
+    final Color _tempTextColor = isDisabled
+        ? CustomTheme.of(context).colors.disabledAreaColor
+        : (textColor ?? CustomTheme.of(context).colors.primaryColor);
+
+    final Color _tempBackgroundColor = isDisabled
+        ? CustomTheme.of(context).colors.placeHolderColor
+        : isFilled
+            ? (buttonColor ?? CustomTheme.of(context).colors.primaryColor)
+            : CustomTheme.of(context).colors.backgroundColor;
+
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
@@ -24,15 +50,11 @@ class ActionButton extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 14.toHeight),
           decoration: BoxDecoration(
-            color: isDisabled
-                ? CustomTheme.of(context).colors.placeHolderColor
-                : CustomTheme.of(context).colors.backgroundColor,
-            border: isDisabled
-                ? null
-                : Border.all(
-                    color: CustomTheme.of(context).colors.primaryColor,
-                    width: 2,
-                  ),
+            color: _tempBackgroundColor,
+            border: Border.all(
+              color: _tempButtonColor,
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
@@ -42,9 +64,7 @@ class ActionButton extends StatelessWidget {
                 Flexible(
                   child: Icon(
                     icon,
-                    color: isDisabled
-                        ? CustomTheme.of(context).colors.disabledAreaColor
-                        : CustomTheme.of(context).colors.primaryColor,
+                    color: _tempTextColor,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -53,17 +73,12 @@ class ActionButton extends StatelessWidget {
                 child: FittedBox(
                   child: Text(
                     text,
-                    style: CustomTheme.of(context)
-                        .textStyles
-                        .sectionHeading2
-                        .copyWith(
-                          color: isDisabled
-                              ? CustomTheme.of(context).colors.disabledAreaColor
-                              : CustomTheme.of(context).colors.primaryColor,
-                        ),
+                    style: (textStyle ??
+                            CustomTheme.of(context).textStyles.sectionHeading2)
+                        .copyWith(color: _tempTextColor),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

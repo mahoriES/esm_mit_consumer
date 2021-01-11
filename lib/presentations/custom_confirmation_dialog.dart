@@ -12,15 +12,17 @@ class CustomConfirmationDialog extends StatelessWidget {
   final VoidCallback negativeAction;
   final Color actionButtonColor;
   final IconData positiveButtonIcon;
+  final Widget content;
   const CustomConfirmationDialog({
     @required this.title,
-    @required this.message,
+    this.message,
     @required this.positiveAction,
     @required this.positiveButtonText,
     this.negativeButtonText,
     this.negativeAction,
     this.actionButtonColor,
     this.positiveButtonIcon,
+    this.content,
     Key key,
   }) : super(key: key);
 
@@ -63,6 +65,7 @@ class CustomConfirmationDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 25.toHeight),
               ],
+              if (content != null) ...{content},
               Row(
                 children: [
                   // Negative button is not required as some of the dialogues may not have it in design.

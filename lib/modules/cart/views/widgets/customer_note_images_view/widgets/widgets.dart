@@ -1,8 +1,22 @@
-part of "../customer_note_images_view.dart";
+import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
+import 'package:eSamudaay/routes/routes.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 
-class _ImageList extends StatelessWidget {
-  final _ViewModel snapshot;
-  const _ImageList(this.snapshot, {Key key}) : super(key: key);
+class CustomerNoteImageView extends StatelessWidget {
+  final List<String> customerNoteImages;
+  final Function(int) onRemove;
+  final bool showRemoveButton;
+  const CustomerNoteImageView({
+    @required this.customerNoteImages,
+    @required this.onRemove,
+    this.showRemoveButton = true,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,16 +25,16 @@ class _ImageList extends StatelessWidget {
         Container(
           width: double.infinity,
           height: 176,
-          child: snapshot.customerNoteImagesCount <= 3
+          child: customerNoteImages.length <= 3
               ? Row(
                   children: List.generate(
-                    snapshot.customerNoteImagesCount,
+                    customerNoteImages.length,
                     (index) => Expanded(
                       child: _CustomCachedImage(
-                        url: snapshot.customerNoteImages[index],
-                        onRemove: () => snapshot.removeCustomerNoteImage(index),
-                        showMargin:
-                            index != snapshot.customerNoteImagesCount - 1,
+                        url: customerNoteImages[index],
+                        onRemove: () => onRemove(index),
+                        showMargin: index != customerNoteImages.length - 1,
+                        showRemoveButton: showRemoveButton,
                       ),
                     ),
                   ),
@@ -28,12 +42,13 @@ class _ImageList extends StatelessWidget {
               : ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: snapshot.customerNoteImagesCount,
+                  itemCount: customerNoteImages.length,
                   itemBuilder: (context, index) => _CustomCachedImage(
-                    url: snapshot.customerNoteImages[index],
+                    url: customerNoteImages[index],
                     width: 96,
-                    onRemove: () => snapshot.removeCustomerNoteImage(index),
-                    showMargin: index != snapshot.customerNoteImagesCount - 1,
+                    onRemove: () => onRemove(index),
+                    showMargin: index != (customerNoteImages.length - 1),
+                    showRemoveButton: showRemoveButton,
                   ),
                 ),
         ),
@@ -43,15 +58,17 @@ class _ImageList extends StatelessWidget {
             Text(
               tr(
                 "cart.n_images_added",
-                args: [snapshot.customerNoteImagesCount.toString()],
+                args: [customerNoteImages.length.toString()],
               ),
               style: CustomTheme.of(context).textStyles.cardTitle,
             ),
             Spacer(),
-            Text(
-              tr("cart.max_images"),
-              style: CustomTheme.of(context).textStyles.cardTitle,
-            ),
+            if (showRemoveButton) ...{
+              Text(
+                tr("cart.max_images"),
+                style: CustomTheme.of(context).textStyles.cardTitle,
+              ),
+            }
           ],
         ),
       ],
@@ -64,9 +81,11 @@ class _CustomCachedImage extends StatelessWidget {
   final double width;
   final VoidCallback onRemove;
   final bool showMargin;
+  final bool showRemoveButton;
   const _CustomCachedImage({
     @required this.url,
     @required this.onRemove,
+    @required this.showRemoveButton,
     this.width,
     this.showMargin = true,
     Key key,
@@ -101,45 +120,49 @@ class _CustomCachedImage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: InkWell(
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (context) => CustomConfirmationDialog(
-                    title: tr("cart.delete_image_alert_title"),
-                    message: tr("cart.delete_image_alert_message"),
-                    positiveButtonText: tr("address_picker.delete"),
-                    positiveAction: () {
-                      Navigator.pop(context);
-                      onRemove();
-                    },
-                    actionButtonColor:
-                        CustomTheme.of(context).colors.secondaryColor,
-                    positiveButtonIcon: Icons.delete,
-                    negativeButtonText: tr("screen_account.cancel"),
-                    negativeAction: () => Navigator.pop(context),
-                  ),
-                ),
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Container(
-                    height: 24,
-                    width: 24,
-                    child: Center(
-                      child: Icon(
-                        Icons.delete,
-                        color: CustomTheme.of(context).colors.disabledAreaColor,
-                        size: 15,
+            child: showRemoveButton
+                ? Align(
+                    alignment: Alignment.bottomRight,
+                    child: InkWell(
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => CustomConfirmationDialog(
+                          title: tr("cart.delete_image_alert_title"),
+                          message: tr("cart.delete_image_alert_message"),
+                          positiveButtonText: tr("address_picker.delete"),
+                          positiveAction: () {
+                            Navigator.pop(context);
+                            onRemove();
+                          },
+                          actionButtonColor:
+                              CustomTheme.of(context).colors.secondaryColor,
+                          positiveButtonIcon: Icons.delete,
+                          negativeButtonText: tr("screen_account.cancel"),
+                          negativeAction: () => Navigator.pop(context),
+                        ),
+                      ),
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Container(
+                          height: 24,
+                          width: 24,
+                          child: Center(
+                            child: Icon(
+                              Icons.delete,
+                              color: CustomTheme.of(context)
+                                  .colors
+                                  .disabledAreaColor,
+                              size: 15,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-            ),
+                  )
+                : SizedBox.shrink(),
           ),
           errorWidget: (_, __, ___) => SizedBox.shrink(),
           placeholder: (_, __) => CupertinoActivityIndicator(),
@@ -149,8 +172,8 @@ class _CustomCachedImage extends StatelessWidget {
   }
 }
 
-class _PlaceHolder extends StatelessWidget {
-  const _PlaceHolder({Key key}) : super(key: key);
+class CustomerNoteImagePlaceHolder extends StatelessWidget {
+  const CustomerNoteImagePlaceHolder({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
