@@ -3,7 +3,9 @@ import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +58,14 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                       const SizedBox(width: 16),
                       Flexible(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(Icons.pin_drop),
+                            Icon(
+                              Icons.pin_drop,
+                              color: CustomTheme.of(context)
+                                  .colors
+                                  .disabledAreaColor,
+                            ),
                             const SizedBox(width: 12),
                             Flexible(
                               child: Text.rich(
@@ -87,26 +95,43 @@ class OrderDetailsBottomWidget extends StatelessWidget {
               : Container(
                   padding: EdgeInsets.symmetric(horizontal: 26, vertical: 16),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       orderDetails.orderStatus == OrderState.PICKED_UP_BY_DA
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.phone_outlined,
-                                  color: CustomTheme.of(context)
-                                      .colors
-                                      .primaryColor,
+                          ? InkWell(
+                              onTap: () => showModalBottomSheet(
+                                context: context,
+                                elevation: 3.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(9),
+                                    topRight: Radius.circular(9),
+                                  ),
                                 ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  tr("screen_order.contact_delivery_person")
-                                      .toUpperCase(),
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .body2BoldPrimary,
+                                builder: (context) => ContactOptionsWidget(
+                                  name: "",
+                                  phoneNumber: "",
                                 ),
-                              ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.phone_outlined,
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    tr("screen_order.contact_delivery_person")
+                                        .toUpperCase(),
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .body2BoldPrimary,
+                                  ),
+                                ],
+                              ),
                             )
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -134,19 +159,19 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                       const SizedBox(width: 16),
                       Flexible(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Icon(
                               Icons.pin_drop,
                               color: CustomTheme.of(context)
                                   .colors
-                                  .placeHolderColor,
+                                  .disabledAreaColor,
                             ),
                             const SizedBox(width: 12),
                             Flexible(
                               child: Text.rich(
                                 TextSpan(
-                                  text: tr("screen_order.delivering_to_home") +
-                                      "\n",
+                                  text: tr("screen_order.home") + "\n",
                                   style: CustomTheme.of(context)
                                       .textStyles
                                       .sectionHeading2,
@@ -175,8 +200,18 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                 text: stateData.actionButtonText,
                 onTap: () {
                   if (orderDetails.orderStatus == OrderState.MERCHANT_UPDATED) {
-                    Navigator.pop(context);
-                    snapshot.confirmOrder(orderDetails.orderId);
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomConfirmationDialog(
+                        title: tr("screen_order.accept_order") + "?",
+                        positiveAction: () {
+                          Navigator.pop(context);
+                          snapshot.confirmOrder(orderDetails.orderId);
+                        },
+                        positiveButtonText: tr("common.continue"),
+                        negativeButtonText: tr("common.cancel"),
+                      ),
+                    );
                   }
                 },
                 icon: stateData.icon,

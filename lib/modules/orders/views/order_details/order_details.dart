@@ -52,13 +52,12 @@ class OrderDetailsView extends StatelessWidget {
               ),
             ],
           ),
-          bottomSheet: snapshot.isLoading == LoadingStatusApp.loading ||
-                  snapshot.isLoading == LoadingStatusApp.error
+          bottomSheet: snapshot.isLoading || snapshot.hasError
               ? SizedBox.shrink()
               : OrderDetailsBottomWidget(snapshot.orderDetails),
-          body: snapshot.isLoading == LoadingStatusApp.loading
+          body: snapshot.isLoading
               ? LoadingIndicator()
-              : snapshot.isLoading == LoadingStatusApp.error
+              : snapshot.hasError
                   ? Center(child: GenericErrorView(snapshot.getOrderDetails))
                   : SingleChildScrollView(
                       child: Column(
@@ -81,7 +80,8 @@ class OrderDetailsView extends StatelessWidget {
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
-  LoadingStatusApp isLoading;
+  bool isLoading;
+  bool hasError;
   PlaceOrderResponse selectedOrder;
   PlaceOrderResponse orderDetails;
   Function(int) rateOrder;
@@ -89,6 +89,7 @@ class _ViewModel extends BaseModel<AppState> {
 
   _ViewModel.build({
     this.isLoading,
+    this.hasError,
     this.selectedOrder,
     this.orderDetails,
     this.rateOrder,
@@ -98,7 +99,10 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      isLoading: state.ordersState.isLoadingOrderDetails,
+      isLoading:
+          state.ordersState.isLoadingOrderDetails == LoadingStatusApp.loading,
+      hasError:
+          state.ordersState.isLoadingOrderDetails == LoadingStatusApp.error,
       selectedOrder: state.ordersState.selectedOrderForDetails,
       orderDetails: state.ordersState.selectedOrderDetailsResponse,
       getOrderDetails: () => dispatch(

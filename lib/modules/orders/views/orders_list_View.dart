@@ -41,10 +41,10 @@ class _OrdersViewState extends State<OrdersView> {
         builder: (context, snapshot) {
           return ModalProgressHUD(
             progressIndicator: LoadingIndicator(),
-            inAsyncCall: snapshot.isLoading == LoadingStatusApp.loading,
-            child: snapshot.isLoading == LoadingStatusApp.loading
+            inAsyncCall: snapshot.isLoading,
+            child: snapshot.isLoading
                 ? SizedBox.shrink()
-                : snapshot.isLoading == LoadingStatusApp.error
+                : snapshot.hasError
                     ? GenericErrorView(() => snapshot.fetchOrdersList())
                     : (snapshot.isOrdersListEmpty)
                         ? NoOrdersView()
@@ -91,18 +91,18 @@ class _OrdersViewState extends State<OrdersView> {
 
 class _ViewModel extends BaseModel<AppState> {
   GetOrderListResponse getOrderListResponse;
-  Function(PlaceOrderResponse) goToOrderDetails;
-  LoadingStatusApp isLoading;
-  LoadingStatusApp isLoadingNextPage;
+  bool isLoading;
+  bool isLoadingNextPage;
+  bool hasError;
   Future Function({String url}) fetchOrdersList;
 
   _ViewModel();
 
   _ViewModel.build({
     this.getOrderListResponse,
-    this.goToOrderDetails,
     this.isLoading,
     this.isLoadingNextPage,
+    this.hasError,
     this.fetchOrdersList,
   }) : super(equals: [getOrderListResponse, isLoading, isLoadingNextPage]);
 
@@ -114,13 +114,12 @@ class _ViewModel extends BaseModel<AppState> {
           GetOrderListAPIAction(urlForNextPageResponse: url),
         );
       },
-      isLoading: state.ordersState.isLoadingOrdersList,
-      isLoadingNextPage: state.ordersState.isLoadingNextPage,
+      isLoading:
+          state.ordersState.isLoadingOrdersList == LoadingStatusApp.loading,
+      hasError: state.ordersState.isLoadingOrdersList == LoadingStatusApp.error,
+      isLoadingNextPage:
+          state.ordersState.isLoadingNextPage == LoadingStatusApp.loading,
       getOrderListResponse: state.ordersState.getOrderListResponse,
-      goToOrderDetails: (order) {
-        dispatch(SetSelectedOrderForDetails(order));
-        NavigateAction.pushNamed(RouteNames.ORDER_DETAILS);
-      },
     );
   }
 

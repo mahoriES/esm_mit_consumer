@@ -224,7 +224,6 @@
     "no_orders_message": "Go Ahead. Place your first order!",
     "store_pickup": "Store Pickup",
     "home_delivery": "Home Delivery",
-    "delivering_to_home": "Delivering to Home",
     "contact_delivery_person": "Contact\nDelivery Person",
     "decline_reason": "Order declined due to {}",
     "store_location": "Store Location",
@@ -232,7 +231,8 @@
     "items_available": "Items Available",
     "available_items": "Available Items",
     "not_available": "Not Available",
-    "not_available_message": "Items not available with the merchant or currently not in stock"
+    "not_available_message": "Items not available with the merchant or currently not in stock",
+    "home": "Home"
   },
   "screen_support": {
     "title": "Support",

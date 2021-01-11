@@ -114,7 +114,6 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
       orderDetails: state.ordersState.selectedOrderDetailsResponse,
       onCancel: (String cancellationNote) {
-        dispatch(NavigateAction.pop());
         dispatch(
           CancelOrderAPIAction(
             orderId: state.ordersState.selectedOrderDetailsResponse.orderId,

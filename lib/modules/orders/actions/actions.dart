@@ -225,6 +225,8 @@ class CancelOrderAPIAction extends ReduxAction<AppState> {
           }
         });
 
+        dispatch(GetOrderDetailsAPIAction(orderId));
+
         return state.copyWith(
           ordersState: state.ordersState.copyWith(
             getOrderListResponse: updatedResponse,
@@ -272,6 +274,8 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
             order.orderStatus = OrderState.MERCHANT_ACCEPTED;
           }
         });
+
+        dispatch(GetOrderDetailsAPIAction(orderId));
 
         return state.copyWith(
           ordersState: state.ordersState.copyWith(
