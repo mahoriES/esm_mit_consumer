@@ -173,6 +173,8 @@ class AddRatingAPIAction extends ReduxAction<AppState> {
           }
         });
 
+        dispatch(GetOrderDetailsAPIAction(orderId));
+
         return state.copyWith(
           ordersState: state.ordersState.copyWith(
             getOrderListResponse: updatedResponse,

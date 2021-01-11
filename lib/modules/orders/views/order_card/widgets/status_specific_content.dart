@@ -23,11 +23,18 @@ class _StatusSpecificContent extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             )
-          : orderStatus == OrderState.MERCHANT_ACCEPTED
+          : orderStatus == OrderState.MERCHANT_ACCEPTED ||
+                  orderStatus == OrderState.REQUESTING_TO_DA ||
+                  orderStatus == OrderState.ASSIGNED_TO_DA
               ? Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    tr("screen_order.processing_order_message"),
+                    tr("screen_order.processing_order_message") +
+                        (orderStatus == OrderState.REQUESTING_TO_DA
+                            ? "\n\n${tr("screen_order.order_requesting_DA_message")}"
+                            : orderStatus == OrderState.ASSIGNED_TO_DA
+                                ? "\n\n${tr("screen_order.order_assigned_DA_message")}"
+                                : ""),
                     style: CustomTheme.of(context).textStyles.cardTitleFaded,
                     textAlign: TextAlign.center,
                   ),
@@ -47,9 +54,7 @@ class _StatusSpecificContent extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         )
-                      : orderStatus == OrderState.REQUESTING_TO_DA ||
-                              orderStatus == OrderState.PICKED_UP_BY_DA ||
-                              orderStatus == OrderState.ASSIGNED_TO_DA
+                      : orderStatus == OrderState.PICKED_UP_BY_DA
                           ? Padding(
                               padding: const EdgeInsets.only(top: 20),
                               child: Column(

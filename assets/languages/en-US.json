@@ -213,6 +213,8 @@
     "order_no": "Order No",
     "pending_order_message": "Our merchant is reviewing your order items for availability and will get back to you shortly",
     "processing_order_message": "Sit tight!\nOur merchant is processing your order",
+    "order_assigned_DA_message": "Delivery partner assigned",
+    "order_requesting_DA_message": "Finding Delivery Partner",
     "declined_order_message": "We are sorry! The merchant had to decline the order due to {}",
     "out_for_delivery_order_message": "Your order is on your way!",
     "rating_pending_message": "How did we do with this order?",

@@ -100,7 +100,8 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       isLoading:
-          state.ordersState.isLoadingOrderDetails == LoadingStatusApp.loading,
+          state.ordersState.isLoadingOrderDetails == LoadingStatusApp.loading ||
+              state.ordersState.isLoadingOrdersList == LoadingStatusApp.loading,
       hasError:
           state.ordersState.isLoadingOrderDetails == LoadingStatusApp.error,
       selectedOrder: state.ordersState.selectedOrderForDetails,
