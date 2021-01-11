@@ -7,13 +7,14 @@ import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/views/expandable_view.dart';
+import 'package:eSamudaay/payments/razorpay/utility.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:eSamudaay/utilities/order_status_info.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,10 +22,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:upi_india/upi_india.dart';
-import 'package:upi_pay/upi_pay.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 class OrdersView extends StatefulWidget {
   @override
@@ -32,9 +33,7 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
-  Future<UpiResponse> _transaction;
-  UpiIndia _upiIndia = UpiIndia();
-  List<UpiApp> apps;
+
   ScrollController _scrollController = new ScrollController();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -42,9 +41,7 @@ class _OrdersViewState extends State<OrdersView> {
   void _onRefresh(_ViewModel snapshot) async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
     if (snapshot.getOrderListResponse.previous != null) {
-//      snapshot.getOrderList(snapshot.getOrderListResponse.previous);
     } else {
       snapshot.getOrderList(ApiURL.placeOrderUrl);
     }
@@ -60,16 +57,19 @@ class _OrdersViewState extends State<OrdersView> {
   }
 
   void _onLoading(_ViewModel snapshot) async {
-    // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-//    items.add((items.length + 1).toString());
-
     if (snapshot.getOrderListResponse.next != null) {
       snapshot.getOrderList(snapshot.getOrderListResponse.next);
     }
 
     if (mounted) _refreshController.loadComplete();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,7 +96,6 @@ class _OrdersViewState extends State<OrdersView> {
             onInit: (store) {
               store.dispatch(
                   GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
-              store.dispatch(GetUPIAppsAction());
             },
             builder: (context, snapshot) {
               return ModalProgressHUD(
@@ -118,39 +117,10 @@ class _OrdersViewState extends State<OrdersView> {
                         child: SmartRefresher(
                           enablePullDown: true,
                           enablePullUp: true,
-                          header: WaterDropHeader(
-                            complete: Image.asset(
-                              'assets/images/indicator.gif',
-                              height: 75,
-                              width: 75,
-                            ),
-                            waterDropColor: AppColors.icColors,
-                            refresh: Image.asset(
-                              'assets/images/indicator.gif',
-                              height: 75,
-                              width: 75,
-                            ),
-                          ),
                           footer: CustomFooter(
                             loadStyle: LoadStyle.ShowWhenLoading,
-                            builder: (BuildContext context, LoadStatus mode) {
-                              Widget body;
-                              if (mode == LoadStatus.idle) {
-                                body = Text("");
-                              } else if (mode == LoadStatus.loading) {
-                                body = CupertinoActivityIndicator();
-                              } else if (mode == LoadStatus.failed) {
-                                body = Text("Load Failed!Click retry!");
-                              } else if (mode == LoadStatus.canLoading) {
-                                body = Text("");
-                              } else {
-                                body = Text("No more Data");
-                              }
-                              return Container(
-                                height: 55.0,
-                                child: Center(child: body),
-                              );
-                            },
+                            builder: (BuildContext context, LoadStatus mode) =>
+                                const CupertinoActivityIndicator(),
                           ),
                           controller: _refreshController,
                           onRefresh: () {
@@ -161,13 +131,10 @@ class _OrdersViewState extends State<OrdersView> {
                           },
                           child: ListView.separated(
                             controller: _scrollController,
-                            shrinkWrap: true,
+                            //shrinkWrap: true,
                             itemBuilder:
                                 (BuildContext context, int merchantIndex) {
                               return NewWidget(
-                                apps: apps,
-                                transaction: _transaction,
-                                upiIndia: _upiIndia,
                                 orderId: snapshot.getOrderListResponse
                                     .results[merchantIndex].orderId,
                                 snapshot: snapshot,
@@ -298,21 +265,15 @@ class NewWidget extends StatefulWidget {
   final merchantIndex;
   final String orderStatus;
   final String deliveryStatus;
-  final Future<UpiResponse> transaction;
-  final UpiIndia upiIndia;
-  final List<UpiApp> apps;
 
-  const NewWidget(
-      {Key key,
-      this.deliveryStatus,
-      this.merchantIndex,
-      this.orderStatus,
-      this.orderId,
-      this.snapshot,
-      this.transaction,
-      this.upiIndia,
-      this.apps})
-      : super(key: key);
+  const NewWidget({
+    Key key,
+    this.deliveryStatus,
+    this.merchantIndex,
+    this.orderStatus,
+    this.orderId,
+    this.snapshot,
+  }) : super(key: key);
 
   @override
   _NewWidgetState createState() => _NewWidgetState();
@@ -336,9 +297,6 @@ class _NewWidgetState extends State<NewWidget> {
             },
           ),
           OrderItemBottomView(
-            apps: widget.apps,
-            transaction: widget.transaction,
-            upiIndia: widget.upiIndia,
             snapshot: widget.snapshot,
             orderId: widget.orderId,
             index: widget.merchantIndex,
@@ -352,29 +310,32 @@ class _NewWidgetState extends State<NewWidget> {
   }
 }
 
-class OrderItemBottomView extends StatelessWidget {
+class OrderItemBottomView extends StatefulWidget {
   final int index;
   final String orderId;
   final _ViewModel snapshot;
   final String orderStatus;
   final String deliveryStatus;
   final bool expanded;
-  final Future<UpiResponse> transaction;
-  final UpiIndia upiIndia;
-  final List<UpiApp> apps;
 
-  const OrderItemBottomView(
-      {Key key,
-      this.index,
-      this.orderStatus,
-      this.expanded,
-      this.orderId,
-      this.snapshot,
-      this.deliveryStatus,
-      this.transaction,
-      this.upiIndia,
-      this.apps})
-      : super(key: key);
+  const OrderItemBottomView({
+    Key key,
+    this.index,
+    this.orderStatus,
+    this.expanded,
+    this.orderId,
+    this.snapshot,
+    this.deliveryStatus,
+  }) : super(key: key);
+
+  @override
+  _OrderItemBottomViewState createState() => _OrderItemBottomViewState();
+}
+
+class _OrderItemBottomViewState extends State<OrderItemBottomView> {
+
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+
 
   Widget buildOrderInfoLabels(
       String orderStatus, _ViewModel snapshot, BuildContext context) {
@@ -387,7 +348,7 @@ class OrderItemBottomView extends StatelessWidget {
         Expanded(
             flex: OrderStatusInfoGenerator.shouldShowOrderActionButton(
                     orderStatus)
-                ? 50
+                ? 60
                 : 90,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -395,7 +356,7 @@ class OrderItemBottomView extends StatelessWidget {
               children: [
                 Text(
                   OrderStatusInfoGenerator.orderStatusTitleFromKey(
-                      orderStatus, deliveryStatus != "SELF_PICK_UP"),
+                      orderStatus, widget.deliveryStatus != "SELF_PICK_UP"),
                   style: TextStyle(
                       fontSize: AppSizes.itemSubtitle2FontSize,
                       fontWeight: FontWeight.w500),
@@ -405,7 +366,7 @@ class OrderItemBottomView extends StatelessWidget {
                 ),
                 Text(
                   OrderStatusInfoGenerator.orderStatusSubtitleFromKey(
-                      orderStatus, deliveryStatus != "SELF_PICK_UP"),
+                      orderStatus, widget.deliveryStatus != "SELF_PICK_UP"),
                   style: TextStyle(
                       fontSize: AppSizes.itemSubtitle3FontSize,
                       fontStyle: FontStyle.italic,
@@ -428,9 +389,11 @@ class OrderItemBottomView extends StatelessWidget {
 
   Widget buildPaymentSubSection(_ViewModel snapshot, BuildContext context) {
     bool showButton =
-        OrderStatusInfoGenerator.shouldShowPaymentButton(orderStatus) &&
-            snapshot.getOrderListResponse.results[index].paymentInfo?.status !=
-                'APPROVED';
+        OrderStatusInfoGenerator.shouldShowPaymentButton(widget.orderStatus) &&
+            snapshot.getOrderListResponse.results[widget.index].paymentInfo?.status !=
+                'APPROVED' &&
+            showPayment(snapshot.getOrderListResponse.results
+                .firstWhere((element) => element.orderId == widget.orderId));
     return Row(
       children: [
         Expanded(
@@ -440,12 +403,15 @@ class OrderItemBottomView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                OrderStatusInfoGenerator.paymentStatusMessageFromKey(snapshot
-                        .getOrderListResponse
-                        .results[index]
-                        .paymentInfo
-                        ?.status) ??
-                    '',
+                OrderStatusInfoGenerator.paymentStatusMessageFromKey(
+                    snapshot.getOrderListResponse.results[widget.index].paymentInfo
+                        ?.status,
+                    via: (snapshot.getOrderListResponse.results[widget.index]
+                        .paymentInfo?.paymentMadeVia),
+                    amount: (snapshot.getOrderListResponse.results[widget.index]
+                                .orderTotal /
+                            100)
+                        .withRupeePrefix),
                 style: TextStyle(
                     color: AppColors.greyishText,
                     fontSize: AppSizes.itemSubtitle3FontSize),
@@ -454,7 +420,7 @@ class OrderItemBottomView extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: showButton ? 50 : 0,
+          flex: showButton ? 40 : 0,
           child: showButton
               ? buildPaymentButton(snapshot, context)
               : SizedBox.shrink(),
@@ -463,24 +429,22 @@ class OrderItemBottomView extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    print(orderStatus);
-    var order = snapshot.getOrderListResponse.results[index];
-
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 15),
       child: Column(
         children: <Widget>[
-          buildOrderInfoLabels(orderStatus, snapshot, context),
-          orderStatus == "MERCHANT_UPDATED"
+          buildOrderInfoLabels(widget.orderStatus, widget.snapshot, context),
+          widget.orderStatus == "MERCHANT_UPDATED"
               ? Align(
                   alignment: Alignment.centerRight,
                   child: InkWell(
                     onTap: () {
-                      snapshot.cancelOrder(
-                          snapshot.getOrderListResponse.results[index].orderId,
-                          index);
+                      widget.snapshot.cancelOrder(
+                          widget.snapshot.getOrderListResponse.results[widget.index].orderId,
+                          widget.index);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 20, bottom: 8),
@@ -510,14 +474,14 @@ class OrderItemBottomView extends StatelessWidget {
                           right: AppSizes.separatorPadding),
                       child: InkWell(
                         onTap: () async {
-                          snapshot.updateOrderId(orderId);
-                          if (snapshot.getOrderListResponse.results[index]
+                          widget.snapshot.updateOrderId(widget.orderId);
+                          if (widget.snapshot.getOrderListResponse.results[widget.index]
                                       .businessPhones !=
                                   null &&
-                              snapshot.getOrderListResponse.results[index]
+                              widget.snapshot.getOrderListResponse.results[widget.index]
                                   .businessPhones.isNotEmpty) {
                             var url =
-                                'tel:${snapshot.getOrderListResponse.results[index].businessPhones.first}';
+                                'tel:${widget.snapshot.getOrderListResponse.results[widget.index].businessPhones.first}';
                             if (await canLaunch(url)) {
                               await launch(url);
                             } else {
@@ -557,7 +521,7 @@ class OrderItemBottomView extends StatelessWidget {
               // Support
             ],
           ),
-          (orderStatus == "CREATED") && expanded
+          (widget.orderStatus == "CREATED") && widget.expanded
               ? Padding(
                   padding: EdgeInsets.only(
                       top: 10.0.toHeight,
@@ -565,14 +529,14 @@ class OrderItemBottomView extends StatelessWidget {
                       right: 10.0.toWidth),
                   child: InkWell(
                     onTap: () async {
-                      snapshot.updateOrderId(orderId);
-                      if (snapshot.getOrderListResponse.results[index]
+                      widget.snapshot.updateOrderId(widget.orderId);
+                      if (widget.snapshot.getOrderListResponse.results[widget.index]
                                   .businessPhones !=
                               null &&
-                          snapshot.getOrderListResponse.results[index]
+                          widget.snapshot.getOrderListResponse.results[widget.index]
                               .businessPhones.isNotEmpty) {
                         var url =
-                            'tel:${snapshot.getOrderListResponse.results[index].businessPhones.first}';
+                            'tel:${widget.snapshot.getOrderListResponse.results[widget.index].businessPhones.first}';
                         if (await canLaunch(url)) {
                           await launch(url);
                         } else {
@@ -608,93 +572,31 @@ class OrderItemBottomView extends StatelessWidget {
                 )
               : Container(),
           CustomDivider(),
-          buildPaymentSubSection(snapshot, context),
-          showPayment(order)
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: InkWell(
-                    onTap: () {
-                      if (order.paymentInfo.status == 'PENDING' ||
-                          order.paymentInfo.status == 'REJECTED') {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('screen_order.Confirm_Payment').tr(),
-                              content: Text('screen_order.merchant_notify_text')
-                                  .tr(),
-                              actions: [
-                                FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('screen_order.Cancel').tr(),
-                                ),
-                                FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    snapshot.notifyPayment(order.orderId);
-                                  },
-                                  child: Text('screen_order.Confirm').tr(),
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: AppColors.lightBlue,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                                AppSizes.productItemBorderRadius),
-                          ),
-                          padding: EdgeInsets.all(AppSizes.minorTopPadding * 2),
-                          child: Text(
-                            "screen_order.made_my_payment",
-                            style: TextStyle(
-                                color: AppColors.lightBlue,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Avenir-Medium",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 12.0),
-                            textAlign: TextAlign.left,
-                          ).tr(),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : SizedBox.shrink()
+          buildPaymentSubSection(widget.snapshot, context),
         ],
       ),
     );
   }
 
   bool showPayment(PlaceOrderResponse order) {
-    if (!["PENDING", "REJECTED"].contains(order.paymentInfo.status))
+    if (["SUCCESS", "REFUNDED"].contains(order.paymentInfo.status))
       return false;
-    if (orderStatus == "CREATED" ||
-        orderStatus == "CUSTOMER_CANCELLED" ||
-        orderStatus == "MERCHANT_UPDATED" ||
-        orderStatus == "MERCHANT_CANCELLED") return false;
+    if (widget.orderStatus == "CREATED" ||
+        widget.orderStatus == "CUSTOMER_CANCELLED" ||
+        widget.orderStatus == "MERCHANT_UPDATED" ||
+        widget.orderStatus == "MERCHANT_CANCELLED") return false;
     return true;
   }
 
   bool get isButtonShow {
-    if (orderStatus == "CREATED" ||
-        orderStatus == "COMPLETED" ||
-        orderStatus == "REQUESTING_TO_DA" ||
-        orderStatus == "MERCHANT_UPDATED" ||
-        orderStatus == 'MERCHANT_ACCEPTED') {
+    if (widget.orderStatus == "CREATED" ||
+        widget.orderStatus == "COMPLETED" ||
+        widget.orderStatus == "REQUESTING_TO_DA" ||
+        widget.orderStatus == "MERCHANT_UPDATED" ||
+        widget.orderStatus == 'MERCHANT_ACCEPTED') {
       return true;
-    } else if (orderStatus == "READY_FOR_PICKUP") {
-      if (deliveryStatus == "SELF_PICK_UP")
+    } else if (widget.orderStatus == "READY_FOR_PICKUP") {
+      if (widget.deliveryStatus == "SELF_PICK_UP")
         return true;
       else
         return true;
@@ -704,9 +606,9 @@ class OrderItemBottomView extends StatelessWidget {
   }
 
   Color buttonBkColor(PaymentInfo paymentInfo) {
-    if (orderStatus == "COMPLETED") {
+    if (widget.orderStatus == "COMPLETED") {
       return AppColors.icColors;
-    } else if (orderStatus == "CREATED") {
+    } else if (widget.orderStatus == "CREATED") {
       return AppColors.orange;
     } else {
       if (paymentInfo.upi == null) {
@@ -724,90 +626,96 @@ class OrderItemBottomView extends StatelessWidget {
     return CustomButton(
       title: title,
       backgroundColor: buttonBkColor(
-          snapshot.getOrderListResponse.results[index].paymentInfo),
+          snapshot.getOrderListResponse.results[widget.index].paymentInfo),
       didPresButton: () async {
-        if (orderStatus == "COMPLETED") {
+        if (widget.orderStatus == "COMPLETED") {
           //reorder api
           store
               .dispatchFuture(GetOrderDetailsAPIAction(
                   orderId:
-                      snapshot.getOrderListResponse.results[index].orderId))
+                      snapshot.getOrderListResponse.results[widget.index].orderId))
               .whenComplete(() async {
             PlaceOrderRequest request = PlaceOrderRequest();
             request.businessId =
-                snapshot.getOrderListResponse.results[index].businessId;
+                snapshot.getOrderListResponse.results[widget.index].businessId;
             request.deliveryAddressId = snapshot
-                .getOrderListResponse.results[index].deliveryAdress.addressId;
+                .getOrderListResponse.results[widget.index].deliveryAdress.addressId;
             request.deliveryType =
-                snapshot.getOrderListResponse.results[index].deliveryType;
+                snapshot.getOrderListResponse.results[widget.index].deliveryType;
             request.orderItems =
-                snapshot.getOrderListResponse.results[index].orderItems;
+                snapshot.getOrderListResponse.results[widget.index].orderItems;
             snapshot.placeOrder(request);
           });
-        } else if (orderStatus == "MERCHANT_UPDATED") {
+        } else if (widget.orderStatus == "MERCHANT_UPDATED") {
           //accept order api
           snapshot.acceptOrder(
-              snapshot.getOrderListResponse.results[index].orderId, index);
-        } else if (orderStatus == "READY_FOR_PICKUP" &&
-            deliveryStatus == "SELF_PICK_UP") {
+              snapshot.getOrderListResponse.results[widget.index].orderId, widget.index);
+        } else if (widget.orderStatus == "READY_FOR_PICKUP" &&
+            widget.deliveryStatus == "SELF_PICK_UP") {
           snapshot.completeOrder(
-              snapshot.getOrderListResponse.results[index].orderId, index);
+              snapshot.getOrderListResponse.results[widget.index].orderId, widget.index);
         } else {
           //cancel order api
           snapshot.cancelOrder(
-              snapshot.getOrderListResponse.results[index].orderId, index);
+              snapshot.getOrderListResponse.results[widget.index].orderId, widget.index);
         }
       },
     );
   }
 
-  CustomButton buildPaymentButton(_ViewModel snapshot, BuildContext context) {
-    return CustomButton(
-      title: tr('screen_order.Pay_via_upi'),
-      backgroundColor: buttonBkColor(
-          snapshot.getOrderListResponse.results[index].paymentInfo),
-      didPresButton: () async {
-        var order = snapshot.getOrderListResponse.results[index];
-        if (order.paymentInfo.upi == null) {
-          return;
-        }
-        Navigator.pushNamed(context, "/payment",
-                arguments: snapshot.getOrderListResponse.results[index])
-            .then((value) {
-          if (value) {
-            snapshot.notifyPayment(
-                snapshot.getOrderListResponse.results[index].orderId);
-          }
-        });
+  Widget buildPaymentButton(_ViewModel snapshot, BuildContext context) {
+    return RoundedLoadingButton(
+      height: 39,
+      controller: _btnController,
+      color: CustomTheme.of(context).colors.positiveColor,
+      successColor: CustomTheme.of(context).colors.positiveColor,
+      onPressed: () async {
+        await snapshot
+            .getRazorpayCheckoutOptions(
+                snapshot.getOrderListResponse.results[widget.index].orderId)
+            .timeout(const Duration(seconds: 10));
+        _btnController.reset();
+        RazorpayUtility().checkout(store.state.orderPaymentCheckoutOptions,
+            onSuccess: () {
+          snapshot.getOrderList(ApiURL.placeOrderUrl);
+        }, onFailure: () {});
       },
+      child: Text(
+        tr('screen_order.pay') +
+            " ${(snapshot.getOrderListResponse.results[widget.index].orderTotal / 100).withRupeePrefix}",
+        style: CustomTheme.of(context)
+            .textStyles
+            .cardTitle
+            .copyWith(color: CustomTheme.of(context).colors.backgroundColor),
+      ),
     );
   }
 
   String get title {
-    if (orderStatus == "CREATED") {
+    if (widget.orderStatus == "CREATED") {
       return tr('screen_order.cancel_order');
-    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+    } else if (widget.orderStatus == "MERCHANT_ACCEPTED") {
       return tr('screen_order.Pay_via_upi');
-    } else if (orderStatus == "CUSTOMER_CANCELLED") {
+    } else if (widget.orderStatus == "CUSTOMER_CANCELLED") {
       return tr('screen_order.cancelled_customer');
-    } else if (orderStatus == "MERCHANT_CANCELLED") {
+    } else if (widget.orderStatus == "MERCHANT_CANCELLED") {
       return tr('screen_order.cancelled_merchant') +
           " " +
-          snapshot.getOrderListResponse.results[index].businessName;
-    } else if (orderStatus == "MERCHANT_UPDATED") {
+          widget.snapshot.getOrderListResponse.results[widget.index].businessName;
+    } else if (widget.orderStatus == "MERCHANT_UPDATED") {
       return tr('screen_order.accept_order');
-    } else if (orderStatus == "COMPLETED") {
+    } else if (widget.orderStatus == "COMPLETED") {
       return tr('screen_order.re_order');
-    } else if (orderStatus == "READY_FOR_PICKUP") {
-      if (deliveryStatus == "SELF_PICK_UP")
+    } else if (widget.orderStatus == "READY_FOR_PICKUP") {
+      if (widget.deliveryStatus == "SELF_PICK_UP")
         return tr('screen_order.pickup');
       else
         return tr('screen_order.Pay_via_upi');
-    } else if (orderStatus == "REQUESTING_TO_DA") {
+    } else if (widget.orderStatus == "REQUESTING_TO_DA") {
       return tr('screen_order.Pay_via_upi');
-    } else if (orderStatus == "ASSIGNED_TO_DA") {
+    } else if (widget.orderStatus == "ASSIGNED_TO_DA") {
       return tr('screen_order.Pay_via_upi');
-    } else if (orderStatus == "PICKED_UP_BY_DA") {
+    } else if (widget.orderStatus == "PICKED_UP_BY_DA") {
       return tr('screen_order.Pay_via_upi');
     } else {
       return "";
@@ -815,45 +723,45 @@ class OrderItemBottomView extends StatelessWidget {
   }
 
   Widget get buildIcon {
-    if (orderStatus == "CREATED") {
+    if (widget.orderStatus == "CREATED") {
       return ImageIcon(
         AssetImage('assets/images/refresh_1.png'),
         color: Color(0xffeb730c),
       );
-    } else if (orderStatus == "MERCHANT_ACCEPTED") {
+    } else if (widget.orderStatus == "MERCHANT_ACCEPTED") {
       return Icon(
         Icons.check_circle_outline,
         color: Color(0xffa4c73f),
       );
-    } else if (orderStatus == "CUSTOMER_CANCELLED" ||
-        orderStatus == "MERCHANT_CANCELLED") {
+    } else if (widget.orderStatus == "CUSTOMER_CANCELLED" ||
+        widget.orderStatus == "MERCHANT_CANCELLED") {
       return Icon(
         Icons.cancel,
         color: Colors.red,
       );
-    } else if (orderStatus == "MERCHANT_UPDATED") {
+    } else if (widget.orderStatus == "MERCHANT_UPDATED") {
       return Icon(
         Icons.info_outline,
         color: Colors.blue,
       );
-    } else if (orderStatus == "COMPLETED") {
+    } else if (widget.orderStatus == "COMPLETED") {
       return Icon(
         Icons.check_circle_outline,
         color: AppColors.green,
       );
-    } else if (orderStatus == "READY_FOR_PICKUP") {
+    } else if (widget.orderStatus == "READY_FOR_PICKUP") {
       return Icon(
         Icons.check_circle_outline,
         color: AppColors.green,
       );
-    } else if (orderStatus == "REQUESTING_TO_DA") {
+    } else if (widget.orderStatus == "REQUESTING_TO_DA") {
       return Icon(
         Icons.check_circle_outline,
         color: AppColors.green,
       );
-    } else if (orderStatus == "ASSIGNED_TO_DA") {
+    } else if (widget.orderStatus == "ASSIGNED_TO_DA") {
       return Icon(Icons.account_box, color: AppColors.icColors);
-    } else if (orderStatus == "PICKED_UP_BY_DA") {
+    } else if (widget.orderStatus == "PICKED_UP_BY_DA") {
       return Icon(Icons.account_box, color: AppColors.icColors);
     } else
       return SizedBox.shrink();
@@ -883,11 +791,11 @@ class CustomButton extends StatelessWidget {
 //        width: 160,
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(23),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Center(
           child: Padding(
-            padding: EdgeInsets.only(left: 10.toWidth, right: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -895,21 +803,18 @@ class CustomButton extends StatelessWidget {
                 Container(
                   child: Text(
                     title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontFamily: 'Avenir-Medium',
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: CustomTheme.of(context)
+                        .textStyles
+                        .cardTitle
+                        .copyWith(
+                            color:
+                                CustomTheme.of(context).colors.backgroundColor),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.toWidth),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                    size: 12,
-                  ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 12,
                 )
               ],
             ),
@@ -1135,15 +1040,15 @@ class _ViewModel extends BaseModel<AppState> {
   Function(String, int) completeOrder;
   LoadingStatusApp loadingStatus;
   Function(String) getOrderList;
-  List<ApplicationMeta> upiApps;
+  Future<void> Function(String) getRazorpayCheckoutOptions;
 
   _ViewModel();
 
   _ViewModel.build(
       {this.getOrderListResponse,
       this.placeOrder,
-      this.upiApps,
       this.updateOrderId,
+      this.getRazorpayCheckoutOptions,
       this.notifyPayment,
       this.cancelOrder,
       this.acceptOrder,
@@ -1151,13 +1056,15 @@ class _ViewModel extends BaseModel<AppState> {
       this.viewStore,
       this.getOrderList,
       this.completeOrder})
-      : super(equals: [getOrderListResponse, loadingStatus, upiApps]);
+      : super(equals: [
+          getOrderListResponse,
+          loadingStatus,
+        ]);
 
   @override
   BaseModel fromStore() {
     // TODO: implement fromStore
     return _ViewModel.build(
-        upiApps: state.productState.upiApps,
         notifyPayment: (orderId) {
           dispatch(PaymentAPIAction(orderId: orderId));
         },
@@ -1182,6 +1089,11 @@ class _ViewModel extends BaseModel<AppState> {
         },
         cancelOrder: (id, index) {
           dispatch(CancelOrderAPIAction(orderId: id, index: index));
+        },
+        getRazorpayCheckoutOptions: (orderId) async {
+          await dispatchFuture(ClearPreviousRazorpayCheckoutOptionsAction());
+          await dispatchFuture(
+              GetRazorpayCheckoutOptionsAction(orderId: orderId));
         },
         acceptOrder: (orderId, index) {
           dispatch(AcceptOrderAPIAction(orderId: orderId, index: index));
