@@ -37,7 +37,7 @@ class _CircleBannersCarouselState extends State<CircleBannersCarousel> {
           CarouselSlider(
             items: widget.banners
                     .map((banner) => CachedNetworkImage(
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         imageUrl: banner.photoUrl,
                         placeholder: (context, url) =>
                             CupertinoActivityIndicator(),
@@ -78,7 +78,7 @@ class _CircleBannersCarouselState extends State<CircleBannersCarousel> {
                 ),
               );
             }).toList(),
-          ))
+          ),),
         ],
       ),
     );

@@ -10,6 +10,8 @@ class ImagePathConstants {
   static const locationPointerImage = _prefix + "location2.png";
   static const emptyCartImage = _prefix + "cart_placeholder.png";
   static const listUploadIcon = _prefix + "Icon_list_upload.png";
+  static const closedStoreIcon = _prefix + "icon_closed.png";
+  static const deliveryAvailableIcon = _prefix + "delivery.png";
 }
 
 class LottiePathConstants {

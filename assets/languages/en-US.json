@@ -1,6 +1,6 @@
 {
   "common": {
-    "closed": "Closed",
+    "closed": "Shop Closed",
     "view_store": "View Store",
     "some_error_occured": "Some Error Occured",
     "location_error": "Couldn't fetch you location",
