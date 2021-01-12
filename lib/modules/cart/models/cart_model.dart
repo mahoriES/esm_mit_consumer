@@ -218,8 +218,18 @@ class PlaceOrderResponse {
         orderTrail.add(new OrderTrail.fromJson(v));
       });
     }
-    if (json['customer_note_images'] != null)
-      customerNoteImages = json['customer_note_images'].cast<String>();
+    if (json['customer_note_images'] != null) {
+      customerNoteImages = [];
+      List list = json['customer_note_images'];
+      list.forEach((image) {
+        debugPrint("image runtime type => ${image.runtimeType}");
+        if (image is Map) {
+          customerNoteImages.add(Photo.fromJson(image).photoUrl);
+        } else if (image is String) {
+          customerNoteImages.add(image);
+        }
+      });
+    }
     created = json['created'];
     modified = json['modified'];
     rating =
