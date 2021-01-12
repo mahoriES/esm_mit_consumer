@@ -63,9 +63,9 @@ class _GenericItemsList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                flex: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -94,6 +94,12 @@ class _GenericItemsList extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(width: 12),
+              Text(
+                "x\t${_currentProduct.quantity}\t\t=",
+                style: CustomTheme.of(context).textStyles.cardTitleFaded,
+              ),
+              const SizedBox(width: 20),
               Align(
                 alignment: Alignment.centerRight,
                 child: !showPrice
@@ -109,6 +115,7 @@ class _GenericItemsList extends StatelessWidget {
                       )
                     : Text(
                         _currentProduct.totalPriceOfItem.withRupeePrefix,
+                        style: CustomTheme.of(context).textStyles.cardTitle,
                       ),
               ),
             ],
