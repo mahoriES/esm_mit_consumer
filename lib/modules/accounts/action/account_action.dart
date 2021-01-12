@@ -45,17 +45,7 @@ class InitialiseStoreOnLogoutAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     print('******Init store called');
-    return state.copyWith(
-        isInitializationDone: false,
-        authState: AuthState.initial(),
-        componentsLoadingState: ComponentsLoadingState.initial(),
-        videosState: VideosState.initial(),
-        homeCategoriesState: LandingPageComponentsState.initial(),
-        addressState: AddressState.initial(),
-        versionString: '',
-        isLoading: false,
-        productState: ProductState.initial(),
-        homePageState: HomePageState.initial());
+    return AppState.initial();
   }
 }
 
