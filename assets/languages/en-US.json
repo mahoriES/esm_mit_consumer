@@ -1,6 +1,6 @@
 {
   "common": {
-    "closed": "Closed",
+    "closed": "Shop Closed",
     "view_store": "View Store",
     "some_error_occured": "Some Error Occured",
     "location_error": "Couldn't fetch you location",
@@ -203,7 +203,7 @@
     "Cancel": "Cancel",
     "Confirm": "Confirm",
     "made_my_payment": "Mark Paid",
-    "Pay_via_upi": "Pay via UPI",
+    "pay": "Pay",
     "Paid_at": "approved payment at"
   },
   "screen_support": {
@@ -272,7 +272,19 @@
     "initiated": "Waiting for merchant to confirm payment",
     "approved": "Payment received by merchant",
     "pending": "Payment not done",
-    "rejected": "Payment not done"
+    "rejected": "Payment not done",
+    "success": "Payment of {} successful via {}",
+    "fail": "Payment Failed. Please try again",
+    "refunded": "{} refunded via {}"
+  },
+  "payment_info": {
+    "checkout_error": "Something went wrong. Contact support if problem persists.",
+    "unknown_error": "Unknown Error",
+    "incompatible_plugin": "Incompatible Plugin",
+    "network_error": "Network Error",
+    "payment_cancelled": "Payment Cancelled",
+    "invalid_options": "Invalid Options",
+    "tls_error": "Your device does not support secure payments"
   },
   "product_details": {
     "options_available": "Options available",

@@ -15,7 +15,6 @@ import 'package:eSamudaay/modules/language/view/language_view.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
 import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
-import 'package:eSamudaay/modules/orders/views/payments.dart';
 import 'package:eSamudaay/modules/orders/views/support.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
@@ -48,7 +47,7 @@ class SetupRoutes {
       "/profile": (BuildContext context) => ProfileView(),
       "/about": (BuildContext context) => AboutView(),
       "/onBoarding": (BuildContext context) => OnboardingWidget(),
-      "/payment": (BuildContext context) => Payments(),
+//      "/payment": (BuildContext context) => Payments(),
       RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
           MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>

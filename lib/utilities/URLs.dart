@@ -58,4 +58,6 @@ class ApiURL {
       (String circleId) => baseURL + getClustersUrl + circleId + "/banners";
   static final deleteAddressUrl =
       (String addressId) => "api/v1/addresses/$addressId";
+  static final getRazorpayOrderIdUrl =
+      (String orderId) => baseURL + placeOrderUrl + orderId + "/razorpay";
 }

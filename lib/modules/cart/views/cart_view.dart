@@ -40,6 +40,7 @@ class CartView extends StatelessWidget {
                   appBar: CustomAppBar(
                     title: snapshot.appBarTitle,
                     subTitle: snapshot.appBarSubtitle,
+                    isStoreClosed: snapshot.isStoreClosed,
                   ),
                   bottomSheet: CartBottomWidget(),
                   body: SingleChildScrollView(
@@ -115,19 +116,22 @@ class _ViewModel extends BaseModel<AppState> {
   bool isCartLoading;
   TextEditingController noteController;
   bool isImageUploading;
+  bool isStoreClosed;
 
   _ViewModel.build({
     this.cartMerchant,
     this.productsList,
     this.customerNoteImages,
     this.isCartLoading,
+    this.isStoreClosed,
     this.noteController,
     this.isImageUploading,
-  }) : super(equals: [cartMerchant, isCartLoading, isImageUploading]);
+  }) : super(equals: [cartMerchant, isCartLoading, isImageUploading, isStoreClosed]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
+      isStoreClosed: !(state.cartState.cartMerchant?.isOpen ?? false),
       cartMerchant: state.cartState.cartMerchant,
       productsList: state.cartState.localCartItems ?? [],
       customerNoteImages: state.cartState.customerNoteImages ?? [],
