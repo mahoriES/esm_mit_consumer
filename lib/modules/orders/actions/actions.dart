@@ -9,6 +9,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -324,8 +325,6 @@ class ReorderAction extends ReduxAction<AppState> {
     @required this.shouldFetchOrderDetails,
   });
 
-  LoadingStatusApp finalState = LoadingStatusApp.success;
-
   @override
   Future<AppState> reduce() async {
     PlaceOrderResponse _orderDetails;
@@ -353,5 +352,55 @@ class ReorderAction extends ReduxAction<AppState> {
   void before() =>
       dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
 
-  void after() => dispatch(ToggleLoadingOrderListState(finalState));
+  void after() =>
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.success));
+}
+
+class ClearPreviousRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
+  ClearPreviousRazorpayCheckoutOptionsAction();
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(orderPaymentCheckoutOptions: null);
+  }
+}
+
+class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
+  final String orderId;
+
+  GetRazorpayCheckoutOptionsAction({@required this.orderId});
+
+  @override
+  FutureOr<AppState> reduce() async {
+    final response = await APIManager.shared.request(
+      url: ApiURL.getRazorpayOrderIdUrl(orderId),
+      params: null,
+      requestType: RequestType.get,
+    );
+    if (response.status == ResponseStatus.success200 &&
+        response.data != null &&
+        response.data is Map) {
+      final RazorpayCheckoutOptions checkoutOptions =
+          RazorpayCheckoutOptions.fromJson(response.data);
+      if (checkoutOptions != null) {
+        final Map<String, dynamic> standardisedRazorpayCheckoutOptions =
+            checkoutOptions.toJson();
+        return state.copyWith(
+            orderPaymentCheckoutOptions: standardisedRazorpayCheckoutOptions);
+      } else
+        _handleErrorInCheckoutOptionsResponse(
+            message:
+                'Checkout options for orderId is not as per required format');
+    } else
+      _handleErrorInCheckoutOptionsResponse(
+          message:
+              'Error getting the checkout options for orderId. Either the response is not in proper format or it indicates a bug in getting response.');
+    return null;
+  }
+
+  void _handleErrorInCheckoutOptionsResponse({@required String message}) {
+    Fluttertoast.showToast(msg: tr('payment_info.checkout_error'));
+    FirebaseCrashlytics.instance
+        .recordError(Exception([message]), StackTrace.current);
+  }
 }

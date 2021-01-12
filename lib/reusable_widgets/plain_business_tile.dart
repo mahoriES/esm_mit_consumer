@@ -38,6 +38,7 @@ class HybridBusinessTileConnector extends StatelessWidget {
             ? null
             : business.images.first.photoUrl,
         isDeliveryAvailable: business.hasDelivery,
+        isClosed: !business.isOpen,
         highlightedItemsList: highlightedItemsList,
         businessId: business.businessId,
         businessTitle: business.businessName,
@@ -66,6 +67,7 @@ class HybridBusinessTile extends StatelessWidget {
   final String businessRating;
   final String businessImageUrl;
   final bool isDeliveryAvailable;
+  final bool isClosed;
 
   ///The action/CTA button title shown on the business tile. Defaults to "View Shop"
   final String goToShopActionTitle;
@@ -78,6 +80,7 @@ class HybridBusinessTile extends StatelessWidget {
       {Key key,
       this.businessRating,
       @required this.businessImageUrl,
+      @required this.isClosed,
       @required this.isDeliveryAvailable,
       @required this.businessId,
       this.goToShopActionTitle,
@@ -174,7 +177,9 @@ class HybridBusinessTile extends StatelessWidget {
                           height: AppSizes.separatorPadding / 2,
                         ),
                         DeliveryStatusWidget(
-                            deliveryStatus: isDeliveryAvailable),
+                            deliveryStatus: isDeliveryAvailable,
+                            isClosed: isClosed,
+                        ),
                       ],
                     ),
                   ),

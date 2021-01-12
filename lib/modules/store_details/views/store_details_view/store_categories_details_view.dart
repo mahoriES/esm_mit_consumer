@@ -125,7 +125,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                               isDeliveryAvailable: snapshot
                                                   .selectedMerchant.hasDelivery,
                                               // TODO : is Open value should be dynamic.
-                                              isOpen: true,
+                                              isOpen: snapshot.selectedMerchant.isOpen,
                                               businessImageUrl: snapshot
                                                       .selectedMerchant
                                                       .images

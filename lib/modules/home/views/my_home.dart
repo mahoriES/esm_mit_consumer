@@ -57,11 +57,6 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(

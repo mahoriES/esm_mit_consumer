@@ -21,7 +21,6 @@ class OrderStatusInfoGenerator {
     'CREATED',
     'MERCHANT_CANCELLED',
     'CUSTOMER_CANCELLED',
-    'COMPLETED',
     'MERCHANT_UPDATED'
   ];
 
@@ -48,7 +47,7 @@ class OrderStatusInfoGenerator {
 
   ///[paymentStatusMessageFromKey] provides the customer facing status string of the payment for
   ///the order depending upon the status received from backend.
-  static String paymentStatusMessageFromKey(String paymentStatus) {
+  static String paymentStatusMessageFromKey(String paymentStatus, {String amount, String via}) {
     switch(paymentStatus) {
       case 'INITIATED':
         return tr('payment_statuses.initiated');
@@ -61,6 +60,15 @@ class OrderStatusInfoGenerator {
         break;
       case 'REJECTED':
         return tr('payment_statuses.rejected');
+        break;
+      case 'SUCCESS':
+        return tr('payment_statuses.success', args: [amount,via]);
+        break;
+      case 'FAIL':
+        return tr('payment_statuses.fail');
+        break;
+      case 'REFUNDED':
+        return tr('payment_statuses.refunded', args: [amount, via]);
         break;
       default:
         return '';

@@ -26,6 +26,12 @@ class _OrdersViewState extends State<OrdersView> {
       RefreshController(initialRefresh: false);
 
   @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(

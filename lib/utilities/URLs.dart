@@ -66,4 +66,6 @@ class ApiURL {
       (String orderId) => "$placeOrderUrl$orderId/accept";
   static final completeOrderUrl =
       (String orderId) => "$placeOrderUrl$orderId/complete";
+  static final getRazorpayOrderIdUrl =
+      (String orderId) => baseURL + placeOrderUrl + orderId + "/razorpay";
 }

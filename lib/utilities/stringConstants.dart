@@ -23,6 +23,14 @@ const countryCode = "+91";
 
 const thirdPartyId = "5d730376-72ed-478c-8d5e-1a3a6aee9815";
 
+const String razorpayDefaultName = "eSamudaay";
+
+const int razorpayDefaultAmountInInt = 0;
+
+const String razorpayDefaultCurrency = "INR";
+
+const int razorpayDefaultTimeout = 60;
+
 // The constants must be defined within a class, there is no need of global const.
 // TODO : move the existing strings in StringConstants class .
 class StringConstants {

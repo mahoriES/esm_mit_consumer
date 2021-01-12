@@ -135,6 +135,7 @@ class _BusinessTitleTileState extends State<BusinessTitleTile>
               ),
               DeliveryStatusWidget(
                 deliveryStatus: widget.isDeliveryAvailable,
+                isClosed: !widget.isOpen,
               ),
             ],
           ),

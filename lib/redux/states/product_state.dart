@@ -6,7 +6,6 @@ import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:upi_pay/upi_pay.dart';
 
 // TODO : seperate the catalogue and cart state variables.
 
@@ -23,7 +22,6 @@ class ProductState {
   final Business selectedMerchant;
   final List<CategoriesNew> categories;
   final Cluster selectedCluster;
-  final List<ApplicationMeta> upiApps;
   final Product selectedProductForDetails;
   final Map<int, List<CategoriesNew>> categoryIdToSubCategoryData;
   final Map<int, CatalogSearchResponse> subCategoryIdToProductData;
@@ -34,7 +32,6 @@ class ProductState {
     @required this.singleCategoryFewProducts,
     @required this.spotlightItems,
     @required this.searchForProductsComplete,
-    @required this.upiApps,
     @required this.selectedCluster,
     @required this.placeOrderResponse,
     @required this.selectedCategory,
@@ -53,7 +50,6 @@ class ProductState {
 
   factory ProductState.initial() {
     return new ProductState(
-      upiApps: [],
       searchForProductsComplete: false,
       selectedCluster: null,
       categories: [],
@@ -82,7 +78,6 @@ class ProductState {
     List<Product> searchResultProducts,
     List<CategoriesNew> categories,
     List<Merchants> searchResults,
-    List<ApplicationMeta> upiApps,
     Business selectedMerchant,
     PlaceOrderResponse placeOrderResponse,
     CategoriesNew selectedCategory,
@@ -100,7 +95,6 @@ class ProductState {
     return ProductState(
       searchForProductsComplete:
           searchForProductsComplete ?? this.searchForProductsComplete,
-      upiApps: upiApps ?? this.upiApps,
       selectedCluster: selectedCluster ?? this.selectedCluster,
       searchResults: searchResults ?? this.searchResults,
       placeOrderResponse: placeOrderResponse ?? this.placeOrderResponse,
@@ -143,7 +137,6 @@ class ProductState {
 
       // These values should not change.
       searchForProductsComplete: this.searchForProductsComplete,
-      upiApps: this.upiApps,
       selectedCluster: this.selectedCluster,
       searchResults: this.searchResults,
       placeOrderResponse: this.placeOrderResponse,

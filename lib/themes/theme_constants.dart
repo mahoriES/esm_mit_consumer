@@ -17,6 +17,7 @@ abstract class _AppThemeColors {
   Color get shadowColor16;
   Color get categoryTileTextUnderlay;
   Color get dividerColor;
+  Color get storeInfoColor;
   Brightness get brightness;
 }
 
@@ -200,6 +201,8 @@ class _LightThemeColors with _AppThemeColors {
   Color get shadowColor => const Color(0x0d242424);
   @override
   Color get dividerColor => const Color(0xFFe8e8e8);
+  @override
+  Color get storeInfoColor => const Color(0xffdd1d94);
 
   ///16 here refers to opacity which is 16%
   @override
