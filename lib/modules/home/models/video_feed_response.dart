@@ -1,4 +1,6 @@
-class VideoFeedResponse {
+import 'package:equatable/equatable.dart';
+
+class VideoFeedResponse extends Equatable {
   int count;
   String next;
   String previous;
@@ -28,6 +30,12 @@ class VideoFeedResponse {
     }
     return data;
   }
+
+  @override
+  List<Object> get props => [count, next, previous, results];
+
+  @override
+  bool get stringify => true;
 }
 
 class VideoItem {

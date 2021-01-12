@@ -74,6 +74,7 @@ class AccountsView extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function(String) navigate;
   VoidCallback logout;
   String versionString;
@@ -86,9 +87,16 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
+    //fromAccount
     return _ViewModel.build(
       versionString: state.versionString,
-      navigate: (routeName) => dispatch(NavigateAction.pushNamed(routeName)),
+      navigate: (routeName) {
+        if (routeName == '/language')
+          dispatch(NavigateAction.pushNamed(routeName,
+              arguments: {'fromAccount': true}));
+        else
+          dispatch(NavigateAction.pushNamed(routeName));
+      },
       logout: () => dispatch(LogoutAction()),
     );
   }
@@ -134,6 +142,7 @@ class _AccountItem {
   String title;
   String routeName;
   bool isLogout;
+
   _AccountItem({
     @required this.imagePath,
     @required this.title,

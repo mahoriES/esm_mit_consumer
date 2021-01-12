@@ -131,7 +131,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      isStoreClosed: !state.cartState.cartMerchant.isOpen,
+      isStoreClosed: !(state.cartState.cartMerchant?.isOpen ?? false),
       cartMerchant: state.cartState.cartMerchant,
       productsList: state.cartState.localCartItems ?? [],
       customerNoteImages: state.cartState.customerNoteImages ?? [],

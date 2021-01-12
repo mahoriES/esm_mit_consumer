@@ -124,4 +124,49 @@ class AuthState {
             updateCustomerDetailsRequest ?? this.updateCustomerDetailsRequest,
         isSignUp: isSignUp ?? this.isSignUp);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AuthState &&
+          runtimeType == other.runtimeType &&
+          deviceToken == other.deviceToken &&
+          loadingStatus == other.loadingStatus &&
+          getOtpRequest == other.getOtpRequest &&
+          validateOTPRequest == other.validateOTPRequest &&
+          updateCustomerDetailsRequest == other.updateCustomerDetailsRequest &&
+          cluster == other.cluster &&
+          myClusters == other.myClusters &&
+          nearbyClusters == other.nearbyClusters &&
+          suggestedClusters == other.suggestedClusters &&
+          trendingClusters == other.trendingClusters &&
+          locationEnabled == other.locationEnabled &&
+          token == other.token &&
+          isLoggedIn == other.isLoggedIn &&
+          isOnboardingCompleted == other.isOnboardingCompleted &&
+          user == other.user &&
+          isPhoneNumberValid == other.isPhoneNumberValid &&
+          isOtpEntered == other.isOtpEntered &&
+          isSignUp == other.isSignUp;
+
+  @override
+  int get hashCode =>
+      deviceToken.hashCode ^
+      loadingStatus.hashCode ^
+      getOtpRequest.hashCode ^
+      validateOTPRequest.hashCode ^
+      updateCustomerDetailsRequest.hashCode ^
+      cluster.hashCode ^
+      myClusters.hashCode ^
+      nearbyClusters.hashCode ^
+      suggestedClusters.hashCode ^
+      trendingClusters.hashCode ^
+      locationEnabled.hashCode ^
+      token.hashCode ^
+      isLoggedIn.hashCode ^
+      isOnboardingCompleted.hashCode ^
+      user.hashCode ^
+      isPhoneNumberValid.hashCode ^
+      isOtpEntered.hashCode ^
+      isSignUp.hashCode;
 }

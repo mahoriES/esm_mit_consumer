@@ -18,7 +18,7 @@ class GetOrderListRequest {
   }
 }
 
-class GetOrderListResponse {
+class GetOrderListResponse extends Equatable{
   int count;
   String next;
   String previous;
@@ -48,6 +48,13 @@ class GetOrderListResponse {
     }
     return data;
   }
+
+  @override
+  List<Object> get props => [count, next, previous, results];
+
+  @override
+  bool get stringify => true;
+
 }
 
 class AddReviewRequest {

@@ -95,26 +95,39 @@ class AppState {
     );
   }
 
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AppState &&
           runtimeType == other.runtimeType &&
+          isLoading == other.isLoading &&
           authState == other.authState &&
-          componentsLoadingState == other.componentsLoadingState &&
           homePageState == other.homePageState &&
-          homeCategoriesState == other.homeCategoriesState &&
           productState == other.productState &&
           videosState == other.videosState &&
+          homeCategoriesState == other.homeCategoriesState &&
+          componentsLoadingState == other.componentsLoadingState &&
           orderPaymentCheckoutOptions == other.orderPaymentCheckoutOptions &&
           isInitializationDone == other.isInitializationDone &&
           isLoading == other.isLoading &&
           addressState == other.addressState &&
           versionString == other.versionString &&
+          isInitializationDone == other.isInitializationDone &&
           cartState == other.cartState;
 
   @override
-  int get hashCode => authState.hashCode;
+  int get hashCode =>
+      isLoading.hashCode ^
+      authState.hashCode ^
+      homePageState.hashCode ^
+      productState.hashCode ^
+      videosState.hashCode ^
+      homeCategoriesState.hashCode ^
+      componentsLoadingState.hashCode ^
+      addressState.hashCode ^
+      versionString.hashCode ^
+      isInitializationDone.hashCode;
 
   @override
   String toString() {
