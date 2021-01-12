@@ -15,7 +15,7 @@ import 'package:eSamudaay/modules/language/view/language_view.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
 import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/order_details.dart';
-import 'package:eSamudaay/modules/orders/views/orders_list_View.dart';
+import 'package:eSamudaay/modules/orders/views/orders_View.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
