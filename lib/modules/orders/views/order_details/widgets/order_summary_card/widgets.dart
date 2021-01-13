@@ -94,11 +94,13 @@ class _GenericItemsList extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Text(
-                "x\t${_currentProduct.quantity}\t\t=",
-                style: CustomTheme.of(context).textStyles.cardTitleFaded,
-              ),
+              if (showPrice) ...{
+                const SizedBox(width: 20),
+                Text(
+                  "x\t${_currentProduct.quantity}\t\t=",
+                  style: CustomTheme.of(context).textStyles.cardTitleFaded,
+                ),
+              },
               const SizedBox(width: 20),
               Align(
                 alignment: Alignment.centerRight,
@@ -333,66 +335,6 @@ class CustomerNoteImagesView extends StatelessWidget {
           showRemoveButton: false,
         ),
         const SizedBox(height: 10),
-      ],
-    );
-  }
-}
-
-class SecondaryActionButton extends StatelessWidget {
-  final bool showCancelButton;
-  final Function(String) onCancel;
-  final VoidCallback onReorder;
-  const SecondaryActionButton({
-    @required this.showCancelButton,
-    @required this.onCancel,
-    @required this.onReorder,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Divider(
-          color: CustomTheme.of(context).colors.dividerColor,
-          thickness: 1,
-          height: 20,
-        ),
-        showCancelButton
-            ? ActionButton(
-                text: tr("screen_order.cancel_order"),
-                icon: Icons.clear,
-                showBorder: false,
-                textColor: CustomTheme.of(context).colors.secondaryColor,
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => CancelOrderPrompt(onCancel),
-                  );
-                },
-              )
-            : ActionButton(
-                text: tr("screen_order.reorder"),
-                icon: Icons.refresh,
-                showBorder: false,
-                textColor: CustomTheme.of(context).colors.textColor,
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => CustomConfirmationDialog(
-                      title: tr("screen_order.repeat_order"),
-                      // message:
-                      //     "The order will be added to your cart. You can modify it or proceed with the same order.",
-                      positiveAction: () {
-                        Navigator.pop(context);
-                        onReorder();
-                      },
-                      positiveButtonText: tr("common.continue"),
-                      negativeButtonText: tr("common.cancel"),
-                    ),
-                  );
-                },
-              ),
       ],
     );
   }

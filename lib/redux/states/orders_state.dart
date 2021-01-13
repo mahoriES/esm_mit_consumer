@@ -12,6 +12,8 @@ class OrdersState {
   final LoadingStatusApp isLoadingNextPage;
   final PlaceOrderResponse selectedOrderForDetails;
   final PlaceOrderResponse selectedOrderDetailsResponse;
+  final AddReviewRequest reviewRequest;
+  final bool showFeedbackSubmitDialog;
 
   OrdersState({
     @required this.getOrderListResponse,
@@ -21,6 +23,8 @@ class OrdersState {
     @required this.isLoadingNextPage,
     @required this.selectedOrderForDetails,
     @required this.selectedOrderDetailsResponse,
+    @required this.reviewRequest,
+    this.showFeedbackSubmitDialog,
   });
 
   factory OrdersState.initial() {
@@ -32,6 +36,8 @@ class OrdersState {
       isLoadingNextPage: LoadingStatusApp.idle,
       selectedOrderForDetails: null,
       selectedOrderDetailsResponse: null,
+      reviewRequest: new AddReviewRequest(),
+      showFeedbackSubmitDialog: false,
     );
   }
 
@@ -43,6 +49,8 @@ class OrdersState {
     LoadingStatusApp isLoadingNextPage,
     PlaceOrderResponse selectedOrderForDetails,
     PlaceOrderResponse selectedOrderDetailsResponse,
+    AddReviewRequest reviewRequest,
+    bool showFeedbackSubmitDialog,
   }) {
     return OrdersState(
       getOrderListResponse: getOrderListResponse ?? this.getOrderListResponse,
@@ -55,6 +63,9 @@ class OrdersState {
           selectedOrderForDetails ?? this.selectedOrderForDetails,
       selectedOrderDetailsResponse:
           selectedOrderDetailsResponse ?? this.selectedOrderDetailsResponse,
+      reviewRequest: reviewRequest ?? this.reviewRequest,
+      showFeedbackSubmitDialog:
+          showFeedbackSubmitDialog ?? this.showFeedbackSubmitDialog,
     );
   }
 }

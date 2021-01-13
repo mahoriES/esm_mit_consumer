@@ -13,6 +13,9 @@ class ImagePathConstants {
   static const categoryPlaceHolder = _prefix + "category_placeholder.png";
   static const closedStoreIcon = _prefix + "icon_closed.png";
   static const deliveryAvailableIcon = _prefix + "delivery.png";
+  static const paymentDoneIcon = _prefix + "Icon_Payment.png";
+  static const paymentPendingIcon = _prefix + "Icon_RetryPayment.png";
+  static const appLogo = _prefix + "app_main_icon.png";
 }
 
 class LottiePathConstants {

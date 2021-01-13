@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
+import 'package:eSamudaay/payments/razorpay/utility.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
@@ -91,6 +92,15 @@ class ToggleLoadingNextPageState extends ReduxAction<AppState> {
   }
 }
 
+class ResetShowFeedbackDialog extends ReduxAction<AppState> {
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(showFeedbackSubmitDialog: false),
+    );
+  }
+}
+
 class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
   final String orderId;
   GetOrderDetailsAPIAction(this.orderId);
@@ -130,6 +140,84 @@ class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
       dispatch(ToggleLoadingOrderDetailsState(LoadingStatusApp.loading));
 
   void after() => dispatch(ToggleLoadingOrderDetailsState(finalState));
+}
+
+class ResetReviewRequest extends ReduxAction<AppState> {
+  final int initialRating;
+  ResetReviewRequest(this.initialRating);
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        reviewRequest: new AddReviewRequest(ratingValue: initialRating),
+      ),
+    );
+  }
+}
+
+class UpdateProductReviewRequest extends ReduxAction<AppState> {
+  final int productId;
+  final int rating;
+
+  UpdateProductReviewRequest({@required this.productId, @required this.rating});
+
+  @override
+  AppState reduce() {
+    debugPrint("UpdateProductReviewRequest => $rating");
+    AddReviewRequest updatedReviewRequest = state.ordersState.reviewRequest;
+    bool isProductAlreadyPresentInList = false;
+
+    if (updatedReviewRequest.productRatings == null) {
+      updatedReviewRequest = updatedReviewRequest.copyWith(productRatings: []);
+    }
+
+    for (int i = 0; i < updatedReviewRequest.productRatings.length; i++) {
+      if (updatedReviewRequest.productRatings[i].productId == productId) {
+        isProductAlreadyPresentInList = true;
+        updatedReviewRequest.productRatings[i] =
+            updatedReviewRequest.productRatings[i].copyWith(
+          ratingValue: rating,
+        );
+      }
+    }
+
+    if (!isProductAlreadyPresentInList) {
+      updatedReviewRequest.productRatings.add(
+        new ProductRating(productId: productId, ratingValue: rating),
+      );
+    }
+
+    updatedReviewRequest.productRatings.forEach((product) {
+      debugPrint("here => ${product.toJson()}");
+    });
+
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        reviewRequest: updatedReviewRequest,
+      ),
+    );
+  }
+}
+
+class UpdateOrderReviewRequest extends ReduxAction<AppState> {
+  final int rating;
+  final String comment;
+
+  UpdateOrderReviewRequest({@required this.rating, @required this.comment});
+
+  @override
+  AppState reduce() {
+    debugPrint("UpdateOrderReviewRequest => $rating");
+
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        reviewRequest: state.ordersState.reviewRequest.copyWith(
+          ratingValue: rating,
+          ratingComment: comment,
+        ),
+      ),
+    );
+  }
 }
 
 class ToggleLoadingOrderDetailsState extends ReduxAction<AppState> {
@@ -179,6 +267,7 @@ class AddRatingAPIAction extends ReduxAction<AppState> {
         return state.copyWith(
           ordersState: state.ordersState.copyWith(
             getOrderListResponse: updatedResponse,
+            showFeedbackSubmitDialog: true,
           ),
         );
       } else {
@@ -403,4 +492,32 @@ class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
     FirebaseCrashlytics.instance
         .recordError(Exception([message]), StackTrace.current);
   }
+}
+
+class PaymentAction extends ReduxAction<AppState> {
+  String orderId;
+  VoidCallback onSuccess;
+  PaymentAction({
+    @required this.orderId,
+    @required this.onSuccess,
+  });
+
+  @override
+  Future<AppState> reduce() async {
+    await dispatchFuture(ClearPreviousRazorpayCheckoutOptionsAction());
+    await dispatchFuture(GetRazorpayCheckoutOptionsAction(orderId: orderId));
+
+    RazorpayUtility().checkout(
+      state.orderPaymentCheckoutOptions,
+      onSuccess: onSuccess,
+      onFailure: () {},
+    );
+    return state.copyWith(orderPaymentCheckoutOptions: null);
+  }
+
+  void before() =>
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
+
+  void after() =>
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.success));
 }

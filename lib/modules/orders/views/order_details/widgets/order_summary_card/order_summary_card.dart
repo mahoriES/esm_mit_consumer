@@ -1,12 +1,10 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/views/widgets/charges_list_widget/widgets/widgets.dart';
 import 'package:eSamudaay/modules/cart/views/widgets/customer_note_images_view/widgets/widgets.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/cancel_order_prompt.dart';
+import 'package:eSamudaay/modules/orders/views/order_card/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
-import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_positioned_dialog.dart';
 import 'package:eSamudaay/reusable_widgets/dashed_line.dart';
@@ -77,14 +75,17 @@ class OrderSummaryCard extends StatelessWidget {
                     CustomerNoteImagesView(
                         snapshot.orderDetails.customerNoteImages),
                   ],
-                  if (stateData.isCancelOptionAvailable ||
-                      stateData.isReorderOptionAvailable) ...{
-                    SecondaryActionButton(
-                      showCancelButton: stateData.isCancelOptionAvailable,
-                      onCancel: snapshot.onCancel,
-                      onReorder: snapshot.onReorder,
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: stateData.secondaryAction == SecondaryAction.CANCEL
+                          ? CancelOrderButton(snapshot.onCancel)
+                          : stateData.secondaryAction == SecondaryAction.REORDER
+                              ? ReorderButton(snapshot.onReorder)
+                              : SizedBox.shrink(),
                     ),
-                  },
+                  ),
                   const SizedBox(height: 15),
                 ],
               ),

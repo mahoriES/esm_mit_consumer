@@ -14,14 +14,27 @@ class OrderState {
   static const COMPLETED = 'COMPLETED';
 }
 
+enum SecondaryAction { CANCEL, REORDER, PAY }
+
+class PaymentStatus {
+  static const PENDING = 'PENDING';
+  static const SUCCESS = 'SUCCESS';
+  static const FAIL = 'FAIL';
+  static const REFUNDED = 'REFUNDED';
+
+  //  Old Statuses:
+  static const INITIATED = 'INITIATED';
+  static const APPROVED = 'APPROVED';
+  static const REJECTED = 'REJECTED';
+}
+
 class OrderStateData {
   final IconData icon;
   final Color actionButtonColor;
   final Color actionButtonTextColor;
   final String actionButtonText;
   final bool isActionButtonFilled;
-  final bool isCancelOptionAvailable;
-  final bool isReorderOptionAvailable;
+  final SecondaryAction secondaryAction;
   final List<String> stateProgressTagsList;
   final int stateProgressBreakPoint;
   final Color stateProgressBreakPointColor;
@@ -37,8 +50,7 @@ class OrderStateData {
     @required this.actionButtonTextColor,
     @required this.actionButtonText,
     @required this.isActionButtonFilled,
-    @required this.isCancelOptionAvailable,
-    @required this.isReorderOptionAvailable,
+    @required this.secondaryAction,
     @required this.stateProgressTagsList,
     @required this.stateProgressBreakPoint,
     @required this.stateProgressBreakPointColor,
@@ -93,8 +105,7 @@ class OrderStateData {
       icon: Icons.watch_later_outlined,
       actionButtonText: "Pending Confirmation",
       isActionButtonFilled: true,
-      isCancelOptionAvailable: true,
-      isReorderOptionAvailable: false,
+      secondaryAction: SecondaryAction.CANCEL,
       stateProgressTagsList: [
         "Request\nsent",
         "Pending\nConfirmation",
@@ -111,11 +122,10 @@ class OrderStateData {
     return OrderStateData(
       actionButtonColor: CustomTheme.of(context).colors.positiveColor,
       actionButtonTextColor: CustomTheme.of(context).colors.backgroundColor,
-      icon: Icons.check_outlined,
-      actionButtonText: "Confirm and Pay",
+      icon: Icons.check_circle_outline,
+      actionButtonText: "Confirm Order",
       isActionButtonFilled: true,
-      isCancelOptionAvailable: true,
-      isReorderOptionAvailable: false,
+      secondaryAction: SecondaryAction.CANCEL,
       stateProgressTagsList: [
         "Request\nsent",
         "Pending\nConfirmation",
@@ -137,8 +147,7 @@ class OrderStateData {
       icon: Icons.watch_later_outlined,
       actionButtonText: "Processing Order",
       isActionButtonFilled: false,
-      isCancelOptionAvailable: false,
-      isReorderOptionAvailable: false,
+      secondaryAction: SecondaryAction.PAY,
       isOrderConfirmed: true,
       stateProgressTagsList: [
         "Request\nsent",
@@ -161,8 +170,7 @@ class OrderStateData {
       icon: Icons.cancel_outlined,
       actionButtonText: "Order Declined",
       isActionButtonFilled: false,
-      isCancelOptionAvailable: false,
-      isReorderOptionAvailable: true,
+      secondaryAction: SecondaryAction.REORDER,
       stateProgressTagsList: [
         "Request\nsent",
         "Order\nDeclined",
@@ -183,8 +191,7 @@ class OrderStateData {
       icon: Icons.cancel_outlined,
       actionButtonText: "Order Cancelled",
       isActionButtonFilled: false,
-      isCancelOptionAvailable: false,
-      isReorderOptionAvailable: true,
+      secondaryAction: SecondaryAction.REORDER,
       stateProgressTagsList: [
         "Request\nsent",
         "Pending\nConfirmation",
@@ -206,8 +213,7 @@ class OrderStateData {
       icon: Icons.store_sharp,
       actionButtonText: "Pick-up at store",
       isActionButtonFilled: false,
-      isCancelOptionAvailable: false,
-      isReorderOptionAvailable: false,
+      secondaryAction: SecondaryAction.PAY,
       stateProgressTagsList: [
         "Request\nsent",
         "Pending\nConfirmation",
@@ -229,8 +235,7 @@ class OrderStateData {
       icon: Icons.directions_bike,
       actionButtonText: "Out For Delivery",
       isActionButtonFilled: false,
-      isCancelOptionAvailable: false,
-      isReorderOptionAvailable: false,
+      secondaryAction: SecondaryAction.PAY,
       stateProgressTagsList: [
         "Request\nsent",
         "Pending\nConfirmation",
@@ -253,8 +258,7 @@ class OrderStateData {
       icon: Icons.check_circle,
       actionButtonText: "Order Fulfilled",
       isActionButtonFilled: false,
-      isCancelOptionAvailable: false,
-      isReorderOptionAvailable: true,
+      secondaryAction: SecondaryAction.REORDER,
       stateProgressTagsList: [
         "Request\nsent",
         "Pending\nConfirmation",

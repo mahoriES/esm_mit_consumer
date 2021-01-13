@@ -123,6 +123,7 @@ class PlaceOrderResponse {
   Rating rating;
   PaymentInfo paymentInfo;
   String cancellationNote;
+  int itemsCount;
 
   PlaceOrderResponse({
     this.deliveryCharges,
@@ -152,6 +153,7 @@ class PlaceOrderResponse {
     this.rating,
     this.businessId,
     this.cancellationNote,
+    this.itemsCount,
   });
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
@@ -235,6 +237,7 @@ class PlaceOrderResponse {
     rating =
         json['rating'] != null ? new Rating.fromJson(json['rating']) : null;
     cancellationNote = json["cancellation_note"] ?? "";
+    itemsCount = json['items_count'];
   }
 
   String get createdTime => DateFormat('hh:mm a').format(
@@ -259,8 +262,10 @@ class PlaceOrderResponse {
 
   bool get isOrderAlreadyRated => this.rating.ratingValue != null;
 
+  double get orderTotalPriceInRupees => (this.orderTotal ?? 0) / 100;
+
   String get totalCountString {
-    int _productsCount = this.orderItems?.length ?? 0;
+    int _productsCount = this.orderItems?.length ?? this.itemsCount ?? 0;
     int _customerNoteImagesCount = this.customerNoteImages?.length ?? 0;
     int _totalCount = _productsCount + _customerNoteImagesCount;
     if (_totalCount == 0) return "";
@@ -555,6 +560,12 @@ class OrderItems {
         ? new SkuCharges.fromJson(json['sku_charges'])
         : null;
   }
+
+  bool get hasImages => this.images != null && this.images.isNotEmpty;
+
+  String get firstImageUrl => this.images == null || this.images.isEmpty
+      ? ""
+      : (this.images.first?.photoUrl ?? "");
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

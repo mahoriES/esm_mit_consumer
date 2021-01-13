@@ -29,12 +29,9 @@ class _StatusSpecificContent extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    tr("screen_order.processing_order_message") +
-                        (orderStatus == OrderState.REQUESTING_TO_DA
-                            ? "\n\n${tr("screen_order.order_requesting_DA_message")}"
-                            : orderStatus == OrderState.ASSIGNED_TO_DA
-                                ? "\n\n${tr("screen_order.order_assigned_DA_message")}"
-                                : ""),
+                    orderStatus == OrderState.MERCHANT_ACCEPTED
+                        ? tr("screen_order.processing_order_message")
+                        : "Order processed by merchant. Waiting for Delivery agent to pick your order.",
                     style: CustomTheme.of(context).textStyles.cardTitleFaded,
                     textAlign: TextAlign.center,
                   ),
@@ -121,11 +118,13 @@ class _StatusSpecificContent extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           RatingComponent(
-                                            isAlreadyRated: orderResponse
-                                                .isOrderAlreadyRated,
                                             rating: orderResponse
-                                                .rating.ratingValue,
-                                            onRate: rateOrder,
+                                                    .rating?.ratingValue ??
+                                                0,
+                                            onRate: orderResponse
+                                                    .isOrderAlreadyRated
+                                                ? null
+                                                : rateOrder,
                                           ),
                                         ],
                                       ),

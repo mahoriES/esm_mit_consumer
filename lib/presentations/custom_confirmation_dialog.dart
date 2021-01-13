@@ -50,6 +50,7 @@ class CustomConfirmationDialog extends StatelessWidget {
                         .textStyles
                         .topTileTitle
                         .copyWith(fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 SizedBox(height: 16.toHeight),

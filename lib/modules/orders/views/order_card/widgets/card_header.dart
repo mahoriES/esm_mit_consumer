@@ -1,8 +1,12 @@
-part of '../orders_card.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
-class _CardHeader extends StatelessWidget {
+class OrderCardHeader extends StatelessWidget {
   final PlaceOrderResponse orderResponse;
-  const _CardHeader(this.orderResponse, {Key key}) : super(key: key);
+  const OrderCardHeader(this.orderResponse, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

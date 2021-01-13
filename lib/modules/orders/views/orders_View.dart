@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/feedback_submit_dialog.dart';
 import 'package:eSamudaay/presentations/loading_indicator.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';
@@ -42,50 +43,55 @@ class _OrdersViewState extends State<OrdersView> {
         onInit: (store) {
           store.dispatch(GetOrderListAPIAction());
         },
+        onDidChange: (snapshot) {
+          snapshot.resetShowFeedbackDialog();
+          if (snapshot.showFeedbackDialog) {
+            showDialog(
+              context: context,
+              builder: (context) => FeedbackSubmissionDialog(),
+            );
+          }
+        },
         builder: (context, snapshot) {
           return ModalProgressHUD(
             progressIndicator: LoadingIndicator(),
-            inAsyncCall: snapshot.isLoading,
-            child: snapshot.isLoading
-                ? SizedBox.shrink()
-                : snapshot.hasError
-                    ? GenericErrorView(() => snapshot.fetchOrdersList())
-                    : (snapshot.isOrdersListEmpty)
-                        ? NoOrdersView()
-                        : Container(
-                            child: SmartRefresher(
-                              enablePullDown: true,
-                              enablePullUp: true,
-                              header: WaterDropHeader(
-                                complete: LoadingIndicator(),
-                                waterDropColor:
-                                    CustomTheme.of(context).colors.primaryColor,
-                                refresh: LoadingIndicator(),
-                              ),
-                              footer: CustomFooter(
-                                loadStyle: LoadStyle.ShowWhenLoading,
-                                builder:
-                                    (BuildContext context, LoadStatus mode) =>
-                                        LoadingIndicator(),
-                              ),
-                              controller: refreshController,
-                              onRefresh: () =>
-                                  snapshot.onRefresh(refreshController),
-                              onLoading: () =>
-                                  snapshot.onLoading(refreshController),
-                              child: ListView.builder(
-                                padding: EdgeInsets.only(bottom: 30),
-                                shrinkWrap: true,
-                                itemCount: snapshot
-                                    .getOrderListResponse.results.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                        OrdersCard(
-                                  snapshot.getOrderListResponse.results[index],
-                                ),
-                              ),
+            inAsyncCall: snapshot.isLoadingOrderList,
+            child: snapshot.hasError
+                ? GenericErrorView(() => snapshot.fetchOrdersList())
+                : !snapshot.isLoadingOrderList && snapshot.isOrdersListEmpty
+                    ? NoOrdersView()
+                    : Container(
+                        child: SmartRefresher(
+                          enablePullDown: true,
+                          enablePullUp: true,
+                          header: WaterDropHeader(
+                            complete: LoadingIndicator(),
+                            waterDropColor:
+                                CustomTheme.of(context).colors.primaryColor,
+                            refresh: LoadingIndicator(),
+                          ),
+                          footer: CustomFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            builder: (BuildContext context, LoadStatus mode) =>
+                                LoadingIndicator(),
+                          ),
+                          controller: refreshController,
+                          onRefresh: () =>
+                              snapshot.onRefresh(refreshController),
+                          onLoading: () =>
+                              snapshot.onLoading(refreshController),
+                          child: ListView.builder(
+                            padding: EdgeInsets.only(bottom: 30),
+                            shrinkWrap: true,
+                            itemCount:
+                                snapshot.getOrderListResponse.results.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                OrdersCard(
+                              snapshot.getOrderListResponse.results[index],
                             ),
                           ),
+                        ),
+                      ),
           );
         },
       ),
@@ -95,20 +101,29 @@ class _OrdersViewState extends State<OrdersView> {
 
 class _ViewModel extends BaseModel<AppState> {
   GetOrderListResponse getOrderListResponse;
-  bool isLoading;
+  bool isLoadingOrderList;
   bool isLoadingNextPage;
   bool hasError;
+  bool showFeedbackDialog;
   Future Function({String url}) fetchOrdersList;
+  VoidCallback resetShowFeedbackDialog;
 
   _ViewModel();
 
   _ViewModel.build({
     this.getOrderListResponse,
-    this.isLoading,
+    this.isLoadingOrderList,
     this.isLoadingNextPage,
     this.hasError,
     this.fetchOrdersList,
-  }) : super(equals: [getOrderListResponse, isLoading, isLoadingNextPage]);
+    this.showFeedbackDialog,
+    this.resetShowFeedbackDialog,
+  }) : super(equals: [
+          getOrderListResponse,
+          isLoadingOrderList,
+          isLoadingNextPage,
+          showFeedbackDialog,
+        ]);
 
   @override
   BaseModel fromStore() {
@@ -118,12 +133,14 @@ class _ViewModel extends BaseModel<AppState> {
           GetOrderListAPIAction(urlForNextPageResponse: url),
         );
       },
-      isLoading:
+      showFeedbackDialog: state.ordersState.showFeedbackSubmitDialog,
+      isLoadingOrderList:
           state.ordersState.isLoadingOrdersList == LoadingStatusApp.loading,
       hasError: state.ordersState.isLoadingOrdersList == LoadingStatusApp.error,
       isLoadingNextPage:
           state.ordersState.isLoadingNextPage == LoadingStatusApp.loading,
       getOrderListResponse: state.ordersState.getOrderListResponse,
+      resetShowFeedbackDialog: () => dispatch(ResetShowFeedbackDialog()),
     );
   }
 

@@ -24,175 +24,164 @@ class OrderDetailsBottomWidget extends StatelessWidget {
 
     return BottomSheet(
       onClosing: () {},
-      elevation: 8,
+      elevation: 4,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          orderDetails.deliveryType == DeliveryType.StorePickup
-              ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 26, vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 26, vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (orderDetails.deliveryType == DeliveryType.StorePickup) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.store_sharp,
-                            color: CustomTheme.of(context).colors.warningColor,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            tr("screen_order.store_pickup"),
-                            style: CustomTheme.of(context)
-                                .textStyles
-                                .cardTitle
-                                .copyWith(
-                                  color: CustomTheme.of(context)
-                                      .colors
-                                      .warningColor,
-                                ),
-                          ),
-                        ],
+                      Icon(
+                        Icons.store_sharp,
+                        color: CustomTheme.of(context).colors.warningColor,
                       ),
-                      const SizedBox(width: 16),
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.pin_drop,
-                              color: CustomTheme.of(context)
-                                  .colors
-                                  .disabledAreaColor,
+                      const SizedBox(width: 8),
+                      Text(
+                        tr("screen_order.store_pickup"),
+                        style: CustomTheme.of(context)
+                            .textStyles
+                            .cardTitle
+                            .copyWith(
+                              color:
+                                  CustomTheme.of(context).colors.warningColor,
                             ),
-                            const SizedBox(width: 12),
-                            Flexible(
-                              child: Text.rich(
-                                TextSpan(
-                                  text: orderDetails.businessName + "\n",
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .sectionHeading2,
-                                  children: [
-                                    TextSpan(
-                                      text: orderDetails
-                                          .pickupAddress?.addressString,
-                                      style: CustomTheme.of(context)
-                                          .textStyles
-                                          .body1Faded,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ],
                   ),
-                )
-              : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 26, vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      orderDetails.orderStatus == OrderState.PICKED_UP_BY_DA
-                          ? InkWell(
-                              onTap: () => showModalBottomSheet(
-                                context: context,
-                                elevation: 3.0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(9),
-                                    topRight: Radius.circular(9),
-                                  ),
-                                ),
-                                builder: (context) => ContactOptionsWidget(
-                                  name: "",
-                                  phoneNumber: "",
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.phone_outlined,
-                                    color: CustomTheme.of(context)
-                                        .colors
-                                        .primaryColor,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    tr("screen_order.contact_delivery_person")
-                                        .toUpperCase(),
-                                    style: CustomTheme.of(context)
-                                        .textStyles
-                                        .body2BoldPrimary,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.pin_drop,
+                          color:
+                              CustomTheme.of(context).colors.disabledAreaColor,
+                        ),
+                        const SizedBox(width: 12),
+                        Flexible(
+                          child: Text.rich(
+                            TextSpan(
+                              text: orderDetails.businessName + "\n",
+                              style: CustomTheme.of(context)
+                                  .textStyles
+                                  .sectionHeading2,
                               children: [
-                                Icon(
-                                  Icons.directions_bike,
-                                  color: CustomTheme.of(context)
-                                      .colors
-                                      .positiveColor,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  tr("screen_order.home_delivery"),
+                                TextSpan(
+                                  text:
+                                      orderDetails.pickupAddress?.addressString,
                                   style: CustomTheme.of(context)
                                       .textStyles
-                                      .cardTitle
-                                      .copyWith(
-                                        color: CustomTheme.of(context)
-                                            .colors
-                                            .positiveColor,
-                                      ),
+                                      .body1Faded,
                                 ),
                               ],
                             ),
-                      const SizedBox(width: 16),
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  orderDetails.orderStatus == OrderState.PICKED_UP_BY_DA
+                      ? InkWell(
+                          onTap: () => showModalBottomSheet(
+                            context: context,
+                            elevation: 3.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(9),
+                                topRight: Radius.circular(9),
+                              ),
+                            ),
+                            builder: (context) => ContactOptionsWidget(
+                              name: "",
+                              phoneNumber: "",
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.phone_outlined,
+                                color:
+                                    CustomTheme.of(context).colors.primaryColor,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                tr("screen_order.contact_delivery_person")
+                                    .toUpperCase(),
+                                style: CustomTheme.of(context)
+                                    .textStyles
+                                    .body2BoldPrimary,
+                              ),
+                            ],
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(
-                              Icons.pin_drop,
-                              color: CustomTheme.of(context)
-                                  .colors
-                                  .disabledAreaColor,
+                              Icons.directions_bike,
+                              color:
+                                  CustomTheme.of(context).colors.positiveColor,
                             ),
-                            const SizedBox(width: 12),
-                            Flexible(
-                              child: Text.rich(
-                                TextSpan(
-                                  text: tr("screen_order.home") + "\n",
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .sectionHeading2,
-                                  children: [
-                                    TextSpan(
-                                      text: orderDetails
-                                          .deliveryAdress?.addressString,
-                                      style: CustomTheme.of(context)
-                                          .textStyles
-                                          .body1Faded,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            const SizedBox(width: 8),
+                            Text(
+                              tr("screen_order.home_delivery"),
+                              style: CustomTheme.of(context)
+                                  .textStyles
+                                  .cardTitle
+                                  .copyWith(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .positiveColor,
+                                  ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.pin_drop,
+                          color:
+                              CustomTheme.of(context).colors.disabledAreaColor,
+                        ),
+                        const SizedBox(width: 12),
+                        Flexible(
+                          child: Text.rich(
+                            TextSpan(
+                              text: tr("screen_order.home") + "\n",
+                              style: CustomTheme.of(context)
+                                  .textStyles
+                                  .sectionHeading2,
+                              children: [
+                                TextSpan(
+                                  text: orderDetails
+                                      .deliveryAdress?.addressString,
+                                  style: CustomTheme.of(context)
+                                      .textStyles
+                                      .body1Faded,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ],
+            ),
+          ),
           StoreConnector<AppState, _ViewModel>(
             model: _ViewModel(),
             builder: (context, snapshot) {
@@ -203,13 +192,13 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) => CustomConfirmationDialog(
-                        title: tr("screen_order.accept_order") + "?",
+                        title: tr("screen_order.accept_order_message"),
                         positiveAction: () {
                           Navigator.pop(context);
                           snapshot.confirmOrder(orderDetails.orderId);
                         },
-                        positiveButtonText: tr("common.continue"),
-                        negativeButtonText: tr("common.cancel"),
+                        positiveButtonText: tr("screen_order.Confirm"),
+                        negativeButtonText: tr("common.back"),
                       ),
                     );
                   }

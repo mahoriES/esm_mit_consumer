@@ -1,67 +1,174 @@
-part of '../orders_card.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
+import 'package:eSamudaay/modules/orders/views/order_card/widgets/cancel_order_prompt.dart';
+import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
-class _SecondaryActionsRow extends StatelessWidget {
-  final OrderStateData stateData;
+class CancelOrderButton extends StatelessWidget {
   final Function(String) onCancel;
-  final VoidCallback onReOrder;
-  final VoidCallback goToOrderDetails;
-  const _SecondaryActionsRow({
-    @required this.stateData,
-    @required this.onCancel,
-    @required this.onReOrder,
-    @required this.goToOrderDetails,
+  const CancelOrderButton(this.onCancel, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => CancelOrderPrompt(onCancel),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.clear,
+              color: CustomTheme.of(context).colors.secondaryColor,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              tr("screen_order.Cancel"),
+              style:
+                  CustomTheme.of(context).textStyles.sectionHeading2.copyWith(
+                        color: CustomTheme.of(context).colors.secondaryColor,
+                      ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ReorderButton extends StatelessWidget {
+  final VoidCallback onReorder;
+
+  const ReorderButton(this.onReorder, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => CustomConfirmationDialog(
+          title: tr("screen_order.repeat_order"),
+          // message:
+          //     "The order will be added to your cart. You can modify it or proceed with the same order.",
+          positiveAction: () {
+            Navigator.pop(context);
+            onReorder();
+          },
+          positiveButtonText: tr("common.continue"),
+          negativeButtonText: tr("common.cancel"),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.refresh,
+              color: CustomTheme.of(context).colors.textColor,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              tr("screen_order.reorder"),
+              style: CustomTheme.of(context).textStyles.sectionHeading2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PayButton extends StatelessWidget {
+  final VoidCallback onPay;
+  final PlaceOrderResponse orderResponse;
+
+  const PayButton({
+    @required this.onPay,
+    @required this.orderResponse,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (stateData.isCancelOptionAvailable ||
-            stateData.isReorderOptionAvailable) ...{
+    return InkWell(
+      onTap: orderResponse.paymentInfo.isPaymentDone ||
+              orderResponse.paymentInfo.isPaymentInitiated
+          ? null
+          : onPay,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            orderResponse.paymentInfo.isPaymentDone ||
+                    orderResponse.paymentInfo.isPaymentInitiated
+                ? ImagePathConstants.paymentDoneIcon
+                : ImagePathConstants.paymentPendingIcon,
+            width: 50,
+            fit: BoxFit.fitWidth,
+          ),
+          const SizedBox(width: 4),
           Flexible(
-            child: _SecondaryActionButton(
-              prefixIcon: stateData.isCancelOptionAvailable
-                  ? Icon(
-                      Icons.clear,
-                      color: CustomTheme.of(context).colors.secondaryColor,
-                    )
-                  : Icon(Icons.refresh),
-              text: stateData.isCancelOptionAvailable
-                  ? tr("screen_order.Cancel")
-                  : tr("screen_order.reorder"),
-              color: stateData.isCancelOptionAvailable
-                  ? CustomTheme.of(context).colors.secondaryColor
-                  : CustomTheme.of(context).colors.textColor,
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => stateData.isCancelOptionAvailable
-                      ? CancelOrderPrompt(onCancel)
-                      : CustomConfirmationDialog(
-                          title: tr("screen_order.repeat_order"),
-                          // message:
-                          //     "The order will be added to your cart. You can modify it or proceed with the same order.",
-                          positiveAction: () {
-                            Navigator.pop(context);
-                            onReOrder();
-                          },
-                          positiveButtonText: tr("common.continue"),
-                          negativeButtonText: tr("common.cancel"),
-                        ),
-                );
-              },
+            child: FittedBox(
+              child: Text.rich(
+                TextSpan(
+                  text: "Payment " +
+                      (orderResponse.paymentInfo.status == PaymentStatus.SUCCESS
+                          ? "Done"
+                          : "${orderResponse.paymentInfo.status.capitalize()}") +
+                      "\n",
+                  style: CustomTheme.of(context).textStyles.body2,
+                  children: [
+                    TextSpan(
+                      text: "Pay " +
+                          orderResponse.orderTotalPriceInRupees.withRupeePrefix,
+                      style: CustomTheme.of(context).textStyles.sectionHeading2,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        },
-        Flexible(
-          child: _SecondaryActionButton(
-            alignment: (stateData.isCancelOptionAvailable ||
-                    stateData.isReorderOptionAvailable)
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.center,
-            suffixIcon: Container(
+        ],
+      ),
+    );
+  }
+}
+
+class OrderDetailsButton extends StatelessWidget {
+  final VoidCallback goToOrderDetails;
+  const OrderDetailsButton(this.goToOrderDetails, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: goToOrderDetails,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              tr("screen_order.order_details"),
+              style: CustomTheme.of(context)
+                  .textStyles
+                  .sectionHeading2
+                  .copyWith(color: CustomTheme.of(context).colors.primaryColor),
+            ),
+            const SizedBox(width: 8),
+            Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
                 color: CustomTheme.of(context).colors.primaryColor,
@@ -73,59 +180,6 @@ class _SecondaryActionsRow extends StatelessWidget {
                 color: CustomTheme.of(context).colors.backgroundColor,
               ),
             ),
-            text: tr("screen_order.order_details"),
-            color: CustomTheme.of(context).colors.primaryColor,
-            onTap: goToOrderDetails,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SecondaryActionButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final Widget prefixIcon;
-  final Widget suffixIcon;
-  final String text;
-  final Color color;
-  final MainAxisAlignment alignment;
-  const _SecondaryActionButton({
-    @required this.onTap,
-    @required this.text,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.color,
-    this.alignment,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          mainAxisAlignment: alignment ?? MainAxisAlignment.start,
-          children: [
-            if (prefixIcon != null) ...[
-              prefixIcon,
-              const SizedBox(width: 8),
-            ],
-            Text(
-              text,
-              style: CustomTheme.of(context)
-                  .textStyles
-                  .sectionHeading2
-                  .copyWith(
-                    color: color ?? CustomTheme.of(context).colors.textColor,
-                  ),
-            ),
-            if (suffixIcon != null) ...[
-              const SizedBox(width: 8),
-              suffixIcon,
-            ],
           ],
         ),
       ),
