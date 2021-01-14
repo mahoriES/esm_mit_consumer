@@ -129,7 +129,10 @@ class PayButton extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: tr(
-                        "screen_order.pay_amount",
+                        orderResponse.paymentInfo.isPaymentDone ||
+                                orderResponse.paymentInfo.isPaymentInitiated
+                            ? "payment_statuses.paid_amout"
+                            : "payment_statuses.pay_amount",
                         args: [
                           orderResponse.orderTotalPriceInRupees.withRupeePrefix
                         ],

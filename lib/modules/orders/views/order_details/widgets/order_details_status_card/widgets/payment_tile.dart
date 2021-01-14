@@ -1,5 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
-import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
@@ -22,18 +22,16 @@ class PaymentStatusTile extends StatelessWidget {
           child: FittedBox(
             child: Text.rich(
               TextSpan(
-                text: "Payment Details\n",
+                text: tr("screen_order.payment_details") + "\n",
                 style: CustomTheme.of(context).textStyles.body2,
                 children: [
                   TextSpan(
-                    text: (orderResponse.paymentInfo.status ==
-                                    PaymentStatus.SUCCESS ||
-                                orderResponse.paymentInfo.status ==
-                                    PaymentStatus.APPROVED
-                            ? "Paid"
-                            : "${orderResponse.paymentInfo.status.toCamelCase()}") +
-                        "\t" +
-                        "${orderResponse.orderTotalPriceInRupees.withRupeePrefix}",
+                    text: tr(
+                      orderResponse.paymentInfo.dStatusWithAmount,
+                      args: [
+                        orderResponse.orderTotalPriceInRupees.withRupeePrefix
+                      ],
+                    ),
                     style: CustomTheme.of(context)
                         .textStyles
                         .cardTitle
@@ -59,7 +57,7 @@ class PaymentStatusTile extends StatelessWidget {
                     Flexible(
                       child: Text.rich(
                         TextSpan(
-                          text: "Payment Method\n",
+                          text: tr("screen_order.payment_method") + "\n",
                           style: CustomTheme.of(context).textStyles.body2,
                           children: [
                             TextSpan(
@@ -106,8 +104,8 @@ class PaymentStatusTile extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 orderResponse.paymentInfo.isPaymentFailed
-                                    ? "Retry"
-                                    : "Pay",
+                                    ? tr("screen_order.retry")
+                                    : tr("screen_order.pay"),
                                 style: CustomTheme.of(context)
                                     .textStyles
                                     .sectionHeading2

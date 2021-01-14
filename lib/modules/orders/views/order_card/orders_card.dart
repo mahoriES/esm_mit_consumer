@@ -47,7 +47,7 @@ class OrdersCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ActionButton(
-                    text: stateData.actionButtonText,
+                    text: tr(stateData.actionButtonText, args: [" "]),
                     onTap: snapshot.goToOrderDetails,
                     icon: stateData.icon,
                     isFilled: stateData.isActionButtonFilled,

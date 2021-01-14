@@ -198,6 +198,20 @@ class PaymentInfo {
 
   bool get isPaymentInitiated => this.status == PaymentStatus.INITIATED;
 
+  String get dStatusWithAmount {
+    return this.status == PaymentStatus.SUCCESS ||
+            this.status == PaymentStatus.APPROVED ||
+            this.status == PaymentStatus.INITIATED
+        ? "payment_statuses.paid_amout"
+        : this.status == PaymentStatus.REFUNDED
+            ? "payment_statuses.refunded_amout"
+            : this.status == PaymentStatus.FAIL
+                ? "payment_statuses.Failed_amout"
+                : this.status == PaymentStatus.REJECTED
+                    ? "payment_statuses.rejected_amout"
+                    : "payment_statuses.pending_amout";
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['upi'] = this.upi;

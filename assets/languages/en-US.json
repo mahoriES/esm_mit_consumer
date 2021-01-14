@@ -242,7 +242,8 @@
     "not_available_message": "Items not available with the merchant or currently not in stock",
     "home": "Home",
     "what_went_wrong": "What went wrong?",
-    "pay_amount": "Pay  {}"
+    "payment_method": "Payment Method",
+    "retry": "Retry"
   },
   "screen_order_feedback": {
     "rate_your_order": "Rate Your Order",
@@ -252,6 +253,18 @@
     "rate_products_message": "Rate products you love to get better suggestions in the app",
     "feedback_dialog_title": "Thank You!",
     "feedback_dialog_message": "Your feedback helps us improve our processes to serve you better"
+  },
+  "screen_order_status": {
+    "request_sent": "Request{}sent",
+    "pending": "Pending{}Confirmation",
+    "confirm": "Confirm{}and Pay",
+    "confirm_order": "Confirm Order",
+    "pickup": "Pickup{}at store",
+    "delivery": "Out for{}Delivery",
+    "processing": "Processing{}Order",
+    "cancelled": "Order{}Cancelled",
+    "declined": "Order{}Declined",
+    "completed": "Order{}Fulfilled"
   },
   "screen_support": {
     "title": "Support",
@@ -322,7 +335,13 @@
     "rejected": "Payment Rejected",
     "success": "Payment Done",
     "fail": "Payment Failed",
-    "refunded": "Payment Refunded"
+    "refunded": "Payment Refunded",
+    "pay_amount": "Pay  {}",
+    "paid_amout": "Paid  {}",
+    "pending_amout": "Pending {}",
+    "rejected_amout": "Rejected {}",
+    "Failed_amout": "Failed {}",
+    "refunded_amout": "Refunded {}"
   },
   "payment_info": {
     "checkout_error": "Something went wrong. Contact support if problem persists.",

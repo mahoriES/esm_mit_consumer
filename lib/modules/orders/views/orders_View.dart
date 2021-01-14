@@ -73,7 +73,9 @@ class _OrdersViewState extends State<OrdersView> {
                           footer: CustomFooter(
                             loadStyle: LoadStyle.ShowWhenLoading,
                             builder: (BuildContext context, LoadStatus mode) =>
-                                LoadingIndicator(),
+                                snapshot.isLoadingNextPage
+                                    ? LoadingIndicator()
+                                    : SizedBox.shrink(),
                           ),
                           controller: refreshController,
                           onRefresh: () =>
@@ -155,11 +157,13 @@ class _ViewModel extends BaseModel<AppState> {
   }
 
   void onLoading(RefreshController refreshController) async {
-    if (getOrderListResponse.next != null) {
-      await fetchOrdersList(url: getOrderListResponse.next);
-    } else {
-      Fluttertoast.showToast(msg: tr("screen_order.no_more_orders"));
+    if (!isLoadingNextPage) {
+      if (getOrderListResponse.next != null) {
+        await fetchOrdersList(url: getOrderListResponse.next);
+      } else {
+        Fluttertoast.showToast(msg: tr("screen_order.no_more_orders"));
+      }
+      refreshController.loadComplete();
     }
-    refreshController.loadComplete();
   }
 }

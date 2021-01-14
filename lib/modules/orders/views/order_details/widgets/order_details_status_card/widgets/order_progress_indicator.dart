@@ -1,5 +1,6 @@
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class OrderProgressIndicator extends StatefulWidget {
@@ -142,7 +143,7 @@ class _StateProgressTagsRow extends StatelessWidget {
           padding: EdgeInsets.only(left: index == 0 ? 0 : 10),
           child: FittedBox(
             child: Text(
-              stateData.stateProgressTagsList[index],
+              tr(stateData.stateProgressTagsList[index], args: ["\n"]),
               // if this is the selected tag, then use the assigned color in stateData
               style: CustomTheme.of(context).textStyles.body1.copyWith(
                     color: index == stateData.stateProgressBreakPoint

@@ -24,10 +24,10 @@ class OrderDetailsBottomWidget extends StatelessWidget {
           context,
         );
 
-        return BottomSheet(
-          onClosing: () {},
+        return Card(
           elevation: 4,
-          builder: (context) => Column(
+          margin: EdgeInsets.zero,
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
@@ -201,7 +201,7 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                 ),
               ),
               ActionButton(
-                text: stateData.actionButtonText,
+                text: tr(stateData.actionButtonText, args: [" "]),
                 onTap: () {
                   if (snapshot.orderDetails.orderStatus ==
                       OrderState.MERCHANT_UPDATED) {
