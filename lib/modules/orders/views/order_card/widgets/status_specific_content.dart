@@ -94,7 +94,7 @@ class _StatusSpecificContent extends StatelessWidget {
                                       // SizedBox(height: 10),
                                       InkWell(
                                         onTap: () {
-                                          CommonMethods.openMap(
+                                          GenericMethods.openMap(
                                             orderResponse.pickupAddress
                                                 .locationPoint?.lat,
                                             orderResponse.pickupAddress

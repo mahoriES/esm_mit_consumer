@@ -166,7 +166,7 @@ class _BusinessDetailsPopupState extends State<BusinessDetailsPopup>
                           scalingUnitaryValue: separatorPaddingAnimation),
                       MerchantAddressRow(
                         onOpenMap: () {
-                          CommonMethods.openMap(widget.locationPoint?.lat,
+                          GenericMethods.openMap(widget.locationPoint?.lat,
                               widget.locationPoint?.lon);
                         },
                         onContactMerchant: widget.onContactMerchant,

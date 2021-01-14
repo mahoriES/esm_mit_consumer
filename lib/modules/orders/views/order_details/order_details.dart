@@ -46,7 +46,7 @@ class OrderDetailsView extends StatelessWidget {
           ),
           bottomSheet: snapshot.isLoading || snapshot.hasError
               ? SizedBox.shrink()
-              : OrderDetailsBottomWidget(snapshot.orderDetails),
+              : OrderDetailsBottomWidget(),
           body: snapshot.isLoading
               ? LoadingIndicator()
               : snapshot.hasError

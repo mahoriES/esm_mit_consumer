@@ -71,7 +71,7 @@ class OrderSummaryCard extends StatelessWidget {
                       unavailableItemsList: snapshot.unavailableItems,
                     ),
                   },
-                  if (snapshot.orderDetails.customerNoteImages.length > 0) ...[
+                  if (snapshot.hasCustomerNoteImages) ...[
                     CustomerNoteImagesView(
                         snapshot.orderDetails.customerNoteImages),
                   ],
@@ -172,4 +172,8 @@ class _ViewModel extends BaseModel<AppState> {
     });
     return temp;
   }
+
+  bool get hasCustomerNoteImages =>
+      orderDetails.customerNoteImages != null &&
+      orderDetails.customerNoteImages.length > 0;
 }

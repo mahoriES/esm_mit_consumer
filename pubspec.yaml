@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.0.15+56
+version: 1.0.15+59
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -37,8 +37,7 @@ dependencies:
   dio: ^3.0.8
   connectivity: ^0.4.8+1
   intl: ^0.16.0
-  easy_alert:
-    ^0.0.8
+  easy_alert: ^0.0.8
   carousel_slider: ^1.4.1
   redux_persist_flutter: ^0.8.2
   cached_network_image: ^2.0.0
