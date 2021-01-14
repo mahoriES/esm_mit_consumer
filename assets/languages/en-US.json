@@ -241,14 +241,17 @@
     "not_available": "Not Available",
     "not_available_message": "Items not available with the merchant or currently not in stock",
     "home": "Home",
-    "what_went_wrong": "What went wrong?"
+    "what_went_wrong": "What went wrong?",
+    "pay_amount": "Pay  {}"
   },
   "screen_order_feedback": {
     "rate_your_order": "Rate Your Order",
     "submit_feedback": "Submit Your Feedback",
     "rate_order_message": "Please rate the order",
     "rate_products": "Rate Products",
-    "rate_products_message": "Rate products you love to get better suggestions in the app"
+    "rate_products_message": "Rate products you love to get better suggestions in the app",
+    "feedback_dialog_title": "Thank You!",
+    "feedback_dialog_message": "Your feedback helps us improve our processes to serve you better"
   },
   "screen_support": {
     "title": "Support",

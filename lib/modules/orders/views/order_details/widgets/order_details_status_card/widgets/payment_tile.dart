@@ -31,7 +31,7 @@ class PaymentStatusTile extends StatelessWidget {
                                 orderResponse.paymentInfo.status ==
                                     PaymentStatus.APPROVED
                             ? "Paid"
-                            : "${orderResponse.paymentInfo.status.capitalize()}") +
+                            : "${orderResponse.paymentInfo.status.toCamelCase()}") +
                         "\t" +
                         "${orderResponse.orderTotalPriceInRupees.withRupeePrefix}",
                     style: CustomTheme.of(context)
@@ -64,7 +64,7 @@ class PaymentStatusTile extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: orderResponse.paymentInfo?.paymentMadeVia
-                                      ?.capitalize() ??
+                                      ?.toCamelCase() ??
                                   "",
                               style: CustomTheme.of(context)
                                   .textStyles

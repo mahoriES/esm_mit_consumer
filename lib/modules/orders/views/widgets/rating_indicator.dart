@@ -39,7 +39,7 @@ class RatingIndicator extends StatelessWidget {
             style: style ?? CustomTheme.of(context).textStyles.cardTitleFaded,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         },
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

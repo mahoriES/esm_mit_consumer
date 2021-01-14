@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,7 +41,7 @@ class ContactOptionsWidget extends StatelessWidget {
             leading: SizedBox(
                 height: 25.toHeight,
                 width: 25.toWidth,
-                child: Image.asset('assets/images/whatsapp.png')),
+                child: Image.asset(ImagePathConstants.whatsappIcon)),
             onTap: () {
               if (phoneNumber == null) return;
               if (Platform.isIOS) {

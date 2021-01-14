@@ -122,13 +122,18 @@ class PayButton extends StatelessWidget {
             child: FittedBox(
               child: Text.rich(
                 TextSpan(
-                  text: tr(
-                      "payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}"),
+                  text:
+                      tr("payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}") +
+                          "\n",
                   style: CustomTheme.of(context).textStyles.body2,
                   children: [
                     TextSpan(
-                      text: "\nPay " +
-                          orderResponse.orderTotalPriceInRupees.withRupeePrefix,
+                      text: tr(
+                        "screen_order.pay_amount",
+                        args: [
+                          orderResponse.orderTotalPriceInRupees.withRupeePrefix
+                        ],
+                      ),
                       style: CustomTheme.of(context).textStyles.sectionHeading2,
                     ),
                   ],

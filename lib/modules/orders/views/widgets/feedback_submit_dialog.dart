@@ -1,5 +1,6 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackSubmissionDialog extends StatelessWidget {
@@ -29,7 +30,7 @@ class FeedbackSubmissionDialog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 46),
                 child: Text(
-                  "Thank You!",
+                  tr("screen_order_feedback.feedback_dialog_title"),
                   style: CustomTheme.of(context)
                       .textStyles
                       .topTileTitle
@@ -41,7 +42,7 @@ class FeedbackSubmissionDialog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Text(
-                  "Your feedback helps us improve our processes to serve you better",
+                  tr("screen_order_feedback.feedback_dialog_message"),
                   style: CustomTheme.of(context).textStyles.cardTitle,
                   textAlign: TextAlign.center,
                 ),

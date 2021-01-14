@@ -68,4 +68,7 @@ class ApiURL {
       (String orderId) => "$placeOrderUrl$orderId/complete";
   static final getRazorpayOrderIdUrl =
       (String orderId) => baseURL + placeOrderUrl + orderId + "/razorpay";
+
+  static final openMapUrl = (double latitude, double longitude) =>
+      "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
 }
