@@ -241,6 +241,13 @@
     "not_available_message": "Items not available with the merchant or currently not in stock",
     "home": "Home"
   },
+  "screen_order_feedback": {
+    "rate_your_order": "Rate Your Order",
+    "submit_feedback": "Submit Your Feedback",
+    "rate_order_message": "Please rate the order",
+    "rate_products": "Rate Products",
+    "rate_products_message": "Rate products you love to get better suggestions in the app"
+  },
   "screen_support": {
     "title": "Support",
     "issue": "select issues",

@@ -13,6 +13,11 @@ class OrdersState {
   final PlaceOrderResponse selectedOrderDetails;
   final AddReviewRequest reviewRequest;
   final bool showFeedbackSubmitDialog;
+  // in AddReviewRequest we have a List<ProductRating>.
+  // When we make any changes to this list, the StoreConnector is not being notified,
+  // as the Redux state is not able to detect changes within a object inside a list,
+  // so created another boolean to solve this issue.
+  final bool changedProductRatingList;
 
   OrdersState({
     @required this.ordersList,
@@ -22,7 +27,8 @@ class OrdersState {
     @required this.selectedOrder,
     @required this.selectedOrderDetails,
     @required this.reviewRequest,
-    this.showFeedbackSubmitDialog,
+    @required this.showFeedbackSubmitDialog,
+    @required this.changedProductRatingList,
   });
 
   factory OrdersState.initial() {
@@ -35,6 +41,7 @@ class OrdersState {
       selectedOrderDetails: null,
       reviewRequest: new AddReviewRequest(),
       showFeedbackSubmitDialog: false,
+      changedProductRatingList: false,
     );
   }
 
@@ -48,6 +55,7 @@ class OrdersState {
     PlaceOrderResponse selectedOrderDetails,
     AddReviewRequest reviewRequest,
     bool showFeedbackSubmitDialog,
+    bool changedProductRatingList,
   }) {
     return OrdersState(
       ordersList: ordersList ?? this.ordersList,
@@ -60,6 +68,35 @@ class OrdersState {
       reviewRequest: reviewRequest ?? this.reviewRequest,
       showFeedbackSubmitDialog:
           showFeedbackSubmitDialog ?? this.showFeedbackSubmitDialog,
+      changedProductRatingList:
+          changedProductRatingList ?? this.changedProductRatingList,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OrdersState &&
+          runtimeType == other.runtimeType &&
+          ordersList == other.ordersList &&
+          isLoadingOrderDetails == other.isLoadingOrderDetails &&
+          isLoadingOrdersList == other.isLoadingOrdersList &&
+          isLoadingNextPage == other.isLoadingNextPage &&
+          selectedOrder == other.selectedOrder &&
+          selectedOrderDetails == other.selectedOrderDetails &&
+          reviewRequest == other.reviewRequest &&
+          changedProductRatingList == other.changedProductRatingList &&
+          showFeedbackSubmitDialog == other.showFeedbackSubmitDialog;
+
+  @override
+  int get hashCode =>
+      ordersList.hashCode ^
+      isLoadingOrderDetails.hashCode ^
+      isLoadingOrdersList.hashCode ^
+      isLoadingNextPage.hashCode ^
+      selectedOrder.hashCode ^
+      selectedOrderDetails.hashCode ^
+      reviewRequest.hashCode ^
+      changedProductRatingList.hashCode ^
+      showFeedbackSubmitDialog.hashCode;
 }

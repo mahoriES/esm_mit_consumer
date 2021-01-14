@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_component.dart';
+import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/progress_indicator.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/payment_tile.dart';
@@ -112,7 +112,7 @@ class OrderDetailsStatusCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30, vertical: 20),
-                      child: RatingComponent(
+                      child: RatingIndicator(
                         rating: snapshot.orderDetails.rating?.ratingValue ?? 0,
                         onRate: snapshot.orderDetails.isOrderAlreadyRated
                             ? null
@@ -174,7 +174,7 @@ class _ViewModel extends BaseModel<AppState> {
       ),
       goToFeedbackView: (ratingValue) => dispatch(
         NavigateAction.pushNamed(
-          RouteNames.FEEDBACK_VIEW,
+          RouteNames.ORDER_FEEDBACK_VIEW,
           arguments: ratingValue,
         ),
       ),

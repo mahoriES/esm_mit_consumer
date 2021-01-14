@@ -175,6 +175,11 @@ class UpdateProductReviewRequest extends ReduxAction<AppState> {
       return state.copyWith(
         ordersState: state.ordersState.copyWith(
           reviewRequest: updatedReviewRequest,
+          // in AddReviewRequest we have a List<ProductRating>.
+          // When we make any changes to this list, the StoreConnector is not being notified,
+          // as the Redux state is not able to detect changes within a object inside a list,
+          // so created another boolean to solve this issue.
+          changedProductRatingList: !state.ordersState.changedProductRatingList,
         ),
       );
     } catch (e) {

@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_component.dart';
+import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/order_card/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -125,7 +125,7 @@ class _ViewModel extends BaseModel<AppState> {
       goToFeedbackView: (ratingValue) async {
         await dispatchFuture(ResetSelectedOrder(this.orderResponse));
         dispatch(NavigateAction.pushNamed(
-          RouteNames.FEEDBACK_VIEW,
+          RouteNames.ORDER_FEEDBACK_VIEW,
           arguments: ratingValue,
         ));
       },

@@ -65,8 +65,8 @@ class SetupRoutes {
             ModalRoute.of(context).settings.arguments,
           ),
       RouteNames.ORDER_DETAILS: (BuildContext context) => OrderDetailsView(),
-      RouteNames.FEEDBACK_VIEW: (BuildContext context) =>
-          FeedbackView(ModalRoute.of(context).settings.arguments),
+      RouteNames.ORDER_FEEDBACK_VIEW: (BuildContext context) =>
+          OrderFeedbackView(ModalRoute.of(context).settings.arguments),
     };
   }
 }
@@ -88,5 +88,5 @@ class RouteNames {
   static const CIRCLE_SEARCH = "/circleSearch";
   static const IMAGE_ZOOM_VIEW = "/imageZoomView";
   static const ORDER_DETAILS = "/order_details";
-  static const FEEDBACK_VIEW = "/feedback_view";
+  static const ORDER_FEEDBACK_VIEW = "/feedback_view";
 }

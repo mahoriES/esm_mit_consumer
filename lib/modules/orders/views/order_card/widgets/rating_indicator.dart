@@ -1,14 +1,17 @@
+import 'dart:math';
+
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class RatingComponent extends StatelessWidget {
+class RatingIndicator extends StatelessWidget {
   final int rating;
   final Function(int) onRate;
   final TextStyle style;
   final double iconSize;
   final bool shouldIncludeMessage;
-  const RatingComponent({
+  const RatingIndicator({
     @required this.rating,
     @required this.onRate,
     this.style,
@@ -19,6 +22,8 @@ class RatingComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double _size = iconSize ?? min((SizeConfig.screenWidth / 12), 30);
+
     return Column(
       children: [
         if (shouldIncludeMessage) ...{
@@ -43,19 +48,19 @@ class RatingComponent extends StatelessWidget {
             (index) => InkWell(
               onTap: onRate == null ? null : () => onRate(index + 1),
               child: Padding(
-                padding: EdgeInsets.only(left: index == 0 ? 0 : 8),
+                padding: EdgeInsets.only(left: index == 0 ? 0 : (_size / 5)),
                 child: (rating == 0 || index + 1 <= rating)
                     ? Icon(
                         Icons.star,
                         color: rating == 0
                             ? CustomTheme.of(context).colors.placeHolderColor
                             : CustomTheme.of(context).colors.primaryColor,
-                        size: iconSize ?? 30,
+                        size: _size,
                       )
                     : Icon(
                         Icons.star_outline,
                         color: CustomTheme.of(context).colors.primaryColor,
-                        size: iconSize ?? 30,
+                        size: _size,
                       ),
               ),
             ),

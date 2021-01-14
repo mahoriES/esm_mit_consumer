@@ -117,7 +117,7 @@ class _StatusSpecificContent extends StatelessWidget {
                                       padding: const EdgeInsets.only(top: 20),
                                       child: Column(
                                         children: [
-                                          RatingComponent(
+                                          RatingIndicator(
                                             rating: orderResponse
                                                     .rating?.ratingValue ??
                                                 0,
