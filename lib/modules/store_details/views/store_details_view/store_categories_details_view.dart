@@ -48,35 +48,22 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
     with MerchantActionsProviderMixin {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // TODO : this logic to update selected merchant from cart data doesn't seem right.
-        // Can't update now as it may cause errors in store details.
-        Business merchants = await CartDataSource.getCartMerchant();
-        if (merchants != null &&
-            merchants.businessId !=
-                store.state.productState.selectedMerchant.businessId) {
-          var localMerchant = merchants;
-          store.dispatch(
-              UpdateSelectedMerchantAction(selectedMerchant: localMerchant));
-        }
-        return Future.value(true);
+    return StoreConnector<AppState, _ViewModel>(
+      model: _ViewModel(),
+      onInit: (store) async {
+        String businessId =
+            store.state.productState.selectedMerchant.businessId;
+        await store.dispatchFuture(GetCategoriesDetailsAction());
+        await store
+            .dispatchFuture(GetBusinessVideosAction(businessId: businessId));
+        store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
       },
-      child: SafeArea(
-        child: Scaffold(
-          body: StoreConnector<AppState, _ViewModel>(
-            model: _ViewModel(),
-            onInit: (store) async {
-              String businessId =
-                  store.state.productState.selectedMerchant.businessId;
-              await store.dispatchFuture(GetCategoriesDetailsAction());
-              await store.dispatchFuture(
-                  GetBusinessVideosAction(businessId: businessId));
-              store.dispatch(GetBusinessSpotlightItems(businessId: businessId));
-            },
-            onDidChange: (snapshot) {},
-            builder: (context, snapshot) {
-              return ModalProgressHUD(
+      builder: (context, snapshot) {
+        return WillPopScope(
+          onWillPop: (){return snapshot.onWillPopCallBack();},
+          child: SafeArea(
+            child: Scaffold(
+              body: ModalProgressHUD(
                 progressIndicator: Card(
                   child: Image.asset(
                     'assets/images/indicator.gif',
@@ -124,8 +111,8 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                   '',
                                               isDeliveryAvailable: snapshot
                                                   .selectedMerchant.hasDelivery,
-                                              // TODO : is Open value should be dynamic.
-                                              isOpen: snapshot.selectedMerchant.isOpen,
+                                              isOpen: snapshot
+                                                  .selectedMerchant.isOpen,
                                               businessImageUrl: snapshot
                                                       .selectedMerchant
                                                       .images
@@ -198,13 +185,6 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                                                                     .of(context)
                                                                 .colors
                                                                 .disabledAreaColor),
-                                                    prefixIcon: Icon(
-                                                      Icons.search_rounded,
-                                                      color: CustomTheme.of(
-                                                              context)
-                                                          .colors
-                                                          .primaryColor,
-                                                    ),
                                                     enabledBorder:
                                                         OutlineInputBorder(
                                                       borderSide:
@@ -344,11 +324,11 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
                     ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -604,6 +584,20 @@ class _ViewModel extends BaseModel<AppState> {
       },
     );
   }
+
+  Future<bool> Function() onWillPopCallBack = () async {
+    // TODO : this logic to update selected merchant from cart data doesn't seem right.
+    // Can't update now as it may cause errors in store details.
+    Business merchants = await CartDataSource.getCartMerchant();
+    if (merchants != null &&
+        merchants.businessId !=
+            store.state.productState.selectedMerchant.businessId) {
+      var localMerchant = merchants;
+      store.dispatch(
+          UpdateSelectedMerchantAction(selectedMerchant: localMerchant));
+    }
+    return Future.value(true);
+  };
 
   bool get showNoProductsWidget {
     return loadingStatus == LoadingStatusApp.success &&

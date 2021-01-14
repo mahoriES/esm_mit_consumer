@@ -84,7 +84,8 @@ class AppState {
     OrdersState ordersState,
   }) {
     return AppState(
-      orderPaymentCheckoutOptions: orderPaymentCheckoutOptions ?? this.orderPaymentCheckoutOptions,
+      orderPaymentCheckoutOptions:
+          orderPaymentCheckoutOptions ?? this.orderPaymentCheckoutOptions,
       isInitializationDone: isInitializationDone ?? this.isInitializationDone,
       productState: productState ?? this.productState,
       authState: authState ?? this.authState,
@@ -106,22 +107,34 @@ class AppState {
       identical(this, other) ||
       other is AppState &&
           runtimeType == other.runtimeType &&
+          isLoading == other.isLoading &&
           authState == other.authState &&
-          componentsLoadingState == other.componentsLoadingState &&
           homePageState == other.homePageState &&
-          homeCategoriesState == other.homeCategoriesState &&
           productState == other.productState &&
           videosState == other.videosState &&
+          homeCategoriesState == other.homeCategoriesState &&
+          componentsLoadingState == other.componentsLoadingState &&
           orderPaymentCheckoutOptions == other.orderPaymentCheckoutOptions &&
           isInitializationDone == other.isInitializationDone &&
           isLoading == other.isLoading &&
           addressState == other.addressState &&
           versionString == other.versionString &&
           cartState == other.cartState &&
+          isInitializationDone == other.isInitializationDone &&
           ordersState == other.ordersState;
 
   @override
-  int get hashCode => authState.hashCode;
+  int get hashCode =>
+      isLoading.hashCode ^
+      authState.hashCode ^
+      homePageState.hashCode ^
+      productState.hashCode ^
+      videosState.hashCode ^
+      homeCategoriesState.hashCode ^
+      componentsLoadingState.hashCode ^
+      addressState.hashCode ^
+      versionString.hashCode ^
+      isInitializationDone.hashCode;
 
   @override
   String toString() {

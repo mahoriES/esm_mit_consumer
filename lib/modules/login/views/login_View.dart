@@ -1,4 +1,6 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/accounts/action/account_action.dart';
+import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
@@ -71,57 +73,44 @@ class _LoginViewState extends State<LoginView> {
           model: _ViewModel(),
           builder: (context, snapshot) {
             return // OTP
-
-              ModalProgressHUD(
-                progressIndicator: Card(
-                  child: Image.asset(
-                    'assets/images/indicator.gif',
-                    height: 75,
-                    width: 75,
-                  ),
+                ModalProgressHUD(
+              progressIndicator: Card(
+                child: Image.asset(
+                  'assets/images/indicator.gif',
+                  height: 75,
+                  width: 75,
                 ),
-                inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
-                child: Scaffold(
-                    body: Padding(
-                      padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-                      child: SingleChildScrollView(
-                        child: AnimationLimiter(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minWidth: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width,
-                              minHeight: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height,
+              ),
+              inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
+              child: Scaffold(
+                  body: Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                child: SingleChildScrollView(
+                  child: AnimationLimiter(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width,
+                        minHeight: MediaQuery.of(context).size.height,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 375),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              horizontalOffset:
+                                  MediaQuery.of(context).size.width / 2,
+                              child: FadeInAnimation(child: widget),
                             ),
-                            child: IntrinsicHeight(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: AnimationConfiguration
-                                    .toStaggeredList(
-                                  duration: const Duration(milliseconds: 375),
-                                  childAnimationBuilder: (widget) =>
-                                      SlideAnimation(
-                                        horizontalOffset:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width / 2,
-                                        child: FadeInAnimation(child: widget),
-                                      ),
-                                  children: buildColumnChildren(
-                                      snapshot, context),
-                                ),
-                              ),
-                            ),
+                            children: buildColumnChildren(snapshot, context),
                           ),
                         ),
                       ),
-                    )),
-              );
+                    ),
+                  ),
+                ),
+              )),
+            );
           }),
     );
   }
@@ -335,6 +324,7 @@ class _LoginViewState extends State<LoginView> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function navigateToOTPPage;
   Function updatePushToken;
   LoadingStatusApp loadingStatus;
@@ -343,6 +333,7 @@ class _ViewModel extends BaseModel<AppState> {
 
   Function(bool isSignup) updateIsSignUp;
   bool isSignUp;
+
   _ViewModel.build(
       {this.navigateToOTPPage,
       this.isPhoneNumberValid,
@@ -363,6 +354,7 @@ class _ViewModel extends BaseModel<AppState> {
         },
         isPhoneNumberValid: state.authState.isPhoneNumberValid,
         getOtpAction: (request) {
+          dispatch(InitialiseStoreOnLogoutAction());
           dispatch(GetOtpAction(request: request, fromResend: false));
         },
         updateIsSignUp: (isSignUp) {

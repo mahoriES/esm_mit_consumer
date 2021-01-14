@@ -66,4 +66,34 @@ class ComponentsLoadingState {
             circleCategoriesLoading ?? this.circleCategoriesLoading,
         businessListLoading: businessListLoading ?? this.businessListLoading);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ComponentsLoadingState &&
+          runtimeType == other.runtimeType &&
+          videosLoading == other.videosLoading &&
+          circleBannersLoading == other.circleBannersLoading &&
+          circleTopBannerLoading == other.circleTopBannerLoading &&
+          circleCategoriesLoading == other.circleCategoriesLoading &&
+          businessListLoading == other.businessListLoading &&
+          nearbyCirclesLoading == other.nearbyCirclesLoading &&
+          businessesUnderCategoryLoading ==
+              other.businessesUnderCategoryLoading &&
+          circleDetailsLoading == other.circleDetailsLoading &&
+          savedCirclesLoading == other.savedCirclesLoading &&
+          suggestedCirclesLoading == other.suggestedCirclesLoading;
+
+  @override
+  int get hashCode =>
+      videosLoading.hashCode ^
+      circleBannersLoading.hashCode ^
+      circleTopBannerLoading.hashCode ^
+      circleCategoriesLoading.hashCode ^
+      businessListLoading.hashCode ^
+      nearbyCirclesLoading.hashCode ^
+      businessesUnderCategoryLoading.hashCode ^
+      circleDetailsLoading.hashCode ^
+      savedCirclesLoading.hashCode ^
+      suggestedCirclesLoading.hashCode;
 }
