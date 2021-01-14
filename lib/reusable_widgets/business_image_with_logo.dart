@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,7 @@ class BusinessImageWithLogo extends StatelessWidget {
                 decoration: const ShapeDecoration(shape: CircleBorder()),
                 child: CachedNetworkImage(
                   errorWidget: (_, __, ___) =>
-                      Image.asset('assets/images/shop1.png'),
+                      Image.asset(ImagePathConstants.shopPlaceholder),
                   imageUrl: imageUrl,
                   fit: BoxFit.cover,
                 ),

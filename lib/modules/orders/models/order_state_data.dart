@@ -73,39 +73,36 @@ class OrderStateData {
   });
 
   static OrderStateData getStateData(String state, BuildContext context) {
-    OrderStateData _stateData;
     switch (state) {
       case OrderState.CREATED:
-        _stateData = _pendigConfirmationState(context);
-        break;
+        return _pendigConfirmationState(context);
+
       case OrderState.MERCHANT_ACCEPTED:
       case OrderState.REQUESTING_TO_DA:
       case OrderState.ASSIGNED_TO_DA:
-        _stateData = _processingOrderState(context);
+        return _processingOrderState(context);
 
-        break;
       case OrderState.MERCHANT_UPDATED:
-        _stateData = _confirmAndPayState(context);
-        break;
-      case OrderState.MERCHANT_CANCELLED:
-        _stateData = _orderDeclinedState(context);
-        break;
-      case OrderState.CUSTOMER_CANCELLED:
-        _stateData = _orderCancelledState(context);
-        break;
-      case OrderState.READY_FOR_PICKUP:
-        _stateData = _readyForPickupState(context);
-        break;
-      case OrderState.PICKED_UP_BY_DA:
-        _stateData = _outForDeliveryState(context);
-        break;
-      case OrderState.COMPLETED:
-        _stateData = _completedState(context);
-        break;
-      default:
-    }
+        return _confirmAndPayState(context);
 
-    return _stateData;
+      case OrderState.MERCHANT_CANCELLED:
+        return _orderDeclinedState(context);
+
+      case OrderState.CUSTOMER_CANCELLED:
+        return _orderCancelledState(context);
+
+      case OrderState.READY_FOR_PICKUP:
+        return _readyForPickupState(context);
+
+      case OrderState.PICKED_UP_BY_DA:
+        return _outForDeliveryState(context);
+
+      case OrderState.COMPLETED:
+        return _completedState(context);
+
+      default:
+        return null;
+    }
   }
 
   static OrderStateData _pendigConfirmationState(BuildContext context) {

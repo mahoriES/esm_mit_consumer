@@ -59,25 +59,30 @@ class OrdersCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: stateData.secondaryAction == SecondaryAction.CANCEL
-                          ? CancelOrderButton(snapshot.onCancel)
-                          : stateData.secondaryAction == SecondaryAction.REORDER
-                              ? ReorderButton(snapshot.onReorder)
-                              : PayButton(
-                                  onPay: () => snapshot
-                                      .payForOrder()
-                                      .timeout(const Duration(seconds: 10)),
-                                  orderResponse: orderResponse,
-                                ),
-                    ),
-                    Flexible(
-                      child: OrderDetailsButton(snapshot.goToOrderDetails),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: stateData.secondaryAction ==
+                                SecondaryAction.CANCEL
+                            ? CancelOrderButton(snapshot.onCancel)
+                            : stateData.secondaryAction ==
+                                    SecondaryAction.REORDER
+                                ? ReorderButton(snapshot.onReorder)
+                                : PayButton(
+                                    onPay: () => snapshot
+                                        .payForOrder()
+                                        .timeout(const Duration(seconds: 10)),
+                                    orderResponse: orderResponse,
+                                  ),
+                      ),
+                      Flexible(
+                        child: OrderDetailsButton(snapshot.goToOrderDetails),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
