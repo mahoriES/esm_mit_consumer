@@ -221,6 +221,9 @@ class PlaceOrderResponse {
       });
     }
     if (json['customer_note_images'] != null) {
+      // Here 'customer_note_images' can be a Map or an String.
+      // This is happenging due to a glitch in order placing flow, we are sending photo url instead of json of Photo object.
+      // TODO : will be fixed later with hight priority.
       customerNoteImages = [];
       List list = json['customer_note_images'];
       list.forEach((image) {
@@ -264,6 +267,7 @@ class PlaceOrderResponse {
 
   double get orderTotalPriceInRupees => (this.orderTotal ?? 0) / 100;
 
+  /// returns a string in form of "x Items , Y Lists" referring to number of products and lists in that order.
   String get totalCountString {
     int _productsCount = this.orderItems?.length ?? this.itemsCount ?? 0;
     int _customerNoteImagesCount = this.customerNoteImages?.length ?? 0;
@@ -414,6 +418,7 @@ class PickupAddress {
     return data;
   }
 
+  /// Returns a formatted string including houseNumer (if available) and landmark (if available) along with the actual address string.
   String get addressString {
     String _house = this.geoAddr?.house;
     String _landmark = this.geoAddr?.landmark;
@@ -468,20 +473,6 @@ class GeoAddr {
     data['landmark'] = this.landmark;
     data['house'] = this.house;
     return data;
-  }
-
-  copyWith({
-    String pincode,
-    String city,
-    String landmark,
-    String house,
-  }) {
-    return GeoAddr(
-      pincode: pincode ?? this.pincode,
-      city: city ?? this.city,
-      landmark: landmark ?? this.landmark,
-      house: house ?? this.house,
-    );
   }
 }
 
@@ -567,6 +558,11 @@ class OrderItems {
       ? ""
       : (this.images.first?.photoUrl ?? "");
 
+  double get totalPriceOfItem {
+    double _unitPriceInRupees = this.unitPrice / 100;
+    return this.quantity * _unitPriceInRupees;
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['sku_id'] = this.skuId;
@@ -609,11 +605,6 @@ class OrderItems {
     //     ? new SkuCharges.fromJson(json['sku_charges'])
     //     : null;
   }
-
-  double get totalPriceOfItem {
-    double _unitPriceInRupees = this.unitPrice / 100;
-    return this.quantity * _unitPriceInRupees;
-  }
 }
 
 class VariationOption {
@@ -650,25 +641,6 @@ class SkuCharges {
     return data;
   }
 }
-
-// class OtherChargesDetail {
-//   String name;
-//   int value;
-
-//  OtherChargesDetail({this.name, this.value, this.amountInRupees});
-
-//  OtherChargesDetail.fromJson(Map<String, dynamic> json) {
-//    name = json['name'];
-//     value = json['value'];
-//   }
-
-//  Map<String, dynamic> toJson() {
-//    final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['name'] = this.name;
-//     data['value'] = this.value;
-//    return data;
-//   }
-// }
 
 class OrderTrail {
   String eventName;

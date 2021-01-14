@@ -2,6 +2,8 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
+/// A generic button with custom background color, text color, text style , border and icon.
+
 class ActionButton extends StatelessWidget {
   final String text;
   final IconData icon;

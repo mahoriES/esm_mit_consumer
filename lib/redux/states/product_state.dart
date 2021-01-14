@@ -166,8 +166,6 @@ class ProductState {
           placeOrderResponse == other.placeOrderResponse &&
           videosResponse == other.videosResponse &&
           selectedMerchant == other.selectedMerchant &&
-          getOrderListResponse == other.getOrderListResponse &&
-          supportOrder == other.supportOrder &&
           categories == other.categories &&
           selectedCluster == other.selectedCluster &&
           selectedProductForDetails == other.selectedProductForDetails &&
@@ -188,8 +186,6 @@ class ProductState {
       placeOrderResponse.hashCode ^
       videosResponse.hashCode ^
       selectedMerchant.hashCode ^
-      getOrderListResponse.hashCode ^
-      supportOrder.hashCode ^
       categories.hashCode ^
       selectedCluster.hashCode ^
       selectedProductForDetails.hashCode ^

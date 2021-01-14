@@ -113,11 +113,11 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      orderDetails: state.ordersState.selectedOrderDetailsResponse,
+      orderDetails: state.ordersState.selectedOrderDetails,
       onCancel: (String cancellationNote) {
         dispatch(
           CancelOrderAPIAction(
-            orderId: state.ordersState.selectedOrderDetailsResponse.orderId,
+            orderId: state.ordersState.selectedOrderDetails.orderId,
             cancellationNote: cancellationNote,
           ),
         );
@@ -126,7 +126,7 @@ class _ViewModel extends BaseModel<AppState> {
         dispatch(NavigateAction.pop());
         dispatch(
           ReorderAction(
-            orderResponse: state.ordersState.selectedOrderDetailsResponse,
+            orderResponse: state.ordersState.selectedOrderDetails,
             shouldFetchOrderDetails: false,
           ),
         );

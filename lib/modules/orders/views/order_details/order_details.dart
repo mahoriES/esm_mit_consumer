@@ -22,7 +22,7 @@ class OrderDetailsView extends StatelessWidget {
       model: _ViewModel(),
       onInit: (store) {
         store.dispatch(GetOrderDetailsAPIAction(
-          store.state.ordersState.selectedOrderForDetails?.orderId,
+          store.state.ordersState.selectedOrder?.orderId,
         ));
       },
       builder: (context, snapshot) {
@@ -91,11 +91,11 @@ class _ViewModel extends BaseModel<AppState> {
               state.ordersState.isLoadingOrdersList == LoadingStatusApp.loading,
       hasError:
           state.ordersState.isLoadingOrderDetails == LoadingStatusApp.error,
-      selectedOrder: state.ordersState.selectedOrderForDetails,
-      orderDetails: state.ordersState.selectedOrderDetailsResponse,
+      selectedOrder: state.ordersState.selectedOrder,
+      orderDetails: state.ordersState.selectedOrderDetails,
       getOrderDetails: () => dispatch(
         GetOrderDetailsAPIAction(
-            state.ordersState.selectedOrderForDetails?.orderId),
+            state.ordersState.selectedOrderDetails?.orderId),
       ),
     );
   }

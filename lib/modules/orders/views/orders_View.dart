@@ -139,7 +139,7 @@ class _ViewModel extends BaseModel<AppState> {
       hasError: state.ordersState.isLoadingOrdersList == LoadingStatusApp.error,
       isLoadingNextPage:
           state.ordersState.isLoadingNextPage == LoadingStatusApp.loading,
-      getOrderListResponse: state.ordersState.getOrderListResponse,
+      getOrderListResponse: state.ordersState.ordersList,
       resetShowFeedbackDialog: () => dispatch(ResetShowFeedbackDialog()),
     );
   }

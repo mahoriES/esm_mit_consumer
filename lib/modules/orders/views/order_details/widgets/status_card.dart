@@ -162,13 +162,13 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      orderDetails: state.ordersState.selectedOrderDetailsResponse,
+      orderDetails: state.ordersState.selectedOrderDetails,
       payForOrder: () async => await dispatchFuture(
         PaymentAction(
-          orderId: state.ordersState.selectedOrderDetailsResponse.orderId,
+          orderId: state.ordersState.selectedOrderDetails.orderId,
           onSuccess: () => dispatch(
             GetOrderDetailsAPIAction(
-                state.ordersState.selectedOrderDetailsResponse.orderId),
+                state.ordersState.selectedOrderDetails.orderId),
           ),
         ),
       ),

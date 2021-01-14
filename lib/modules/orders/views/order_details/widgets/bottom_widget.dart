@@ -248,7 +248,7 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      orderDetails: state.ordersState.selectedOrderDetailsResponse,
+      orderDetails: state.ordersState.selectedOrderDetails,
       confirmOrder: (orderId) => dispatch(AcceptOrderAPIAction(orderId)),
     );
   }

@@ -5,64 +5,58 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class OrdersState {
-  final GetOrderListResponse getOrderListResponse;
-  final String supportOrder;
+  final GetOrderListResponse ordersList;
   final LoadingStatusApp isLoadingOrderDetails;
   final LoadingStatusApp isLoadingOrdersList;
   final LoadingStatusApp isLoadingNextPage;
-  final PlaceOrderResponse selectedOrderForDetails;
-  final PlaceOrderResponse selectedOrderDetailsResponse;
+  final PlaceOrderResponse selectedOrder;
+  final PlaceOrderResponse selectedOrderDetails;
   final AddReviewRequest reviewRequest;
   final bool showFeedbackSubmitDialog;
 
   OrdersState({
-    @required this.getOrderListResponse,
-    @required this.supportOrder,
+    @required this.ordersList,
     @required this.isLoadingOrderDetails,
     @required this.isLoadingOrdersList,
     @required this.isLoadingNextPage,
-    @required this.selectedOrderForDetails,
-    @required this.selectedOrderDetailsResponse,
+    @required this.selectedOrder,
+    @required this.selectedOrderDetails,
     @required this.reviewRequest,
     this.showFeedbackSubmitDialog,
   });
 
   factory OrdersState.initial() {
     return new OrdersState(
-      supportOrder: "",
-      getOrderListResponse: GetOrderListResponse(results: []),
+      ordersList: GetOrderListResponse(results: []),
       isLoadingOrderDetails: LoadingStatusApp.idle,
       isLoadingOrdersList: LoadingStatusApp.idle,
       isLoadingNextPage: LoadingStatusApp.idle,
-      selectedOrderForDetails: null,
-      selectedOrderDetailsResponse: null,
+      selectedOrder: null,
+      selectedOrderDetails: null,
       reviewRequest: new AddReviewRequest(),
       showFeedbackSubmitDialog: false,
     );
   }
 
   OrdersState copyWith({
-    GetOrderListResponse getOrderListResponse,
+    GetOrderListResponse ordersList,
     String supportOrder,
     LoadingStatusApp isLoadingOrderDetails,
     LoadingStatusApp isLoadingOrdersList,
     LoadingStatusApp isLoadingNextPage,
-    PlaceOrderResponse selectedOrderForDetails,
-    PlaceOrderResponse selectedOrderDetailsResponse,
+    PlaceOrderResponse selectedOrder,
+    PlaceOrderResponse selectedOrderDetails,
     AddReviewRequest reviewRequest,
     bool showFeedbackSubmitDialog,
   }) {
     return OrdersState(
-      getOrderListResponse: getOrderListResponse ?? this.getOrderListResponse,
-      supportOrder: supportOrder ?? this.supportOrder,
+      ordersList: ordersList ?? this.ordersList,
       isLoadingOrderDetails:
           isLoadingOrderDetails ?? this.isLoadingOrderDetails,
       isLoadingOrdersList: isLoadingOrdersList ?? this.isLoadingOrdersList,
       isLoadingNextPage: isLoadingNextPage ?? this.isLoadingNextPage,
-      selectedOrderForDetails:
-          selectedOrderForDetails ?? this.selectedOrderForDetails,
-      selectedOrderDetailsResponse:
-          selectedOrderDetailsResponse ?? this.selectedOrderDetailsResponse,
+      selectedOrder: selectedOrder ?? this.selectedOrder,
+      selectedOrderDetails: selectedOrderDetails ?? this.selectedOrderDetails,
       reviewRequest: reviewRequest ?? this.reviewRequest,
       showFeedbackSubmitDialog:
           showFeedbackSubmitDialog ?? this.showFeedbackSubmitDialog,

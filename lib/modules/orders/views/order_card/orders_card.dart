@@ -119,11 +119,11 @@ class _ViewModel extends BaseModel<AppState> {
       ratingValue: this.orderResponse.rating.ratingValue,
       orderStatus: this.orderResponse.orderStatus,
       goToOrderDetails: () async {
-        await dispatchFuture(SetSelectedOrderForDetails(this.orderResponse));
+        await dispatchFuture(ResetSelectedOrder(this.orderResponse));
         dispatch(NavigateAction.pushNamed(RouteNames.ORDER_DETAILS));
       },
       goToFeedbackView: (ratingValue) async {
-        await dispatchFuture(SetSelectedOrderForDetails(this.orderResponse));
+        await dispatchFuture(ResetSelectedOrder(this.orderResponse));
         dispatch(NavigateAction.pushNamed(
           RouteNames.FEEDBACK_VIEW,
           arguments: ratingValue,

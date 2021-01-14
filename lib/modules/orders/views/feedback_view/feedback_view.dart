@@ -26,7 +26,7 @@ class FeedbackView extends StatelessWidget {
       onInit: (store) {
         store.dispatch(ResetReviewRequest(ratingValue ?? 0));
         store.dispatch(GetOrderDetailsAPIAction(
-            store.state.ordersState.selectedOrderForDetails?.orderId));
+            store.state.ordersState.selectedOrderDetails?.orderId));
       },
       builder: (context, snapshot) {
         return Scaffold(
@@ -103,10 +103,9 @@ class _ViewModel extends BaseModel<AppState> {
               state.ordersState.isLoadingOrdersList == LoadingStatusApp.loading,
       hasError:
           state.ordersState.isLoadingOrderDetails == LoadingStatusApp.error,
-      orderDetails: state.ordersState.selectedOrderDetailsResponse,
+      orderDetails: state.ordersState.selectedOrderDetails,
       getOrderDetails: () => dispatch(
-        GetOrderDetailsAPIAction(
-            state.ordersState.selectedOrderForDetails?.orderId),
+        GetOrderDetailsAPIAction(state.ordersState.selectedOrder?.orderId),
       ),
       rateOrder: () {
         if (state.ordersState.reviewRequest.ratingValue == null ||
@@ -117,7 +116,7 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(
             AddRatingAPIAction(
               request: state.ordersState.reviewRequest,
-              orderId: state.ordersState.selectedOrderDetailsResponse.orderId,
+              orderId: state.ordersState.selectedOrderDetails.orderId,
             ),
           );
         }
