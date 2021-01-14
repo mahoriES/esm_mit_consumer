@@ -13,11 +13,6 @@ class OrdersState {
   final PlaceOrderResponse selectedOrderDetails;
   final AddReviewRequest reviewRequest;
   final bool showFeedbackSubmitDialog;
-  // in AddReviewRequest we have a List<ProductRating>.
-  // When we make any changes to this list, the StoreConnector is not being notified,
-  // as the Redux state is not able to detect changes within a object inside a list,
-  // so created another boolean to solve this issue.
-  final bool changedProductRatingList;
 
   OrdersState({
     @required this.ordersList,
@@ -28,7 +23,6 @@ class OrdersState {
     @required this.selectedOrderDetails,
     @required this.reviewRequest,
     @required this.showFeedbackSubmitDialog,
-    @required this.changedProductRatingList,
   });
 
   factory OrdersState.initial() {
@@ -41,7 +35,6 @@ class OrdersState {
       selectedOrderDetails: null,
       reviewRequest: new AddReviewRequest(),
       showFeedbackSubmitDialog: false,
-      changedProductRatingList: false,
     );
   }
 
@@ -55,7 +48,6 @@ class OrdersState {
     PlaceOrderResponse selectedOrderDetails,
     AddReviewRequest reviewRequest,
     bool showFeedbackSubmitDialog,
-    bool changedProductRatingList,
   }) {
     return OrdersState(
       ordersList: ordersList ?? this.ordersList,
@@ -68,8 +60,6 @@ class OrdersState {
       reviewRequest: reviewRequest ?? this.reviewRequest,
       showFeedbackSubmitDialog:
           showFeedbackSubmitDialog ?? this.showFeedbackSubmitDialog,
-      changedProductRatingList:
-          changedProductRatingList ?? this.changedProductRatingList,
     );
   }
 
@@ -85,7 +75,6 @@ class OrdersState {
           selectedOrder == other.selectedOrder &&
           selectedOrderDetails == other.selectedOrderDetails &&
           reviewRequest == other.reviewRequest &&
-          changedProductRatingList == other.changedProductRatingList &&
           showFeedbackSubmitDialog == other.showFeedbackSubmitDialog;
 
   @override
@@ -97,6 +86,5 @@ class OrdersState {
       selectedOrder.hashCode ^
       selectedOrderDetails.hashCode ^
       reviewRequest.hashCode ^
-      changedProductRatingList.hashCode ^
       showFeedbackSubmitDialog.hashCode;
 }

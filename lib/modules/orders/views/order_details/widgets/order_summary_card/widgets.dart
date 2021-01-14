@@ -66,6 +66,7 @@ class _GenericItemsList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
+                flex: 6,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -95,30 +96,41 @@ class _GenericItemsList extends StatelessWidget {
                 ),
               ),
               if (showPrice) ...{
-                const SizedBox(width: 20),
-                Text(
-                  "x\t${_currentProduct.quantity}\t\t=",
-                  style: CustomTheme.of(context).textStyles.cardTitleFaded,
+                const SizedBox(width: 10),
+                Flexible(
+                  flex: 1,
+                  child: FittedBox(
+                    child: Text(
+                      "x\t${_currentProduct.quantity}\t\t=",
+                      style: CustomTheme.of(context).textStyles.cardTitleFaded,
+                    ),
+                  ),
                 ),
               },
-              const SizedBox(width: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: !showPrice
-                    ? CustomPaint(
-                        foregroundPainter: DashedLinePainter(
-                          color:
-                              CustomTheme.of(context).colors.disabledAreaColor,
+              const SizedBox(width: 10),
+              Flexible(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: !showPrice
+                      ? CustomPaint(
+                          foregroundPainter: DashedLinePainter(
+                            color: CustomTheme.of(context)
+                                .colors
+                                .disabledAreaColor,
+                          ),
+                          child: Container(
+                            width: 10,
+                            height: 2,
+                          ),
+                        )
+                      : FittedBox(
+                          child: Text(
+                            _currentProduct.totalPriceOfItem.withRupeePrefix,
+                            style: CustomTheme.of(context).textStyles.cardTitle,
+                          ),
                         ),
-                        child: Container(
-                          width: 10,
-                          height: 2,
-                        ),
-                      )
-                    : Text(
-                        _currentProduct.totalPriceOfItem.withRupeePrefix,
-                        style: CustomTheme.of(context).textStyles.cardTitle,
-                      ),
+                ),
               ),
             ],
           ),
@@ -243,7 +255,7 @@ class ChargesList extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 14),
           child: ChargesListTile(
             chargeName: tr("cart.delivery_partner_fee"),
-            price: orderDetails.otherChargesDetail.deliveryCharge?.amount ?? 0,
+            price: orderDetails.otherChargesDetail?.deliveryCharge?.amount ?? 0,
             style: CustomTheme.of(context)
                 .textStyles
                 .body1FadedWithDottedUnderline,
@@ -268,11 +280,11 @@ class ChargesList extends StatelessWidget {
               context: context,
               content: MerchantChargesInfoCard(
                 packingCharge:
-                    orderDetails.otherChargesDetail.packingCharge?.amount ?? 0,
+                    orderDetails.otherChargesDetail?.packingCharge?.amount ?? 0,
                 serviceCharge:
-                    orderDetails.otherChargesDetail.serviceCharge?.amount ?? 0,
+                    orderDetails.otherChargesDetail?.serviceCharge?.amount ?? 0,
                 extraCharge:
-                    orderDetails.otherChargesDetail.extraCharge?.amount ?? 0,
+                    orderDetails.otherChargesDetail?.extraCharge?.amount ?? 0,
               ),
               margin: Size(0, 80),
             ),
@@ -294,10 +306,14 @@ class ChargesList extends StatelessWidget {
   }
 }
 
-class CustomerNoteImagesView extends StatelessWidget {
+class CustomerListItemsView extends StatelessWidget {
   final List<String> customerNoteImages;
-  const CustomerNoteImagesView(this.customerNoteImages, {Key key})
-      : super(key: key);
+  final List<FreeFormOrderItems> freeFormItems;
+  const CustomerListItemsView({
+    @required this.customerNoteImages,
+    @required this.freeFormItems,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -319,13 +335,96 @@ class CustomerNoteImagesView extends StatelessWidget {
           tr("cart.list_items"),
           style: CustomTheme.of(context).textStyles.body1,
         ),
-        const SizedBox(height: 20),
-        CustomerNoteImageView(
-          customerNoteImages: customerNoteImages,
-          onRemove: null,
-          showRemoveButton: false,
-        ),
+        if (freeFormItems.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          _OrderSummaryFreeFormItemsList(freeFormItems),
+        ],
+        if (customerNoteImages.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          CustomerNoteImageView(
+            customerNoteImages: customerNoteImages,
+            onRemove: null,
+            showRemoveButton: false,
+          ),
+        ],
         const SizedBox(height: 10),
+      ],
+    );
+  }
+}
+
+class _OrderSummaryFreeFormItemsList extends StatelessWidget {
+  final List<FreeFormOrderItems> freeFormItems;
+  const _OrderSummaryFreeFormItemsList(this.freeFormItems, {Key key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListView.builder(
+          itemCount: freeFormItems.length,
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            final FreeFormOrderItems _currentItem = freeFormItems[index];
+            final bool isAvailable =
+                _currentItem.productStatus != FreeFormItemStatus.NotAdded;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: Text(
+                      _currentItem.skuName ?? "",
+                      style:
+                          CustomTheme.of(context).textStyles.cardTitle.copyWith(
+                                color: isAvailable
+                                    ? CustomTheme.of(context).colors.textColor
+                                    : CustomTheme.of(context)
+                                        .colors
+                                        .disabledAreaColor,
+                              ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    flex: 1,
+                    child: Text(
+                      "x\t${_currentItem.quantity}\t\t\t",
+                      style: CustomTheme.of(context).textStyles.cardTitleFaded,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        isAvailable
+                            ? Icons.check_circle
+                            : Icons.cancel_outlined,
+                        color: isAvailable
+                            ? CustomTheme.of(context).colors.primaryColor
+                            : CustomTheme.of(context).colors.disabledAreaColor,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        Divider(
+          color: CustomTheme.of(context).colors.dividerColor,
+          thickness: 1,
+          height: 5,
+        ),
+        const SizedBox(height: 15)
       ],
     );
   }

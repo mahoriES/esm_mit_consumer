@@ -127,14 +127,12 @@ class _ViewModel extends BaseModel<AppState> {
   PlaceOrderResponse orderDetails;
   AddReviewRequest reviewRequest;
   Function(int, int) addProductRating;
-  bool changedProductRatingList;
 
   _ViewModel.build({
     this.orderDetails,
     this.reviewRequest,
     this.addProductRating,
-    this.changedProductRatingList,
-  }) : super(equals: [changedProductRatingList]);
+  }) : super(equals: [reviewRequest]);
 
   @override
   BaseModel fromStore() {
@@ -144,7 +142,6 @@ class _ViewModel extends BaseModel<AppState> {
       addProductRating: (productId, rating) async => await dispatchFuture(
         UpdateProductReviewRequest(productId: productId, rating: rating),
       ),
-      changedProductRatingList: state.ordersState.changedProductRatingList,
     );
   }
 

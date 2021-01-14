@@ -11,7 +11,6 @@ import 'package:eSamudaay/reusable_widgets/business_image_with_logo.dart';
 import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailsStatusCard extends StatelessWidget {
@@ -130,12 +129,10 @@ class OrderDetailsStatusCard extends StatelessWidget {
                   },
 
                   // if order is cancelled, show cancellation reason.
-                  if (stateData.isOrderCancelled) ...{
+                  if (stateData.isOrderCancelled &&
+                      snapshot.hasCancellationNote) ...{
                     ActionButton(
-                      text: tr(
-                        "screen_order.decline_reason",
-                        args: [snapshot.orderDetails.cancellationNote],
-                      ),
+                      text: snapshot.orderDetails.cancellationNote ?? "",
                       onTap: null,
                       isFilled: true,
                       textColor: CustomTheme.of(context).colors.secondaryColor,
@@ -190,4 +187,8 @@ class _ViewModel extends BaseModel<AppState> {
       ),
     );
   }
+
+  bool get hasCancellationNote =>
+      orderDetails.cancellationNote != null &&
+      orderDetails.cancellationNote != "";
 }

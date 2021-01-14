@@ -19,7 +19,7 @@ class GetOrderListRequest {
   }
 }
 
-class GetOrderListResponse extends Equatable{
+class GetOrderListResponse extends Equatable {
   int count;
   String next;
   String previous;
@@ -55,7 +55,6 @@ class GetOrderListResponse extends Equatable{
 
   @override
   bool get stringify => true;
-
 }
 
 class AddReviewRequest {
@@ -69,8 +68,10 @@ class AddReviewRequest {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['rating_value'] = this.ratingValue;
     data['rating_comment'] = this.ratingComment;
-    data['product_ratings'] =
-        this.productRatings.map((v) => v.toJson()).toList();
+    if (this.productRatings != null && this.productRatings.isNotEmpty) {
+      data['product_ratings'] =
+          this.productRatings.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 
@@ -144,7 +145,6 @@ class UpdateOrderRequest {
 }
 
 class PaymentInfo {
-
   String upi;
 
   /// The payment status of the order. Can have following possible values
@@ -172,7 +172,8 @@ class PaymentInfo {
   ///
   int amount;
 
-  PaymentInfo({this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
+  PaymentInfo(
+      {this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
 
   PaymentInfo.fromJson(Map<String, dynamic> json) {
     upi = json['upi'];
@@ -233,8 +234,8 @@ class RazorpayCheckoutOptions extends Equatable {
     final String phone = (json['prefill'] ?? const {})['contact'] ?? '';
     final String email = (json['prefill'] ?? const {})['email'] ?? '';
     if (key == null || orderId == null) return null;
-    return RazorpayCheckoutOptions(
-        key, amount, name, orderId, description, timeout, email, phone, currency);
+    return RazorpayCheckoutOptions(key, amount, name, orderId, description,
+        timeout, email, phone, currency);
   }
 
   Map<String, dynamic> toJson() {
@@ -247,17 +248,21 @@ class RazorpayCheckoutOptions extends Equatable {
     checkoutOptions['timeout'] = timeout;
     checkoutOptions['description'] = description;
     checkoutOptions['send_sms_hash'] = true;
-    checkoutOptions['readonly'] = {
-      'name': true
-    };
-    checkoutOptions['prefill'] = {
-      'contact': phone,
-      'email': email
-    };
+    checkoutOptions['readonly'] = {'name': true};
+    checkoutOptions['prefill'] = {'contact': phone, 'email': email};
     return checkoutOptions;
   }
 
   @override
-  List<Object> get props =>
-      [key, amount, name, orderId, description, timeout, email, phone, currency];
+  List<Object> get props => [
+        key,
+        amount,
+        name,
+        orderId,
+        description,
+        timeout,
+        email,
+        phone,
+        currency
+      ];
 }

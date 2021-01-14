@@ -16,6 +16,11 @@ class ProductStatus {
   static const String NotAvailable = "NOT_IN_STOCK";
 }
 
+class FreeFormItemStatus {
+  static const String Added = "FREE_FORM_ADDED";
+  static const String NotAdded = "FREE_FORM_NOT_ADDED";
+}
+
 class ItemsEnhanced {
   Product item;
   int number;

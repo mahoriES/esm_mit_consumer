@@ -123,7 +123,7 @@ class PayButton extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   text: tr(
-                      "payment_statuses.${orderResponse.orderStatus.toLowerCase()}"),
+                      "payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}"),
                   style: CustomTheme.of(context).textStyles.body2,
                   children: [
                     TextSpan(

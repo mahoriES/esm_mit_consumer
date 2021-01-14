@@ -142,24 +142,23 @@ class UpdateProductReviewRequest extends ReduxAction<AppState> {
   @override
   AppState reduce() {
     try {
-      AddReviewRequest updatedReviewRequest = state.ordersState.reviewRequest;
+      List<ProductRating> updatedProductRatings =
+          state.ordersState.reviewRequest.productRatings;
 
       // used to check whether the product is already rated and present in the list.
       bool isProductAlreadyPresentInList = false;
 
-      if (updatedReviewRequest.productRatings == null) {
-        updatedReviewRequest =
-            updatedReviewRequest.copyWith(productRatings: []);
+      if (updatedProductRatings == null) {
+        updatedProductRatings = [];
       }
 
-      for (int i = 0; i < updatedReviewRequest.productRatings.length; i++) {
-        if (updatedReviewRequest.productRatings[i].productId == productId) {
+      for (int i = 0; i < updatedProductRatings.length; i++) {
+        if (updatedProductRatings[i].productId == productId) {
           // set isProductAlreadyPresentInList to true , as poduct is already presnt in the list.
           isProductAlreadyPresentInList = true;
 
           // update the rating for this productRating object.
-          updatedReviewRequest.productRatings[i] =
-              updatedReviewRequest.productRatings[i].copyWith(
+          updatedProductRatings[i] = updatedProductRatings[i].copyWith(
             ratingValue: rating,
           );
         }
@@ -167,19 +166,16 @@ class UpdateProductReviewRequest extends ReduxAction<AppState> {
 
       // if product is not added yet in the list, add a new productRating for the same.
       if (!isProductAlreadyPresentInList) {
-        updatedReviewRequest.productRatings.add(
+        updatedProductRatings.add(
           new ProductRating(productId: productId, ratingValue: rating),
         );
       }
 
       return state.copyWith(
         ordersState: state.ordersState.copyWith(
-          reviewRequest: updatedReviewRequest,
-          // in AddReviewRequest we have a List<ProductRating>.
-          // When we make any changes to this list, the StoreConnector is not being notified,
-          // as the Redux state is not able to detect changes within a object inside a list,
-          // so created another boolean to solve this issue.
-          changedProductRatingList: !state.ordersState.changedProductRatingList,
+          reviewRequest: state.ordersState.reviewRequest.copyWith(
+            productRatings: updatedProductRatings,
+          ),
         ),
       );
     } catch (e) {

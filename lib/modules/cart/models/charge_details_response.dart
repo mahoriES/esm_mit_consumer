@@ -1,3 +1,10 @@
+class CartChargesType {
+  static const String DELIVERY = "DELIVERY";
+  static const String PACKING = "PACKING";
+  static const String SERVICE = "SERVICE";
+  static const String EXTRA = "EXTRA";
+}
+
 class CartCharges {
   Charge deliveryCharge;
   Charge packingCharge;
@@ -15,13 +22,13 @@ class CartCharges {
     if (json != null && json.isNotEmpty) {
       json.forEach((v) {
         Charge _charge = new Charge.fromJson(v);
-        if (_charge.chargeName == "DELIVERY") {
+        if (_charge.chargeName == CartChargesType.DELIVERY) {
           deliveryCharge = _charge;
-        } else if (_charge.chargeName == "PACKING") {
+        } else if (_charge.chargeName == CartChargesType.PACKING) {
           packingCharge = _charge;
-        } else if (_charge.chargeName == "SERVICE") {
+        } else if (_charge.chargeName == CartChargesType.SERVICE) {
           serviceCharge = _charge;
-        } else if (_charge.chargeName == "EXTRA") {
+        } else if (_charge.chargeName == CartChargesType.EXTRA) {
           extraCharge = _charge;
         }
       });

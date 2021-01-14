@@ -63,10 +63,12 @@ class OrderSummaryCard extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // available item list
-                  _OrderSummaryAvailableItemsList(
-                    availableItemsList: snapshot.availableItems,
-                    isOrderConfirmed: stateData.isOrderConfirmed,
-                  ),
+                  if (snapshot.availableItems.isNotEmpty) ...{
+                    _OrderSummaryAvailableItemsList(
+                      availableItemsList: snapshot.availableItems,
+                      isOrderConfirmed: stateData.isOrderConfirmed,
+                    ),
+                  },
 
                   // charges list
                   ChargesList(snapshot.orderDetails),
@@ -78,10 +80,14 @@ class OrderSummaryCard extends StatelessWidget {
                     ),
                   },
 
-                  // customerNote Images list (if nonzero)
-                  if (snapshot.hasCustomerNoteImages) ...[
-                    CustomerNoteImagesView(
-                        snapshot.orderDetails.customerNoteImages),
+                  // list images and freeform items list (if nonzero)
+                  if (snapshot.hasCustomerNoteImages ||
+                      snapshot.freeFormOrderItems.isNotEmpty) ...[
+                    CustomerListItemsView(
+                      customerNoteImages:
+                          snapshot.orderDetails.customerNoteImages,
+                      freeFormItems: snapshot.freeFormOrderItems,
+                    ),
                   ],
 
                   // secondary action button : CANCEL/REORDER.
@@ -186,4 +192,7 @@ class _ViewModel extends BaseModel<AppState> {
   bool get hasCustomerNoteImages =>
       orderDetails.customerNoteImages != null &&
       orderDetails.customerNoteImages.length > 0;
+
+  List<FreeFormOrderItems> get freeFormOrderItems =>
+      orderDetails.freeFormOrderItems ?? [];
 }
