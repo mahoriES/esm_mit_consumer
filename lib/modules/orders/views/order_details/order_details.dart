@@ -4,7 +4,7 @@ import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/bottom_widget.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_summary_card/order_summary_card.dart';
-import 'package:eSamudaay/modules/orders/views/order_details/widgets/status_card.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/order_details_status_card.dart';
 import 'package:eSamudaay/presentations/loading_indicator.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';

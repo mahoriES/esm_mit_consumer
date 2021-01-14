@@ -2,18 +2,18 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_indicator.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/secondary_action_button.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/card_header.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/order_card_header.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/generic_methods.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-part 'widgets/status_specific_content.dart';
+part 'widgets/order_card_message.dart';
 
 class OrdersCard extends StatelessWidget {
   final PlaceOrderResponse orderResponse;
@@ -40,7 +40,7 @@ class OrdersCard extends StatelessWidget {
                   color: CustomTheme.of(context).colors.dividerColor,
                   thickness: 1.5,
                 ),
-                _StatusSpecificContent(
+                _OrderCardMessage(
                   orderResponse,
                   rateOrder: snapshot.goToFeedbackView,
                 ),

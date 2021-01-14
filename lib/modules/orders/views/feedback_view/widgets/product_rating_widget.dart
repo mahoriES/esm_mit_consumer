@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_indicator.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/business_image_with_logo.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';

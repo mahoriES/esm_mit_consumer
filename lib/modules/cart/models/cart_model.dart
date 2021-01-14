@@ -266,6 +266,8 @@ class PlaceOrderResponse {
   bool get isOrderAlreadyRated => this.rating.ratingValue != null;
 
   double get orderTotalPriceInRupees => (this.orderTotal ?? 0) / 100;
+  double get itemTotalPriceInRupees => (this.itemTotal ?? 0) / 100;
+  double get otherChargesInRupees => (this.otherCharges ?? 0) / 100;
 
   /// returns a string in form of "x Items , Y Lists" referring to number of products and lists in that order.
   String get totalCountString {

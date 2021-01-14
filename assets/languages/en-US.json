@@ -214,6 +214,7 @@
     "order_no": "Order No",
     "pending_order_message": "Our merchant is reviewing your order items for availability and will get back to you shortly",
     "processing_order_message": "Sit tight!\nOur merchant is processing your order",
+    "processing_order_message_DA": "Order processed by merchant. Waiting for Delivery agent to pick your order.",
     "order_assigned_DA_message": "Delivery partner assigned",
     "order_requesting_DA_message": "Finding Delivery Partner",
     "declined_order_message": "We are sorry! The merchant had to decline the order due to {}",
@@ -239,7 +240,8 @@
     "available_items": "Available Items",
     "not_available": "Not Available",
     "not_available_message": "Items not available with the merchant or currently not in stock",
-    "home": "Home"
+    "home": "Home",
+    "what_went_wrong": "What went wrong?"
   },
   "screen_order_feedback": {
     "rate_your_order": "Rate Your Order",
@@ -311,13 +313,13 @@
     "order_picked_customer": "Thanks for picking up your order. Enjoy your order!"
   },
   "payment_statuses": {
-    "initiated": "Waiting for merchant to confirm payment",
-    "approved": "Payment received by merchant",
-    "pending": "Payment not done",
-    "rejected": "Payment not done",
-    "success": "Payment of {} successful via {}",
-    "fail": "Payment Failed. Please try again",
-    "refunded": "{} refunded via {}"
+    "initiated": "Payment Initiated",
+    "approved": "Payment Done",
+    "pending": "Payment Pending",
+    "rejected": "Payment Rejected",
+    "success": "Payment Done",
+    "fail": "Payment Failed",
+    "refunded": "Payment Refunded"
   },
   "payment_info": {
     "checkout_error": "Something went wrong. Contact support if problem persists.",

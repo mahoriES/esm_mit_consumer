@@ -3,7 +3,7 @@ import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/views/widgets/charges_list_widget/widgets/widgets.dart';
 import 'package:eSamudaay/modules/cart/views/widgets/customer_note_images_view/widgets/widgets.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/secondary_action_button.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_positioned_dialog.dart';
@@ -61,20 +61,30 @@ class OrderSummaryCard extends StatelessWidget {
                     height: 0,
                   ),
                   const SizedBox(height: 16),
+
+                  // available item list
                   _OrderSummaryAvailableItemsList(
                     availableItemsList: snapshot.availableItems,
                     isOrderConfirmed: stateData.isOrderConfirmed,
                   ),
+
+                  // charges list
                   ChargesList(snapshot.orderDetails),
+
+                  // unavailable items list (if nonzero)
                   if (snapshot.unavailableItems.isNotEmpty) ...{
                     _OrderSummaryNoAvailableItemsList(
                       unavailableItemsList: snapshot.unavailableItems,
                     ),
                   },
+
+                  // customerNote Images list (if nonzero)
                   if (snapshot.hasCustomerNoteImages) ...[
                     CustomerNoteImagesView(
                         snapshot.orderDetails.customerNoteImages),
                   ],
+
+                  // secondary action button : CANCEL/REORDER.
                   Align(
                     alignment: Alignment.center,
                     child: Padding(

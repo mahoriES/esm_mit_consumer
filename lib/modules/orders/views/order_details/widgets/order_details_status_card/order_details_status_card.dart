@@ -2,10 +2,10 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/rating_indicator.dart';
-import 'package:eSamudaay/modules/orders/views/order_details/widgets/progress_indicator.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/order_progress_indicator.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
-import 'package:eSamudaay/modules/orders/views/widgets/payment_tile.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/payment_tile.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/business_image_with_logo.dart';
 import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
@@ -34,6 +34,7 @@ class OrderDetailsStatusCard extends StatelessWidget {
             child: Container(
               child: Column(
                 children: [
+                  // show business details at top
                   Row(
                     children: [
                       BusinessImageWithLogo(
@@ -52,7 +53,7 @@ class OrderDetailsStatusCard extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              snapshot.orderDetails?.totalCountString ?? "",
+                              snapshot.orderDetails?.totalCountString,
                               style: CustomTheme.of(context).textStyles.body1,
                             ),
                           ],
@@ -70,9 +71,10 @@ class OrderDetailsStatusCard extends StatelessWidget {
                               ),
                             ),
                             builder: (context) => ContactOptionsWidget(
-                              name: snapshot.orderDetails.businessName ?? "",
-                              phoneNumber:
-                                  snapshot.orderDetails.businessContactNumber,
+                              name: snapshot.orderDetails?.businessName ?? "",
+                              phoneNumber: snapshot
+                                      .orderDetails?.businessContactNumber ??
+                                  "",
                             ),
                           );
                         },
@@ -85,11 +87,15 @@ class OrderDetailsStatusCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 30),
+
+                  // show progress indicator
                   OrderProgressIndicator(
                     OrderStateData.getStateData(
                         snapshot.orderDetails.orderStatus, context),
                   ),
                   const SizedBox(height: 28),
+
+                  // if order is confirmed , show payment info.
                   if (stateData.isOrderConfirmed) ...{
                     Divider(
                       color: CustomTheme.of(context).colors.dividerColor,
@@ -104,6 +110,8 @@ class OrderDetailsStatusCard extends StatelessWidget {
                       ),
                     ),
                   },
+
+                  // if order is completed , show rating indicator
                   if (stateData.isOrderCompleted) ...{
                     Divider(
                       color: CustomTheme.of(context).colors.dividerColor,
@@ -120,6 +128,8 @@ class OrderDetailsStatusCard extends StatelessWidget {
                       ),
                     ),
                   },
+
+                  // if order is cancelled, show cancellation reason.
                   if (stateData.isOrderCancelled) ...{
                     ActionButton(
                       text: tr(

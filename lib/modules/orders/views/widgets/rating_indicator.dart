@@ -22,6 +22,7 @@ class RatingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Setting iconSize to maximum 30 and responsive for smaller screen sizes by default.
     final double _size = iconSize ?? min((SizeConfig.screenWidth / 12), 30);
 
     return Column(

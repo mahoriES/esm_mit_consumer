@@ -1,6 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
-import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
-import 'package:eSamudaay/modules/orders/views/order_card/widgets/cancel_order_prompt.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/cancel_order_prompt.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
@@ -123,15 +122,12 @@ class PayButton extends StatelessWidget {
             child: FittedBox(
               child: Text.rich(
                 TextSpan(
-                  text: "Payment " +
-                      (orderResponse.paymentInfo.status == PaymentStatus.SUCCESS
-                          ? "Done"
-                          : "${orderResponse.paymentInfo.status.capitalize()}") +
-                      "\n",
+                  text: tr(
+                      "payment_statuses.${orderResponse.orderStatus.toLowerCase()}"),
                   style: CustomTheme.of(context).textStyles.body2,
                   children: [
                     TextSpan(
-                      text: "Pay " +
+                      text: "\nPay " +
                           orderResponse.orderTotalPriceInRupees.withRupeePrefix,
                       style: CustomTheme.of(context).textStyles.sectionHeading2,
                     ),

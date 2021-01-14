@@ -15,11 +15,11 @@ class CancelOrderPrompt extends StatefulWidget {
 class _CancelOrderPromptState extends State<CancelOrderPrompt> {
   final TextEditingController _controller = new TextEditingController();
   GlobalKey<FormState> formKey = new GlobalKey();
-  bool isDisabled;
+  bool isReasonStringEmpty;
 
   @override
   void initState() {
-    isDisabled = true;
+    isReasonStringEmpty = true;
     super.initState();
   }
 
@@ -32,7 +32,9 @@ class _CancelOrderPromptState extends State<CancelOrderPrompt> {
   @override
   Widget build(BuildContext context) {
     return CustomConfirmationDialog(
-      title: tr("screen_order.cancel_order"),
+      title: isReasonStringEmpty
+          ? tr("screen_order.what_went_wrong")
+          : tr("screen_order.cancel_order"),
       positiveButtonText: tr("common.cancel"),
       content: Container(
         padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -50,10 +52,10 @@ class _CancelOrderPromptState extends State<CancelOrderPrompt> {
             style: CustomTheme.of(context).textStyles.cardTitle,
             textAlign: TextAlign.center,
             onChanged: (value) {
-              bool _disabled = value == "";
-              if (_disabled != isDisabled) {
+              bool _isEmpty = value.isEmpty;
+              if (_isEmpty != isReasonStringEmpty) {
                 setState(() {
-                  isDisabled = _disabled;
+                  isReasonStringEmpty = _isEmpty;
                 });
               }
             },
@@ -61,7 +63,7 @@ class _CancelOrderPromptState extends State<CancelOrderPrompt> {
         ),
       ),
       positiveAction: () {
-        if (!isDisabled) {
+        if (!isReasonStringEmpty) {
           Navigator.pop(context);
           widget.onCancel(_controller.text);
         } else {
@@ -69,7 +71,7 @@ class _CancelOrderPromptState extends State<CancelOrderPrompt> {
         }
       },
       negativeButtonText: tr("common.back"),
-      actionButtonColor: isDisabled
+      actionButtonColor: isReasonStringEmpty
           ? CustomTheme.of(context).colors.disabledAreaColor
           : CustomTheme.of(context).colors.secondaryColor,
     );

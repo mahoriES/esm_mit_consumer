@@ -1,9 +1,9 @@
 part of '../orders_card.dart';
 
-class _StatusSpecificContent extends StatelessWidget {
+class _OrderCardMessage extends StatelessWidget {
   final PlaceOrderResponse orderResponse;
   final Function(int) rateOrder;
-  const _StatusSpecificContent(
+  const _OrderCardMessage(
     this.orderResponse, {
     this.rateOrder,
     Key key,
@@ -31,7 +31,7 @@ class _StatusSpecificContent extends StatelessWidget {
                   child: Text(
                     orderStatus == OrderState.MERCHANT_ACCEPTED
                         ? tr("screen_order.processing_order_message")
-                        : "Order processed by merchant. Waiting for Delivery agent to pick your order.",
+                        : tr("screen_order.processing_order_message_DA"),
                     style: CustomTheme.of(context).textStyles.cardTitleFaded,
                     textAlign: TextAlign.center,
                   ),

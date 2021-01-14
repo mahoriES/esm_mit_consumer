@@ -1,6 +1,7 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 
+// String constants for all possible state of any order.
 class OrderState {
   static const CREATED = 'CREATED';
   static const MERCHANT_ACCEPTED = 'MERCHANT_ACCEPTED';
@@ -14,8 +15,14 @@ class OrderState {
   static const COMPLETED = 'COMPLETED';
 }
 
+// Secondary Action varies according to order status.
+//
+// e.g. for cancelled/completed orders, it should be REORDER
+// for pending orders, it should be CANCEL
+// for processing orders, it should be PAY
 enum SecondaryAction { CANCEL, REORDER, PAY }
 
+// String constants for all possible payment state of any order.
 class PaymentStatus {
   static const PENDING = 'PENDING';
   static const SUCCESS = 'SUCCESS';
@@ -35,13 +42,17 @@ class OrderStateData {
   final String actionButtonText;
   final bool isActionButtonFilled;
   final SecondaryAction secondaryAction;
+  // what all tags should be shown under progress bar.
   final List<String> stateProgressTagsList;
+  // index of current/selected Tag from 'stateProgressTagsList'. the indicator above this tag would be highlighted.
   final int stateProgressBreakPoint;
   final Color stateProgressBreakPointColor;
   final Color stateProgressTagColor;
   final bool isOrderCompleted;
   final bool isOrderConfirmed;
   final bool isOrderCancelled;
+  // in case when animation should stop before the actual breakPoint.
+  // define animationBreakPoint as index where animation stops.
   final int animationBreakPoint;
 
   OrderStateData({

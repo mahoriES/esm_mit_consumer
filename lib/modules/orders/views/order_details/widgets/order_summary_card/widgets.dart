@@ -229,22 +229,13 @@ class ChargesList extends StatelessWidget {
   final GlobalKey deliveryChargeKey = new GlobalKey();
   final GlobalKey merchantChargeKey = new GlobalKey();
 
-  double get deliveryCharge =>
-      orderDetails.otherChargesDetail?.deliveryCharge?.amount ?? 0;
-
-  double get merchantCharge => orderDetails.otherCharges / 100;
-
-  double get itemTotal => orderDetails.itemTotal / 100;
-
-  double get grandTotal => orderDetails.orderTotal / 100;
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ChargesListTile(
           chargeName: tr("cart.item_total"),
-          price: itemTotal,
+          price: orderDetails.itemTotalPriceInRupees,
         ),
         const SizedBox(height: 2),
         Container(
@@ -252,7 +243,7 @@ class ChargesList extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 14),
           child: ChargesListTile(
             chargeName: tr("cart.delivery_partner_fee"),
-            price: deliveryCharge,
+            price: orderDetails.otherChargesDetail.deliveryCharge?.amount ?? 0,
             style: CustomTheme.of(context)
                 .textStyles
                 .body1FadedWithDottedUnderline,
@@ -268,7 +259,7 @@ class ChargesList extends StatelessWidget {
           key: merchantChargeKey,
           child: ChargesListTile(
             chargeName: tr("cart.merchant_charges"),
-            price: merchantCharge,
+            price: orderDetails.otherChargesInRupees,
             style: CustomTheme.of(context)
                 .textStyles
                 .body1FadedWithDottedUnderline,
@@ -294,7 +285,7 @@ class ChargesList extends StatelessWidget {
         ),
         ChargesListTile(
           chargeName: tr("cart.grand_total"),
-          price: grandTotal,
+          price: orderDetails.orderTotalPriceInRupees,
           style: CustomTheme.of(context).textStyles.sectionHeading2,
         ),
         const SizedBox(height: 10),

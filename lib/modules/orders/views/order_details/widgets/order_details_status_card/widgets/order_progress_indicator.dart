@@ -19,15 +19,18 @@ class _OrderProgressIndicatorState extends State<OrderProgressIndicator>
   void initState() {
     super.initState();
 
+    // the animation should end at which point, depends on order state.
     double endAnimationValue =
         widget.stateData.stateProgressBreakPoint.toDouble();
 
     controller = AnimationController(
       duration: Duration(
+        // if order is cancelled, we don't show the transition.
         seconds: widget.stateData.isOrderCancelled ? 0 : 1,
       ),
       vsync: this,
     );
+
     animation = Tween(
       begin: 0.0,
       end: endAnimationValue,
@@ -37,6 +40,7 @@ class _OrderProgressIndicatorState extends State<OrderProgressIndicator>
           // the state that has changed here is the animation object’s value
         });
       });
+
     controller.forward();
   }
 
@@ -73,6 +77,7 @@ class _OrderProgressIndicatorState extends State<OrderProgressIndicator>
                     ),
                   ),
                 ),
+                // If order is completed, show  check icon at end of progress bar.
                 if (animation.isCompleted &&
                     widget.stateData.isOrderCompleted) ...{
                   _CompletedOrderIconWidget()
@@ -81,6 +86,7 @@ class _OrderProgressIndicatorState extends State<OrderProgressIndicator>
             ),
           ),
           const SizedBox(height: 20),
+          // show progress tags at bottom.
           _StateProgressTagsRow(widget.stateData),
         ],
       ),
@@ -137,6 +143,7 @@ class _StateProgressTagsRow extends StatelessWidget {
           child: FittedBox(
             child: Text(
               stateData.stateProgressTagsList[index],
+              // if this is the selected tag, then use the assigned color in stateData
               style: CustomTheme.of(context).textStyles.body1.copyWith(
                     color: index == stateData.stateProgressBreakPoint
                         ? stateData.stateProgressTagColor
@@ -163,6 +170,8 @@ class _StateProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // We create a row of LinearProgressIndicator indicating each tag in stateData's stateProgressTagsList.
+    // excluding 'Reuest Sent' as per the designs.
     return Row(
       children: List.generate(
         stateData.stateProgressTagsList.length - 1,
@@ -170,6 +179,7 @@ class _StateProgressBar extends StatelessWidget {
           child: Stack(
             children: [
               ClipRRect(
+                // to show a rounded corner effect at end of animation.
                 borderRadius: animationValue == index + 1 ||
                         stateData.animationBreakPoint == index + 1
                     ? BorderRadius.only(
