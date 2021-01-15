@@ -100,6 +100,10 @@ class CategoriesNew {
     }
     return data;
   }
+
+  String get categoryImageUrl => this.images != null && this.images.isNotEmpty
+      ? (this.images.first?.photoUrl ?? "")
+      : "";
 }
 
 class Images {

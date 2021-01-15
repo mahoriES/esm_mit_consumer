@@ -362,9 +362,7 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
             childAspectRatio: 1),
         itemBuilder: (context, index) {
           return BusinessCategoryTile(
-            imageUrl: snapshot.categories[index].images.isEmpty
-                ? ""
-                : snapshot.categories[index].images?.first?.photoUrl ?? "",
+            imageUrl: snapshot.categories[index].categoryImageUrl,
             tileWidth: 75.toWidth,
             categoryName: snapshot.categories[index].categoryName ?? '',
             onTap: () {
