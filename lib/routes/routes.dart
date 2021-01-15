@@ -14,8 +14,9 @@ import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
 import 'package:eSamudaay/modules/language/view/language_view.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
 import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
+import 'package:eSamudaay/modules/orders/views/feedback_view/feedback_view.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/order_details.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
-import 'package:eSamudaay/modules/orders/views/support.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
 import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
@@ -43,11 +44,10 @@ class SetupRoutes {
       "/ProductSearchView": (BuildContext context) => ProductSearchView(),
       "/OrdersView": (BuildContext context) => OrdersView(),
       "/SMAlertView": (BuildContext context) => SMAlertView(),
-      "/Support": (BuildContext context) => Support(),
+      // "/Support": (BuildContext context) => Support(),
       "/profile": (BuildContext context) => ProfileView(),
       "/about": (BuildContext context) => AboutView(),
       "/onBoarding": (BuildContext context) => OnboardingWidget(),
-//      "/payment": (BuildContext context) => Payments(),
       RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
           MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
@@ -64,6 +64,9 @@ class SetupRoutes {
       RouteNames.IMAGE_ZOOM_VIEW: (BuildContext context) => ImageZoomView(
             ModalRoute.of(context).settings.arguments,
           ),
+      RouteNames.ORDER_DETAILS: (BuildContext context) => OrderDetailsView(),
+      RouteNames.ORDER_FEEDBACK_VIEW: (BuildContext context) =>
+          OrderFeedbackView(ModalRoute.of(context).settings.arguments),
     };
   }
 }
@@ -84,4 +87,6 @@ class RouteNames {
   static const CIRCLE_PICKER = "/circlePicker";
   static const CIRCLE_SEARCH = "/circleSearch";
   static const IMAGE_ZOOM_VIEW = "/imageZoomView";
+  static const ORDER_DETAILS = "/order_details";
+  static const ORDER_FEEDBACK_VIEW = "/feedback_view";
 }

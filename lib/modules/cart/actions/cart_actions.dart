@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -171,12 +172,18 @@ class PlaceOrderAction extends ReduxAction<AppState> {
       );
 
       if (response.status == ResponseStatus.success200) {
-        final responseModel = PlaceOrderResponse.fromJson(response.data);
+        final PlaceOrderResponse responseModel =
+            PlaceOrderResponse.fromJson(response.data);
         Fluttertoast.showToast(msg: tr("cart.order_placed"));
         await CartDataSource.resetCart();
         dispatch(GetCartFromLocal());
         dispatch(UpdateSelectedTabAction(1));
         dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
+
+        // Navigate user to order details view after placing the order.
+        dispatch(ResetSelectedOrder(responseModel));
+        dispatch(NavigateAction.pushNamed(RouteNames.ORDER_DETAILS));
+
         return state.copyWith(
           productState: state.productState.copyWith(
             placeOrderResponse: responseModel,

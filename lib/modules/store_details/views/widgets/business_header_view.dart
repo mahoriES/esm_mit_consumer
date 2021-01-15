@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
@@ -8,12 +6,10 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
-import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
-import 'package:eSamudaay/utilities/size_config.dart';
 
 class BusinessHeaderView extends StatelessWidget {
   final bool showDescription;
@@ -129,50 +125,9 @@ class _ViewModel extends BaseModel<AppState> {
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(9), topRight: Radius.circular(9)),
       ),
-      builder: (context) => Container(
-        child: new Wrap(
-          children: <Widget>[
-            new ListTile(
-              title: new Text(
-                'Call ${selectedMerchant.businessName}',
-                style: CustomTheme.of(context).textStyles.cardTitle,
-              ),
-              leading: Icon(
-                Icons.call,
-                size: 25,
-                color: CustomTheme.of(context).colors.positiveColor,
-              ),
-              onTap: () {
-                String phone =
-                    selectedMerchant.phones?.first?.formatPhoneNumber;
-                if (phone == null) return;
-                launch('tel:$phone');
-                Navigator.pop(context);
-              },
-            ),
-            new ListTile(
-              title: new Text('Whatsapp ${selectedMerchant.businessName}',
-                  style: CustomTheme.of(context).textStyles.cardTitle),
-              leading: SizedBox(
-                  height: 25.toHeight,
-                  width: 25.toWidth,
-                  child: Image.asset('assets/images/whatsapp.png')),
-              onTap: () {
-                String phone =
-                    selectedMerchant.phones?.first?.formatPhoneNumber;
-                if (phone == null) return;
-                if (Platform.isIOS) {
-                  launch(
-                      "whatsapp://wa.me/$phone/?text=${Uri.parse('Message from eSamudaay.')}");
-                } else {
-                  launch(
-                      "whatsapp://send?phone=$phone&text=${Uri.parse('Message from eSamudaay.')}");
-                }
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+      builder: (context) => ContactOptionsWidget(
+        name: selectedMerchant.businessName,
+        phoneNumber: selectedMerchant.phones?.first?.formatPhoneNumber,
       ),
     );
   }

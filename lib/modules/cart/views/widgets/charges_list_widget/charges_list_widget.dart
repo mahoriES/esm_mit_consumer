@@ -4,12 +4,9 @@ import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dar
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_positioned_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:eSamudaay/utilities/extensions.dart';
-
-part "widgets/widgets.dart";
+import 'package:eSamudaay/modules/cart/views/widgets/charges_list_widget/widgets/widgets.dart';
 
 class CartChargesListWidget extends StatelessWidget {
   CartChargesListWidget({Key key}) : super(key: key);
@@ -23,7 +20,7 @@ class CartChargesListWidget extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) => Column(
         children: [
-          _ChargesListTile(
+          ChargesListTile(
             chargeName: tr("cart.item_total"),
             price: snapshot.getCartTotal,
           ),
@@ -31,7 +28,7 @@ class CartChargesListWidget extends StatelessWidget {
           Container(
             key: deliveryChargeKey,
             margin: const EdgeInsets.symmetric(vertical: 14),
-            child: _ChargesListTile(
+            child: ChargesListTile(
               chargeName: tr("cart.delivery_partner_fee"),
               price: snapshot.deliveryCharge,
               style: CustomTheme.of(context)
@@ -39,7 +36,7 @@ class CartChargesListWidget extends StatelessWidget {
                   .body1FadedWithDottedUnderline,
               onTap: () => CustomPositionedDialog.show(
                 key: deliveryChargeKey,
-                content: _DeliveryChargeInfoCard(),
+                content: DeliveryChargeInfoCard(),
                 context: context,
                 margin: Size(0, 45),
               ),
@@ -47,7 +44,7 @@ class CartChargesListWidget extends StatelessWidget {
           ),
           Container(
             key: merchantChargeKey,
-            child: _ChargesListTile(
+            child: ChargesListTile(
               chargeName: tr("cart.merchant_charges"),
               price: snapshot.merchantCharge,
               style: CustomTheme.of(context)
@@ -56,9 +53,10 @@ class CartChargesListWidget extends StatelessWidget {
               onTap: () => CustomPositionedDialog.show(
                 key: merchantChargeKey,
                 context: context,
-                content: _MerchantChargesInfoCard(
+                content: MerchantChargesInfoCard(
                   packingCharge: snapshot.packingCharge,
                   serviceCharge: snapshot.serviceCharge,
+                  extraCharge: snapshot.extraCharge,
                 ),
                 margin: Size(0, 80),
               ),
@@ -69,7 +67,7 @@ class CartChargesListWidget extends StatelessWidget {
             thickness: 1,
             height: 40,
           ),
-          _ChargesListTile(
+          ChargesListTile(
             chargeName: tr("cart.grand_total"),
             price: snapshot.grandTotal,
           ),
@@ -111,8 +109,9 @@ class _ViewModel extends BaseModel<AppState> {
   double get deliveryCharge => charges?.deliveryCharge?.amount?.toDouble() ?? 0;
   double get packingCharge => charges?.packingCharge?.amount?.toDouble() ?? 0;
   double get serviceCharge => charges?.serviceCharge?.amount?.toDouble() ?? 0;
+  double get extraCharge => charges?.extraCharge?.amount?.toDouble() ?? 0;
 
-  double get merchantCharge => packingCharge + serviceCharge;
+  double get merchantCharge => packingCharge + serviceCharge + extraCharge;
 
   double get grandTotal => getCartTotal + deliveryCharge + merchantCharge;
 }

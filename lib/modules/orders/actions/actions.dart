@@ -1,14 +1,12 @@
 import 'dart:async';
-
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
-import 'package:eSamudaay/modules/orders/models/support_request_model.dart';
-import 'package:eSamudaay/redux/actions/general_actions.dart';
+import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
+import 'package:eSamudaay/payments/razorpay/utility.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,333 +14,428 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+/// Get List of all orders placed by the user.
 class GetOrderListAPIAction extends ReduxAction<AppState> {
-  final String orderRequestApi;
+  final String urlForNextPageResponse;
+  GetOrderListAPIAction({this.urlForNextPageResponse});
 
-  GetOrderListAPIAction({this.orderRequestApi});
+  // change to failure state in case of any error/exception.
+  LoadingStatusApp finalState = LoadingStatusApp.success;
 
   @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: orderRequestApi == null ? ApiURL.placeOrderUrl : orderRequestApi,
-        params: {"": ""},
-        requestType: RequestType.get);
+  Future<AppState> reduce() async {
+    try {
+      final ResponseModel response = await APIManager.shared.request(
+        url: urlForNextPageResponse ?? ApiURL.placeOrderUrl,
+        params: null,
+        requestType: RequestType.get,
+      );
 
-    if (response.status == ResponseStatus.success200) {
-      GetOrderListResponse responseModel =
-          GetOrderListResponse.fromJson(response.data);
-      if (orderRequestApi == ApiURL.placeOrderUrl) {
+      if (response.status == ResponseStatus.success200) {
+        final GetOrderListResponse responseModel =
+            GetOrderListResponse.fromJson(response.data);
+
+        // if action is triggered to get the next response of orders list
+        // then append the current response in existing list.
+        if (urlForNextPageResponse != null) {
+          final List<PlaceOrderResponse> data =
+              state.ordersState.ordersList.results;
+          responseModel.results = data + responseModel.results;
+        }
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(
+            ordersList: responseModel,
+          ),
+        );
       } else {
-        var data = state.productState.getOrderListResponse.results;
-        var data_new = data + responseModel.results;
-
-        responseModel.results = data_new;
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
       }
-
-      return state.copyWith(
-          productState:
-              state.productState.copyWith(getOrderListResponse: responseModel));
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
     }
     return null;
   }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+  void before() => dispatch(
+        urlForNextPageResponse == null
+            ? ToggleLoadingOrderListState(LoadingStatusApp.loading)
+            : ToggleLoadingNextPageState(LoadingStatusApp.loading),
+      );
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void after() => dispatch(
+        urlForNextPageResponse == null
+            ? ToggleLoadingOrderListState(finalState)
+            : ToggleLoadingNextPageState(finalState),
+      );
 }
 
 class GetOrderDetailsAPIAction extends ReduxAction<AppState> {
   final String orderId;
+  GetOrderDetailsAPIAction(this.orderId);
 
-  GetOrderDetailsAPIAction({this.orderId});
+  // change to failure state in case of any error/exception.
+  LoadingStatusApp finalState = LoadingStatusApp.success;
 
   @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
+  Future<AppState> reduce() async {
+    try {
+      final response = await APIManager.shared.request(
         url: ApiURL.placeOrderUrl + orderId,
-        params: {"": ""},
-        requestType: RequestType.get);
+        params: null,
+        requestType: RequestType.get,
+      );
 
-    if (response.status == ResponseStatus.success200) {
-      PlaceOrderResponse responseModel =
-          PlaceOrderResponse.fromJson(response.data);
-      GetOrderListResponse orderResponse = new GetOrderListResponse();
-      orderResponse.results = state.productState.getOrderListResponse.results;
-      orderResponse.results.forEach((e) {
-        if (e.orderId == orderId) {
-          print("equal");
-          e.otherChargesDetail = responseModel.otherChargesDetail;
-          e.businessPhones = responseModel.businessPhones;
-          e.businessId = responseModel.businessId;
-          if (responseModel.orderItems != null)
-            e.orderItems = responseModel.orderItems;
-          if (responseModel.freeFormOrderItems != null)
-            e.freeFormOrderItems = responseModel.freeFormOrderItems;
-          if (responseModel.customerNoteImages != null)
-            e.customerNoteImages = responseModel.customerNoteImages;
-        }
-      });
-      return state.copyWith(
-          productState:
-              state.productState.copyWith(getOrderListResponse: orderResponse));
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+      if (response.status == ResponseStatus.success200) {
+        final PlaceOrderResponse responseModel =
+            PlaceOrderResponse.fromJson(response.data);
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(
+            selectedOrderDetails: responseModel,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
     }
     return null;
   }
 
   void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+      dispatch(ToggleLoadingOrderDetailsState(LoadingStatusApp.loading));
 
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void after() => dispatch(ToggleLoadingOrderDetailsState(finalState));
 }
 
-class PaymentAPIAction extends ReduxAction<AppState> {
-  final String orderId;
+/// Use this action to reset the feedback screen data.
+// Feedback screen should have fresh state each time user navigates to it.
+// if initialRating is not available, pass 0 as initialRating.
+class ResetReviewRequest extends ReduxAction<AppState> {
+  final int initialRating;
+  ResetReviewRequest(this.initialRating);
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        reviewRequest: new AddReviewRequest(ratingValue: initialRating),
+      ),
+    );
+  }
+}
 
-  PaymentAPIAction({this.orderId});
+/// update the rating of specific products for the order.
+class UpdateProductReviewRequest extends ReduxAction<AppState> {
+  final int productId;
+  final int rating;
+
+  UpdateProductReviewRequest({@required this.productId, @required this.rating});
 
   @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.placeOrderUrl + orderId + '/payment',
-        params: {"": ""},
-        requestType: RequestType.post);
+  AppState reduce() {
+    try {
+      List<ProductRating> updatedProductRatings =
+          state.ordersState.reviewRequest.productRatings;
 
-    if (response.status == ResponseStatus.success200) {
-      GetOrderListResponse orderResponse = new GetOrderListResponse();
-      orderResponse.results = state.productState.getOrderListResponse.results;
-      orderResponse.results.forEach((e) {
-        if (e.orderId == orderId) {
-          e.paymentInfo = PaymentInfo(
-              dt: e.paymentInfo.dt,
-              status: "INITIATED",
-              upi: e.paymentInfo.upi);
+      // used to check whether the product is already rated and present in the list.
+      bool isProductAlreadyPresentInList = false;
+
+      if (updatedProductRatings == null) {
+        updatedProductRatings = [];
+      }
+
+      for (int i = 0; i < updatedProductRatings.length; i++) {
+        if (updatedProductRatings[i].productId == productId) {
+          // set isProductAlreadyPresentInList to true , as poduct is already presnt in the list.
+          isProductAlreadyPresentInList = true;
+
+          // update the rating for this productRating object.
+          updatedProductRatings[i] = updatedProductRatings[i].copyWith(
+            ratingValue: rating,
+          );
         }
-      });
+      }
+
+      // if product is not added yet in the list, add a new productRating for the same.
+      if (!isProductAlreadyPresentInList) {
+        updatedProductRatings.add(
+          new ProductRating(productId: productId, ratingValue: rating),
+        );
+      }
+
       return state.copyWith(
-          productState:
-              state.productState.copyWith(getOrderListResponse: orderResponse));
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+        ordersState: state.ordersState.copyWith(
+          reviewRequest: state.ordersState.reviewRequest.copyWith(
+            productRatings: updatedProductRatings,
+          ),
+        ),
+      );
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      return null;
     }
-    return null;
   }
-
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
 }
 
+/// update the rating and comment for overall order.
+class UpdateOrderReviewRequest extends ReduxAction<AppState> {
+  final int rating;
+  final String comment;
+
+  UpdateOrderReviewRequest({@required this.rating, @required this.comment});
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        reviewRequest: state.ordersState.reviewRequest.copyWith(
+          ratingValue: rating,
+          ratingComment: comment,
+        ),
+      ),
+    );
+  }
+}
+
+// action to send user's final feedback to server.
 class AddRatingAPIAction extends ReduxAction<AppState> {
   final AddReviewRequest request;
   final String orderId;
-
   AddRatingAPIAction({
-    this.request,
-    this.orderId,
+    @required this.request,
+    @required this.orderId,
   });
 
-  @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.placeOrderUrl + "$orderId" + "/rating",
-        params: request.toJson(),
-        requestType: RequestType.post);
+  // change to failure state in case of any error/exception.
+  LoadingStatusApp finalState = LoadingStatusApp.success;
 
-    if (response.status == ResponseStatus.success200) {
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+  @override
+  Future<AppState> reduce() async {
+    try {
+      final response = await APIManager.shared.request(
+        url: ApiURL.rateOrderUrl(orderId),
+        params: request.toJson(),
+        requestType: RequestType.post,
+      );
+
+      if (response.status == ResponseStatus.success200) {
+        final GetOrderListResponse updatedResponse =
+            state.ordersState.ordersList;
+
+        // If feedback is updated succesfully, then update this specific order's rating info.
+        updatedResponse.results.forEach((order) {
+          if (order.orderId == orderId) {
+            order.rating.ratingValue = request.ratingValue;
+            order.rating.ratingComment = request.ratingComment;
+          }
+        });
+
+        // fetch order details to update the view.
+        dispatch(GetOrderDetailsAPIAction(orderId));
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(
+            ordersList: updatedResponse,
+            // showFeedbackSubmitDialog triggers a modal on top of view to thank user for submitting the feedback.
+            showFeedbackSubmitDialog: true,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
     }
     return null;
   }
 
   void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
 
-  void after() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
+  void after() => dispatch(ToggleLoadingOrderListState(finalState));
 }
 
 class CancelOrderAPIAction extends ReduxAction<AppState> {
   final String orderId;
-  final int index;
+  final String cancellationNote;
+  CancelOrderAPIAction({
+    @required this.orderId,
+    @required this.cancellationNote,
+  });
 
-  CancelOrderAPIAction({this.orderId, this.index});
+  // change to failure state in case of any error/exception.
+  LoadingStatusApp finalState = LoadingStatusApp.success;
 
   @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.placeOrderUrl + orderId + "/cancel",
-        params: {"cancellation_note": ""},
-        requestType: RequestType.post);
+  Future<AppState> reduce() async {
+    try {
+      final response = await APIManager.shared.request(
+        url: ApiURL.cancelOrderUrl(orderId),
+        params: {"cancellation_note": cancellationNote},
+        requestType: RequestType.post,
+      );
 
-    if (response.status == ResponseStatus.success200) {
-      // dispatch(GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
-      state.productState.getOrderListResponse.results[index].orderStatus =
-          "CUSTOMER_CANCELLED";
+      if (response.status == ResponseStatus.success200) {
+        final GetOrderListResponse updatedResponse =
+            state.ordersState.ordersList;
 
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+        // If feedback is updated succesfully, then update this specific order's status to CUSTOMER_CANCELLED.
+        updatedResponse.results.forEach((order) {
+          if (order.orderId == orderId) {
+            order.orderStatus = OrderState.CUSTOMER_CANCELLED;
+          }
+        });
+
+        // fetch order details to update the view.
+        dispatch(GetOrderDetailsAPIAction(orderId));
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(ordersList: updatedResponse),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
     }
-    return state.copyWith(productState: state.productState.copyWith());
+    return null;
   }
 
   void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
 
-  void after() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
+  void after() => dispatch(ToggleLoadingOrderListState(finalState));
 }
 
+/// if merchant updates the order, consumer is again asked to confirm whether they want to proceed with the updated products/charges.
+// use this action to to send confirmation from consumer's side.
 class AcceptOrderAPIAction extends ReduxAction<AppState> {
   final String orderId;
-  final int index;
+  AcceptOrderAPIAction(this.orderId);
 
-  AcceptOrderAPIAction({
-    this.orderId,
-    this.index,
+  // change to failure state in case of any error/exception.
+  LoadingStatusApp finalState = LoadingStatusApp.success;
+
+  @override
+  Future<AppState> reduce() async {
+    try {
+      final response = await APIManager.shared.request(
+        url: ApiURL.acceptOrderUrl(orderId),
+        params: null,
+        requestType: RequestType.post,
+      );
+
+      if (response.status == ResponseStatus.success200) {
+        final GetOrderListResponse updatedResponse =
+            state.ordersState.ordersList;
+
+        // If confirmation is sent succesfully, then update this specific order's status to MERCHANT_ACCEPTED.
+        updatedResponse.results.forEach((order) {
+          if (order.orderId == orderId) {
+            order.orderStatus = OrderState.MERCHANT_ACCEPTED;
+          }
+        });
+
+        // fetch order details to update the view.
+        dispatch(GetOrderDetailsAPIAction(orderId));
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(
+            ordersList: updatedResponse,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
+    }
+    return null;
+  }
+
+  void before() =>
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
+
+  void after() => dispatch(ToggleLoadingOrderListState(finalState));
+}
+
+/// reset selected order as required
+// selectedOrder is udsed to fetch order_details onInit in orderDeatis view.
+class ResetSelectedOrder extends ReduxAction<AppState> {
+  final PlaceOrderResponse order;
+  ResetSelectedOrder(this.order);
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        selectedOrder: order,
+        selectedOrderDetails: null,
+      ),
+    );
+  }
+}
+
+class ReorderAction extends ReduxAction<AppState> {
+  final PlaceOrderResponse orderResponse;
+  final bool shouldFetchOrderDetails;
+  ReorderAction({
+    @required this.orderResponse,
+    @required this.shouldFetchOrderDetails,
   });
 
   @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.placeOrderUrl + orderId + "/accept",
-        params: {"": ""},
-        requestType: RequestType.post);
+  Future<AppState> reduce() async {
+    PlaceOrderResponse _orderDetails;
 
-    if (response.status == ResponseStatus.success200) {
-//      dispatch(GetOrderListAPIAction());
-      state.productState.getOrderListResponse.results[index].orderStatus =
-          "MERCHANT_ACCEPTED";
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
+    if (shouldFetchOrderDetails) {
+      // if triggered from orders_list view , then we need to fetch the order details to get more data about that order.
+      await dispatchFuture(ResetSelectedOrder(orderResponse));
+      await dispatchFuture(GetOrderDetailsAPIAction(orderResponse.orderId));
+      _orderDetails = state.ordersState.selectedOrderDetails;
     } else {
-      Fluttertoast.showToast(msg: response.data['message']);
+      // if triggered from orders_details view , then required data must have already been fetched.
+      _orderDetails = orderResponse;
     }
-    return state.copyWith(productState: state.productState.copyWith());
-  }
 
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+    final PlaceOrderRequest request = PlaceOrderRequest();
+    request.businessId = _orderDetails.businessId;
+    request.deliveryAddressId = _orderDetails.deliveryAdress?.addressId;
+    request.deliveryType = _orderDetails.deliveryType;
+    request.orderItems = _orderDetails.orderItems;
+    request.customerNoteImages = _orderDetails.customerNoteImages;
 
-  void after() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
-}
+    await dispatchFuture(PlaceOrderAction(request: request));
+    dispatch(GetOrderListAPIAction());
 
-class CompleteOrderAPIAction extends ReduxAction<AppState> {
-  final String orderId;
-  final int index;
-
-  CompleteOrderAPIAction({this.orderId, this.index});
-
-  @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.placeOrderUrl + orderId + "/complete",
-        params: {"": ""},
-        requestType: RequestType.post);
-
-    if (response.status == ResponseStatus.success200) {
-      // dispatch(GetOrderListAPIAction(orderRequestApi: ApiURL.placeOrderUrl));
-      state.productState.getOrderListResponse.results[index].orderStatus =
-          "COMPLETED";
-
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
-    } else {
-      Fluttertoast.showToast(msg: response.data['message']);
-    }
-    return state.copyWith(productState: state.productState.copyWith());
-  }
-
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-  void after() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
-}
-
-class SupportAPIAction extends ReduxAction<AppState> {
-  final SupportRequest request;
-
-  SupportAPIAction({this.request});
-
-  @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.supportURL,
-        params: request.toJson(),
-        requestType: RequestType.post);
-
-    if (response.data['statusCode'] == 200) {
-      Fluttertoast.showToast(
-          msg:
-              'Successfully raised an issue. Our support team will contact you shortly.');
-
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
-      dispatch(NavigateAction.pop());
-    } else {
-      Fluttertoast.showToast(msg: response.data['status']);
-    }
     return null;
   }
 
   void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
 
   void after() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.submitted));
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.success));
 }
 
-class UpdateOrderAction extends ReduxAction<AppState> {
-  final UpdateOrderRequest request;
-
-  UpdateOrderAction({this.request});
-
-  @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-        url: ApiURL.updateOrderUrl,
-        params: request.toJson(),
-        requestType: RequestType.post);
-
-    if (response.data['statusCode'] == 200) {
-      Fluttertoast.showToast(msg: response.data['status']);
-      await CartDataSource.resetCart();
-      dispatch(GetCartFromLocal());
-      dispatch(GetOrderListAPIAction());
-    } else {
-      request.orders[0].status = request.oldStatus;
-      Fluttertoast.showToast(msg: response.data['status']);
-    }
-    return null;
-  }
-
-  void before() =>
-      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-
-  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
-}
-
-class OrderSupportAction extends ReduxAction<AppState> {
-  final String orderId;
-
-  OrderSupportAction({this.orderId});
-
-  @override
-  FutureOr<AppState> reduce() {
-    return state.copyWith(
-        productState: state.productState.copyWith(supportOrder: orderId));
-  }
-}
-
+// Reset the checkoutOtions data to avoid conflict.
 class ClearPreviousRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
-
   ClearPreviousRazorpayCheckoutOptionsAction();
 
   @override
@@ -357,7 +450,7 @@ class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
   GetRazorpayCheckoutOptionsAction({@required this.orderId});
 
   @override
-  FutureOr<AppState> reduce() async {
+  Future<AppState> reduce() async {
     final response = await APIManager.shared.request(
       url: ApiURL.getRazorpayOrderIdUrl(orderId),
       params: null,
@@ -388,5 +481,82 @@ class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
     Fluttertoast.showToast(msg: tr('payment_info.checkout_error'));
     FirebaseCrashlytics.instance
         .recordError(Exception([message]), StackTrace.current);
+  }
+}
+
+class PaymentAction extends ReduxAction<AppState> {
+  final String orderId;
+  final VoidCallback onSuccess;
+  PaymentAction({
+    @required this.orderId,
+    @required this.onSuccess,
+  });
+
+  @override
+  Future<AppState> reduce() async {
+    await dispatchFuture(ClearPreviousRazorpayCheckoutOptionsAction());
+    await dispatchFuture(GetRazorpayCheckoutOptionsAction(orderId: orderId));
+
+    RazorpayUtility().checkout(
+      state.orderPaymentCheckoutOptions,
+      onSuccess: onSuccess,
+      onFailure: () {},
+    );
+
+    return state.copyWith(orderPaymentCheckoutOptions: null);
+  }
+
+  void before() =>
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
+
+  void after() =>
+      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.success));
+}
+
+class ToggleLoadingOrderListState extends ReduxAction<AppState> {
+  final LoadingStatusApp loadingState;
+  ToggleLoadingOrderListState(this.loadingState);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState:
+          state.ordersState.copyWith(isLoadingOrdersList: loadingState),
+    );
+  }
+}
+
+class ToggleLoadingNextPageState extends ReduxAction<AppState> {
+  final LoadingStatusApp loadingState;
+  ToggleLoadingNextPageState(this.loadingState);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(isLoadingNextPage: loadingState),
+    );
+  }
+}
+
+class ToggleLoadingOrderDetailsState extends ReduxAction<AppState> {
+  final LoadingStatusApp loadingState;
+  ToggleLoadingOrderDetailsState(this.loadingState);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState:
+          state.ordersState.copyWith(isLoadingOrderDetails: loadingState),
+    );
+  }
+}
+
+// reset showFeedbackSubmitDialog to false after triggering the dialog once.
+class ResetShowFeedbackDialog extends ReduxAction<AppState> {
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(showFeedbackSubmitDialog: false),
+    );
   }
 }

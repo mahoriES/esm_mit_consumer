@@ -10,8 +10,13 @@ class ImagePathConstants {
   static const locationPointerImage = _prefix + "location2.png";
   static const emptyCartImage = _prefix + "cart_placeholder.png";
   static const listUploadIcon = _prefix + "Icon_list_upload.png";
+  static const categoryPlaceHolder = _prefix + "category_placeholder.png";
   static const closedStoreIcon = _prefix + "icon_closed.png";
   static const deliveryAvailableIcon = _prefix + "delivery.png";
+  static const paymentDoneIcon = _prefix + "Icon_Payment.png";
+  static const paymentPendingIcon = _prefix + "Icon_RetryPayment.png";
+  static const appLogo = _prefix + "app_main_icon.png";
+  static const shopPlaceholder = _prefix + "shop1.png";
 }
 
 class LottiePathConstants {
@@ -19,5 +24,4 @@ class LottiePathConstants {
 
   static const paymentSuccess = _prefix + "payment-successful.json";
   static const paymentFailed = _prefix + "payment-failed.json";
-
 }

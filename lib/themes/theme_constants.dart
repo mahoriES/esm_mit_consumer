@@ -61,6 +61,11 @@ class _AppTextStyles {
         fontFamily: _AppFontFamily.archivo,
       );
 
+  TextStyle get sectionHeading1Regular => sectionHeading1.copyWith(
+        color: themeColors.textColor,
+        fontWeight: FontWeight.w400,
+      );
+
   TextStyle get sectionHeading2 => TextStyle(
         color: themeColors.textColor,
         fontSize: 16,
@@ -68,6 +73,13 @@ class _AppTextStyles {
         fontFamily: _AppFontFamily.lato,
         height: 1.18,
       );
+
+  TextStyle get sectionHeading2Secondary => sectionHeading2.copyWith(
+        color: themeColors.secondaryColor,
+      );
+
+  TextStyle get sectionHeading2Primary =>
+      sectionHeading2.copyWith(color: themeColors.primaryColor);
 
   TextStyle get sectionHeading3 => TextStyle(
         color: themeColors.backgroundColor,
@@ -91,6 +103,10 @@ class _AppTextStyles {
 
   TextStyle get cardTitleSecondary => cardTitle.copyWith(
         color: themeColors.secondaryColor,
+      );
+
+  TextStyle get cardTitlePrimary => cardTitle.copyWith(
+        color: themeColors.primaryColor,
       );
 
   TextStyle get body1 => TextStyle(
@@ -143,6 +159,11 @@ class _AppTextStyles {
   TextStyle get body2Secondary => body2.copyWith(
         color: themeColors.warningColor,
         fontWeight: FontWeight.bold,
+      );
+
+  TextStyle get body2BoldPrimary => body2.copyWith(
+        color: themeColors.primaryColor,
+        fontWeight: FontWeight.w600,
       );
 
   TextStyle get bottomMenu => TextStyle(

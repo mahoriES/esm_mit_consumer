@@ -58,6 +58,17 @@ class ApiURL {
       (String circleId) => baseURL + getClustersUrl + circleId + "/banners";
   static final deleteAddressUrl =
       (String addressId) => "api/v1/addresses/$addressId";
+  static final rateOrderUrl =
+      (String orderId) => "$placeOrderUrl$orderId/rating";
+  static final cancelOrderUrl =
+      (String orderId) => "$placeOrderUrl$orderId/cancel";
+  static final acceptOrderUrl =
+      (String orderId) => "$placeOrderUrl$orderId/accept";
+  static final completeOrderUrl =
+      (String orderId) => "$placeOrderUrl$orderId/complete";
   static final getRazorpayOrderIdUrl =
       (String orderId) => baseURL + placeOrderUrl + orderId + "/razorpay";
+
+  static final openMapUrl = (double latitude, double longitude) =>
+      "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
 }

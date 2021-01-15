@@ -1,4 +1,5 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:equatable/equatable.dart';
 
@@ -18,7 +19,7 @@ class GetOrderListRequest {
   }
 }
 
-class GetOrderListResponse extends Equatable{
+class GetOrderListResponse extends Equatable {
   int count;
   String next;
   String previous;
@@ -54,25 +55,60 @@ class GetOrderListResponse extends Equatable{
 
   @override
   bool get stringify => true;
-
 }
 
 class AddReviewRequest {
-  int ratingValue;
-  String ratingComment;
+  final int ratingValue;
+  final String ratingComment;
+  final List<ProductRating> productRatings;
 
-  AddReviewRequest({this.ratingValue, this.ratingComment});
-
-  AddReviewRequest.fromJson(Map<String, dynamic> json) {
-    ratingValue = json['rating_value'];
-    ratingComment = json['rating_comment'];
-  }
+  AddReviewRequest({this.ratingValue, this.ratingComment, this.productRatings});
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['rating_value'] = this.ratingValue;
     data['rating_comment'] = this.ratingComment;
+    if (this.productRatings != null && this.productRatings.isNotEmpty) {
+      data['product_ratings'] =
+          this.productRatings.map((v) => v.toJson()).toList();
+    }
     return data;
+  }
+
+  copyWith({
+    int ratingValue,
+    String ratingComment,
+    List<ProductRating> productRatings,
+  }) {
+    return AddReviewRequest(
+      ratingValue: ratingValue ?? this.ratingValue,
+      ratingComment: ratingComment ?? this.ratingComment,
+      productRatings: productRatings ?? this.productRatings,
+    );
+  }
+}
+
+class ProductRating {
+  final int productId;
+  final int ratingValue;
+
+  ProductRating({this.productId, this.ratingValue});
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['product_id'] = this.productId;
+    data['rating_val'] = this.ratingValue;
+    return data;
+  }
+
+  copyWith({
+    int productId,
+    int ratingValue,
+  }) {
+    return ProductRating(
+      productId: productId ?? this.productId,
+      ratingValue: ratingValue ?? this.ratingValue,
+    );
   }
 }
 
@@ -109,7 +145,6 @@ class UpdateOrderRequest {
 }
 
 class PaymentInfo {
-
   String upi;
 
   /// The payment status of the order. Can have following possible values
@@ -137,7 +172,8 @@ class PaymentInfo {
   ///
   int amount;
 
-  PaymentInfo({this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
+  PaymentInfo(
+      {this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
 
   PaymentInfo.fromJson(Map<String, dynamic> json) {
     upi = json['upi'];
@@ -145,6 +181,35 @@ class PaymentInfo {
     dt = json['dt'];
     amount = json['amount'];
     paymentMadeVia = json['via'];
+  }
+
+  double get amountInRupees => (this.amount ?? 0) / 100;
+
+  bool get isPaymentDone =>
+      this.status == PaymentStatus.APPROVED ||
+      this.status == PaymentStatus.SUCCESS ||
+      this.status == PaymentStatus.REFUNDED;
+
+  bool get isPaymentFailed =>
+      this.status == PaymentStatus.FAIL ||
+      this.status == PaymentStatus.REJECTED;
+
+  bool get isPaymentPending => this.status == PaymentStatus.PENDING;
+
+  bool get isPaymentInitiated => this.status == PaymentStatus.INITIATED;
+
+  String get dStatusWithAmount {
+    return this.status == PaymentStatus.SUCCESS ||
+            this.status == PaymentStatus.APPROVED ||
+            this.status == PaymentStatus.INITIATED
+        ? "payment_statuses.paid_amout"
+        : this.status == PaymentStatus.REFUNDED
+            ? "payment_statuses.refunded_amout"
+            : this.status == PaymentStatus.FAIL
+                ? "payment_statuses.Failed_amout"
+                : this.status == PaymentStatus.REJECTED
+                    ? "payment_statuses.rejected_amout"
+                    : "payment_statuses.pending_amout";
   }
 
   Map<String, dynamic> toJson() {
@@ -183,8 +248,8 @@ class RazorpayCheckoutOptions extends Equatable {
     final String phone = (json['prefill'] ?? const {})['contact'] ?? '';
     final String email = (json['prefill'] ?? const {})['email'] ?? '';
     if (key == null || orderId == null) return null;
-    return RazorpayCheckoutOptions(
-        key, amount, name, orderId, description, timeout, email, phone, currency);
+    return RazorpayCheckoutOptions(key, amount, name, orderId, description,
+        timeout, email, phone, currency);
   }
 
   Map<String, dynamic> toJson() {
@@ -197,17 +262,21 @@ class RazorpayCheckoutOptions extends Equatable {
     checkoutOptions['timeout'] = timeout;
     checkoutOptions['description'] = description;
     checkoutOptions['send_sms_hash'] = true;
-    checkoutOptions['readonly'] = {
-      'name': true
-    };
-    checkoutOptions['prefill'] = {
-      'contact': phone,
-      'email': email
-    };
+    checkoutOptions['readonly'] = {'name': true};
+    checkoutOptions['prefill'] = {'contact': phone, 'email': email};
     return checkoutOptions;
   }
 
   @override
-  List<Object> get props =>
-      [key, amount, name, orderId, description, timeout, email, phone, currency];
+  List<Object> get props => [
+        key,
+        amount,
+        name,
+        orderId,
+        description,
+        timeout,
+        email,
+        phone,
+        currency
+      ];
 }

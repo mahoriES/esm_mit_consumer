@@ -37,8 +37,7 @@ dependencies:
   dio: ^3.0.8
   connectivity: ^0.4.8+1
   intl: ^0.16.0
-  easy_alert:
-    ^0.0.8
+  easy_alert: ^0.0.8
   carousel_slider: ^1.4.1
   redux_persist_flutter: ^0.8.2
   cached_network_image: ^2.0.0
@@ -169,6 +168,8 @@ flutter:
     - assets/lottie/payment-failed.json
     - assets/lottie/payment-successful.json
     - assets/images/icon_closed.png
+    - assets/images/Icon_Payment.png
+    - assets/images/Icon_RetryPayment.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
