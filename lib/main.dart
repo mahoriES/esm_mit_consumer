@@ -11,6 +11,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/app_update_service.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -113,11 +114,12 @@ class _MyAppState extends State<MyApp> {
     ]);
     return StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
-        onInit: (store) {
+        onInit: (store) async {
           store.dispatch(SetCurrentCircleFromPrefsAction());
           store.dispatch(CheckOnBoardingStatusAction());
           store.dispatch(CheckTokenAction());
           store.dispatch(GetUserFromLocalStorageAction());
+          await AppUpdateService.checkAppUpdateAvailability();
         },
         builder: (context, snapshot) {
           return CustomSplashScreen(
@@ -252,10 +254,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigationPageHome() {
     if (context == null) return;
     Navigator.of(context).pushReplacementNamed('/loginView');
+    AppUpdateService.showUpdateDialog(context);
   }
 
   void navigationPageWel() {
     if (context == null) return;
     Navigator.of(context).pushReplacementNamed('/onBoarding');
+    AppUpdateService.showUpdateDialog(context);
   }
 }

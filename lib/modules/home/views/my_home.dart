@@ -15,8 +15,10 @@ import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
 import 'package:eSamudaay/payments/razorpay/utility.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/app_update_banner.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/app_update_service.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -59,8 +61,31 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    if (!AppUpdateService.isSelectedLater) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) {
+          AppUpdateService.showUpdateDialog(context).then((value) {
+            if (AppUpdateService.isSelectedLater) {
+              setState(() {});
+            }
+          });
+        },
+      );
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: AppUpdateService.isSelectedLater
+          ? AppUpdateBanner(
+              updateMessage: tr('screen_home.app_update_banner_msg'),
+              updateButtonText:
+                  tr('screen_home.app_update_button').toUpperCase(),
+            )
+          : null,
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) {
@@ -123,12 +148,16 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           builder: (context, snapshot) {
-            return PageStorage(
-                bucket: bucket,
-                child: currentPage(
-                    index: snapshot.currentIndex,
-                    shouldShowCircleScreenInstead:
-                        snapshot.selectedCluster == null));
+            return Container(
+              margin: EdgeInsets.only(
+                  bottom: AppUpdateService.isSelectedLater ? 84 : 0),
+              child: PageStorage(
+                  bucket: bucket,
+                  child: currentPage(
+                      index: snapshot.currentIndex,
+                      shouldShowCircleScreenInstead:
+                          snapshot.selectedCluster == null)),
+            );
           }),
     );
   }
