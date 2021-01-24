@@ -85,6 +85,5 @@ class AppUpdateService {
     } else {
       throw 'Could not launch $PLAY_STORE_URL';
     }
-    print('On update app clicked');
   }
 }

@@ -11,7 +11,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
-import 'package:eSamudaay/utilities/app_update_service.dart';
+import 'package:eSamudaay/modules/app_update/app_update_service.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
