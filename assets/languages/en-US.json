@@ -64,12 +64,7 @@
       "cart": "CART",
       "account": "ACCOUNT"
     },
-    "store_near_you": "Stores Near you",
-    "app_update_title": "App Update Available",
-    "app_update_banner_msg": "eSamudaay just got more interesting with new features and offers. Update Now!!",
-    "app_update_popup_msg": "Update the app now to experience new features we have designed for you!",
-    "app_update_button": "Update",
-    "later": "Later"
+    "store_near_you": "Stores Near you"
   },
   "screen_search": {
     "search": "Search",
@@ -420,5 +415,12 @@
     "info_1": "A 'Circle' is a community of shop owners, restaurants and merchants that serve in a locality",
     "info_2": "You can add a circle by turning your location or searching for a specific circle",
     "search_info": "Try searching for a Circle by typing in your city name. For e.g. Udupi, Chandigarh."
+  },
+  "app_update": {
+    "title": "App Update Available",
+    "banner_msg": "eSamudaay just got more interesting with new features and offers. Update Now!!",
+    "popup_msg": "Update the app now to experience new features we have designed for you!",
+    "update": "Update",
+    "later": "Later"
   }
 }

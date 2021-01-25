@@ -62,16 +62,14 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    if (!AppUpdateService.isSelectedLater) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (timeStamp) {
-          AppUpdateService.showUpdateDialog(context).then((value) {
-            if (AppUpdateService.isSelectedLater) {
-              setState(() {});
-            }
-          });
-        },
-      );
+    if (!(AppUpdateService?.isSelectedLater ?? false)) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        AppUpdateService.showUpdateDialog(context).then((value) {
+          if (AppUpdateService.isSelectedLater) {
+            setState(() {});
+          }
+        });
+      });
     }
     super.initState();
   }
@@ -79,13 +77,6 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomSheet: AppUpdateService.isSelectedLater
-          ? AppUpdateBanner(
-              updateMessage: tr('screen_home.app_update_banner_msg'),
-              updateButtonText:
-                  tr('screen_home.app_update_button').toUpperCase(),
-            )
-          : null,
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           onInit: (store) {
@@ -93,71 +84,79 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
               store.dispatch(HomePageOnInitMultipleDispatcherAction());
           },
           builder: (context, snapshot) {
-            return BottomNavigationBar(
-              selectedItemColor: CustomTheme.of(context).colors.primaryColor,
-              currentIndex: snapshot.currentIndex,
-              type: BottomNavigationBarType.fixed,
-              selectedLabelStyle: activatedTextStyle,
-              unselectedLabelStyle: deactivatedTextStyle,
-              items: [
-                BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/path330.png'),
-                  ),
-                  activeIcon: ImageIcon(
-                    AssetImage('assets/images/path330.png'),
-                  ),
-                  label: tr('screen_home.tab_bar.store'),
-                ),
-                BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/path338.png'),
-                    ),
-                    activeIcon: ImageIcon(
-                      AssetImage('assets/images/path338.png'),
-                    ),
-                    label: tr('screen_home.tab_bar.orders')),
-                BottomNavigationBarItem(
-                    icon: NavigationCartItem(
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppUpdateService.isSelectedLater
+                    ? AppUpdateBanner(
+                        updateMessage: tr('app_update.banner_msg'),
+                        updateButtonText: tr('app_update.update').toUpperCase(),
+                      )
+                    : SizedBox.shrink(),
+                BottomNavigationBar(
+                  selectedItemColor:
+                      CustomTheme.of(context).colors.primaryColor,
+                  currentIndex: snapshot.currentIndex,
+                  type: BottomNavigationBarType.fixed,
+                  selectedLabelStyle: activatedTextStyle,
+                  unselectedLabelStyle: deactivatedTextStyle,
+                  items: [
+                    BottomNavigationBarItem(
                       icon: ImageIcon(
-                        AssetImage(
-                          'assets/images/bag2.png',
+                        AssetImage('assets/images/path330.png'),
+                      ),
+                      activeIcon: ImageIcon(
+                        AssetImage('assets/images/path330.png'),
+                      ),
+                      label: tr('screen_home.tab_bar.store'),
+                    ),
+                    BottomNavigationBarItem(
+                        icon: ImageIcon(
+                          AssetImage('assets/images/path338.png'),
                         ),
-                      ),
-                    ),
-                    activeIcon: NavigationCartItem(
-                      icon: ImageIcon(
-                        AssetImage('assets/images/bag2.png'),
-                      ),
-                    ),
-                    label: tr('screen_home.tab_bar.cart')),
-                BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/path5.png'),
-                    ),
-                    activeIcon: ImageIcon(
-                      AssetImage('assets/images/path5.png'),
-                    ),
-                    label: tr('screen_home.tab_bar.account'))
+                        activeIcon: ImageIcon(
+                          AssetImage('assets/images/path338.png'),
+                        ),
+                        label: tr('screen_home.tab_bar.orders')),
+                    BottomNavigationBarItem(
+                        icon: NavigationCartItem(
+                          icon: ImageIcon(
+                            AssetImage(
+                              'assets/images/bag2.png',
+                            ),
+                          ),
+                        ),
+                        activeIcon: NavigationCartItem(
+                          icon: ImageIcon(
+                            AssetImage('assets/images/bag2.png'),
+                          ),
+                        ),
+                        label: tr('screen_home.tab_bar.cart')),
+                    BottomNavigationBarItem(
+                        icon: ImageIcon(
+                          AssetImage('assets/images/path5.png'),
+                        ),
+                        activeIcon: ImageIcon(
+                          AssetImage('assets/images/path5.png'),
+                        ),
+                        label: tr('screen_home.tab_bar.account'))
+                  ],
+                  onTap: (index) {
+                    snapshot.updateCurrentIndex(index);
+                  },
+                ),
               ],
-              onTap: (index) {
-                snapshot.updateCurrentIndex(index);
-              },
             );
           }),
       body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           builder: (context, snapshot) {
-            return Container(
-              margin: EdgeInsets.only(
-                  bottom: AppUpdateService.isSelectedLater ? 84 : 0),
-              child: PageStorage(
-                  bucket: bucket,
-                  child: currentPage(
-                      index: snapshot.currentIndex,
-                      shouldShowCircleScreenInstead:
-                          snapshot.selectedCluster == null)),
-            );
+            return PageStorage(
+                bucket: bucket,
+                child: currentPage(
+                    index: snapshot.currentIndex,
+                    shouldShowCircleScreenInstead:
+                        snapshot.selectedCluster == null));
           }),
     );
   }

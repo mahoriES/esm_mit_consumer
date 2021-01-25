@@ -1,6 +1,7 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/modules/app_update/app_update_service.dart';
 import 'package:flutter/material.dart';
+
+import 'app_update_service.dart';
 
 class AppUpdateBanner extends StatelessWidget {
   final String updateMessage;

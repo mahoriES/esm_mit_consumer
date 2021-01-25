@@ -32,6 +32,7 @@ void main() async {
   NavigateAction.setNavigatorKey(NavigationHandler.navigatorKey);
   WidgetsFlutterBinding.ensureInitialized();
   await _initializeFlutterFire();
+  await AppUpdateService.checkAppUpdateAvailability();
 
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
@@ -119,7 +120,6 @@ class _MyAppState extends State<MyApp> {
           store.dispatch(CheckOnBoardingStatusAction());
           store.dispatch(CheckTokenAction());
           store.dispatch(GetUserFromLocalStorageAction());
-          await AppUpdateService.checkAppUpdateAvailability();
         },
         builder: (context, snapshot) {
           return CustomSplashScreen(
