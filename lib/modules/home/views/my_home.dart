@@ -1,30 +1,23 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
-import 'package:eSamudaay/modules/address/actions/address_actions.dart';
-import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
-import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
-import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
-import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
-import 'package:eSamudaay/payments/razorpay/utility.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/modules/app_update/app_update_banner.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
+import 'package:esamudaay_app_update/app_update_banner.dart';
+import 'package:esamudaay_app_update/app_update_service.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/URLs.dart';
-import 'package:eSamudaay/modules/app_update/app_update_service.dart';
-import 'package:eSamudaay/utilities/colors.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:esamudaay_themes/esamudaay_themes.dart' as themesPackage;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class MyHomeView extends StatefulWidget {
   MyHomeView({
@@ -62,15 +55,41 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    if (!(AppUpdateService?.isSelectedLater ?? false)) {
+    // If user reached the home screen via login :
+    //    1. If appUpdate is available then user must have already seen the prompt and selected later, so 'isSelectedLater = true' already.
+    //    2. If appUpdate is not available then 'isSelectedLater = false' by default.
+    // If home-screen is the launch screen then 'isSelectedLater = false' by default.
+
+    // If isSelectedLater is false then show app update prompt to user.
+    // if update is not available, showUpdateDialog will return null;
+    // otherwise user will have to either update the app or
+    // select later (if flexible update is allowed).
+
+    if (!AppUpdateService.isSelectedLater) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        AppUpdateService.showUpdateDialog(context).then((value) {
+        AppUpdateService.showUpdateDialog(
+          context: context,
+          title: tr('app_update.title'),
+          message: tr('app_update.popup_msg'),
+          laterButtonText: tr('app_update.later'),
+          updateButtonText: tr('app_update.update'),
+          customThemeData: themesPackage.CustomTheme.of(context),
+          packageName: StringConstants.packageName,
+          logoImage: Image.asset(
+            ImagePathConstants.appLogo,
+            height: 42,
+            fit: BoxFit.contain,
+          ),
+        ).then((value) {
+          // If user selects later option then rebuild the screen to show persistent app upadet banner at bottom
+          // using setState here instead of redux because this will be called only once in whole App lifecycle.
           if (AppUpdateService.isSelectedLater) {
             setState(() {});
           }
         });
       });
     }
+
     super.initState();
   }
 
@@ -91,6 +110,8 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ? AppUpdateBanner(
                         updateMessage: tr('app_update.banner_msg'),
                         updateButtonText: tr('app_update.update').toUpperCase(),
+                        customThemeData: themesPackage.CustomTheme.of(context),
+                        packageName: StringConstants.packageName,
                       )
                     : SizedBox.shrink(),
                 BottomNavigationBar(

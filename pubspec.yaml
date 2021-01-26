@@ -79,7 +79,10 @@ dependencies:
   flutter_image_compress: ^0.7.0
   lottie: ^0.7.0+1
   rounded_loading_button: ^1.0.18
-  in_app_update: ^1.1.15
+  esamudaay_themes:
+    path: "../esamudaay_themes"
+  esamudaay_app_update:
+    path: "../esamudaay_app_update"
 
 dev_dependencies:
   flutter_test:
