@@ -1,6 +1,5 @@
 import 'package:eSamudaay/presentations/custom_icon_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,6 @@ class CustomConfirmationDialog extends StatelessWidget {
   final Color actionButtonColor;
   final IconData positiveButtonIcon;
   final Widget content;
-  final bool showAppLogo;
   const CustomConfirmationDialog({
     @required this.title,
     this.message,
@@ -25,7 +23,6 @@ class CustomConfirmationDialog extends StatelessWidget {
     this.actionButtonColor,
     this.positiveButtonIcon,
     this.content,
-    this.showAppLogo = false,
     Key key,
   }) : super(key: key);
 
@@ -43,16 +40,7 @@ class CustomConfirmationDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 40),
-              if (showAppLogo) ...[
-                Image.asset(
-                  ImagePathConstants.appLogo,
-                  height: 42,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 10),
-              ],
-              const SizedBox(height: 20),
+              SizedBox(height: 60.toHeight),
               if (title != null) ...[
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 46.toWidth),
