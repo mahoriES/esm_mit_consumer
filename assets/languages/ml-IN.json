@@ -200,6 +200,13 @@
     "items": "Items",
     "taxes": "taxes",
     "replace_cart_items": "Replace Cart Items?"
+  },
+  "app_update": {
+    "title": "App Update Available",
+    "banner_msg": "eSamudaay just got more interesting with new features and offers. Update Now!!",
+    "popup_msg": "Update the app now to experience new features we have designed for you!",
+    "update": "Update",
+    "later": "Later"
   }
 
 
