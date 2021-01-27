@@ -166,7 +166,7 @@ class MyAppBase extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       // wrapping material app with CustomTheme inherited widget to access themeData.
-      child: themesPackage.CustomTheme(
+      child: themesPackage.EsamudaayTheme(
         initialThemeType: themesPackage.THEME_TYPES.CONSUMER_APP_PRIMARY_THEME,
         child: CustomTheme(
           // For now defining the initial theme as LIGHT .
@@ -268,7 +268,7 @@ class _SplashScreenState extends State<SplashScreen> {
       message: tr('app_update.popup_msg'),
       laterButtonText: tr('app_update.later'),
       updateButtonText: tr('app_update.update'),
-      customThemeData: themesPackage.CustomTheme.of(context),
+      customThemeData: themesPackage.EsamudaayTheme.of(context),
       packageName: StringConstants.packageName,
       logoImage: Image.asset(
         ImagePathConstants.appLogo,
@@ -288,7 +288,7 @@ class _SplashScreenState extends State<SplashScreen> {
       message: tr('app_update.popup_msg'),
       laterButtonText: tr('app_update.later'),
       updateButtonText: tr('app_update.update'),
-      customThemeData: themesPackage.CustomTheme.of(context),
+      customThemeData: themesPackage.EsamudaayTheme.of(context),
       packageName: StringConstants.packageName,
       logoImage: Image.asset(
         ImagePathConstants.appLogo,

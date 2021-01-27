@@ -73,7 +73,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
           message: tr('app_update.popup_msg'),
           laterButtonText: tr('app_update.later'),
           updateButtonText: tr('app_update.update'),
-          customThemeData: themesPackage.CustomTheme.of(context),
+          customThemeData: themesPackage.EsamudaayTheme.of(context),
           packageName: StringConstants.packageName,
           logoImage: Image.asset(
             ImagePathConstants.appLogo,
@@ -110,7 +110,8 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                     ? AppUpdateBanner(
                         updateMessage: tr('app_update.banner_msg'),
                         updateButtonText: tr('app_update.update').toUpperCase(),
-                        customThemeData: themesPackage.CustomTheme.of(context),
+                        customThemeData:
+                            themesPackage.EsamudaayTheme.of(context),
                         packageName: StringConstants.packageName,
                       )
                     : SizedBox.shrink(),
