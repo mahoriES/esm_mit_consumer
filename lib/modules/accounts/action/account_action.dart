@@ -45,7 +45,11 @@ class InitialiseStoreOnLogoutAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() {
     print('******Init store called');
-    return AppState.initial();
+    // this method resets all the existing data when new user logs in.
+    // but app update data should not be wiped as this is not user specific.
+    return AppState.initial(
+      isSelectedAppUpdateLater: state.isSelectedAppUpdateLater,
+    );
   }
 }
 

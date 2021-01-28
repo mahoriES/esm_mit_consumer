@@ -6,16 +6,15 @@ import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/presentations/check_user_widget.dart';
 import 'package:eSamudaay/presentations/splash_screen.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:esamudaay_app_update/app_update_service.dart';
-import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
-import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -262,39 +261,13 @@ class _SplashScreenState extends State<SplashScreen> {
     if (context == null) return;
     Navigator.of(context).pushReplacementNamed('/loginView');
     // If launch screen is login , then show app_update prompt here.
-    AppUpdateService.showUpdateDialog(
-      context: context,
-      title: tr('app_update.title'),
-      message: tr('app_update.popup_msg'),
-      laterButtonText: tr('app_update.later'),
-      updateButtonText: tr('app_update.update'),
-      customThemeData: themesPackage.EsamudaayTheme.of(context),
-      packageName: StringConstants.packageName,
-      logoImage: Image.asset(
-        ImagePathConstants.appLogo,
-        height: 42,
-        fit: BoxFit.contain,
-      ),
-    );
+    store.dispatch(CheckAppUpdateAction(context));
   }
 
   void navigationPageWel() {
     if (context == null) return;
     Navigator.of(context).pushReplacementNamed('/onBoarding');
     // If launch screen is onboarding , then show app_update prompt here.
-    AppUpdateService.showUpdateDialog(
-      context: context,
-      title: tr('app_update.title'),
-      message: tr('app_update.popup_msg'),
-      laterButtonText: tr('app_update.later'),
-      updateButtonText: tr('app_update.update'),
-      customThemeData: themesPackage.EsamudaayTheme.of(context),
-      packageName: StringConstants.packageName,
-      logoImage: Image.asset(
-        ImagePathConstants.appLogo,
-        height: 42,
-        fit: BoxFit.contain,
-      ),
-    );
+    store.dispatch(CheckAppUpdateAction(context));
   }
 }

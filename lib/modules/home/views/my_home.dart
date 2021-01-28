@@ -8,11 +8,10 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:esamudaay_app_update/app_update_banner.dart';
-import 'package:esamudaay_app_update/app_update_service.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaay_themes/esamudaay_themes.dart' as themesPackage;
@@ -54,46 +53,6 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
   }
 
   @override
-  void initState() {
-    // If user reached the home screen via login :
-    //    1. If appUpdate is available then user must have already seen the prompt and selected later, so 'isSelectedLater = true' already.
-    //    2. If appUpdate is not available then 'isSelectedLater = false' by default.
-    // If home-screen is the launch screen then 'isSelectedLater = false' by default.
-
-    // If isSelectedLater is false then show app update prompt to user.
-    // if update is not available, showUpdateDialog will return null;
-    // otherwise user will have to either update the app or
-    // select later (if flexible update is allowed).
-
-    if (!AppUpdateService.isSelectedLater) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        AppUpdateService.showUpdateDialog(
-          context: context,
-          title: tr('app_update.title'),
-          message: tr('app_update.popup_msg'),
-          laterButtonText: tr('app_update.later'),
-          updateButtonText: tr('app_update.update'),
-          customThemeData: themesPackage.EsamudaayTheme.of(context),
-          packageName: StringConstants.packageName,
-          logoImage: Image.asset(
-            ImagePathConstants.appLogo,
-            height: 42,
-            fit: BoxFit.contain,
-          ),
-        ).then((value) {
-          // If user selects later option then rebuild the screen to show persistent app upadet banner at bottom
-          // using setState here instead of redux because this will be called only once in whole App lifecycle.
-          if (AppUpdateService.isSelectedLater) {
-            setState(() {});
-          }
-        });
-      });
-    }
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: StoreConnector<AppState, _ViewModel>(
@@ -102,11 +61,14 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
             if (!store.state.isInitializationDone)
               store.dispatch(HomePageOnInitMultipleDispatcherAction());
           },
+          onInitialBuild: (snapshot) {
+            snapshot.checkForAppUpdate(context);
+          },
           builder: (context, snapshot) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppUpdateService.isSelectedLater
+                snapshot.showAppUpdateBanner
                     ? AppUpdateBanner(
                         updateMessage: tr('app_update.banner_msg'),
                         updateButtonText: tr('app_update.update').toUpperCase(),
@@ -210,16 +172,20 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Business) updateSelectedMerchant;
   Cluster selectedCluster;
   int currentIndex;
+  bool showAppUpdateBanner;
+  Function(BuildContext) checkForAppUpdate;
 
-  _ViewModel.build(
-      {this.navigateToAddAddressPage,
-      this.getMerchants,
-      this.navigateToProductSearch,
-      this.updateCurrentIndex,
-      this.selectedCluster,
-      this.updateSelectedMerchant,
-      this.currentIndex})
-      : super(equals: [currentIndex, selectedCluster]);
+  _ViewModel.build({
+    this.navigateToAddAddressPage,
+    this.getMerchants,
+    this.navigateToProductSearch,
+    this.updateCurrentIndex,
+    this.selectedCluster,
+    this.updateSelectedMerchant,
+    this.currentIndex,
+    this.showAppUpdateBanner,
+    this.checkForAppUpdate,
+  }) : super(equals: [currentIndex, selectedCluster, showAppUpdateBanner]);
 
   @override
   BaseModel fromStore() {
@@ -241,6 +207,8 @@ class _ViewModel extends BaseModel<AppState> {
         updateCurrentIndex: (index) {
           dispatch(UpdateSelectedTabAction(index));
         },
-        currentIndex: state.homePageState.currentIndex);
+        currentIndex: state.homePageState.currentIndex,
+        checkForAppUpdate: (context) => dispatch(CheckAppUpdateAction(context)),
+        showAppUpdateBanner: state.isSelectedAppUpdateLater);
   }
 }
