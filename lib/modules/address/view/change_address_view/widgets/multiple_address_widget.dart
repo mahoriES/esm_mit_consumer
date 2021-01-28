@@ -1,7 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
-import 'package:eSamudaay/modules/address/view/change_address_view/empty_address_view.dart';
+import 'package:eSamudaay/modules/address/view/change_address_view/no_address_view.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -96,7 +96,7 @@ class MultipleAddressWidget extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 20),
-                            if (snapshot.savedAddresses.length >= 1) ...[
+                            if (snapshot.savedAddresses.length > 1) ...[
                               Flexible(
                                 flex: 1,
                                 child: Align(

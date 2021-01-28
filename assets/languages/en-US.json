@@ -400,7 +400,8 @@
     "select_location": "Select Location",
     "confirm_location": "Confirm Location",
     "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
-    "delete": "Delete"
+    "delete": "Delete",
+    "no_address_message": "Add an address to help us reach you for doorstep deliveries!"
   },
   "circle": {
     "nearby_msg": "Based on your current location",
