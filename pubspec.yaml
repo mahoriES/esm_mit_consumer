@@ -79,10 +79,13 @@ dependencies:
   flutter_image_compress: ^0.7.0
   lottie: ^0.7.0+1
   rounded_loading_button: ^1.0.18
-  esamudaay_themes:
-    git: "git@bitbucket.org:ese1/esm_comp_themes.git"
   esamudaay_app_update:
-    git: "git@bitbucket.org:ese1/esm_comp_appupdate.git"
+    git:
+      url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_appupdate.git
+
+  esamudaay_themes:
+    git:
+      url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_themes.git
 
 dev_dependencies:
   flutter_test:
