@@ -16,9 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -27,27 +25,18 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController pinCodeController =
-      TextEditingController(text: 'UDUPI01');
-  String selectedCircle = 'UDUPI01';
+  GlobalKey<FormState> formKey = new GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-          onInit: (store) {
-//                store.dispatch(GetLocationAction());
-//                store.dispatch(GetCartFromLocal());
-          },
           model: _ViewModel(),
           builder: (context, snapshot) {
-            addressController.text =
-                snapshot.addressRequest?.prettyAddress ?? "";
-
             return WillPopScope(
               onWillPop: () async {
-                return Future.value(
-                    false); //return a `Future` with false value so this route cant be popped or closed.
+                return Future.value(false);
+                //return a `Future` with false value so this route cant be popped or closed.
               },
               child: ModalProgressHUD(
                 progressIndicator: Card(
@@ -73,7 +62,7 @@ class _RegistrationState extends State<Registration> {
                                   MediaQuery.of(context).size.width / 2,
                               child: FadeInAnimation(child: widget),
                             ),
-                            children: buildUI(context, snapshot),
+                            children: buildUI(context, snapshot, formKey),
                           ),
                         ),
                       ),
@@ -86,7 +75,8 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  List<Widget> buildUI(BuildContext context, _ViewModel snapshot) {
+  List<Widget> buildUI(
+      BuildContext context, _ViewModel snapshot, GlobalKey<FormState> formKey) {
     return <Widget>[
       SizedBox(
         height: 100,
@@ -119,26 +109,29 @@ class _RegistrationState extends State<Registration> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(
-                  child: TextFormField(
-                      validator: Validators.nameValidator,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: nameController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        hintText: tr('screen_register.name.title'),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      style: const TextStyle(
-                          color: const Color(0xff1a1a1a),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Avenir-Medium",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 13.0),
-                      textAlign: TextAlign.center),
+                  child: Form(
+                    key: formKey,
+                    child: TextFormField(
+                        validator: Validators.nameValidator,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: nameController,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          hintText: tr('screen_register.name.title'),
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        style: const TextStyle(
+                            color: const Color(0xff1a1a1a),
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "Avenir-Medium",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 13.0),
+                        textAlign: TextAlign.center),
+                  ),
                 ),
                 Icon(
                   Icons.account_circle,
@@ -150,95 +143,26 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
 
-      //address
-      Padding(
-        padding: const EdgeInsets.only(top: 20.0),
-        child: TextInputBG(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: Material(
-              type: MaterialType.transparency,
-              child: InkWell(
-                onTap: snapshot.navigateToAddressView,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                          maxLines: null,
-                          enabled: false,
-                          validator: Validators.nullStringValidator,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: addressController,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            hintText: tr('screen_register.address.title'),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                          style: const TextStyle(
-                              color: const Color(0xff1a1a1a),
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "Avenir-Medium",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 13.0),
-                          textAlign: TextAlign.center),
-                    ),
-                    Icon(
-                      Icons.add_location,
-                      color: AppColors.icColors,
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-
       SizedBox(
         height: 30,
       ),
 
-      //location
-      //Register_but
-      // Rectangle 10
+      // Register Button
       Material(
         type: MaterialType.transparency,
         child: InkWell(
           onTap: () {
-            if (nameController.text.isNotEmpty &&
-                addressController.text.isNotEmpty) {
-              if ((nameController.text.length < 3 ||
-                  !nameController.text.contains(new RegExp(r'[a-zA-Z ]')))) {
-                Fluttertoast.showToast(
-                    msg: tr('screen_register.name.empty_error'));
-              }
-//              else if (pinCodeController.text.isEmpty
-////                                      ||
-////                                      !pinCodeController.text
-////                                          .contains(new RegExp(r'^\d{6}$'))
-//
-//                  ) {
-//                Fluttertoast.showToast(
-//                    msg: tr('screen_register.pin_code.title'));
-//              }
-              else {
-                snapshot.updateCustomerDetails(
-                  CustomerDetailsRequest(
-                      profileName: nameController.text, role: "CUSTOMER"),
-                  snapshot.addressRequest,
-                );
-              }
-            } else {
-              Fluttertoast.showToast(msg: "All fields are required");
+            if (formKey.currentState.validate()) {
+              snapshot.updateCustomerDetails(
+                CustomerDetailsRequest(
+                  profileName: nameController.text,
+                  role: "CUSTOMER",
+                ),
+              );
             }
           },
           child: Hero(
-            tag: '#getOtp',
+            tag: '#register_button',
             child: Material(
               type: MaterialType.transparency,
               child: Container(
@@ -282,21 +206,9 @@ class _RegistrationState extends State<Registration> {
     ];
   }
 
-  launchURL() async {
-    const url =
-        'https://docs.google.com/forms/d/e/1FAIpQLSe479y0f0lIwD8CpqRILJNDS5P6O'
-        'vZTonooAatQ8ngHLnz5pA/viewform?usp=pp_url';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
+ 
   void dispose() {
     nameController.dispose();
-    addressController.dispose();
-    pinCodeController.dispose();
     super.dispose();
   }
 
@@ -313,8 +225,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   LoadingStatusApp loadingStatus;
-  Function(CustomerDetailsRequest request, AddressRequest)
-      updateCustomerDetails;
+  Function(CustomerDetailsRequest request) updateCustomerDetails;
   Function navigateToHomePage;
   String phoneNumber;
   VoidCallback navigateToAddressView;
@@ -343,11 +254,8 @@ class _ViewModel extends BaseModel<AppState> {
           dispatch(UpdateIsRegisterFlow(true));
           dispatch(NavigateAction.pushNamed(RouteNames.ADD_NEW_ADDRESS));
         },
-        updateCustomerDetails: (request, address) {
-          dispatchFuture(AddUserDetailAction(request: request))
-              .whenComplete(() {
-            dispatch(AddAddressAction(request: address));
-          });
+        updateCustomerDetails: (request) {
+          dispatchFuture(AddUserDetailAction(request: request));
         });
   }
 }

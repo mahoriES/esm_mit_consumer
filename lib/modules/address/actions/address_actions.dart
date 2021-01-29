@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/models/addess_models.dart';
+import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
@@ -36,6 +37,12 @@ class AddAddressAction extends ReduxAction<AppState> {
           (state.addressState.savedAddressList ?? [])..add(responseModel);
 
       await UserManager.saveAddress(address: jsonEncode(_updatedAddressList));
+
+      // If selected address is null (i.e. no addresses were added yet)
+      // then update the selected address
+      if (state.addressState.selectedAddressForDelivery == null) {
+        dispatch(GetInitialSelectedAddress());
+      }
 
       return state.copyWith(
         addressState: state.addressState.copyWith(

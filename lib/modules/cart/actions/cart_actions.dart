@@ -315,19 +315,16 @@ class UpdateDeliveryType extends ReduxAction<AppState> {
 class GetInitialDeliveryType extends ReduxAction<AppState> {
   @override
   AppState reduce() {
-    if (store.state.cartState.selectedDeliveryType == null) {
-      final bool isDeliveryAvailable =
-          store.state.cartState.cartMerchant?.hasDelivery ?? false;
-      final String type = isDeliveryAvailable
-          ? DeliveryType.DeliveryToHome
-          : DeliveryType.StorePickup;
-      return state.copyWith(
-        cartState: state.cartState.copyWith(
-          selectedDeliveryType: type,
-        ),
-      );
-    }
-    return null;
+    final bool isDeliveryAvailable =
+        store.state.cartState.cartMerchant?.hasDelivery ?? false;
+    final String type = isDeliveryAvailable
+        ? DeliveryType.DeliveryToHome
+        : DeliveryType.StorePickup;
+    return state.copyWith(
+      cartState: state.cartState.copyWith(
+        selectedDeliveryType: type,
+      ),
+    );
   }
 }
 
