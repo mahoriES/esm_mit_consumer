@@ -1,28 +1,22 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/accounts/views/accounts_view.dart';
-import 'package:eSamudaay/modules/address/actions/address_actions.dart';
-import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/views/cart_view.dart';
-import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/circles/views/circle_picker_view.dart';
-import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/views/cart_bottom_navigation_view.dart';
 import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
-import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
-import 'package:eSamudaay/payments/razorpay/utility.dart';
+import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
+import 'package:esamudaay_app_update/app_update_banner.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
-import 'package:eSamudaay/utilities/URLs.dart';
-import 'package:eSamudaay/utilities/colors.dart';
-import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:esamudaay_themes/esamudaay_themes.dart' as themesPackage;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class MyHomeView extends StatefulWidget {
   MyHomeView({
@@ -67,57 +61,75 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
             if (!store.state.isInitializationDone)
               store.dispatch(HomePageOnInitMultipleDispatcherAction());
           },
+          onInitialBuild: (snapshot) {
+            snapshot.checkForAppUpdate(context);
+          },
           builder: (context, snapshot) {
-            return BottomNavigationBar(
-              selectedItemColor: CustomTheme.of(context).colors.primaryColor,
-              currentIndex: snapshot.currentIndex,
-              type: BottomNavigationBarType.fixed,
-              selectedLabelStyle: activatedTextStyle,
-              unselectedLabelStyle: deactivatedTextStyle,
-              items: [
-                BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/path330.png'),
-                  ),
-                  activeIcon: ImageIcon(
-                    AssetImage('assets/images/path330.png'),
-                  ),
-                  label: tr('screen_home.tab_bar.store'),
-                ),
-                BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/path338.png'),
-                    ),
-                    activeIcon: ImageIcon(
-                      AssetImage('assets/images/path338.png'),
-                    ),
-                    label: tr('screen_home.tab_bar.orders')),
-                BottomNavigationBarItem(
-                    icon: NavigationCartItem(
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                snapshot.showAppUpdateBanner
+                    ? AppUpdateBanner(
+                        updateMessage: tr('app_update.banner_msg'),
+                        updateButtonText: tr('app_update.update').toUpperCase(),
+                        customThemeData:
+                            themesPackage.EsamudaayTheme.of(context),
+                        packageName: StringConstants.packageName,
+                      )
+                    : SizedBox.shrink(),
+                BottomNavigationBar(
+                  selectedItemColor:
+                      CustomTheme.of(context).colors.primaryColor,
+                  currentIndex: snapshot.currentIndex,
+                  type: BottomNavigationBarType.fixed,
+                  selectedLabelStyle: activatedTextStyle,
+                  unselectedLabelStyle: deactivatedTextStyle,
+                  items: [
+                    BottomNavigationBarItem(
                       icon: ImageIcon(
-                        AssetImage(
-                          'assets/images/bag2.png',
+                        AssetImage('assets/images/path330.png'),
+                      ),
+                      activeIcon: ImageIcon(
+                        AssetImage('assets/images/path330.png'),
+                      ),
+                      label: tr('screen_home.tab_bar.store'),
+                    ),
+                    BottomNavigationBarItem(
+                        icon: ImageIcon(
+                          AssetImage('assets/images/path338.png'),
                         ),
-                      ),
-                    ),
-                    activeIcon: NavigationCartItem(
-                      icon: ImageIcon(
-                        AssetImage('assets/images/bag2.png'),
-                      ),
-                    ),
-                    label: tr('screen_home.tab_bar.cart')),
-                BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/path5.png'),
-                    ),
-                    activeIcon: ImageIcon(
-                      AssetImage('assets/images/path5.png'),
-                    ),
-                    label: tr('screen_home.tab_bar.account'))
+                        activeIcon: ImageIcon(
+                          AssetImage('assets/images/path338.png'),
+                        ),
+                        label: tr('screen_home.tab_bar.orders')),
+                    BottomNavigationBarItem(
+                        icon: NavigationCartItem(
+                          icon: ImageIcon(
+                            AssetImage(
+                              'assets/images/bag2.png',
+                            ),
+                          ),
+                        ),
+                        activeIcon: NavigationCartItem(
+                          icon: ImageIcon(
+                            AssetImage('assets/images/bag2.png'),
+                          ),
+                        ),
+                        label: tr('screen_home.tab_bar.cart')),
+                    BottomNavigationBarItem(
+                        icon: ImageIcon(
+                          AssetImage('assets/images/path5.png'),
+                        ),
+                        activeIcon: ImageIcon(
+                          AssetImage('assets/images/path5.png'),
+                        ),
+                        label: tr('screen_home.tab_bar.account'))
+                  ],
+                  onTap: (index) {
+                    snapshot.updateCurrentIndex(index);
+                  },
+                ),
               ],
-              onTap: (index) {
-                snapshot.updateCurrentIndex(index);
-              },
             );
           }),
       body: StoreConnector<AppState, _ViewModel>(
@@ -160,16 +172,20 @@ class _ViewModel extends BaseModel<AppState> {
   Function(Business) updateSelectedMerchant;
   Cluster selectedCluster;
   int currentIndex;
+  bool showAppUpdateBanner;
+  Function(BuildContext) checkForAppUpdate;
 
-  _ViewModel.build(
-      {this.navigateToAddAddressPage,
-      this.getMerchants,
-      this.navigateToProductSearch,
-      this.updateCurrentIndex,
-      this.selectedCluster,
-      this.updateSelectedMerchant,
-      this.currentIndex})
-      : super(equals: [currentIndex, selectedCluster]);
+  _ViewModel.build({
+    this.navigateToAddAddressPage,
+    this.getMerchants,
+    this.navigateToProductSearch,
+    this.updateCurrentIndex,
+    this.selectedCluster,
+    this.updateSelectedMerchant,
+    this.currentIndex,
+    this.showAppUpdateBanner,
+    this.checkForAppUpdate,
+  }) : super(equals: [currentIndex, selectedCluster, showAppUpdateBanner]);
 
   @override
   BaseModel fromStore() {
@@ -191,6 +207,8 @@ class _ViewModel extends BaseModel<AppState> {
         updateCurrentIndex: (index) {
           dispatch(UpdateSelectedTabAction(index));
         },
-        currentIndex: state.homePageState.currentIndex);
+        currentIndex: state.homePageState.currentIndex,
+        checkForAppUpdate: (context) => dispatch(CheckAppUpdateAction(context)),
+        showAppUpdateBanner: state.isSelectedAppUpdateLater);
   }
 }

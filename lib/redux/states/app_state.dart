@@ -23,6 +23,7 @@ class AppState {
   final OrdersState ordersState;
   final bool isInitializationDone;
   final Map<String, dynamic> orderPaymentCheckoutOptions;
+  final bool isSelectedAppUpdateLater;
 
   const AppState({
     this.authState,
@@ -38,6 +39,7 @@ class AppState {
     this.versionString,
     this.cartState,
     this.ordersState,
+    this.isSelectedAppUpdateLater,
   });
 
   static AppState fromJson(dynamic json) => AppState(
@@ -52,7 +54,7 @@ class AppState {
     return data;
   }
 
-  factory AppState.initial() => AppState(
+  factory AppState.initial({bool isSelectedAppUpdateLater}) => AppState(
         authState: AuthState.initial(),
         isLoading: false,
         isInitializationDone: false,
@@ -66,6 +68,7 @@ class AppState {
         orderPaymentCheckoutOptions: null,
         cartState: CartState.initial(),
         ordersState: OrdersState.initial(),
+        isSelectedAppUpdateLater: isSelectedAppUpdateLater ?? false,
       );
 
   AppState copyWith({
@@ -82,6 +85,7 @@ class AppState {
     String versionString,
     CartState cartState,
     OrdersState ordersState,
+    bool isSelectedAppUpdateLater,
   }) {
     return AppState(
       orderPaymentCheckoutOptions:
@@ -99,6 +103,8 @@ class AppState {
       versionString: versionString ?? this.versionString,
       cartState: cartState ?? this.cartState,
       ordersState: ordersState ?? this.ordersState,
+      isSelectedAppUpdateLater:
+          isSelectedAppUpdateLater ?? this.isSelectedAppUpdateLater,
     );
   }
 
@@ -121,7 +127,8 @@ class AppState {
           versionString == other.versionString &&
           cartState == other.cartState &&
           isInitializationDone == other.isInitializationDone &&
-          ordersState == other.ordersState;
+          ordersState == other.ordersState &&
+          isSelectedAppUpdateLater == other.isSelectedAppUpdateLater;
 
   @override
   int get hashCode =>
@@ -134,7 +141,8 @@ class AppState {
       componentsLoadingState.hashCode ^
       addressState.hashCode ^
       versionString.hashCode ^
-      isInitializationDone.hashCode;
+      isInitializationDone.hashCode ^
+      isSelectedAppUpdateLater.hashCode;
 
   @override
   String toString() {
