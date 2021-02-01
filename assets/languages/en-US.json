@@ -401,7 +401,8 @@
     "confirm_location": "Confirm Location",
     "confirm_delete_message": "Are you sure you want to delete your {addressName} address?",
     "delete": "Delete",
-    "no_address_message": "Add an address to help us reach you for doorstep deliveries!"
+    "no_address_message": "Add an address to help us reach you for doorstep deliveries!",
+    "over_query_error": "Over query limit. Please try after some time."
   },
   "circle": {
     "nearby_msg": "Based on your current location",
