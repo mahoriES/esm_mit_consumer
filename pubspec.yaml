@@ -76,7 +76,6 @@ dependencies:
   google_maps_webservice: ^0.0.18
   app_settings: ^4.0.4
   razorpay_flutter: ^1.2.2
-  flutter_image_compress: ^0.7.0
   lottie: ^0.7.0+1
   rounded_loading_button: ^1.0.18
   esamudaay_app_update:
@@ -88,6 +87,9 @@ dependencies:
     git:
       url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_themes.git
       ref: v0.0.1
+
+  esamudaay_image_compression_service:
+    path: "../esamudaay_image_compression_service"
 
 dev_dependencies:
   flutter_test:
