@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/actions/address_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -63,6 +64,7 @@ class _SearchAddressViewState extends State<SearchAddressView> {
                     ),
                   ),
                   suggestionsCallback: (input) async {
+                    if (input.isEmpty) return null;
                     return await snapshot.getSuggestions(input);
                   },
                   onSuggestionSelected: (Prediction suggestion) async {
@@ -105,7 +107,7 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
       getSuggestions: (input) async {
         await dispatchFuture(GetSuggestionsAction(input));
-        return state.addressState.placesSearchResponse?.predictions ??
+        return store.state.addressState.placesSearchResponse?.predictions ??
             List<Prediction>();
       },
       getPlaceDetails: (placeId) => dispatch(GetAddressDetailsAction(placeId)),

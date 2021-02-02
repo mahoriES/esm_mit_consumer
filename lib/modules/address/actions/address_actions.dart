@@ -390,6 +390,7 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
             .getDetailsByPlaceId(
       placeId,
       sessionToken: state.addressState.sessionToken,
+      fields: ["address_component", "formatted_address", "geometry"],
     );
 
     if (placesDetailsResponse.isOkay) {
