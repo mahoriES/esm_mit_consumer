@@ -15,7 +15,7 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
-import 'package:esamudaay_image_compression_service/esamudaay_image_compression_service.dart';
+import 'package:esamudaay_image_services/esm_image_compression_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -358,7 +358,7 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
       final File imageFile =
           await EsamudaayImageCompressionService.getCompressedImage(
         imageSource,
-        targetSize: 200000,
+        targetSizeInBytes: 150000,
       );
 
       if (imageFile == null) return null;

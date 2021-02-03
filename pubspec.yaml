@@ -88,8 +88,10 @@ dependencies:
       url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_themes.git
       ref: v0.0.1
 
-  esamudaay_image_compression_service:
-    path: "../esamudaay_image_compression_service"
+  esamudaay_image_services:
+    git:
+      url: "https://anushka_agrawal@bitbucket.org/ese1/esm_comp_imageservices.git"
+      ref: v0.1
 
 dev_dependencies:
   flutter_test:
