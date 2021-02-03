@@ -50,7 +50,8 @@ void main() async {
       supportedLocales: [
         Locale('en', 'US'),
         Locale('ka', 'IN'),
-        Locale('ml', 'IN'),
+        // Locale('ml', 'IN'),
+        Locale('te', 'IN'),
         Locale('ta', 'IN'),
         Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
       ],
