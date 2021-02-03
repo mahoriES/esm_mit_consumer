@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/services.dart';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/home/views/my_home.dart';
@@ -11,6 +14,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/firebase_analytics_observer.dart';
 import 'package:esamudaay_app_update/app_update_service.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
@@ -19,12 +23,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fm_fit/fm_fit.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:esamudaay_themes/esamudaay_themes.dart' as themesPackage;
+import 'package:flutter/widgets.dart';
 
 // Toggle this for testing Crashlytics in the app locally, regardless of the server type or app build mode.
 final _kTestingCrashlytics = true;
@@ -38,6 +42,7 @@ void main() async {
   await AppUpdateService.checkAppUpdateAvailability();
 
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+
 
   FlutterError.onError = (FlutterErrorDetails details) {
     // Pass all uncaught errors from the framework to Crashlytics.
@@ -74,11 +79,15 @@ Future<void> _initializeFlutterFire() async {
   if (_kTestingCrashlytics) {
     // Force enable crashlytics collection enabled if we're testing it.
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    await AppFirebaseAnalytics.instance
+        .setAnalyticsCollectionEnabled(true);
   } else {
     // Else only enable it in non-debug builds.
     //Could additionally extend this to allow users to opt-in or something else.
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(ApiURL.baseURL == ApiURL.liveURL);
+    await AppFirebaseAnalytics.instance
+        .setAnalyticsCollectionEnabled(true);
   }
 
   // Pass all uncaught errors to Crashlytics.
@@ -160,6 +169,8 @@ class _MyAppState extends State<MyApp> {
 class MyAppBase extends StatelessWidget {
   // This widget is the root of your application.
 
+  final FirebaseAnalytics analytics = FirebaseAnalytics();
+
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
@@ -180,7 +191,9 @@ class MyAppBase extends StatelessWidget {
                 child: child,
               );
             },
-            navigatorObservers: [NavigationHandler.routeObserver],
+            navigatorObservers: [NavigationHandler.routeObserver,
+              FirebaseAnalyticsObserver(
+                  analytics: analytics)],
             localizationsDelegates: [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
