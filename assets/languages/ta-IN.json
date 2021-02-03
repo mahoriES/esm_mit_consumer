@@ -253,6 +253,13 @@
     "delivery": "விநியோக கட்டணம்"
   },
   "payment_statuses": {
+    "initiated": "Payment Initiated",
+    "approved": "Payment Done",
+    "pending": "Payment Pending",
+    "rejected": "Payment Rejected",
+    "success": "Payment Done",
+    "fail": "Payment Failed",
+    "refunded": "Payment Refunded",
     "pay_amount": "செலுத்து {}",
     "paid_amout": "கட்டணம் {}",
     "pending_amout": "நிலுவையில் உள்ளது {}",

@@ -78,6 +78,7 @@ class OrdersCard extends StatelessWidget {
                                     orderResponse: orderResponse,
                                   ),
                       ),
+                      const SizedBox(width: 8),
                       Flexible(
                         child: OrderDetailsButton(snapshot.goToOrderDetails),
                       ),

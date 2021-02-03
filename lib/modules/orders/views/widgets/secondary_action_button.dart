@@ -164,24 +164,29 @@ class OrderDetailsButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              tr("screen_order.order_details"),
-              style: CustomTheme.of(context)
-                  .textStyles
-                  .sectionHeading2
-                  .copyWith(color: CustomTheme.of(context).colors.primaryColor),
+            Flexible(
+              child: Text(
+                tr("screen_order.order_details"),
+                style: CustomTheme.of(context)
+                    .textStyles
+                    .sectionHeading2
+                    .copyWith(
+                        color: CustomTheme.of(context).colors.primaryColor),
+              ),
             ),
             const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: CustomTheme.of(context).colors.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.chevron_right_outlined,
-                size: 16,
-                color: CustomTheme.of(context).colors.backgroundColor,
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: CustomTheme.of(context).colors.primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.chevron_right_outlined,
+                  size: 16,
+                  color: CustomTheme.of(context).colors.backgroundColor,
+                ),
               ),
             ),
           ],

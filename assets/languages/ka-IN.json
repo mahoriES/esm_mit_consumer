@@ -253,6 +253,13 @@
     "delivery": "ಡೆಲಿವರಿ ಶುಲ್ಕಗಳು"
   },
   "payment_statuses": {
+    "initiated": "Payment Initiated",
+    "approved": "Payment Done",
+    "pending": "Payment Pending",
+    "rejected": "Payment Rejected",
+    "success": "Payment Done",
+    "fail": "Payment Failed",
+    "refunded": "Payment Refunded",
     "pay_amount": "ಪಾವತಿ {}",
     "paid_amout": "ಪಾವತಿಸಲಾಗಿದೆ  {}",
     "pending_amout": "ಬಾಕಿ ಉಳಿದಿದೆ {}",
@@ -316,7 +323,7 @@
     "search_location": "ಸ್ಥಳವನ್ನು ಹುಡುಕಿ",
     "select_location": "ಸ್ಥಳ ಆಯ್ಕೆಮಾಡಿ",
     "confirm_location": "ಸ್ಥಳವನ್ನು ದೃಡೀಕರಿಸಿ",
-    "confirm_delete_message": "ನೀವು ಈ ವಿಳಾಸವನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ",
+    "confirm_delete_message": "ನೀವು ಖಚಿತವಾಗಿ {addressName} ವಿಳಾಸವನ್ನು ಅಳಿಸಲು ಬಯಸುವಿರಾ?",
     "delete": "ಅಳಿಸಿ",
     "no_address_message": "Add an address to help us reach you for doorstep deliveries!"
   },

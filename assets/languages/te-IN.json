@@ -214,7 +214,7 @@
         "pickup": "స్టోర్ వద్ద{}పికప్",
         "delivery": "అందచెయుటకు{}తీసుకువస్తున్నారు",
         "processing": "ప్రాసెసింగ్{}ఆర్డర్",
-        "cancelled": "ఆర్డర్ cancel{}రద్దు చేయబడింది",
+        "cancelled": "ఆర్డర్{}రద్దు చేయబడింది",
         "declined": "ఆర్డర్{}తిరస్కరించబడింది",
         "completed": "ఆర్డర్{}నెరవేరింది"
     },
@@ -253,6 +253,13 @@
         "delivery": "డెలివరీ ఛార్జీలు"
     },
     "payment_statuses": {
+        "initiated": "Payment Initiated",
+        "approved": "Payment Done",
+        "pending": "Payment Pending",
+        "rejected": "Payment Rejected",
+        "success": "Payment Done",
+        "fail": "Payment Failed",
+        "refunded": "Payment Refunded",
         "pay_amount": "చెల్లించండి {}",
         "paid_amout": "చెల్లించిన {}",
         "pending_amout": "పెండింగ్‌లో ఉంది {}",
@@ -316,7 +323,7 @@
         "search_location": "శోధన స్థానం",
         "select_location": "స్థానాన్ని ఎంచుకోండి",
         "confirm_location": "స్థానాన్ని నిర్ధారించండి",
-        "confirm_delete_message": "మీకు ఖచ్చితంగా తెలుసా, మీరు ఈ చిరునామాను తొలగించాలనుకుంటున్నారు",
+        "confirm_delete_message": "మీరు ఖచ్చితంగా తొలగించాలనుకుంటున్నారా {addressname} చిరునామా?",
         "delete": "తొలగించు",
         "no_address_message": "Add an address to help us reach you for doorstep deliveries!"
     },

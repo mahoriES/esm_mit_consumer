@@ -139,9 +139,9 @@ class _StateProgressTagsRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(
         stateData.stateProgressTagsList.length,
-        (index) => Padding(
-          padding: EdgeInsets.only(left: index == 0 ? 0 : 10),
-          child: FittedBox(
+        (index) => Flexible(
+          child: Padding(
+            padding: EdgeInsets.only(left: index == 0 ? 0 : 10),
             child: Text(
               tr(stateData.stateProgressTagsList[index], args: ["\n"]),
               // if this is the selected tag, then use the assigned color in stateData
