@@ -169,7 +169,7 @@
         "processing_order_message_DA": "వ్యాపారి చేత ప్రాసెస్ చేయబడిన ఆర్డర్. మీ ఆర్డర్‌ను ఎంచుకోవడానికి డెలివరీ ఏజెంట్ కోసం వేచి ఉంది.",
         "order_assigned_DA_message": "డెలివరీ భాగస్వామి కేటాయించారు",
         "order_requesting_DA_message": "డెలివరీ భాగస్వామిని కనుగొనడం",
-        "declined_order_message": "మమ్మల్ని క్షమించండి! వ్యాపారి order of కారణంగా ఆర్డర్‌ను తిరస్కరించాల్సి వచ్చింది",
+        "declined_order_message": "మమ్మల్ని క్షమించండి! వ్యాపారి {} కారణంగా ఆర్డర్‌ను తిరస్కరించాల్సి వచ్చింది",
         "out_for_delivery_order_message": "మీ ఆర్డర్ మీ మార్గంలో ఉంది!",
         "rating_pending_message": "ఈ ఆర్డర్‌తో మేము ఎలా చేసాము?",
         "poor_rating_message": "గొప్ప కాదు",
