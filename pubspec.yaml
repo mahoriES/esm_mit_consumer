@@ -79,6 +79,7 @@ dependencies:
   flutter_image_compress: ^0.7.0
   lottie: ^0.7.0+1
   rounded_loading_button: ^1.0.18
+  flutter_typeahead: ^2.0.0
   esamudaay_app_update:
     git:
       url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_appupdate.git

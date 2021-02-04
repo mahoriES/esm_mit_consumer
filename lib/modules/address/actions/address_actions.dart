@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -89,11 +90,12 @@ class GetAddressAction extends ReduxAction<AppState> {
         );
       } else {
         Fluttertoast.showToast(
-            msg: response.data != null ? response?.data['message'] ?? tr("common.some_error_occured") : tr("common.some_error_occured") );
+            msg: response.data != null
+                ? response?.data['message'] ?? tr("common.some_error_occured")
+                : tr("common.some_error_occured"));
         return null;
       }
     } catch (e) {
-
       Fluttertoast.showToast(msg: tr("common.some_error_occured"));
       return null;
     }
@@ -352,12 +354,13 @@ class GetSuggestionsAction extends ReduxAction<AppState> {
   GetSuggestionsAction(this.input);
 
   @override
-  FutureOr<AppState> reduce() async {
+  Future<AppState> reduce() async {
+    if (input.isEmpty) return null;
+
     final PlacesAutocompleteResponse geocodingResponse =
         await new GoogleMapsPlaces(apiKey: Keys.googleAPIkey).autocomplete(
       input,
       sessionToken: state.addressState.sessionToken,
-      types: ["address"],
       components: [Component("country", "in")],
     );
 
@@ -367,10 +370,12 @@ class GetSuggestionsAction extends ReduxAction<AppState> {
           placesSearchResponse: geocodingResponse,
         ),
       );
+    } else if (geocodingResponse.isOverQueryLimit) {
+      Fluttertoast.showToast(msg: tr("address_picker.over_query_error"));
     } else {
-      Fluttertoast.showToast(msg: "Some Error Occured");
-      return null;
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
     }
+    return null;
   }
 }
 
@@ -386,6 +391,7 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
             .getDetailsByPlaceId(
       placeId,
       sessionToken: state.addressState.sessionToken,
+      fields: StringConstants.placeDetailFields,
     );
 
     if (placesDetailsResponse.isOkay) {
