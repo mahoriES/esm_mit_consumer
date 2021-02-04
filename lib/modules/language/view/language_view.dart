@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/colors.dart';
@@ -57,6 +58,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       textAlign: TextAlign.left),
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
+                    AppFirebaseAnalytics.instance
+                        .logLanguageChange(setLanguage: 'English');
                     EasyLocalization.of(context).locale = Locale('en', 'US');
                     snapshot.navigateToPhoneNumberPage(
                         (arguments != null) ? arguments['fromAccount'] : false);
@@ -74,6 +77,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       textAlign: TextAlign.left),
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
+                    AppFirebaseAnalytics.instance
+                        .logLanguageChange(setLanguage: 'Hindi');
                     EasyLocalization.of(context).locale = Locale.fromSubtags(
                         languageCode: 'hi', countryCode: 'Deva-IN');
                     snapshot.navigateToPhoneNumberPage(
@@ -95,6 +100,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       textAlign: TextAlign.left),
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
+                    AppFirebaseAnalytics.instance
+                        .logLanguageChange(setLanguage: 'Malayalam');
                     EasyLocalization.of(context).locale = Locale('ml', 'IN');
                     snapshot.navigateToPhoneNumberPage(
                         (arguments != null) ? arguments['fromAccount'] : false);
@@ -112,6 +119,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       textAlign: TextAlign.left),
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
+                    AppFirebaseAnalytics.instance
+                        .logLanguageChange(setLanguage: 'Kannada');
                     EasyLocalization.of(context).locale = Locale('ka', 'IN');
                     snapshot.navigateToPhoneNumberPage(
                         (arguments != null) ? arguments['fromAccount'] : false);
@@ -129,6 +138,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       textAlign: TextAlign.left),
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
+                    AppFirebaseAnalytics.instance
+                        .logLanguageChange(setLanguage: 'Tamil');
                     EasyLocalization.of(context).locale = Locale('ta', 'IN');
                     snapshot.navigateToPhoneNumberPage(
                         (arguments != null) ? arguments['fromAccount'] : false);

@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/material_search/material_search.dart';
@@ -61,6 +62,7 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
       searchResults: state.productState.searchResults,
       searchProduct: (query) async {
+        AppFirebaseAnalytics.instance.logSearch(searchTerm: query);
         var user = await UserManager.userDetails();
         dispatch(SearchAction(
             searchRequest: SearchRequest(

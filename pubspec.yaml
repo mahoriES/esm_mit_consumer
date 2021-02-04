@@ -80,6 +80,7 @@ dependencies:
   lottie: ^0.7.0+1
   rounded_loading_button: ^1.0.18
   firebase_analytics: ^7.0.1
+  device_info: ^1.0.0
   esamudaay_app_update:
     git:
       url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_appupdate.git

@@ -247,10 +247,6 @@ class AddCircleToProfileAction extends ReduxAction<AppState> {
 
     if (response.status == ResponseStatus.success200) {
       await dispatchFuture(GetClusterDetailsAction());
-//      await dispatchFuture(GetNearbyCirclesAction());
-//      Fluttertoast.showToast(
-//          msg: 'Successfully added the circle to '
-//              'profile!');
     } else {
       Fluttertoast.showToast(
           msg: 'Error : '

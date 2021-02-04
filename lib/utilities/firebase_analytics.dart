@@ -1,5 +1,7 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:firebase_analytics_platform_interface/firebase_analytics_platform_interface.dart';
@@ -60,6 +62,39 @@ class AppFirebaseAnalytics {
     return logEvent(name: 'app_login', parameters: {'user': user});
   }
 
+  Future<void> logBookmarkBusiness({String businessId}) {
+    return logEvent(
+        name: 'app_bookmark_business', parameters: {'businessId': businessId});
+  }
+
+  Future<void> logCircleSelection({String circleCode}) {
+    return logEvent(
+        name: 'app_circle_select', parameters: {'circleCode': circleCode});
+  }
+
+  Future<void> logLanguageChange({String setLanguage}) {
+    return logEvent(
+        name: 'app_language_change', parameters: {'setLanguage': setLanguage});
+  }
+
+  Future<void> logAddPhotoToOrder({String photoUrl, String photoId}) {
+    return logEvent(name: 'app_add_photo_order', parameters: {
+      'orderId': photoUrl
+    });
+  }
+
+  Future<void> logAppLaunch() async {
+    String deviceId = "";
+    if (Platform.isAndroid) {
+      final deviceInfo = await DeviceInfoPlugin().androidInfo;
+      deviceId = deviceInfo.androidId;
+    } else if (Platform.isIOS) {
+      final deviceInfo = await DeviceInfoPlugin().iosInfo;
+      deviceId = deviceInfo.identifierForVendor;
+    }
+    return logEvent(name: 'app_launch', parameters: {'device_id': deviceId});
+  }
+
   Future<void> logAddToCart(
       {String itemSku,
       String itemName,
@@ -96,8 +131,8 @@ class AppFirebaseAnalytics {
       {double value, double tax, double shipping, String transactionId}) {
     return FirebaseAnalytics().logEcommercePurchase(
         value: value,
-        tax: tax ?? 0.0,
-        shipping: shipping ?? 0.0,
+        tax: tax,
+        shipping: shipping,
         transactionId: transactionId);
   }
 

@@ -247,7 +247,7 @@ class _SplashScreenState extends State<SplashScreen> {
       return new Timer(_duration, navigationPageHome);
     } else {
       // First time
-
+      AppFirebaseAnalytics.instance.logAppLaunch();
       return new Timer(_duration, navigationPageWel);
     }
   }

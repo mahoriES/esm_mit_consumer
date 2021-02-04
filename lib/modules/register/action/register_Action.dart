@@ -10,6 +10,7 @@ import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -37,7 +38,7 @@ class GetUserDetailAction extends ReduxAction<AppState> {
 
         dispatch(CheckTokenAction());
         store.dispatch(GetUserFromLocalStorageAction());
-
+        AppFirebaseAnalytics.instance.logAppLogin(user: user.toString());
         dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
         return state.copyWith(authState: state.authState.copyWith(user: user));
       }

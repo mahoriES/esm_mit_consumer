@@ -15,6 +15,7 @@ import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:eSamudaay/utilities/image_compression_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -72,6 +73,10 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
   @override
   Future<AppState> reduce() async {
     try {
+      AppFirebaseAnalytics.instance.logAddToCart(
+          itemName: product.productName + product.selectedSkuWeight,
+          itemSku: product.selectedSkuId,
+          price: product.selectedSkuPrice);
       // get store details for local cart.
       final Business cartMerchant = state.cartState.cartMerchant;
 
@@ -120,11 +125,16 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
 
 class RemoveFromCartAction extends ReduxAction<AppState> {
   final Product product;
+
   RemoveFromCartAction({@required this.product});
 
   @override
   Future<AppState> reduce() async {
     try {
+      AppFirebaseAnalytics.instance.logRemoveFromCart(
+          itemName: product.productName + product.selectedSkuWeight,
+          itemSku: product.selectedSkuId,
+          price: product.selectedSkuPrice);
       // if product count is decreamented to zero then remove the product from cart.
       if (product.count == 0) {
         await CartDataSource.deleteCartProduct(product);
@@ -206,7 +216,9 @@ class PlaceOrderAction extends ReduxAction<AppState> {
 
 class GetOrderTaxAction extends ReduxAction<AppState> {
   Business merchant;
+
   GetOrderTaxAction(this.merchant);
+
   @override
   Future<AppState> reduce() async {
     if (merchant?.businessId == null) return null;
@@ -272,6 +284,7 @@ class GetMerchantStatusAndPlaceOrderAction extends ReduxAction<AppState> {
 
 class ToggleCartLoadingState extends ReduxAction<AppState> {
   bool isLoading;
+
   ToggleCartLoadingState(this.isLoading);
 
   @override
@@ -286,6 +299,7 @@ class ToggleCartLoadingState extends ReduxAction<AppState> {
 
 class ToggleImageUploadingState extends ReduxAction<AppState> {
   bool isLoading;
+
   ToggleImageUploadingState(this.isLoading);
 
   @override
@@ -300,6 +314,7 @@ class ToggleImageUploadingState extends ReduxAction<AppState> {
 
 class UpdateDeliveryType extends ReduxAction<AppState> {
   String type;
+
   UpdateDeliveryType(this.type);
 
   @override
@@ -350,6 +365,7 @@ class GetInitialSelectedAddress extends ReduxAction<AppState> {
 
 class AddCustomerNoteImageAction extends ReduxAction<AppState> {
   final ImageSource imageSource;
+
   AddCustomerNoteImageAction({@required this.imageSource});
 
   @override
@@ -377,6 +393,8 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
         if (photo.photoUrl == null) {
           throw Exception();
         }
+        AppFirebaseAnalytics.instance.logAddPhotoToOrder(
+            photoUrl: photo.photoUrl, photoId: photo.photoId);
         final List<String> updatedImageList = state.cartState.customerNoteImages
           ..add(photo.photoUrl);
         CartDataSource.insertCustomerNoteImagesList(updatedImageList);
@@ -401,6 +419,7 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
 
 class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
   final int imageIndex;
+
   RemoveCustomerNoteImageAction({@required this.imageIndex});
 
   @override
@@ -442,11 +461,13 @@ class CheckToReplaceCartAction extends ReduxAction<AppState> {
   Business selectedMerchant;
   VoidCallback onSuccess;
   Function(VoidCallback) showReplaceAlert;
+
   CheckToReplaceCartAction({
     @required this.selectedMerchant,
     @required this.onSuccess,
     @required this.showReplaceAlert,
   });
+
   @override
   AppState reduce() {
     final Business cartMerchant = state.cartState.cartMerchant;
@@ -480,6 +501,7 @@ class CheckToReplaceCartAction extends ReduxAction<AppState> {
 
 class _ReplaceCartAction extends ReduxAction<AppState> {
   VoidCallback onSuccess;
+
   _ReplaceCartAction(this.onSuccess);
 
   @override
