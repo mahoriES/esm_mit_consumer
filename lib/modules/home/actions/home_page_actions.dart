@@ -186,10 +186,16 @@ class SelectMerchantDetailsByID extends ReduxAction<AppState> {
       Fluttertoast.showToast(msg: 'Something went wrong');
       throw 'Something went wrong : ${response.data['message']}';
     } else {
-      var responseModel = Business.fromJson(response.data);
+      final Business responseModel = Business.fromJson(response.data);
 
       if (responseModel != null) {
         DynamicLinkService().isLinkPathValid = true;
+
+        // The bookmark button fetches the required data from 'businessDS' in homePageState.
+        // So we need to put this merchant's data in that businessDS map in case it's not already there.
+        store.state.homePageState.businessDS
+            .putIfAbsent(businessId, () => responseModel);
+
         return state.copyWith(
           productState: state.productState.copyWith(
             selectedMerchant: responseModel,

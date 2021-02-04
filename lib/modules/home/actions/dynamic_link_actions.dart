@@ -74,6 +74,13 @@ class DynamicLinkService {
         .dispatchFuture(SelectMerchantDetailsByID(businessId: businessId));
     if (isLinkPathValid) {
       store.dispatch(ResetCatalogueAction());
+
+      // If user opens the app through a merchant's shared link
+      // we need to bookmark that merchant.If it's not bookmarked already.
+
+      if (!store.state.productState.selectedMerchant.isBookmarked) {
+        store.dispatch(BookmarkBusinessAction(businessId: businessId));
+      }
       String _routeName = '/StoreDetailsView';
       if (NavigationHandler.navigationStack.contains(_routeName)) {
         store.dispatch(NavigateAction.popUntil(_routeName));
