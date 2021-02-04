@@ -7,6 +7,7 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -390,7 +391,7 @@ class GetAddressDetailsAction extends ReduxAction<AppState> {
             .getDetailsByPlaceId(
       placeId,
       sessionToken: state.addressState.sessionToken,
-      fields: ["address_component", "formatted_address", "geometry"],
+      fields: StringConstants.placeDetailFields,
     );
 
     if (placesDetailsResponse.isOkay) {
