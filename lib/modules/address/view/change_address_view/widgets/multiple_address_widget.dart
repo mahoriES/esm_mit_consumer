@@ -86,7 +86,7 @@ class MultipleAddressWidget extends StatelessWidget {
                                   ),
                                   Text(
                                     snapshot.savedAddresses[index]
-                                            ?.prettyAddress ??
+                                            ?.addressWithDetails ??
                                         "",
                                     style: CustomTheme.of(context)
                                         .textStyles

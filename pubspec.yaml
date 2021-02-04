@@ -118,6 +118,7 @@ flutter:
     - assets/languages/ka-IN.json
     - assets/languages/ml-IN.json
     - assets/languages/ta-IN.json
+    - assets/languages/te-IN.json
     - assets/languages/hi-Deva-IN.json
     - assets/images/Component 6 – 1.png
     - assets/images/app_main_icon.png

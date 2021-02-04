@@ -100,6 +100,14 @@ class AddressResponse {
       this.locationPoint,
       this.geoAddr});
 
+  String get addressWithDetails {
+    return (this.geoAddr?.house ?? "") +
+        ", " +
+        (this.geoAddr?.landmark ?? "") +
+        "\n" +
+        (this.prettyAddress ?? "");
+  }
+
   AddressResponse.fromJson(Map<String, dynamic> json) {
     addressId = json['address_id'];
     addressName = json['address_name'];

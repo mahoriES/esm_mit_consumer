@@ -54,20 +54,25 @@ class CustomerNoteImageView extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              tr(
-                "cart.n_images_added",
-                args: [customerNoteImages.length.toString()],
+            Flexible(
+              child: Text(
+                tr(
+                  "cart.n_images_added",
+                  args: [customerNoteImages.length.toString()],
+                ),
+                style: CustomTheme.of(context).textStyles.cardTitle,
               ),
-              style: CustomTheme.of(context).textStyles.cardTitle,
             ),
             Spacer(),
             if (showRemoveButton) ...{
-              Text(
-                tr("cart.max_images"),
-                style: CustomTheme.of(context).textStyles.cardTitle,
-              ),
+              Flexible(
+                child: Text(
+                  tr("cart.max_images"),
+                  style: CustomTheme.of(context).textStyles.cardTitle,
+                ),
+              )
             }
           ],
         ),
