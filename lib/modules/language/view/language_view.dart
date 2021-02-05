@@ -88,9 +88,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
                 // English
 
-                // മലയാളം
+                // telugu
                 ListTile(
-                  title: Text("മലയാളം",
+                  title: Text("తెలుగు",
                       style: const TextStyle(
                           color: const Color(0xff2e2e2e),
                           fontWeight: FontWeight.w300,
@@ -101,8 +101,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
                     AppFirebaseAnalytics.instance
-                        .logLanguageChange(setLanguage: 'Malayalam');
-                    EasyLocalization.of(context).locale = Locale('ml', 'IN');
+                        .logLanguageChange(setLanguage: 'Telugu');
+                    EasyLocalization.of(context).locale = Locale('te', 'IN');
                     snapshot.navigateToPhoneNumberPage(
                         (arguments != null) ? arguments['fromAccount'] : false);
                   },

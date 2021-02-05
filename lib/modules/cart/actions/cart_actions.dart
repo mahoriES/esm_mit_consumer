@@ -16,7 +16,7 @@ import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/firebase_analytics.dart';
-import 'package:eSamudaay/utilities/image_compression_service.dart';
+import 'package:esamudaay_image_services/esm_image_compression_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -372,7 +372,10 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
   Future<AppState> reduce() async {
     try {
       final File imageFile =
-          await ImageCompressionService.getCompressedImage(imageSource);
+          await EsamudaayImageCompressionService.getCompressedImage(
+        imageSource,
+        targetSizeInBytes: 150000,
+      );
 
       if (imageFile == null) return null;
 

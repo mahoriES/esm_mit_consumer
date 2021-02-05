@@ -50,4 +50,10 @@ class StringConstants {
       'https://lh3.googleusercontent.com/b5-o56HDsZhnCfYavGxGcfZHmZp51AzbzXQXllZ19FlVyIwhMI9i0fFuTu_9oe1MYlQ=s180';
 
   static const List<String> addressTagList = ["Home", "Work", "Other"];
+
+  static const List<String> placeDetailFields = [
+    "address_component",
+    "formatted_address",
+    "geometry",
+  ];
 }
