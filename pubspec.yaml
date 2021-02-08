@@ -185,6 +185,7 @@ flutter:
     - assets/images/icon_closed.png
     - assets/images/Icon_Payment.png
     - assets/images/Icon_RetryPayment.png
+    - assets/images/language_selection_backdrop.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

@@ -17,6 +17,8 @@ class ImagePathConstants {
   static const paymentPendingIcon = _prefix + "Icon_RetryPayment.png";
   static const appLogo = _prefix + "app_main_icon.png";
   static const shopPlaceholder = _prefix + "shop1.png";
+  static const languageSelectionBackdrop =
+      _prefix + "language_selection_backdrop.png";
 }
 
 class LottiePathConstants {

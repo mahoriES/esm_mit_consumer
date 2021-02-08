@@ -1,11 +1,14 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 
 class LanguageScreen extends StatefulWidget {
   final bool fromAccount = false;
+
   @override
   _LanguageScreenState createState() => _LanguageScreenState();
 }
@@ -14,127 +17,84 @@ class _LanguageScreenState extends State<LanguageScreen> {
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
-
+    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     if (arguments != null) print("from_account ${arguments['fromAccount']}");
-
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-          onInit: (store) {},
           model: _ViewModel(),
           builder: (context, snapshot) {
             return Scaffold(
-              body: Column(children: [
-                // Rectangle 1560
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width * 0.5,
-                  decoration: BoxDecoration(color: AppColors.icColors),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 48.0),
-                      child: Text('screen_language.title',
-                              style: const TextStyle(
-                                  color: const Color(0xffffffff),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir-Medium",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 24.0),
-                              textAlign: TextAlign.left)
-                          .tr(),
-                    ),
+              body: SafeArea(
+                child: SizedBox(
+                  height: SizeConfig.screenHeight,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        ImagePathConstants.languageSelectionBackdrop,
+                        height: 496.toHeight,
+                        width: SizeConfig.screenWidth,
+                        fit: BoxFit.fill,
+                      ),
+                      Positioned(
+                        right: 38.toWidth,
+                        top: 53.toHeight,
+                        child: Text(
+                          "Choose\nyour Language",
+                          textAlign: TextAlign.end,
+                          style: CustomTheme.of(context)
+                              .textStyles
+                              .topTileTitle
+                              .copyWith(
+                                  color: CustomTheme.of(context)
+                                      .colors
+                                      .primaryColor,
+                                  fontSize: 30),
+                        ),
+                      ),
+                      Positioned(
+                        left: 25.toWidth,
+                        top: 35.toHeight,
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Container(
+                            color:
+                                CustomTheme.of(context).colors.backgroundColor,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.arrow_back_ios,
+                                  color: CustomTheme.of(context)
+                                      .colors
+                                      .primaryColor,
+                                ),
+                                Text(
+                                  'Back',
+                                  style: CustomTheme.of(context)
+                                      .textStyles
+                                      .sectionHeading1,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: AnimatedPadding(
+                          duration: const Duration(milliseconds: 100),
+                          padding: EdgeInsets.only(
+                            top: 476.toHeight - 48.toHeight - bottomInsets,
+                          ),
+                          child: DropDown(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                // Choose your Preferred Language
-
-                ListTile(
-                  title: Text("English",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Poppins",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    EasyLocalization.of(context).locale = Locale('en', 'US');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-
-                ListTile(
-                  title: Text("हिन्दी",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Poppins",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    EasyLocalization.of(context).locale = Locale.fromSubtags(
-                        languageCode: 'hi', countryCode: 'Deva-IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-
-                // English
-
-                // telugu
-                ListTile(
-                  title: Text("తెలుగు",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "Gotham",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    EasyLocalization.of(context).locale = Locale('te', 'IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-                // ಕನ್ನಡ
-                ListTile(
-                  title: Text("ಕನ್ನಡ",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "Gotham",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    EasyLocalization.of(context).locale = Locale('ka', 'IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-                //தமிழ்
-                ListTile(
-                  title: Text("தமிழ்",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "Gotham",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    EasyLocalization.of(context).locale = Locale('ta', 'IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-              ]),
+              ),
             );
           }),
     );
@@ -143,7 +103,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function(bool fromAccount) navigateToPhoneNumberPage;
+
   _ViewModel.build({
     this.navigateToPhoneNumberPage,
   }) : super(equals: []);
@@ -157,6 +119,176 @@ class _ViewModel extends BaseModel<AppState> {
             ? dispatch(NavigateAction.pop())
             : dispatch(NavigateAction.pushNamed('/loginView'));
       },
+    );
+  }
+}
+
+class DropDown extends StatefulWidget {
+
+  const DropDown({Key key}) : super(key: key);
+
+  static List<String> get languagesList {
+    return <String>[
+      "English",
+      "Hindi (हिन्दी)",
+      "Kannada (ಕನ್ನಡ)",
+      "Tamil (தமிழ்)",
+      "Telugu (తెలుగు)",
+    ];
+  }
+
+  static List<Locale> get localeList {
+    return <Locale>[
+      Locale('en', 'US'),
+      Locale.fromSubtags(languageCode: 'hi', countryCode: 'Deva-IN'),
+      Locale('ka', 'IN'),
+      Locale('ta', 'IN'),
+      Locale('te', 'IN'),
+    ];
+  }
+
+  @override
+  _DropDownState createState() => _DropDownState();
+}
+
+class _DropDownState extends State<DropDown> {
+  bool _isExpanded;
+  final TextEditingController _textEditingController = TextEditingController();
+  Locale selectedLocale;
+  String selectedLanguage;
+
+  @override
+  void initState() {
+    _isExpanded = false;
+    _textEditingController
+      ..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isExpanded) {
+      return Container(
+        width: 351.toWidth,
+        height: 426.toHeight,
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        decoration: BoxDecoration(
+          color: CustomTheme.of(context).colors.backgroundColor,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+              width: 1, color: CustomTheme.of(context).colors.primaryColor),
+        ),
+        child: ListView(
+          children: [
+            SizedBox(
+              height: 42.toHeight,
+              child: TextField(
+                cursorWidth: 1,
+                autofocus: true,
+                controller: _textEditingController,
+                onEditingComplete: () {
+                  setState(() {
+                    _isExpanded = false;
+                  });
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.zero,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 1, color: Colors.grey),
+                  ),
+                  hintText: 'Search for language',
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: CustomTheme.of(context).colors.primaryColor,
+                  ),
+                ),
+              ),
+            ),
+            ListView.builder(
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    filteredLanguages[index],
+                    style: CustomTheme.of(context).textStyles.sectionHeading1,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      selectedLanguage = filteredLanguages[index];
+                      selectedLocale = DropDown.localeList[
+                          DropDown.languagesList.indexWhere(
+                              (element) => element == selectedLanguage)];
+                      _isExpanded = false;
+                    });
+                    EasyLocalization.of(context).locale = selectedLocale;
+                    Navigator.pop(context);
+                  },
+                );
+              },
+              itemCount: filteredLanguages.length,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return buildNotExpandedState();
+    }
+  }
+
+  List<String> get filteredLanguages {
+    if (_textEditingController.text.isEmpty) return DropDown.languagesList;
+    return DropDown.languagesList
+        .where((element) => element
+            .toLowerCase()
+            .contains(_textEditingController.text.toLowerCase().trim()))
+        .toList();
+  }
+
+  Widget buildNotExpandedState() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isExpanded = true;
+        });
+      },
+      child: Container(
+        width: 299.toWidth,
+        height: 48.toHeight,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+              width: 2, color: CustomTheme.of(context).colors.primaryColor),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                selectedLanguage == null ? 'Choose Language' : selectedLanguage,
+                style: selectedLanguage == null
+                    ? CustomTheme.of(context).textStyles.cardTitleFaded.copyWith(fontSize: 20)
+                    : CustomTheme.of(context).textStyles.sectionHeading1,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Icon(
+                Icons.keyboard_arrow_down,
+                color: CustomTheme.of(context).colors.primaryColor,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
