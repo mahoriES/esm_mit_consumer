@@ -428,9 +428,11 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
   @override
   Future<AppState> reduce() async {
     try {
+      AppFirebaseAnalytics.instance.logRemovePhotoFromOrder(
+          photoUrl: state.cartState.customerNoteImages[imageIndex]);
+
       final List<String> updatedImageList = state.cartState.customerNoteImages
         ..removeAt(imageIndex);
-
       await CartDataSource.insertCustomerNoteImagesList(updatedImageList);
 
       final List<String> updatedList =

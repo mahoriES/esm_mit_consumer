@@ -79,7 +79,14 @@ class AppFirebaseAnalytics {
 
   Future<void> logAddPhotoToOrder({String photoUrl, String photoId}) {
     return logEvent(name: 'app_add_photo_order', parameters: {
-      'orderId': photoUrl
+      'photoUrl': photoUrl,
+      'photoId': photoId
+    });
+  }
+
+  Future<void> logRemovePhotoFromOrder({String photoUrl}) {
+    return logEvent(name: 'app_add_photo_order', parameters: {
+      'photoUrl': photoUrl
     });
   }
 
