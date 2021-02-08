@@ -88,7 +88,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
                           padding: EdgeInsets.only(
                             top: 476.toHeight - 48.toHeight - bottomInsets,
                           ),
-                          child: DropDown(),
+                          child: DropDown(
+                            fromAccountAction:
+                                (){snapshot.navigateToPhoneNumberPage(
+                                    arguments != null ? arguments['fromAccount']
+                                        ?? false : false);},
+                          ),
                         ),
                       ),
                     ],
@@ -96,7 +101,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 ),
               ),
             );
-          }),
+          },),
     );
   }
 }
@@ -124,8 +129,9 @@ class _ViewModel extends BaseModel<AppState> {
 }
 
 class DropDown extends StatefulWidget {
+  final Function fromAccountAction;
 
-  const DropDown({Key key}) : super(key: key);
+  const DropDown({Key key, @required this.fromAccountAction}) : super(key: key);
 
   static List<String> get languagesList {
     return <String>[
@@ -230,7 +236,7 @@ class _DropDownState extends State<DropDown> {
                       _isExpanded = false;
                     });
                     EasyLocalization.of(context).locale = selectedLocale;
-                    Navigator.pop(context);
+                    widget.fromAccountAction();
                   },
                 );
               },
@@ -274,7 +280,10 @@ class _DropDownState extends State<DropDown> {
               child: Text(
                 selectedLanguage == null ? 'Choose Language' : selectedLanguage,
                 style: selectedLanguage == null
-                    ? CustomTheme.of(context).textStyles.cardTitleFaded.copyWith(fontSize: 20)
+                    ? CustomTheme.of(context)
+                        .textStyles
+                        .cardTitleFaded
+                        .copyWith(fontSize: 20)
                     : CustomTheme.of(context).textStyles.sectionHeading1,
                 textAlign: TextAlign.center,
               ),

@@ -11,6 +11,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:esamudaay_app_update/app_update_service.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
@@ -265,9 +266,14 @@ class _SplashScreenState extends State<SplashScreen> {
     store.dispatch(CheckAppUpdateAction(context));
   }
 
-  void navigationPageWel() {
+  void navigationPageWel() async {
     if (context == null) return;
-    Navigator.of(context).pushReplacementNamed('/onBoarding');
+    //Navigator.of(context).pushReplacementNamed('/onBoarding');
+    await UserManager.saveSkipStatus(status: true);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('first_time', false);
+    store.dispatch(
+        NavigateAction.pushNamedAndRemoveAll('/language'));
     // If launch screen is onboarding , then show app_update prompt here.
     store.dispatch(CheckAppUpdateAction(context));
   }

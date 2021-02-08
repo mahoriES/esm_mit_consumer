@@ -13,7 +13,6 @@ import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
 import 'package:eSamudaay/modules/language/view/language_view.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
-import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
 import 'package:eSamudaay/modules/orders/views/feedback_view/feedback_view.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/order_details.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
@@ -47,7 +46,6 @@ class SetupRoutes {
       // "/Support": (BuildContext context) => Support(),
       "/profile": (BuildContext context) => ProfileView(),
       "/about": (BuildContext context) => AboutView(),
-      "/onBoarding": (BuildContext context) => OnboardingWidget(),
       RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
           MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
