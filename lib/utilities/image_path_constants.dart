@@ -19,6 +19,7 @@ class ImagePathConstants {
   static const shopPlaceholder = _prefix + "shop1.png";
   static const languageSelectionBackdrop =
       _prefix + "language_selection_backdrop.png";
+  static const signupLoginBackdrop = _prefix + "login_signup_backdrop.png";
 }
 
 class LottiePathConstants {

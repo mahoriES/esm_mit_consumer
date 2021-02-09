@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/otp/action/otp_action.dart';
 import 'package:eSamudaay/modules/otp/model/validate_otp_request.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/colors.dart';
 import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -49,16 +51,15 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-          onInit: (store) {
-            FocusScope.of(context).requestFocus(FocusNode());
-            PushNotificationsManager().init();
-            startTimer();
-//                store.dispatch(GetLocationAction());
-//                store.dispatch(GetCartFromLocal());
-          },
-          model: _ViewModel(),
-          builder: (context, snapshot) {
-            return ModalProgressHUD(
+        onInit: (store) {
+          FocusScope.of(context).requestFocus(FocusNode());
+          PushNotificationsManager().init();
+          startTimer();
+        },
+        model: _ViewModel(),
+        builder: (context, snapshot) {
+          return SafeArea(
+            child: ModalProgressHUD(
               progressIndicator: Card(
                 child: Image.asset(
                   'assets/images/indicator.gif',
@@ -67,203 +68,209 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
               ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
-              child: Scaffold(
-                  appBar: AppBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      brightness: Brightness.light,
-                      leading: new IconButton(
-                        icon: new Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
+              child: SizedBox(
+                height: SizeConfig.screenHeight,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      child: Image.asset(
+                        ImagePathConstants.signupLoginBackdrop,
+                        height: 667.toHeight,
+                        width: SizeConfig.screenWidth,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      left: 25,
+                      top: 35,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          color: CustomTheme.of(context).colors.backgroundColor,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.arrow_back_ios,
+                                color:
+                                    CustomTheme.of(context).colors.primaryColor,
+                              ),
+                              Text(
+                                'Back',
+                                style: CustomTheme.of(context)
+                                    .textStyles
+                                    .sectionHeading1,
+                              ),
+                            ],
+                          ),
                         ),
-                        onPressed: () => Navigator.of(context).pop(),
-                      )),
-                  body: Padding(
-                    padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                    Positioned(
+                      top: 212.toHeight,
+                      left: 12.toWidth,
+                      child: Container(
+                        width: 351.toWidth,
+                        padding: const EdgeInsets.only(
+                            bottom: 12, left: 5, right: 5),
+                        decoration: BoxDecoration(
+                          color: CustomTheme.of(context).colors.backgroundColor,
+                          border: Border.all(
+                              color:
+                                  CustomTheme.of(context).colors.primaryColor),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Column(
                           children: [
+                            const SizedBox(
+                              height: 5,
+                            ),
                             SizedBox(
-                              height: 50,
-                            ),
-                            Hero(
-                              tag: "#image",
-                              child: Image.asset(
-                                  'assets/images/app_main_icon.png'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Hero(
-                                tag: '#text',
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: Text(
-                                          tr('screen_otp.hint_text') +
-                                              " " +
-                                              snapshot.phoneNumber,
-                                          style: const TextStyle(
-                                              color: const Color(0xff868b8e),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.center)
-                                      .tr(),
+                              height: 42.toHeight,
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                    bottom: 8, left: 10, right: 10, top: 8),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: Colors.grey)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.phone,
+                                      color: CustomTheme.of(context)
+                                          .colors
+                                          .primaryColor,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                      height: 21.toHeight,
+                                      width: 1,
+                                      color: CustomTheme.of(context)
+                                          .colors
+                                          .primaryColor,
+                                    ),
+                                    Expanded(
+                                      child: OTPField(
+                                        length: 6,
+                                        fieldWidth: 28,
+                                        textFieldAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        fieldStyle: FieldStyle.underline,
+                                        style: CustomTheme.of(context)
+                                            .textStyles
+                                            .sectionHeading1,
+                                        onChanged: (pin) {
+                                          snapshot.updateOtpEnterStatus(
+                                              pin.length == 6);
+                                        },
+                                        onCompleted: (pin) async {
+                                          snapshot.updateOtpEnterStatus(
+                                              pin.length == 6);
+
+                                          snapshot.updateValidationRequest(
+                                              ValidateOTPRequest(
+                                                  token: pin,
+                                                  phone: snapshot.phoneNumber));
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                            //phone number
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: OTPField(
-                                length: 6,
-                                width: MediaQuery.of(context).size.width,
-                                textFieldAlignment:
-                                    MainAxisAlignment.spaceAround,
-//                            fieldWidth: 50,
-                                fieldStyle: FieldStyle.underline,
-                                style: TextStyle(fontSize: 17),
-                                onChanged: (pin) {
-                                  snapshot
-                                      .updateOtpEnterStatus(pin.length == 6);
-                                },
-                                onCompleted: (pin) async {
-                                  print("Completed: " + pin);
-                                  snapshot
-                                      .updateOtpEnterStatus(pin.length == 6);
-
-                                  snapshot.updateValidationRequest(
-                                      ValidateOTPRequest(
-                                          token: pin,
-                                          phone: snapshot.phoneNumber));
-                                },
-                              ),
+                            const SizedBox(
+                              height: 12,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(30.0),
-                              child: _start == 0
-                                  ? Material(
-                                      type: MaterialType.transparency,
-                                      child: InkWell(
-                                        onTap: () {
-                                          snapshot.resendOtpRequest();
-                                          _start = 30;
-                                          startTimer();
-                                        },
-                                        child: Text('screen_otp.resend_otp',
-                                                style: const TextStyle(
-                                                    color:
-                                                        const Color(0xff3795d1),
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily: "Avenir-Medium",
-                                                    fontStyle: FontStyle.normal,
-                                                    fontSize: 14.0),
-                                                textAlign: TextAlign.left)
-                                            .tr(),
-                                      ),
-                                    )
-                                  : Text(
-                                          tr('screen_otp.resend_text') +
-                                              ' $_start ' +
-                                              tr('screen_otp.sec.'),
-                                          style: const TextStyle(
-                                              color: const Color(0xff3795d1),
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: "Avenir-Medium",
-                                              fontStyle: FontStyle.normal,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.left)
-                                      .tr(),
-                            ),
-                            // Group 230
-                            Material(
-                              type: MaterialType.transparency,
-                              child: InkWell(
-                                onTap: () async {
+                            SizedBox(
+                              width: 157.4.toWidth,
+                              height: 42.toHeight,
+                              child: RaisedButton(
+                                color:
+                                    CustomTheme.of(context).colors.primaryColor,
+                                elevation: 0.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                onPressed: snapshot.otpEntered ? () async {
                                   if (snapshot.otpEntered) {
                                     snapshot.verifyOTP(ValidateOTPRequest(
                                       phone: snapshot.phoneNumber,
                                     ));
                                   } else {
                                     Fluttertoast.showToast(
-                                        msg: tr(
-                                            'screen_otp.error.plz_verify_otp'));
+                                        msg: tr('screen_otp.error.plz_verify_otp'));
                                   }
-                                },
-                                child: Hero(
-                                  tag: '#getOtp',
-                                  child: Material(
-                                    type: MaterialType.transparency,
-                                    child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                1.2,
-                                        height: 60,
-                                        child: Stack(children: [
-                                          // Rectangle 10
-                                          PositionedDirectional(
-                                            top: 0,
-                                            start: 0,
-                                            child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    1.2,
-                                                height: 52,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                100)),
-                                                    gradient: AppColors
-                                                        .linearGradient)),
-                                          ),
-                                          // Get OTP
-                                          PositionedDirectional(
-                                            top: 16.000030517578125,
-                                            start: 0,
-                                            child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    1.2,
-                                                height: 22,
-                                                child: Text('screen_otp.verify',
-                                                        style: const TextStyle(
-                                                            color: const Color(
-                                                                0xffffffff),
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Avenir-Medium",
-                                                            fontStyle: FontStyle
-                                                                .normal,
-                                                            fontSize: 16.0),
-                                                        textAlign:
-                                                            TextAlign.center)
-                                                    .tr()),
-                                          )
-                                        ])),
+                                } : null,
+                                child: Center(
+                                  child: Text(
+                                    'VERIFY',
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .cardTitle
+                                        .copyWith(
+                                            color: CustomTheme.of(context)
+                                                .colors
+                                                .backgroundColor),
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 50,
-                            ),
-                          ]),
+                            const SizedBox(height: 14,),
+                            _start == 0
+                                ? InkWell(
+                                    onTap: () {
+                                      snapshot.resendOtpRequest();
+                                      _start = 30;
+                                      startTimer();
+                                    },
+                                    child: Text('screen_otp.resend_otp',
+                                            style: CustomTheme.of(context)
+                                                .textStyles
+                                                .sectionHeading1Regular
+                                                .copyWith(
+                                                    color:
+                                                        CustomTheme.of(context)
+                                                            .colors
+                                                            .primaryColor),
+                                            textAlign: TextAlign.left)
+                                        .tr(),
+                                  )
+                                : Text(
+                                        tr('screen_otp.resend_text') +
+                                            ' $_start ' +
+                                            tr('screen_otp.sec.'),
+                                        style: CustomTheme.of(context)
+                                            .textStyles
+                                            .sectionHeading1Regular
+                                            .copyWith(
+                                                color: CustomTheme.of(context)
+                                                    .colors
+                                                    .disabledAreaColor),
+                                        textAlign: TextAlign.left)
+                                    .tr()
+                          ],
+                        ),
+                      ),
                     ),
-                  )),
-            ); // OTP
-          }),
+                  ],
+                ),
+              ),
+            ),
+          ); // OTP
+        },
+      ),
     );
   }
 }
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function(ValidateOTPRequest) verifyOTP;
   Function(ValidateOTPRequest) updateValidationRequest;
   Function() resendOtpRequest;
@@ -271,6 +278,7 @@ class _ViewModel extends BaseModel<AppState> {
   bool otpEntered;
   LoadingStatusApp loadingStatus;
   Function(bool) updateOtpEnterStatus;
+
   _ViewModel.build(
       {this.verifyOTP,
       this.loadingStatus,

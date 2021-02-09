@@ -28,7 +28,7 @@
     "get_otp": "Get OTP",
     "resend_otp": "Resend OTP",
     "hint_text": "Please enter the OTP sent to",
-    "resend_text": "Resend in",
+    "resend_text": "Didn't receive OTP? Resend in",
     "sec": "sec",
     "verify": "Verify",
     "error": {
