@@ -9,6 +9,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -180,7 +181,8 @@ class GetAllProducts extends ReduxAction<AppState> {
           CatalogSearchResponse.fromJson(response.data);
 
       // Fetch the local cart items.
-      final List<Product> _allCartItems = await CartDataSource.getListOfProducts();
+      final List<Product> _allCartItems =
+          await CartDataSource.getListOfProducts();
 
       // check if any of these product items are already added in cart.
       // if yes updated the item count for the same.
@@ -232,6 +234,8 @@ class UpdateSelectedCategoryAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() {
+    AppFirebaseAnalytics.instance
+        .logSelectedCategory(itemCategory: selectedCategory.categoryName);
     return state.copyWith(
       productState: state.productState.copyWith(
         selectedCategory: selectedCategory,
@@ -262,9 +266,13 @@ class UpdateLoadMoreStatus extends ReduxAction<AppState> {
 
 class UpdateSelectedProductAction extends ReduxAction<AppState> {
   final Product selectedProduct;
+
   UpdateSelectedProductAction(this.selectedProduct);
+
   @override
   FutureOr<AppState> reduce() {
+    AppFirebaseAnalytics.instance
+        .logViewItem(itemName: selectedProduct.productName);
     return state.copyWith(
       productState: state.productState.copyWith(
         selectedProductForDetails: selectedProduct,
@@ -276,6 +284,7 @@ class UpdateSelectedProductAction extends ReduxAction<AppState> {
 class GetProductDetailsByID extends ReduxAction<AppState> {
   final String productId;
   final String businessId;
+
   GetProductDetailsByID({@required this.productId, @required this.businessId});
 
   @override

@@ -12,6 +12,7 @@ import 'package:eSamudaay/redux/states/home_page_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
@@ -153,15 +154,18 @@ class BookmarkBusinessAction extends ReduxAction<AppState> {
       requestType: RequestType.post,
     );
     if (response.status == ResponseStatus.success200) {
-      final Business copiedMerchantFromState = Business.clone(
-          state.homePageState.businessDS[businessId]);
+      final Business copiedMerchantFromState =
+          Business.clone(state.homePageState.businessDS[businessId]);
       copiedMerchantFromState.isBookmarked = true;
       final Map<String, Business> copyOfDataSource =
           Map.from(state.homePageState.businessDS);
       copyOfDataSource[businessId] = copiedMerchantFromState;
 
+      AppFirebaseAnalytics.instance.logBookmarkBusiness(businessId: businessId);
+
       return state.copyWith(
-          homePageState: state.homePageState.copyWith(businessDS: copyOfDataSource));
+          homePageState:
+              state.homePageState.copyWith(businessDS: copyOfDataSource));
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
     }
@@ -252,16 +256,15 @@ class UnBookmarkBusinessAction extends ReduxAction<AppState> {
     );
 
     if (response.status == ResponseStatus.success200) {
-      final Business copiedMerchantFromState = Business.clone(
-          state.homePageState.businessDS[businessId]);
+      final Business copiedMerchantFromState =
+          Business.clone(state.homePageState.businessDS[businessId]);
       copiedMerchantFromState.isBookmarked = false;
       final Map<String, Business> copyOfDataSource =
           Map.from(state.homePageState.businessDS);
       copyOfDataSource[businessId] = copiedMerchantFromState;
       return state.copyWith(
-        homePageState: state.homePageState.copyWith(
-          businessDS: copyOfDataSource
-        ),
+        homePageState:
+            state.homePageState.copyWith(businessDS: copyOfDataSource),
       );
     } else {
       Fluttertoast.showToast(msg: response.data['status']);
