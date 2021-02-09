@@ -4,6 +4,7 @@ import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart
 import 'package:eSamudaay/modules/home/actions/dynamic_link_actions.dart';
 import 'package:eSamudaay/modules/home/actions/home_page_actions.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
+import 'package:eSamudaay/modules/home/models/banner_response.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
@@ -204,7 +205,7 @@ class _ViewModel extends BaseModel<AppState> {
   int currentIndex;
   List<Business> merchants;
   VideoFeedResponse videoFeedResponse;
-  List<Photo> banners;
+  BannersWithPointerResponse banners;
   LoadingStatusApp loadingStatus;
   Cluster cluster;
   GetBusinessesResponse response;
