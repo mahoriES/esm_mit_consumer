@@ -2,7 +2,9 @@ import 'package:eSamudaay/modules/head_categories/models/main_categories_respons
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 
 class BannersWithPointerResponse {
+  // List of promotion banners.
   List<Main> main;
+  // cluster specific banner.
   Top top;
 
   BannersWithPointerResponse({this.main, this.top});
@@ -19,8 +21,12 @@ class BannersWithPointerResponse {
 }
 
 class Main {
+  // banner format can ne image or video.
+  // For now only image is supported.
   String bannerFormat;
+  // banner image object containing id, url and content-type
   Photo media;
+  // banner pointer consists data to redirect user to specific screen when tapped.
   BannerPointer bannerPointer;
 
   Main({this.bannerFormat, this.media, this.bannerPointer});
@@ -35,7 +41,9 @@ class Main {
 }
 
 class BannerPointer {
+  // For now, only supported type is bCat. This can vary for future usecases.
   String type;
+  // contains data for bCat.
   Meta meta;
 
   BannerPointer({this.type, this.meta});
