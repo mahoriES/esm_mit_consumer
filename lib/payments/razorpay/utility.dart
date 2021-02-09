@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -91,6 +92,8 @@ class RazorpayUtility {
     debugPrint('Payment was successful! ${paymentSuccessResponse.paymentId}');
     _showSplash(true);
     Fluttertoast.showToast(msg: 'Payment Successful!');
+    AppFirebaseAnalytics.instance
+        .logSuccessfulPurchase(transactionId: paymentSuccessResponse.paymentId);
   }
 
   ///Handle payment failure event.
@@ -129,7 +132,9 @@ class RazorpayUtility {
       case Razorpay.UNKNOWN_ERROR:
         _recordErrorInCrashlytics(
             "An unknown error occured. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.unknown_error'));
+        Fluttertoast.showToast(
+            msg: jsonDecode(errorMsg)['description'] ??
+                tr('payment_info.unknown_error'));
         break;
 
       /// This error indicates a code-level error.
@@ -139,7 +144,9 @@ class RazorpayUtility {
       case Razorpay.INCOMPATIBLE_PLUGIN:
         _recordErrorInCrashlytics(
             "There is some error with compatibility of the plugin. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.incompatible_plugin'));
+        Fluttertoast.showToast(
+            msg: jsonDecode(errorMsg)['description'] ??
+                tr('payment_info.incompatible_plugin'));
         break;
 
       /// This essentially indicates that there was some connectivity issue which led to failure
@@ -149,7 +156,9 @@ class RazorpayUtility {
       /// We, record this error in Crashlytics and also show a toast to the user.
       ///
       case Razorpay.NETWORK_ERROR:
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.network_error'));
+        Fluttertoast.showToast(
+            msg: jsonDecode(errorMsg)['description'] ??
+                tr('payment_info.network_error'));
         break;
 
       /// Will be encountered only due to issues on the client side.
@@ -161,7 +170,9 @@ class RazorpayUtility {
       case Razorpay.TLS_ERROR:
         _recordErrorInCrashlytics(
             "User's device does not support secure payments over secure TLS layer. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.tls_error'));
+        Fluttertoast.showToast(
+            msg: jsonDecode(errorMsg)['description'] ??
+                tr('payment_info.tls_error'));
         break;
 
       /// The checkout options (A HashMap object containing the amount, name, key, order_id etc.) provided
@@ -172,9 +183,11 @@ class RazorpayUtility {
       case Razorpay.INVALID_OPTIONS:
         _recordErrorInCrashlytics(
             "The checkout options provided is invalid. Commonly this happens due "
-                "to passing an orderId which already has a successful transaction "
-                "associated. Details -> $errorMsg");
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.invalid_options'));
+            "to passing an orderId which already has a successful transaction "
+            "associated. Details -> $errorMsg");
+        Fluttertoast.showToast(
+            msg: jsonDecode(errorMsg)['description'] ??
+                tr('payment_info.invalid_options'));
         break;
 
       /// The payment was cancelled by the user. Either the user pressed back button on tapped the
@@ -183,7 +196,9 @@ class RazorpayUtility {
       /// Since this a voluntary action we simply let the user know about the same via a toast
       ///
       case Razorpay.PAYMENT_CANCELLED:
-        Fluttertoast.showToast(msg: jsonDecode(errorMsg)['description'] ?? tr('payment_info.payment_cancelled'));
+        Fluttertoast.showToast(
+            msg: jsonDecode(errorMsg)['description'] ??
+                tr('payment_info.payment_cancelled'));
         break;
     }
   }
@@ -210,11 +225,17 @@ class RazorpayUtility {
         barrierDismissible: false,
         barrierColor: Colors.black.withOpacity(0.6),
         pageBuilder: (context, _, __) {
-          Future.delayed(const Duration(milliseconds: 2500))
-              .whenComplete((){Navigator.pop(context); isSuccess ? _onSuccess() : _onFailure();});
+          Future.delayed(const Duration(milliseconds: 2500)).whenComplete(() {
+            Navigator.pop(context);
+            isSuccess ? _onSuccess() : _onFailure();
+          });
           return SizedBox.expand(
-            child: Lottie.asset(isSuccess ? LottiePathConstants.paymentSuccess : LottiePathConstants.paymentFailed,
-                repeat: false, frameRate: FrameRate(30.0)),
+            child: Lottie.asset(
+                isSuccess
+                    ? LottiePathConstants.paymentSuccess
+                    : LottiePathConstants.paymentFailed,
+                repeat: false,
+                frameRate: FrameRate(30.0)),
           );
         });
   }
