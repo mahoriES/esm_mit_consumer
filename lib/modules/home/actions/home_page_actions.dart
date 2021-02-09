@@ -12,6 +12,7 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/my_clusters_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
@@ -229,59 +230,13 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      var testData = {
-        "main": [
-          {
-            "banner_format": "IMAGE",
-            "media": {
-              "photo_id": "str(uuid.uuid4())",
-              "photo_url":
-                  "https://media.test.esamudaay.com/user-media/Artboard_1_copy_15.resized.png",
-              "content_type": "image/png"
-            },
-            "banner_pointer": {
-              "type": "bcat",
-              "meta": {
-                "bcats": [
-                  {"name": "Others", "image": {}, "desc": "Others", "bcat": 0},
-                  {
-                    "name": "Bengali",
-                    "image": {},
-                    "desc": "Machi Bhaat",
-                    "bcat": 1
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "banner_format": "ClusterBannerFormat.IMAGE",
-            "media": {
-              "photo_id": "str(uuid.uuid4())",
-              "photo_url":
-                  "https://media.test.esamudaay.com/user-media/Artboard_1_copy_15.resized.png",
-              "content_type": "image/png"
-            }
-          }
-        ],
-        "top": {
-          "banner_format": "ClusterBannerFormat.IMAGE",
-          "media": {
-            "photo_id": "str(uuid.uuid4())",
-            "photo_url":
-                "https://media.test.esamudaay.com/user-media/Artboard_1_copy_15.resized.png",
-            "content_type": "image/png"
-          }
-        }
-      };
-
       BannersWithPointerResponse bannersWithPointerResponse =
-          BannersWithPointerResponse.fromJson(testData);
+          BannersWithPointerResponse.fromJson(response.data);
 
       return state.copyWith(
         homePageState: state.homePageState.copyWith(
           banners: bannersWithPointerResponse,
-          topBanner: bannersWithPointerResponse?.top?.media,
+          topBanner: bannersWithPointerResponse?.top?.media ?? new Photo(),
         ),
       );
     }
