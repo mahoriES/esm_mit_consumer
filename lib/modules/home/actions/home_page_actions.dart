@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/circles/actions/circle_picker_actions.dart';
 import 'package:eSamudaay/modules/head_categories/actions/categories_action.dart';
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
+import 'package:eSamudaay/modules/home/models/banner_response.dart';
 import 'package:eSamudaay/modules/home/models/cluster.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
@@ -232,12 +233,60 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      List<Photo> responseModel = [];
-      if (response.data is List)
-        response.data.forEach((v) => responseModel.add(Photo.fromJson(v)));
+      var a = {
+        "main": [
+          {
+            "banner_format": "IMAGE",
+            "media": {
+              "photo_id": "str(uuid.uuid4())",
+              "photo_url":
+                  "https://media.test.esamudaay.com/user-media/Artboard_1_copy_15.resized.png",
+              "content_type": "image/png"
+            },
+            "banner_pointer": {
+              "type": "bcat",
+              "meta": {
+                "bcats": [
+                  {"name": "Others", "image": {}, "desc": "Others", "bcat": 0},
+                  {
+                    "name": "Bengali",
+                    "image": {},
+                    "desc": "Machi Bhaat",
+                    "bcat": 1
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "banner_format": "ClusterBannerFormat.IMAGE",
+            "media": {
+              "photo_id": "str(uuid.uuid4())",
+              "photo_url":
+                  "https://media.test.esamudaay.com/user-media/Artboard_1_copy_15.resized.png",
+              "content_type": "image/png"
+            }
+          }
+        ],
+        "top": {
+          "banner_format": "ClusterBannerFormat.IMAGE",
+          "media": {
+            "photo_id": "str(uuid.uuid4())",
+            "photo_url":
+                "https://media.test.esamudaay.com/user-media/Artboard_1_copy_15.resized.png",
+            "content_type": "image/png"
+          }
+        }
+      };
+
+      BannersWithPointerResponse bannersWithPointerResponse =
+          BannersWithPointerResponse.fromJson(a);
 
       return state.copyWith(
-          homePageState: state.homePageState.copyWith(banners: responseModel));
+        homePageState: state.homePageState.copyWith(
+          banners: bannersWithPointerResponse,
+        ),
+      );
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:eSamudaay/models/loading_status.dart';
+import 'package:eSamudaay/modules/home/models/banner_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:meta/meta.dart';
@@ -7,6 +8,7 @@ class HomePageState {
   final GetBusinessesResponse response;
   final LoadingStatusApp loadingStatus;
   final List<Business> merchants;
+
   ///This Map is a data structure which holds the master business lists
   ///All the businesses under Certain Category, Main Page Businesses, Previously bought
   ///under category etc. would be put in this structure, and used from here.
@@ -18,7 +20,7 @@ class HomePageState {
   final Map<String, Business> businessDS;
   final String homePageLoadedDate;
   final int currentIndex;
-  final List<Photo> banners;
+  final BannersWithPointerResponse banners;
   final Photo topBanner;
 
   HomePageState(
@@ -31,7 +33,6 @@ class HomePageState {
       @required this.banners,
       this.response});
 
-
   factory HomePageState.initial() {
     return new HomePageState(
         loadingStatus: LoadingStatusApp.success,
@@ -40,14 +41,14 @@ class HomePageState {
         businessDS: Map<String, Business>(),
         currentIndex: 0,
         topBanner: Photo(),
-        banners: <Photo>[],
+        banners: null,
         response: GetBusinessesResponse());
   }
 
   HomePageState copyWith(
       {LoadingStatusApp loadingStatus,
       List<Business> merchants,
-      List<Photo> banners,
+      BannersWithPointerResponse banners,
       int currentIndex,
       Photo topBanner,
       Map<String, Business> businessDS,
