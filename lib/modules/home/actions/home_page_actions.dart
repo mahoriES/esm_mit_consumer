@@ -12,10 +12,8 @@ import 'package:eSamudaay/modules/home/models/merchant_response.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/my_clusters_view.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
-import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
@@ -101,7 +99,6 @@ class ChangeSelectedCircleUsingCircleCodeAction extends ReduxAction<AppState> {
       store.dispatch(GetMerchantDetails(getUrl: ApiURL.getBusinessesUrl));
       store.dispatch(LoadVideoFeed());
       store.dispatch(GetBannerDetailsAction());
-      store.dispatch(GetTopBannerImageAction());
       store.dispatch(GetHomePageCategoriesAction());
     }
     super.after();
@@ -159,7 +156,6 @@ class HomePageOnInitMultipleDispatcherAction extends ReduxAction<AppState> {
       store.dispatch(GetCartFromLocal());
       store.dispatch(GetUserFromLocalStorageAction());
       store.dispatch(GetBannerDetailsAction());
-      store.dispatch(GetTopBannerImageAction());
       return state.copyWith(isInitializationDone: true);
     }
     return null;
@@ -285,6 +281,7 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
       return state.copyWith(
         homePageState: state.homePageState.copyWith(
           banners: bannersWithPointerResponse,
+          topBanner: bannersWithPointerResponse?.top?.media,
         ),
       );
     }
@@ -293,12 +290,14 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<void> before() {
     dispatch(ChangeCircleBannersLoadingAction(true));
+    dispatch(ChangeCircleTopBannerLoadingAction(true));
     return super.before();
   }
 
   @override
   void after() {
     dispatch(ChangeCircleBannersLoadingAction(false));
+    dispatch(ChangeCircleTopBannerLoadingAction(false));
     super.after();
   }
 }
@@ -381,42 +380,5 @@ class UpdateSelectedMerchantAction extends ReduxAction<AppState> {
               results: [],
             ),
             categories: []));
-  }
-}
-
-class GetTopBannerImageAction extends ReduxAction<AppState> {
-  GetTopBannerImageAction();
-
-  @override
-  FutureOr<AppState> reduce() async {
-    var response = await APIManager.shared.request(
-      url: ApiURL.getBannersUrl(state.authState.cluster.clusterId),
-      params: {'top': true},
-      requestType: RequestType.get,
-    );
-    if (response.status == ResponseStatus.success200) {
-      Photo topBanner = Photo();
-      if (response.data is Map) topBanner = Photo.fromJson(response.data);
-      return state.copyWith(
-        homePageState: state.homePageState.copyWith(
-          topBanner: topBanner,
-        ),
-      );
-    } else {
-      Fluttertoast.showToast(msg: response.data['msg']);
-    }
-    return null;
-  }
-
-  @override
-  FutureOr<void> before() {
-    dispatch(ChangeCircleTopBannerLoadingAction(true));
-    return super.before();
-  }
-
-  @override
-  void after() {
-    dispatch(ChangeCircleTopBannerLoadingAction(false));
-    super.after();
   }
 }
