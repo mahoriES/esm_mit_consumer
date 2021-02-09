@@ -225,7 +225,7 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     var response = await APIManager.shared.request(
-        url: ApiURL.getBannersUrl(state.authState.cluster.clusterId),
+        url: ApiURL.getBannersV2Url(state.authState.cluster.clusterId),
         params: null,
         requestType: RequestType.get);
     if (response.status == ResponseStatus.error404)
@@ -233,7 +233,7 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
     else if (response.status == ResponseStatus.error500)
       throw UserException('Something went wrong');
     else {
-      var a = {
+      var testData = {
         "main": [
           {
             "banner_format": "IMAGE",
@@ -280,7 +280,7 @@ class GetBannerDetailsAction extends ReduxAction<AppState> {
       };
 
       BannersWithPointerResponse bannersWithPointerResponse =
-          BannersWithPointerResponse.fromJson(a);
+          BannersWithPointerResponse.fromJson(testData);
 
       return state.copyWith(
         homePageState: state.homePageState.copyWith(
