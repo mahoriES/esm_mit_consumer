@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/cart/views/widgets/customer_note_images_view/w
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_positioned_dialog.dart';
 import 'package:eSamudaay/reusable_widgets/dashed_line.dart';

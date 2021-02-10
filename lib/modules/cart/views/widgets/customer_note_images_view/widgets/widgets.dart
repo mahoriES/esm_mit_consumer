@@ -1,3 +1,4 @@
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
@@ -8,7 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
 class CustomerNoteImageView extends StatelessWidget {
-  final List<String> customerNoteImages;
+  final List<Photo> customerNoteImages;
   final Function(int) onRemove;
   final bool showRemoveButton;
   const CustomerNoteImageView({
@@ -31,7 +32,7 @@ class CustomerNoteImageView extends StatelessWidget {
                     customerNoteImages.length,
                     (index) => Expanded(
                       child: _CustomCachedImage(
-                        url: customerNoteImages[index],
+                        url: customerNoteImages[index]?.photoUrl ?? "",
                         onRemove: () => onRemove(index),
                         showMargin: index != customerNoteImages.length - 1,
                         showRemoveButton: showRemoveButton,
@@ -44,7 +45,7 @@ class CustomerNoteImageView extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: customerNoteImages.length,
                   itemBuilder: (context, index) => _CustomCachedImage(
-                    url: customerNoteImages[index],
+                    url: customerNoteImages[index]?.photoUrl ?? "",
                     width: 96,
                     onRemove: () => onRemove(index),
                     showMargin: index != (customerNoteImages.length - 1),

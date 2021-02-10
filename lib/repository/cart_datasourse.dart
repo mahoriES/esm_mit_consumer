@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/repository/database_manage.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,15 +32,28 @@ class CartDataSource {
     }
   }
 
-  static Future<List<String>> getCustomerNoteImagesList() async {
+  static Future<List<Photo>> getCustomerNoteImagesList() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_listImagesKey) ?? [];
+    List<String> jsonImages = prefs.getStringList(_listImagesKey) ?? [];
+    List<Photo> images = [];
+    if (jsonImages != null) {
+      jsonImages.forEach((v) {
+        images.add(new Photo.fromJson(jsonDecode(v)));
+      });
+    }
+    return images;
   }
 
   static Future<void> insertCustomerNoteImagesList(
-      List<String> customerNoteImages) async {
+      List<Photo> customerNoteImages) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_listImagesKey, customerNoteImages);
+    List<String> jsonImages = [];
+    if (customerNoteImages != null) {
+      customerNoteImages.forEach((v) {
+        jsonImages.add(jsonEncode(v.toJson()));
+      });
+    }
+    await prefs.setStringList(_listImagesKey, jsonImages);
   }
 
   ///This function will drop the cart SQL table and recreate it. It is a fix to

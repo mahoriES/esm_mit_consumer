@@ -1,11 +1,12 @@
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:flutter/material.dart';
 
 class CartState {
   final List<Product> localCartItems;
-  final List<String> customerNoteImages;
+  final List<Photo> customerNoteImages;
   final TextEditingController customerNoteMessage;
   final String selectedDeliveryType;
   final Business cartMerchant;
@@ -52,7 +53,7 @@ class CartState {
     // we need to set cartMerchant as null when no products are added in cart.
     bool isMerchantAllowedToBeNull = false,
     List<Product> localCartItems,
-    List<String> customerNoteImages,
+    List<Photo> customerNoteImages,
     Business cartMerchant,
     CartCharges charges,
     bool isCartLoading,

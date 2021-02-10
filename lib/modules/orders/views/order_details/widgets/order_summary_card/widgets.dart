@@ -307,7 +307,7 @@ class ChargesList extends StatelessWidget {
 }
 
 class CustomerListItemsView extends StatelessWidget {
-  final List<String> customerNoteImages;
+  final List<Photo> customerNoteImages;
   final List<FreeFormOrderItems> freeFormItems;
   const CustomerListItemsView({
     @required this.customerNoteImages,

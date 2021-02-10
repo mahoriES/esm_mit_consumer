@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/cart/views/widgets/charges_list_widget/charges
 import 'package:eSamudaay/modules/cart/views/widgets/customer_note_images_view/customer_note_images_view.dart';
 import 'package:eSamudaay/modules/cart/views/widgets/empty_cart_view.dart';
 import 'package:eSamudaay/modules/home/models/merchant_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/presentations/loading_indicator.dart';
@@ -112,7 +113,7 @@ class _ViewModel extends BaseModel<AppState> {
 
   Business cartMerchant;
   List<Product> productsList;
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
   bool isCartLoading;
   TextEditingController noteController;
   bool isImageUploading;
