@@ -1,7 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/accounts/action/account_action.dart';
-import 'package:eSamudaay/store.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
@@ -12,9 +14,9 @@ import 'package:eSamudaay/utilities/global.dart' as globals;
 import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import '../../../redux/states/app_state.dart';
 
@@ -26,8 +28,12 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   String fcmToken = "";
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  bool _isPhoneNumberValid = false;
+  PhoneNumber _phoneNumber;
+  String _userNameForSignup;
 
   fcm() {
     _firebaseMessaging.configure(
@@ -70,10 +76,10 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StoreConnector<AppState, _ViewModel>(
-          model: _ViewModel(),
-          builder: (context, snapshot) {
-            return // OTP
-                ModalProgressHUD(
+        model: _ViewModel(),
+        builder: (context, snapshot) {
+          return SafeArea(
+            child: ModalProgressHUD(
               progressIndicator: Card(
                 child: Image.asset(
                   'assets/images/indicator.gif',
@@ -82,36 +88,190 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               inAsyncCall: snapshot.loadingStatus == LoadingStatusApp.loading,
-              child: Scaffold(
-                  body: Padding(
-                padding: const EdgeInsets.only(left: 25.0, right: 25.0),
-                child: SingleChildScrollView(
-                  child: AnimationLimiter(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: MediaQuery.of(context).size.width,
-                        minHeight: MediaQuery.of(context).size.height,
+              child: SizedBox(
+                height: SizeConfig.screenHeight,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      child: Image.asset(
+                        ImagePathConstants.signupLoginBackdrop,
+                        height: 667.toHeight,
+                        width: SizeConfig.screenWidth,
+                        fit: BoxFit.cover,
                       ),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 375),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              horizontalOffset:
-                                  MediaQuery.of(context).size.width / 2,
-                              child: FadeInAnimation(child: widget),
-                            ),
-                            children: buildColumnChildren(snapshot, context),
+                    ),
+                    Positioned(
+                      left: 25,
+                      top: 35,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          color: CustomTheme.of(context).colors.backgroundColor,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.arrow_back_ios,
+                                color:
+                                    CustomTheme.of(context).colors.primaryColor,
+                              ),
+                              Text(
+                                'Back',
+                                style: CustomTheme.of(context)
+                                    .textStyles
+                                    .sectionHeading1,
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    //Column(children: buildColumnChildren(snapshot, context),),
+                    Positioned(
+                      top: 241.toHeight,
+                      left: 12.toWidth,
+                      child: Container(
+                        width: 351.toWidth,
+                        padding: const EdgeInsets.only(
+                            bottom: 12, left: 17, right: 17),
+                        decoration: BoxDecoration(
+                          color: CustomTheme.of(context).colors.backgroundColor,
+                          border: Border.all(
+                              color:
+                                  CustomTheme.of(context).colors.primaryColor),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            if (snapshot.isSignUp) ...[
+                              TextField(
+                                controller: nameController,
+                                onChanged: (String value) {
+                                  setState(() {
+                                    _userNameForSignup = value;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Enter Name',
+                                  hintStyle: CustomTheme.of(context)
+                                      .textStyles
+                                      .sectionHeading2
+                                      .copyWith(
+                                          color: CustomTheme.of(context)
+                                              .colors
+                                              .disabledAreaColor),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .disabledAreaColor
+                                        .withOpacity(0.3)),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: InternationalPhoneNumberInput(
+                                textFieldController: phoneController,
+                                scrollPadding: EdgeInsets.zero,
+                                selectorConfig: SelectorConfig(
+                                    showFlags: true,
+                                    selectorType:
+                                        PhoneInputSelectorType.DIALOG),
+                                initialValue: _phoneNumber != null
+                                    ? PhoneNumber(isoCode: _phoneNumber.isoCode)
+                                    : PhoneNumber(isoCode: 'IN'),
+                                onInputChanged: (PhoneNumber number) {
+                                  debugPrint(number.parseNumber());
+                                  _phoneNumber = number;
+                                  setState(
+                                    () {
+                                      if (validator.phone(
+                                              _phoneNumber.phoneNumber) &&
+                                          _phoneNumber.parseNumber().length > 9)
+                                        this._isPhoneNumberValid = true;
+                                      else
+                                        this._isPhoneNumberValid = false;
+                                    },
+                                  );
+                                },
+                                inputDecoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Phone Number',
+                                    labelStyle: CustomTheme.of(context)
+                                        .textStyles
+                                        .cardTitle),
+                                spaceBetweenSelectorAndTextField: 0.0,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            SizedBox(
+                              width: 157.4.toWidth,
+                              height: 42.toHeight,
+                              child: RaisedButton(
+                                color:
+                                    CustomTheme.of(context).colors.primaryColor,
+                                elevation: 0.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                onPressed: (_isPhoneNumberValid &&
+                                        (snapshot.isSignUp
+                                            ? _userNameForSignup?.isNotEmpty ??
+                                                false
+                                            : true))
+                                    ? () async {
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+
+                                        if (snapshot.isSignUp)
+                                          snapshot.addNameToStoreForSignup(
+                                              _userNameForSignup);
+
+                                        snapshot.getOtpAction(
+                                          GenerateOTPRequest(
+                                              phone: _phoneNumber.phoneNumber,
+                                              third_party_id: thirdPartyId,
+                                              isSignUp: snapshot.isSignUp),
+                                        );
+                                      }
+                                    : null,
+                                child: Center(
+                                  child: Text(
+                                    'GET OTP',
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .cardTitle
+                                        .copyWith(
+                                            color: CustomTheme.of(context)
+                                                .colors
+                                                .backgroundColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              )),
-            );
-          }),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -286,28 +446,31 @@ class _LoginViewState extends State<LoginView> {
           },
           child: // Already have an account? Login here
               RichText(
-                  text: TextSpan(children: [
-            TextSpan(
-                style: const TextStyle(
-                    color: const Color(0xff1a1a1a),
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir-Medium",
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14.0),
-                text: snapshot.isSignUp
-                    ? tr("screen_phone.already_customer")
-                    : tr("screen_phone.new_user")),
-            TextSpan(
-                style: const TextStyle(
-                    color: const Color(0xff5091cd),
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "Avenir-Medium",
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14.0),
-                text: snapshot.isSignUp
-                    ? tr("screen_phone.login_here")
-                    : tr("screen_phone.register_now"))
-          ])),
+            text: TextSpan(
+              children: [
+                TextSpan(
+                    style: const TextStyle(
+                        color: const Color(0xff1a1a1a),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14.0),
+                    text: snapshot.isSignUp
+                        ? tr("screen_phone.already_customer")
+                        : tr("screen_phone.new_user")),
+                TextSpan(
+                    style: const TextStyle(
+                        color: const Color(0xff5091cd),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "Avenir-Medium",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14.0),
+                    text: snapshot.isSignUp
+                        ? tr("screen_phone.login_here")
+                        : tr("screen_phone.register_now"))
+              ],
+            ),
+          ),
         ),
       ),
       SizedBox(
@@ -318,6 +481,7 @@ class _LoginViewState extends State<LoginView> {
 
   void dispose() {
     phoneController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 }
@@ -327,6 +491,7 @@ class _ViewModel extends BaseModel<AppState> {
 
   Function navigateToOTPPage;
   Function updatePushToken;
+  Function(String) addNameToStoreForSignup;
   LoadingStatusApp loadingStatus;
   Function(GenerateOTPRequest request) getOtpAction;
   bool isPhoneNumberValid;
@@ -340,6 +505,7 @@ class _ViewModel extends BaseModel<AppState> {
       this.getOtpAction,
       this.isSignUp,
       this.loadingStatus,
+      this.addNameToStoreForSignup,
       this.updateIsSignUp,
       this.updatePushToken})
       : super(equals: [loadingStatus, isSignUp]);
@@ -356,6 +522,9 @@ class _ViewModel extends BaseModel<AppState> {
         getOtpAction: (request) {
           dispatch(InitialiseStoreOnLogoutAction());
           dispatch(GetOtpAction(request: request, fromResend: false));
+        },
+        addNameToStoreForSignup: (String name) {
+          dispatch(AddNameToStoreForSignupAction(name));
         },
         updateIsSignUp: (isSignUp) {
           dispatch(UpdateIsSignUpAction(isSignUp: isSignUp));

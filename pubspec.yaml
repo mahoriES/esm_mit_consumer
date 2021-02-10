@@ -79,6 +79,11 @@ dependencies:
   lottie: ^0.7.0+1
   rounded_loading_button: ^1.0.18
   flutter_typeahead: ^2.0.0
+
+  intl_phone_number_input:
+    git:
+      url: https://github.com/natintosh/intl_phone_number_input.git
+
   esamudaay_app_update:
     git:
       url: https://anushka_agrawal@bitbucket.org/ese1/esm_comp_appupdate.git
@@ -187,6 +192,7 @@ flutter:
     - assets/images/Icon_RetryPayment.png
     - assets/images/language_selection_backdrop.png
     - assets/images/login_signup_backdrop.png
+    - assets/images/landing_page_banner.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

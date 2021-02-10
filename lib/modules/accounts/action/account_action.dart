@@ -12,6 +12,7 @@ import 'package:eSamudaay/redux/states/product_categories_state.dart';
 import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/redux/states/videos_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:package_info/package_info.dart';
@@ -29,7 +30,7 @@ class LogoutAction extends ReduxAction<AppState> {
     await UserManager.deleteUser();
     await UserManager.deleteAddress();
     PushNotificationsManager().signOut();
-    dispatch(NavigateAction.pushNamedAndRemoveAll('/loginView'));
+    dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.LANDING_PAGE));
     return null;
   }
 

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/register/action/register_Action.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
@@ -196,16 +198,19 @@ class _OtpScreenState extends State<OtpScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                onPressed: snapshot.otpEntered ? () async {
-                                  if (snapshot.otpEntered) {
-                                    snapshot.verifyOTP(ValidateOTPRequest(
-                                      phone: snapshot.phoneNumber,
-                                    ));
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: tr('screen_otp.error.plz_verify_otp'));
-                                  }
-                                } : null,
+                                onPressed: snapshot.otpEntered
+                                    ? () async {
+                                        if (snapshot.otpEntered) {
+                                          snapshot.verifyOTP(ValidateOTPRequest(
+                                            phone: snapshot.phoneNumber,
+                                          ));
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg: tr(
+                                                  'screen_otp.error.plz_verify_otp'));
+                                        }
+                                      }
+                                    : null,
                                 child: Center(
                                   child: Text(
                                     'VERIFY',
@@ -220,7 +225,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 14,),
+                            const SizedBox(
+                              height: 14,
+                            ),
                             _start == 0
                                 ? InkWell(
                                     onTap: () {
@@ -295,7 +302,8 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         verifyOTP: (request) {
-          dispatch(ValidateOtpAction(isSignUp: state.authState.isSignUp));
+          dispatch(ValidateOtpAction(
+              isSignUp: state.authState.isSignUp),);
         },
         otpEntered: state.authState.isOtpEntered,
         updateOtpEnterStatus: (newValue) {

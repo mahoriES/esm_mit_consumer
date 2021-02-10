@@ -20,6 +20,7 @@ class ImagePathConstants {
   static const languageSelectionBackdrop =
       _prefix + "language_selection_backdrop.png";
   static const signupLoginBackdrop = _prefix + "login_signup_backdrop.png";
+  static const landingPageBanner = _prefix + "landing_page_banner.png";
 }
 
 class LottiePathConstants {

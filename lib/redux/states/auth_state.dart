@@ -13,6 +13,7 @@ class AuthState {
   final GenerateOTPRequest getOtpRequest;
   final ValidateOTPRequest validateOTPRequest;
   final CustomerDetailsRequest updateCustomerDetailsRequest;
+  final String userNameForSignup;
   final Cluster cluster;
   final List<Cluster> myClusters;
   final List<Cluster> nearbyClusters;
@@ -34,6 +35,7 @@ class AuthState {
     @required this.isOtpEntered,
     @required this.isPhoneNumberValid,
     @required this.user,
+    @required this.userNameForSignup,
     @required this.trendingClusters,
     @required this.locationEnabled,
     @required this.isOnboardingCompleted,
@@ -69,6 +71,7 @@ class AuthState {
       updateCustomerDetailsRequest: null,
       isSignUp: false,
       deviceToken: "",
+      userNameForSignup: ""
     );
   }
 
@@ -84,6 +87,7 @@ class AuthState {
     String passwordErrorMessage,
     String token,
     bool isLoggedIn,
+    String userNameForSignup,
     bool showAlert,
     bool isOnboardingCompleted,
     String apiErrorMessage,
@@ -111,6 +115,7 @@ class AuthState {
         nearbyClusters: nearbyClusters ?? this.nearbyClusters,
         suggestedClusters: suggestedClusters ?? this.suggestedClusters,
         user: user ?? this.user,
+        userNameForSignup: userNameForSignup ?? this.userNameForSignup,
         isOnboardingCompleted:
             isOnboardingCompleted ?? this.isOnboardingCompleted,
         loadingStatus: loadingStatus ?? this.loadingStatus,
@@ -136,6 +141,7 @@ class AuthState {
           validateOTPRequest == other.validateOTPRequest &&
           updateCustomerDetailsRequest == other.updateCustomerDetailsRequest &&
           cluster == other.cluster &&
+          userNameForSignup == other.userNameForSignup &&
           myClusters == other.myClusters &&
           nearbyClusters == other.nearbyClusters &&
           suggestedClusters == other.suggestedClusters &&
@@ -158,6 +164,7 @@ class AuthState {
       updateCustomerDetailsRequest.hashCode ^
       cluster.hashCode ^
       myClusters.hashCode ^
+      userNameForSignup.hashCode ^
       nearbyClusters.hashCode ^
       suggestedClusters.hashCode ^
       trendingClusters.hashCode ^

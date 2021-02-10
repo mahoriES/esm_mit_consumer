@@ -83,7 +83,6 @@ class AddUserDetailAction extends ReduxAction<AppState> {
       return state.copyWith(authState: state.authState.copyWith(user: user));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
-      //throw UserException(response.data['status']);
     }
     return state.copyWith(
         authState:

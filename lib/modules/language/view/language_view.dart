@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -117,12 +118,11 @@ class _ViewModel extends BaseModel<AppState> {
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
       navigateToPhoneNumberPage: (value) {
         value
             ? dispatch(NavigateAction.pop())
-            : dispatch(NavigateAction.pushNamed('/loginView'));
+            : dispatch(NavigateAction.pushNamed(RouteNames.LANDING_PAGE));
       },
     );
   }
