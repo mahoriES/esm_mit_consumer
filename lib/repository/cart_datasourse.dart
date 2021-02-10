@@ -39,8 +39,13 @@ class CartDataSource {
     if (jsonImagesList != null) {
       jsonImagesList.forEach(
         (jsonImage) {
-          final image = jsonDecode(jsonImage);
-          debugPrint("image runtime type => ${image.runtimeType}");
+          var image;
+          try {
+            // if data is jsonEncoded then decode it.
+            image = jsonDecode(jsonImage);
+          } catch (e) {
+            image = jsonImage;
+          }
           // checking for both format to maintain backward compatibility.
           if (image is Map) {
             images.add(Photo.fromJson(image));
