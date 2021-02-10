@@ -34,12 +34,21 @@ class CartDataSource {
 
   static Future<List<Photo>> getCustomerNoteImagesList() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> jsonImages = prefs.getStringList(_listImagesKey) ?? [];
+    List jsonImagesList = prefs.getStringList(_listImagesKey) ?? [];
     List<Photo> images = [];
-    if (jsonImages != null) {
-      jsonImages.forEach((v) {
-        images.add(new Photo.fromJson(jsonDecode(v)));
-      });
+    if (jsonImagesList != null) {
+      jsonImagesList.forEach(
+        (jsonImage) {
+          final image = jsonDecode(jsonImage);
+          debugPrint("image runtime type => ${image.runtimeType}");
+          // checking for both format to maintain backward compatibility.
+          if (image is Map) {
+            images.add(Photo.fromJson(image));
+          } else if (image is String) {
+            images.add(Photo(photoUrl: image));
+          }
+        },
+      );
     }
     return images;
   }
