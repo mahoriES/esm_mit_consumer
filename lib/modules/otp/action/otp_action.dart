@@ -51,7 +51,8 @@ class ValidateOtpAction extends ReduxAction<AppState> {
     if (response.status == ResponseStatus.success200) {
       AuthResponse authResponse = AuthResponse.fromJson(response.data);
       await UserManager.saveToken(token: authResponse.token);
-      if (state.authState.isSignUp) {
+      if (isSignUp) {
+        debugPrint('Inside add user detail*******');
         dispatch(
           AddUserDetailAction(
             request: CustomerDetailsRequest(
@@ -61,6 +62,7 @@ class ValidateOtpAction extends ReduxAction<AppState> {
           ),
         );
       } else {
+        debugPrint('Inside wrong*******');
         dispatchFuture(GetUserDetailAction())
             .whenComplete(() => dispatch(AddFCMTokenAction()));
       }
@@ -92,15 +94,10 @@ class AddFCMTokenAction extends ReduxAction<AppState> {
             .toJson(),
         requestType: RequestType.post);
     if (response.status == ResponseStatus.success200) {
-    } else {}
+    }
     dispatch(GetUserDetailAction());
-
     return state.copyWith(authState: state.authState.copyWith());
   }
-
-//  void before() => dispatch(ChangeLoadingStatusAction(LoadingStatus.loading));
-//
-//  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatus.success));
 }
 
 class UpdateValidationRequest extends ReduxAction<AppState> {

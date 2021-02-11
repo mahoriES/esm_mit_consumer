@@ -520,7 +520,6 @@ class _ViewModel extends BaseModel<AppState> {
         },
         isPhoneNumberValid: state.authState.isPhoneNumberValid,
         getOtpAction: (request) {
-          dispatch(InitialiseStoreOnLogoutAction());
           dispatch(GetOtpAction(request: request, fromResend: false));
         },
         addNameToStoreForSignup: (String name) {

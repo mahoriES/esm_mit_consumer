@@ -302,6 +302,7 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
         loadingStatus: state.authState.loadingStatus,
         verifyOTP: (request) {
+          debugPrint('This is isSignUp status - ${state.authState.isSignUp}');
           dispatch(ValidateOtpAction(
               isSignUp: state.authState.isSignUp),);
         },

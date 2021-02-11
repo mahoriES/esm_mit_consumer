@@ -224,7 +224,11 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => new _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<double> _animation;
+
   startTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
@@ -243,8 +247,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    super.initState();
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: _controller, curve: Curves.linear, reverseCurve: Curves.linear))
+      ..addListener(() {
+        setState(() {});
+      });
     startTime();
+    _controller.forward();
+    super.initState();
   }
 
   @override
@@ -254,14 +266,16 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Image.asset('assets/images/splash.png'),
+        child: Transform.scale(
+            scale: _animation.value,
+            child: Image.asset('assets/images/splash.png')),
       )),
     );
   }
 
   void navigationPageHome() {
     if (context == null) return;
-    Navigator.of(context).pushReplacementNamed('/loginView');
+    Navigator.of(context).pushReplacementNamed(RouteNames.LANDING_PAGE);
     // If launch screen is login , then show app_update prompt here.
     store.dispatch(CheckAppUpdateAction(context));
   }
@@ -272,8 +286,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await UserManager.saveSkipStatus(status: true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('first_time', false);
-    store.dispatch(
-        NavigateAction.pushNamedAndRemoveAll('/language'));
+    store.dispatch(NavigateAction.pushNamedAndRemoveAll('/language'));
     // If launch screen is onboarding , then show app_update prompt here.
     store.dispatch(CheckAppUpdateAction(context));
   }
