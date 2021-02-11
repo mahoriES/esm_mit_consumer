@@ -75,6 +75,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
@@ -97,7 +98,7 @@ class _LoginViewState extends State<LoginView> {
                         ImagePathConstants.signupLoginBackdrop,
                         height: 667.toHeight,
                         width: SizeConfig.screenWidth,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                     Positioned(
@@ -130,7 +131,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     //Column(children: buildColumnChildren(snapshot, context),),
                     Positioned(
-                      top: 241.toHeight,
+                      top: 200.toHeight,
                       left: 12.toWidth,
                       child: Container(
                         width: 351.toWidth,

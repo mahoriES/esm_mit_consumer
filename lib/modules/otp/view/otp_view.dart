@@ -52,6 +52,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: StoreConnector<AppState, _ViewModel>(
         onInit: (store) {
           FocusScope.of(context).requestFocus(FocusNode());
@@ -130,7 +131,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               height: 5,
                             ),
                             SizedBox(
-                              height: 42.toHeight,
+                              height: 45.toHeight,
                               child: Container(
                                 padding: EdgeInsets.only(
                                     bottom: 8, left: 10, right: 10, top: 8),
@@ -165,7 +166,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                         fieldStyle: FieldStyle.underline,
                                         style: CustomTheme.of(context)
                                             .textStyles
-                                            .sectionHeading1,
+                                            .topTileTitle,
                                         onChanged: (pin) {
                                           snapshot.updateOtpEnterStatus(
                                               pin.length == 6);
