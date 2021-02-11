@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/register/action/register_Action.dart';
-import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
@@ -17,6 +15,7 @@ import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpScreen extends StatefulWidget {
   @override
@@ -131,42 +130,53 @@ class _OtpScreenState extends State<OtpScreen> {
                               height: 5,
                             ),
                             SizedBox(
-                              height: 45.toHeight,
+                              //height: 45.toHeight,
                               child: Container(
                                 padding: EdgeInsets.only(
-                                    bottom: 8, left: 10, right: 10, top: 8),
+                                    left: 5, right: 10, top: 8),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(4),
                                     border: Border.all(color: Colors.grey)),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(
-                                      Icons.phone,
-                                      color: CustomTheme.of(context)
-                                          .colors
-                                          .primaryColor,
+                                    Padding(padding: const EdgeInsets.only(bottom: 7),
+                                      child: Icon(
+                                        Icons.phone,
+                                        size: 30,
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .primaryColor,
+                                      ),
                                     ),
                                     const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Container(
-                                      height: 21.toHeight,
-                                      width: 1,
-                                      color: CustomTheme.of(context)
-                                          .colors
-                                          .primaryColor,
+                                      width: 15,
                                     ),
                                     Expanded(
-                                      child: OTPField(
+                                      child: PinCodeTextField(
+                                        animationType: AnimationType.scale,
+                                        autoFocus: true,
+                                        keyboardType: TextInputType.number,
+                                        appContext: context,
                                         length: 6,
-                                        fieldWidth: 28,
-                                        textFieldAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        fieldStyle: FieldStyle.underline,
-                                        style: CustomTheme.of(context)
+                                        pinTheme: PinTheme(
+                                            activeColor: CustomTheme.of(context)
+                                                .colors
+                                                .primaryColor,
+                                            inactiveColor:
+                                                CustomTheme.of(context)
+                                                    .colors
+                                                    .disabledAreaColor,
+                                            shape: PinCodeFieldShape.underline,
+                                            fieldWidth: 25,
+                                            fieldHeight: 30.toHeight),
+                                        textStyle: CustomTheme.of(context)
                                             .textStyles
-                                            .topTileTitle,
+                                            .topTileTitle
+                                            .copyWith(
+                                                color: CustomTheme.of(context)
+                                                    .colors
+                                                    .primaryColor),
                                         onChanged: (pin) {
                                           snapshot.updateOtpEnterStatus(
                                               pin.length == 6);
@@ -304,8 +314,9 @@ class _ViewModel extends BaseModel<AppState> {
         loadingStatus: state.authState.loadingStatus,
         verifyOTP: (request) {
           debugPrint('This is isSignUp status - ${state.authState.isSignUp}');
-          dispatch(ValidateOtpAction(
-              isSignUp: state.authState.isSignUp),);
+          dispatch(
+            ValidateOtpAction(isSignUp: state.authState.isSignUp),
+          );
         },
         otpEntered: state.authState.isOtpEntered,
         updateOtpEnterStatus: (newValue) {
