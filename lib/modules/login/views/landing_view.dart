@@ -6,6 +6,7 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginLandingView extends StatelessWidget {
   @override
@@ -55,14 +56,14 @@ class LoginLandingView extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        'Login with Phone Number',
+                        'screen_phone.login_phone',
                         style: CustomTheme.of(context)
                             .textStyles
                             .sectionHeading1Regular
                             .copyWith(
                                 color:
                                     CustomTheme.of(context).colors.primaryColor),
-                      ),
+                      ).tr(),
                     ),
                   ),
                 ),
@@ -75,11 +76,11 @@ class LoginLandingView extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                            text: 'New to eSamudaay? ',
+                            text: tr('screen_phone.new_user'),
                             style:
                                 CustomTheme.of(context).textStyles.cardTitleFaded),
                         TextSpan(
-                            text: 'Create an Account',
+                            text: tr('screen_phone.register_now'),
                             style: CustomTheme.of(context).textStyles.cardTitlePrimary)
                       ],
                     ),

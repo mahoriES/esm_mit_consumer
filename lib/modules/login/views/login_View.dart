@@ -109,11 +109,11 @@ class _LoginViewState extends State<LoginView> {
                                     CustomTheme.of(context).colors.primaryColor,
                               ),
                               Text(
-                                'Back',
+                                'common.back',
                                 style: CustomTheme.of(context)
                                     .textStyles
                                     .sectionHeading1,
-                              ),
+                              ).tr(),
                             ],
                           ),
                         ),
@@ -147,7 +147,7 @@ class _LoginViewState extends State<LoginView> {
                                   });
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'Enter Name',
+                                  hintText: tr('common.enter_name'),
                                   hintStyle: CustomTheme.of(context)
                                       .textStyles
                                       .sectionHeading2
@@ -196,7 +196,7 @@ class _LoginViewState extends State<LoginView> {
                                 },
                                 inputDecoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: 'Phone Number',
+                                    hintText: tr('screen_phone.hint_text'),
                                     labelStyle: CustomTheme.of(context)
                                         .textStyles
                                         .cardTitle),
@@ -239,7 +239,7 @@ class _LoginViewState extends State<LoginView> {
                                     : null,
                                 child: Center(
                                   child: Text(
-                                    'GET OTP',
+                                    'screen_otp.get_otp',
                                     style: CustomTheme.of(context)
                                         .textStyles
                                         .cardTitle
@@ -247,7 +247,7 @@ class _LoginViewState extends State<LoginView> {
                                             color: CustomTheme.of(context)
                                                 .colors
                                                 .backgroundColor),
-                                  ),
+                                  ).tr(),
                                 ),
                               ),
                             ),

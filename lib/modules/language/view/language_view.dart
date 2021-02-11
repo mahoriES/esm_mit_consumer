@@ -249,6 +249,7 @@ class _DropDownState extends State<DropDown> {
                     });
                     EasyLocalization.of(context).locale = selectedLocale;
                     widget.fromAccountAction();
+                    AppFirebaseAnalytics.instance.logLanguageChange(setLanguage: selectedLanguage);
                   },
                 );
               },
