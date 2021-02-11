@@ -233,7 +233,7 @@ class _SplashScreenState extends State<SplashScreen>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
 
-    var _duration = new Duration(seconds: 2);
+    var _duration = new Duration(milliseconds: 1500);
 
     if (firstTime != null && !firstTime) {
       // Not first time
@@ -248,7 +248,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1000));
+        vsync: this, duration: const Duration(milliseconds: 700));
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: _controller, curve: Curves.linear, reverseCurve: Curves.linear))
       ..addListener(() {

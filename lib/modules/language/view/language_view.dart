@@ -20,87 +20,99 @@ class _LanguageScreenState extends State<LanguageScreen> {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
     final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     if (arguments != null) print("from_account ${arguments['fromAccount']}");
-    return Scaffold(
-      body: StoreConnector<AppState, _ViewModel>(
-        model: _ViewModel(),
-        builder: (context, snapshot) {
-          return Scaffold(
-            body: SafeArea(
-              child: SizedBox(
-                height: SizeConfig.screenHeight,
-                child: Stack(
-                  children: [
-                    Image.asset(
-                      ImagePathConstants.languageSelectionBackdrop,
-                      height: 496.toHeight,
-                      width: SizeConfig.screenWidth,
-                      fit: BoxFit.contain,
-                    ),
-                    Positioned(
-                      right: 38.toWidth,
-                      top: 53.toHeight,
-                      child: Text(
-                        "Choose\nyour Language",
-                        textAlign: TextAlign.end,
-                        style: CustomTheme.of(context)
-                            .textStyles
-                            .topTileTitle
-                            .copyWith(
-                                color:
-                                    CustomTheme.of(context).colors.primaryColor,
-                                fontSize: 30),
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        body: StoreConnector<AppState, _ViewModel>(
+          model: _ViewModel(),
+          builder: (context, snapshot) {
+            return Scaffold(
+              body: SafeArea(
+                child: SizedBox(
+                  height: SizeConfig.screenHeight,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        ImagePathConstants.languageSelectionBackdrop,
+                        height: 496.toHeight,
+                        width: SizeConfig.screenWidth,
+                        fit: BoxFit.contain,
                       ),
-                    ),
-                    Positioned(
-                      left: 25.toWidth,
-                      top: 35.toHeight,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          color: CustomTheme.of(context).colors.backgroundColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.arrow_back_ios,
-                                color:
-                                    CustomTheme.of(context).colors.primaryColor,
+                      Positioned(
+                        right: 38.toWidth,
+                        top: 53.toHeight,
+                        child: Text(
+                          "Choose\nyour Language",
+                          textAlign: TextAlign.end,
+                          style: CustomTheme.of(context)
+                              .textStyles
+                              .topTileTitle
+                              .copyWith(
+                                  color: CustomTheme.of(context)
+                                      .colors
+                                      .primaryColor,
+                                  fontSize: 30),
+                        ),
+                      ),
+                      if ((arguments != null
+                          ? arguments['fromAccount'] ?? false
+                          : false))
+                        Positioned(
+                          left: 25.toWidth,
+                          top: 35.toHeight,
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Container(
+                              color: CustomTheme.of(context)
+                                  .colors
+                                  .backgroundColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(
+                                    Icons.arrow_back_ios,
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor,
+                                  ),
+                                  Text(
+                                    'Back',
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .sectionHeading1,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Back',
-                                style: CustomTheme.of(context)
-                                    .textStyles
-                                    .sectionHeading1,
-                              ),
-                            ],
+                            ),
+                          ),
+                        ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: AnimatedPadding(
+                          duration: const Duration(milliseconds: 100),
+                          padding: EdgeInsets.only(
+                            top: 476.toHeight - 48.toHeight - bottomInsets,
+                          ),
+                          child: DropDown(
+                            fromAccountAction: () {
+                              snapshot.navigateToPhoneNumberPage(
+                                  arguments != null
+                                      ? arguments['fromAccount'] ?? false
+                                      : false);
+                            },
                           ),
                         ),
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: AnimatedPadding(
-                        duration: const Duration(milliseconds: 100),
-                        padding: EdgeInsets.only(
-                          top: 476.toHeight - 48.toHeight - bottomInsets,
-                        ),
-                        child: DropDown(
-                          fromAccountAction: () {
-                            snapshot.navigateToPhoneNumberPage(arguments != null
-                                ? arguments['fromAccount'] ?? false
-                                : false);
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
