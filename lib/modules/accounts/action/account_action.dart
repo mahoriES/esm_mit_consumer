@@ -13,6 +13,7 @@ import 'package:eSamudaay/redux/states/product_state.dart';
 import 'package:eSamudaay/redux/states/videos_state.dart';
 import 'package:eSamudaay/repository/cart_datasourse.dart';
 import 'package:eSamudaay/routes/routes.dart';
+import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:package_info/package_info.dart';
@@ -23,6 +24,8 @@ class LogoutAction extends ReduxAction<AppState> {
 
   @override
   FutureOr<AppState> reduce() async {
+    await AppFirebaseAnalytics.instance.logAppLogout
+      (user: UserManager.shared.toString());
     final pref = await SharedPreferences.getInstance();
     await pref.clear();
     await CartDataSource.deleteCartMerchant();
