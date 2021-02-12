@@ -34,6 +34,8 @@ const int razorpayDefaultTimeout = 60;
 // The constants must be defined within a class, there is no need of global const.
 // TODO : move the existing strings in StringConstants class .
 class StringConstants {
+  static const customerRole = "CUSTOMER";
+  static const fromAccountKey = "fromAccount";
   static const sharingLinkPrefix = 'https://esamudaay.page.link';
   static final businessSharingLinkUrl =
       ({String businessId}) => 'https://esamudaay.com?businessId=$businessId';

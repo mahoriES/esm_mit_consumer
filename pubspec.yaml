@@ -82,10 +82,7 @@ dependencies:
   device_info: ^1.0.0
   flutter_typeahead: ^2.0.0
   pin_code_fields: ^6.1.0
-
-  intl_phone_number_input:
-    git:
-      url: https://github.com/natintosh/intl_phone_number_input.git
+  intl_phone_number_input: ^0.6.0
 
   esamudaay_app_update:
     git:

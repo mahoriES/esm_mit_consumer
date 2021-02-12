@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/reusable_widgets/ios_back_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -8,7 +9,6 @@ import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
 import 'package:eSamudaay/utilities/global.dart' as globals;
 import 'package:eSamudaay/utilities/stringConstants.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
@@ -22,45 +22,11 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  String fcmToken = "";
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   bool _isPhoneNumberValid = false;
   PhoneNumber _phoneNumber;
   String _userNameForSignup;
-
-  fcm() {
-    _firebaseMessaging.configure(
-      onLaunch: (Map<String, dynamic> message) {
-        print('onLaunch called');
-        return null;
-      },
-      onResume: (Map<String, dynamic> message) {
-        print('onResume called');
-        return null;
-      },
-      onMessage: (Map<String, dynamic> message) {
-        print('onMessage called');
-        return null;
-      },
-    );
-    _firebaseMessaging.subscribeToTopic('all');
-    _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(
-      sound: true,
-      badge: true,
-      alert: true,
-    ));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print('Hello');
-    });
-    _firebaseMessaging.getToken().then((token) {
-      print('Hello token');
-      globals.deviceToken = token;
-      print(token); // Print the Token in Console
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
                     Positioned(
                       child: Image.asset(
                         ImagePathConstants.signupLoginBackdrop,
-                        height: 667.toHeight,
+                        height: SizeConfig.screenHeight,
                         width: SizeConfig.screenWidth,
                         fit: BoxFit.contain,
                       ),
@@ -94,30 +60,8 @@ class _LoginViewState extends State<LoginView> {
                     Positioned(
                       left: 25,
                       top: 35,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          color: CustomTheme.of(context).colors.backgroundColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.arrow_back_ios,
-                                color:
-                                    CustomTheme.of(context).colors.primaryColor,
-                              ),
-                              Text(
-                                'common.back',
-                                style: CustomTheme.of(context)
-                                    .textStyles
-                                    .sectionHeading1,
-                              ).tr(),
-                            ],
-                          ),
-                        ),
-                      ),
+                      child: CupertinoStyledBackButton(
+                          onPressed: () => Navigator.pop(context),),
                     ),
                     Positioned(
                       top: 200.toHeight,
@@ -180,20 +124,7 @@ class _LoginViewState extends State<LoginView> {
                                 initialValue: _phoneNumber != null
                                     ? PhoneNumber(isoCode: _phoneNumber.isoCode)
                                     : PhoneNumber(isoCode: 'IN'),
-                                onInputChanged: (PhoneNumber number) {
-                                  debugPrint(number.parseNumber());
-                                  _phoneNumber = number;
-                                  setState(
-                                    () {
-                                      if (validator.phone(
-                                              _phoneNumber.phoneNumber) &&
-                                          _phoneNumber.parseNumber().length > 9)
-                                        this._isPhoneNumberValid = true;
-                                      else
-                                        this._isPhoneNumberValid = false;
-                                    },
-                                  );
-                                },
+                                onInputChanged: validatePhoneNumber,
                                 inputDecoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: tr('screen_phone.hint_text'),
@@ -262,6 +193,20 @@ class _LoginViewState extends State<LoginView> {
           );
         },
       ),
+    );
+  }
+
+  void validatePhoneNumber(PhoneNumber number) {
+    debugPrint(number.parseNumber());
+    _phoneNumber = number;
+    setState(
+      () {
+        if (validator.phone(_phoneNumber.phoneNumber) &&
+            _phoneNumber.parseNumber().length > 9)
+          this._isPhoneNumberValid = true;
+        else
+          this._isPhoneNumberValid = false;
+      },
     );
   }
 

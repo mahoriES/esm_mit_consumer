@@ -57,7 +57,7 @@ class ValidateOtpAction extends ReduxAction<AppState> {
           AddUserDetailAction(
             request: CustomerDetailsRequest(
               profileName: state.authState.userNameForSignup,
-              role: "CUSTOMER",
+              role: StringConstants.customerRole,
             ),
           ),
         );

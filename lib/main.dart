@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:eSamudaay/utilities/firebase_analytics.dart';
+import 'package:eSamudaay/utilities/shared_preferences_util.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import 'package:async_redux/async_redux.dart';
@@ -273,6 +274,12 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
@@ -297,8 +304,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (context == null) return;
     //Navigator.of(context).pushReplacementNamed('/onBoarding');
     await UserManager.saveSkipStatus(status: true);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('first_time', false);
+    SharedPreferencesUtility.setUserAsReturningUser();
     store.dispatch(NavigateAction.pushNamedAndRemoveAll('/language'));
     // If launch screen is onboarding , then show app_update prompt here.
     store.dispatch(CheckAppUpdateAction(context));

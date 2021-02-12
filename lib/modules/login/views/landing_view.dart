@@ -15,8 +15,7 @@ class LoginLandingView extends StatelessWidget {
       body: StoreConnector<AppState, _ViewModel>(
         model: _ViewModel(),
         builder: (context, snapshot) {
-          return SizedBox(
-            height: SizeConfig.screenHeight,
+          return SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(

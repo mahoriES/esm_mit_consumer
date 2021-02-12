@@ -1,6 +1,7 @@
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AboutView extends StatefulWidget {
   @override
@@ -60,7 +61,7 @@ class _AboutViewState extends State<AboutView> {
                   },
                   child: Center(
                     child: Text(
-                      'Credits',
+                      'credit.credits',
                       style: CustomTheme.of(context)
                           .textStyles
                           .sectionHeading1Regular
@@ -68,7 +69,7 @@ class _AboutViewState extends State<AboutView> {
                               decoration: TextDecoration.underline,
                               color:
                                   CustomTheme.of(context).colors.primaryColor),
-                    ),
+                    ).tr(),
                   ),
                 ),
               ],
@@ -84,11 +85,11 @@ class _AboutViewState extends State<AboutView> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Credits'),
+          title: Text('credit.credits').tr(),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Illustrations designed by Freepik'),
+              Text('credit.freepik').tr(),
             ],
           ),
         );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/reusable_widgets/ios_back_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/push_notification.dart';
@@ -83,30 +84,8 @@ class _OtpScreenState extends State<OtpScreen> {
                     Positioned(
                       left: 25,
                       top: 35,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          color: CustomTheme.of(context).colors.backgroundColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.arrow_back_ios,
-                                color:
-                                    CustomTheme.of(context).colors.primaryColor,
-                              ),
-                              Text(
-                                'Back',
-                                style: CustomTheme.of(context)
-                                    .textStyles
-                                    .sectionHeading1,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      child: CupertinoStyledBackButton(
+                        onPressed: () => Navigator.pop(context),),
                     ),
                     Positioned(
                       top: 212.toHeight,
@@ -128,7 +107,6 @@ class _OtpScreenState extends State<OtpScreen> {
                               height: 5,
                             ),
                             SizedBox(
-                              //height: 45.toHeight,
                               child: Container(
                                 padding: EdgeInsets.only(
                                     left: 5, right: 10, top: 8),
@@ -222,7 +200,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     : null,
                                 child: Center(
                                   child: Text(
-                                    'VERIFY',
+                                    'screen_otp.verify',
                                     style: CustomTheme.of(context)
                                         .textStyles
                                         .cardTitle
@@ -230,7 +208,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                             color: CustomTheme.of(context)
                                                 .colors
                                                 .backgroundColor),
-                                  ),
+                                  ).tr(),
                                 ),
                               ),
                             ),
