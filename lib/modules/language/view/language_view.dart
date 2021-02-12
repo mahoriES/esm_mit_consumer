@@ -40,74 +40,71 @@ class _LanguageScreenState extends State<LanguageScreen> {
           builder: (context, snapshot) {
             return Scaffold(
               body: SafeArea(
-                child: SizedBox(
-                  height: SizeConfig.screenHeight,
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        ImagePathConstants.languageSelectionBackdrop,
-                        height: 496.toHeight,
-                        width: SizeConfig.screenWidth,
-                        fit: BoxFit.contain,
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      ImagePathConstants.languageSelectionBackdrop,
+                      height: 496.toHeight,
+                      width: SizeConfig.screenWidth,
+                      fit: BoxFit.contain,
+                    ),
+                    Positioned(
+                      right: 38.toWidth,
+                      top: 53.toHeight,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "screen_language.title_1",
+                            textAlign: TextAlign.end,
+                            style: CustomTheme.of(context)
+                                .textStyles
+                                .topTileTitle
+                                .copyWith(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor,
+                                    fontSize: 30),
+                          ).tr(),
+                          Text(
+                            "screen_language.title_2",
+                            textAlign: TextAlign.end,
+                            style: CustomTheme.of(context)
+                                .textStyles
+                                .topTileTitle
+                                .copyWith(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor,
+                                    fontSize: 30),
+                          ).tr(),
+                        ],
                       ),
+                    ),
+                    if (fromAccount)
                       Positioned(
-                        right: 38.toWidth,
-                        top: 53.toHeight,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "screen_language.title_1",
-                              textAlign: TextAlign.end,
-                              style: CustomTheme.of(context)
-                                  .textStyles
-                                  .topTileTitle
-                                  .copyWith(
-                                      color: CustomTheme.of(context)
-                                          .colors
-                                          .primaryColor,
-                                      fontSize: 30),
-                            ).tr(),
-                            Text(
-                              "screen_language.title_2",
-                              textAlign: TextAlign.end,
-                              style: CustomTheme.of(context)
-                                  .textStyles
-                                  .topTileTitle
-                                  .copyWith(
-                                      color: CustomTheme.of(context)
-                                          .colors
-                                          .primaryColor,
-                                      fontSize: 30),
-                            ).tr(),
-                          ],
+                        left: 25.toWidth,
+                        top: 35.toHeight,
+                        child: CupertinoStyledBackButton(
+                          onPressed: () => Navigator.pop(context),
                         ),
                       ),
-                      if (fromAccount)
-                        Positioned(
-                          left: 25.toWidth,
-                          top: 35.toHeight,
-                          child: CupertinoStyledBackButton(
-                            onPressed: () => Navigator.pop(context),
-                          ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: AnimatedPadding(
+                        duration: const Duration(milliseconds: 100),
+                        padding: EdgeInsets.only(
+                          top: 476.toHeight - 48.toHeight - bottomInsets,
                         ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: AnimatedPadding(
-                          duration: const Duration(milliseconds: 100),
-                          padding: EdgeInsets.only(
-                            top: 476.toHeight - 48.toHeight - bottomInsets,
-                          ),
-                          child: LanguageOptionsDropDown(
-                            fromAccountAction: () {
-                              snapshot.navigateToPhoneNumberPage(fromAccount);
-                            },
-                            fromAccount: fromAccount,
-                          ),
+                        child: LanguageOptionsDropDown(
+                          fromAccountAction: () {
+                            snapshot.navigateToPhoneNumberPage(fromAccount);
+                          },
+                          fromAccount: fromAccount,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
