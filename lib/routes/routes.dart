@@ -18,7 +18,6 @@ import 'package:eSamudaay/modules/orders/views/feedback_view/feedback_view.dart'
 import 'package:eSamudaay/modules/orders/views/order_details/order_details.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
-import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
 import 'package:eSamudaay/modules/store_details/views/product_catalog_view/product_catalog.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
@@ -34,7 +33,6 @@ class SetupRoutes {
       "/language": (BuildContext context) => new LanguageScreen(),
       "/otpScreen": (BuildContext context) => new OtpScreen(),
       "/mobileNumber": (BuildContext context) => new LoginView(),
-      "/registration": (BuildContext context) => new Registration(),
       RouteNames.HOME_PAGE: (BuildContext context) => new MyHomeView(),
       RouteNames.LANDING_PAGE: (BuildContext context) => LoginLandingView(),
       RouteNames.CART_VIEW: (BuildContext context) => CartView(),

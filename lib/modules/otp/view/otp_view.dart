@@ -11,7 +11,6 @@ import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/otp/action/otp_action.dart';
 import 'package:eSamudaay/modules/otp/model/validate_otp_request.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -44,8 +43,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -54,7 +53,6 @@ class _OtpScreenState extends State<OtpScreen> {
       resizeToAvoidBottomPadding: false,
       body: StoreConnector<AppState, _ViewModel>(
         onInit: (store) {
-          FocusScope.of(context).requestFocus(FocusNode());
           PushNotificationsManager().init();
           startTimer();
         },
