@@ -39,10 +39,23 @@ class CheckOnBoardingStatusAction extends ReduxAction<AppState> {
   }
 }
 
+class AddNameToStoreForSignupAction extends ReduxAction<AppState> {
+  final String username;
+
+  AddNameToStoreForSignupAction(this.username);
+
+  @override
+  FutureOr<AppState> reduce() {
+    return state.copyWith(
+        authState: state.authState.copyWith(userNameForSignup: username));
+  }
+}
+
 class SaveTokenAction extends ReduxAction<AppState> {
   final String token;
 
   SaveTokenAction({this.token});
+
   @override
   FutureOr<AppState> reduce() async {
     String status = await UserManager.getFcmToken();

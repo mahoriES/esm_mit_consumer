@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/Profile/model/profile_update_model.dart';
+import 'package:eSamudaay/modules/accounts/action/account_action.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/otp/action/otp_action.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
@@ -23,10 +24,11 @@ class GetUserDetailAction extends ReduxAction<AppState> {
         requestType: RequestType.get);
 
     if (response.status == ResponseStatus.success200) {
+      dispatch(InitialiseStoreOnLogoutAction());
       GetProfileResponse authResponse =
           GetProfileResponse.fromJson(response.data);
       if (authResponse.cUSTOMER == null) {
-        dispatch(NavigateAction.pushNamed('/registration'));
+        //dispatch(NavigateAction.pushNamed('/registration'));
       } else {
         await UserManager.saveToken(token: authResponse.cUSTOMER.token);
 
@@ -68,6 +70,7 @@ class AddUserDetailAction extends ReduxAction<AppState> {
         requestType: RequestType.post);
 
     if (response.status == ResponseStatus.success200) {
+      dispatch(InitialiseStoreOnLogoutAction());
       RegisterResponse authResponse = RegisterResponse.fromJson(response.data);
       await UserManager.saveToken(token: authResponse.token);
 
@@ -84,7 +87,6 @@ class AddUserDetailAction extends ReduxAction<AppState> {
       return state.copyWith(authState: state.authState.copyWith(user: user));
     } else {
       Fluttertoast.showToast(msg: response.data['message']);
-      //throw UserException(response.data['status']);
     }
     return state.copyWith(
         authState:

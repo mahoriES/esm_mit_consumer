@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:eSamudaay/utilities/firebase_analytics.dart';
+import 'package:eSamudaay/utilities/shared_preferences_util.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import 'package:async_redux/async_redux.dart';
@@ -14,6 +15,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:eSamudaay/utilities/firebase_analytics_observer.dart';
 import 'package:esamudaay_app_update/app_update_service.dart';
 import 'package:eSamudaay/utilities/navigation_handler.dart';
@@ -236,12 +238,16 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => new _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<double> _animation;
+
   startTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
 
-    var _duration = new Duration(seconds: 3);
+    var _duration = new Duration(milliseconds: 1500);
 
     if (firstTime != null && !firstTime) {
       // Not first time
@@ -255,8 +261,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    super.initState();
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 700));
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: _controller, curve: Curves.linear, reverseCurve: Curves.linear))
+      ..addListener(() {
+        setState(() {});
+      });
     startTime();
+    _controller.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -266,21 +286,26 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Image.asset('assets/images/splash.png'),
+        child: Transform.scale(
+            scale: _animation.value,
+            child: Image.asset('assets/images/splash.png')),
       )),
     );
   }
 
   void navigationPageHome() {
     if (context == null) return;
-    Navigator.of(context).pushReplacementNamed('/loginView');
+    Navigator.of(context).pushReplacementNamed(RouteNames.LANDING_PAGE);
     // If launch screen is login , then show app_update prompt here.
     store.dispatch(CheckAppUpdateAction(context));
   }
 
-  void navigationPageWel() {
+  void navigationPageWel() async {
     if (context == null) return;
-    Navigator.of(context).pushReplacementNamed('/onBoarding');
+    //Navigator.of(context).pushReplacementNamed('/onBoarding');
+    await UserManager.saveSkipStatus(status: true);
+    SharedPreferencesUtility.setUserAsReturningUser();
+    store.dispatch(NavigateAction.pushNamedAndRemoveAll('/language'));
     // If launch screen is onboarding , then show app_update prompt here.
     store.dispatch(CheckAppUpdateAction(context));
   }

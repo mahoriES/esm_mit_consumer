@@ -7,6 +7,11 @@ class SharedPreferencesUtility {
     prefs.setBool(SharedPreferencesKeys.isAdvancedUser, true);
   }
 
+  static void setUserAsReturningUser() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(SharedPreferencesKeys.returningUser, false);
+  }
+
   static Future<bool> isAdvancedUser() async{
     bool _isAdvancedUser;
     final prefs = await SharedPreferences.getInstance();
@@ -25,5 +30,7 @@ class SharedPreferencesUtility {
 class SharedPreferencesKeys {
 
   static const String isAdvancedUser = "isAdvancedUser";
+
+  static const String returningUser = "first_time";
 
 }
