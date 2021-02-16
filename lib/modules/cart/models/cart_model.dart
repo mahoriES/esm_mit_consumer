@@ -49,7 +49,7 @@ class PlaceOrderRequest {
   List<FreeFormOrderItems> freeFormOrderItems;
   String deliveryAddressId;
   String customerNote;
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
 
   PlaceOrderRequest(
       {this.businessId,
@@ -59,26 +59,6 @@ class PlaceOrderRequest {
       this.freeFormOrderItems,
       this.deliveryAddressId,
       this.customerNote});
-
-  PlaceOrderRequest.fromJson(Map<String, dynamic> json) {
-    businessId = json['business_id'];
-    deliveryType = json['delivery_type'];
-    if (json['order_items'] != null) {
-      orderItems = new List<OrderItems>();
-      json['order_items'].forEach((v) {
-        orderItems.add(new OrderItems.fromJson(v));
-      });
-    }
-    if (json['free_form_items'] != null) {
-      freeFormOrderItems = List<FreeFormOrderItems>();
-      json['free_form_items'].forEach((item) {
-        freeFormOrderItems.add(FreeFormOrderItems.fromJson(item));
-      });
-    }
-    deliveryAddressId = json['delivery_address_id'];
-    customerNote = json['customer_note'];
-    customerNoteImages = json['customer_note_images'];
-  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -94,7 +74,8 @@ class PlaceOrderRequest {
     data['delivery_address_id'] = this.deliveryAddressId;
     data['customer_note'] = this.customerNote;
     if (this.customerNoteImages != null)
-      data['customer_note_images'] = this.customerNoteImages;
+      data['customer_note_images'] =
+          this.customerNoteImages.map((v) => v.toJson()).toList();
 
     return data;
   }
@@ -122,7 +103,7 @@ class PlaceOrderResponse {
   List<FreeFormOrderItems> freeFormOrderItems;
   CartCharges otherChargesDetail;
   List<OrderTrail> orderTrail;
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
   String created;
   String modified;
   Rating rating;
@@ -226,17 +207,14 @@ class PlaceOrderResponse {
       });
     }
     if (json['customer_note_images'] != null) {
-      // Here 'customer_note_images' can be a Map or an String.
-      // This is happenging due to a glitch in order placing flow, we are sending photo url instead of json of Photo object.
-      // TODO : will be fixed later with hight priority.
       customerNoteImages = [];
       List list = json['customer_note_images'];
       list.forEach((image) {
         debugPrint("image runtime type => ${image.runtimeType}");
         if (image is Map) {
-          customerNoteImages.add(Photo.fromJson(image).photoUrl);
+          customerNoteImages.add(Photo.fromJson(image));
         } else if (image is String) {
-          customerNoteImages.add(image);
+          customerNoteImages.add(Photo(photoUrl: image));
         }
       });
     }

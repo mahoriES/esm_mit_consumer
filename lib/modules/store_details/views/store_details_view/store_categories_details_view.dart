@@ -5,6 +5,7 @@ import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.
 import 'package:eSamudaay/modules/home/actions/video_feed_actions.dart';
 import 'package:eSamudaay/modules/home/models/video_feed_response.dart';
 import 'package:eSamudaay/modules/home/views/video_list_widget.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/store_details_view/widgets/highlight_catalog_item_view.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
@@ -483,7 +484,7 @@ class _ViewModel extends BaseModel<AppState> {
   List<Product> localCartListing;
   List<Product> spotlightItems;
   List<Product> singleCategoryFewProducts;
-  List<String> customerNoteImagesList;
+  List<Photo> customerNoteImagesList;
   Function(Function(VoidCallback)) checkForPreviouslyAddedListItems;
   VideoFeedResponse videoFeedResponse;
   Function onVideoTap;

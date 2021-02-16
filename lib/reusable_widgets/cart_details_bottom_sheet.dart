@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/routes/routes.dart';
@@ -95,7 +96,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   List<Product> productsList;
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
   VoidCallback sendRequest;
   VoidCallback navigateToCart;
 

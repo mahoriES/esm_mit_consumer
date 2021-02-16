@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:flutter/material.dart';
@@ -138,7 +139,7 @@ class CartCount extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   List<Product> products;
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
   bool isImageUploading;
   _ViewModel();
 

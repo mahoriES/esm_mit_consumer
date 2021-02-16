@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/actions/cart_actions.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/image_picker_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
@@ -73,7 +74,7 @@ class CartCustomerNoteImagesWidget extends StatelessWidget {
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
   Function(ImageSource) addCustomerNoteImage;
   Function(int) removeCustomerNoteImage;
   bool isImageUploading;
