@@ -32,7 +32,7 @@ class UserManager {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var dbClient = await DatabaseManager().db;
     await saveSkipStatus(status: false);
-    prefs.remove(tokenKey);
+    prefs.remove(StringConstants.tokenKey);
     int resp = await dbClient.delete('User');
     await CartDataSource.resetCart();
     print(resp);
@@ -40,25 +40,25 @@ class UserManager {
 
   static Future<bool> getSkipStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool value = prefs.getBool(skipKey);
+    bool value = prefs.getBool(StringConstants.skipKey);
     return value;
   }
 
   static Future<void> saveSkipStatus({status: bool}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(skipKey, status);
+    await prefs.setBool(StringConstants.skipKey, status);
   }
 
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String value = prefs.getString(tokenKey);
+    String value = prefs.getString(StringConstants.tokenKey);
     print("retrived token : $value");
     return value;
   }
 
   static Future<List<AddressResponse>> getAddress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String value = prefs.getString(userAddressKey);
+    String value = prefs.getString(StringConstants.userAddressKey);
     if (value == null) return null;
     var data = jsonDecode(value);
     List<AddressResponse> addressResponse = [];
@@ -75,22 +75,22 @@ class UserManager {
   static Future<void> saveToken({token: String}) async {
     print("saved token : $token");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(tokenKey, token);
+    await prefs.setString(StringConstants.tokenKey, token);
   }
 
   static Future<void> saveAddress({address: String}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(userAddressKey, address);
+    await prefs.setString(StringConstants.userAddressKey, address);
   }
 
   static Future<void> deleteAddress({address: String}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(userAddressKey);
+    await prefs.remove(StringConstants.userAddressKey);
   }
 
   static Future<String> getFcmToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String value = prefs.getString(fcmToken);
+    String value = prefs.getString(StringConstants.fcmToken);
     print("retrived token : $value");
     return value;
   }
@@ -98,7 +98,7 @@ class UserManager {
   static Future<void> saveFcmToken({token: String}) async {
     print("saved token : $token");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(fcmToken, token);
+    await prefs.setString(StringConstants.fcmToken, token);
   }
 
   static Future<int> saveUser(Data user) async {

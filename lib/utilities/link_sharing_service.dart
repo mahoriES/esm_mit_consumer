@@ -1,3 +1,4 @@
+import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,11 @@ class LinkSharingService {
     minimumVersion: "1.0.9",
   );
 
-  Future<void>shareBusinessLink({@required String businessId, @required String storeName}) async {
+  Future<void> shareBusinessLink(
+      {@required String businessId, @required String storeName}) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: StringConstants.sharingLinkPrefix,
-      link: Uri.parse(StringConstants.businessSharingLinkUrl(
+      link: Uri.parse(ApiURL.businessSharingLinkUrl(
         businessId: businessId,
       )),
       androidParameters: _androidParameters,
@@ -44,7 +46,7 @@ class LinkSharingService {
   }) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: StringConstants.sharingLinkPrefix,
-      link: Uri.parse(StringConstants.productSharingLinkUrl(
+      link: Uri.parse(ApiURL.productSharingLinkUrl(
         productId: productId,
         businessId: businessId,
       )),

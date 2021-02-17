@@ -224,7 +224,7 @@ class _LoginViewState extends State<LoginView> {
             FocusScope.of(context).requestFocus(FocusNode());
             snapshot.getOtpAction(GenerateOTPRequest(
                 phone: "+91" + phoneController.text,
-                third_party_id: thirdPartyId,
+                third_party_id: StringConstants.thirdPartyId,
                 isSignUp: snapshot.isSignUp));
           } else {}
         },

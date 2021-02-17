@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:eSamudaay/utilities/firebase_analytics.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import 'package:async_redux/async_redux.dart';
@@ -86,7 +87,7 @@ Future<void> _initializeFlutterFire() async {
     // Else only enable it in non-debug builds.
     //Could additionally extend this to allow users to opt-in or something else.
     await FirebaseCrashlytics.instance
-        .setCrashlyticsCollectionEnabled(ApiURL.baseURL == ApiURL.liveURL);
+        .setCrashlyticsCollectionEnabled(StringConstants.environmentVariable == ENVIRONMENT.PRODUCTION);
     await AppFirebaseAnalytics.instance
         .setAnalyticsCollectionEnabled(true);
   }

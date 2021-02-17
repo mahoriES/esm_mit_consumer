@@ -1,13 +1,16 @@
 //Login
 
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:flutter/material.dart';
 
 class ApiURL {
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
   static const liveURL = "https://api.esamudaay.com/";
 
-  ///Modify below to switch between development and production servers
-  static const baseURL = eSamudayDevelopmentURL;
+  static final baseURL =
+      StringConstants.environmentVariable == ENVIRONMENT.DEVELOPMENT
+          ? eSamudayDevelopmentURL
+          : liveURL;
 
   static const generateOTPUrl = "api/v1/auth/token/";
   static const generateOtpRegisterUrl = "api/v1/auth/user/";
@@ -35,8 +38,8 @@ class ApiURL {
   static const profileUpdateURL = "/api/v1/auth/profiles";
   static const getClustersUrl = "api/v1/clusters/";
   static const addFCMTokenUrl = "api/v1/notifications/mobile/tokens";
-  static const imageUpload = "$baseURL" + "api/v1/media/photo/";
-  static const getVideoFeed = baseURL + 'api/v1/feed/';
+  static final imageUpload = "$baseURL" + "api/v1/media/photo/";
+  static final getVideoFeed = baseURL + 'api/v1/feed/';
   static final getVideoDetails = (String businessId, String productId) =>
       baseURL + "api/v1/businesses/$businessId/catalog/products/$productId";
   static final getAllProducts = (String businessId) =>
@@ -73,4 +76,10 @@ class ApiURL {
 
   static final openMapUrl = (double latitude, double longitude) =>
       "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
+
+  static final businessSharingLinkUrl =
+      ({String businessId}) => 'https://esamudaay.com?businessId=$businessId';
+  static final productSharingLinkUrl = (
+          {String productId, String businessId}) =>
+      'https://esamudaay.com?businessId=$businessId&productId=$productId';
 }
