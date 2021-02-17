@@ -101,7 +101,7 @@ class DeliveryOptionWidget extends StatelessWidget {
                                   style: CustomTheme.of(context)
                                       .textStyles
                                       .body1Faded,
-                                  maxLines: 5,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
@@ -171,7 +171,7 @@ class DeliveryOptionWidget extends StatelessWidget {
                           snapshot.storeAddress,
                           style: CustomTheme.of(context).textStyles.body1Faded,
                           textAlign: TextAlign.end,
-                          maxLines: 5,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

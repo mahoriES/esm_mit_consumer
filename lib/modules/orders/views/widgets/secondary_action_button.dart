@@ -107,16 +107,20 @@ class PayButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            orderResponse.paymentInfo.isPaymentDone ||
-                    orderResponse.paymentInfo.isPaymentInitiated
-                ? ImagePathConstants.paymentDoneIcon
-                : ImagePathConstants.paymentPendingIcon,
-            width: 50,
-            fit: BoxFit.fitWidth,
-          ),
+          orderResponse.paymentInfo.isPaymentDone ||
+                  orderResponse.paymentInfo.isPaymentInitiated
+              ? Icon(
+                  Icons.check_circle_outline,
+                  size: 30,
+                  color: CustomTheme.of(context).colors.positiveColor,
+                )
+              : Image.asset(
+                  ImagePathConstants.paymentGreenIcon,
+                  width: 35,
+                  fit: BoxFit.contain,
+                ),
           const SizedBox(width: 4),
           Flexible(
             child: FittedBox(
@@ -125,7 +129,7 @@ class PayButton extends StatelessWidget {
                   text:
                       tr("payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}") +
                           "\n",
-                  style: CustomTheme.of(context).textStyles.body2,
+                  style: CustomTheme.of(context).textStyles.body2Faded,
                   children: [
                     TextSpan(
                       text: tr(
@@ -137,7 +141,15 @@ class PayButton extends StatelessWidget {
                           orderResponse.orderTotalPriceInRupees.withRupeePrefix
                         ],
                       ),
-                      style: CustomTheme.of(context).textStyles.sectionHeading2,
+                      style: CustomTheme.of(context)
+                          .textStyles
+                          .sectionHeading2
+                          .copyWith(
+                            color: orderResponse.paymentInfo.isPaymentDone ||
+                                    orderResponse.paymentInfo.isPaymentInitiated
+                                ? CustomTheme.of(context).colors.textColor
+                                : CustomTheme.of(context).colors.positiveColor,
+                          ),
                     ),
                   ],
                 ),
