@@ -16,6 +16,7 @@ class StringConstants {
   static const skipKey = "skip";
   static const fcmToken = "fcm";
   static const userAddressKey = "address_esamuday";
+  static const fromAccountKey = "fromAccount";
 
   // razorpay constants
   static const String razorpayDefaultName = "eSamudaay";
@@ -41,4 +42,6 @@ class StringConstants {
     "formatted_address",
     "geometry",
   ];
+
+  static const customerRole = "CUSTOMER";
 }

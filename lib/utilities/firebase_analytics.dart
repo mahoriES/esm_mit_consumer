@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:eSamudaay/utilities/user_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
@@ -73,21 +74,27 @@ class AppFirebaseAnalytics {
   }
 
   Future<void> logLanguageChange({String setLanguage}) {
+    setLanguageForUserProperty(setLanguage: setLanguage);
     return logEvent(
         name: 'app_language_change', parameters: {'setLanguage': setLanguage});
   }
 
+  Future<void> setLanguageForUserProperty({String setLanguage}) async {
+    final user = await UserManager.userDetails();
+    if (user?.userProfile?.userId != null)
+      return FirebaseAnalytics()
+          .setUserProperty(name: 'language', value: setLanguage);
+  }
+
   Future<void> logAddPhotoToOrder({String photoUrl, String photoId}) {
-    return logEvent(name: 'app_add_photo_order', parameters: {
-      'photoUrl': photoUrl,
-      'photoId': photoId
-    });
+    return logEvent(
+        name: 'app_add_photo_order',
+        parameters: {'photoUrl': photoUrl, 'photoId': photoId});
   }
 
   Future<void> logRemovePhotoFromOrder({String photoUrl}) {
-    return logEvent(name: 'app_add_photo_order', parameters: {
-      'photoUrl': photoUrl
-    });
+    return logEvent(
+        name: 'app_add_photo_order', parameters: {'photoUrl': photoUrl});
   }
 
   Future<void> logAppLaunch() async {

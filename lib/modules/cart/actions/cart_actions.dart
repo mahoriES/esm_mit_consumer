@@ -29,7 +29,7 @@ class GetCartFromLocal extends ReduxAction<AppState> {
     try {
       final List<Product> localCartList =
           await CartDataSource.getListOfProducts();
-      final List<String> customerNoteImages =
+      final List<Photo> customerNoteImages =
           await CartDataSource.getCustomerNoteImagesList();
       final Business merchant = await CartDataSource.getCartMerchant();
 
@@ -398,8 +398,8 @@ class AddCustomerNoteImageAction extends ReduxAction<AppState> {
         }
         AppFirebaseAnalytics.instance.logAddPhotoToOrder(
             photoUrl: photo.photoUrl, photoId: photo.photoId);
-        final List<String> updatedImageList = state.cartState.customerNoteImages
-          ..add(photo.photoUrl);
+        final List<Photo> updatedImageList = state.cartState.customerNoteImages
+          ..add(photo);
         CartDataSource.insertCustomerNoteImagesList(updatedImageList);
         return state.copyWith(
           cartState: state.cartState.copyWith(
@@ -429,13 +429,14 @@ class RemoveCustomerNoteImageAction extends ReduxAction<AppState> {
   Future<AppState> reduce() async {
     try {
       AppFirebaseAnalytics.instance.logRemovePhotoFromOrder(
-          photoUrl: state.cartState.customerNoteImages[imageIndex]);
+          photoUrl:
+              state.cartState.customerNoteImages[imageIndex]?.photoUrl ?? "");
 
-      final List<String> updatedImageList = state.cartState.customerNoteImages
+      final List<Photo> updatedImageList = state.cartState.customerNoteImages
         ..removeAt(imageIndex);
       await CartDataSource.insertCustomerNoteImagesList(updatedImageList);
 
-      final List<String> updatedList =
+      final List<Photo> updatedList =
           await CartDataSource.getCustomerNoteImagesList();
 
       if (state.cartState.localCartItems.isEmpty && updatedList.isEmpty) {

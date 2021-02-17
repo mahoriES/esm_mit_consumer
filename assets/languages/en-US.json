@@ -8,29 +8,38 @@
     "gallery": "Gallery",
     "continue": "Continue",
     "cancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "enter_name": "Enter Name"
+  },
+  "credit": {
+    "credits": "Credits",
+    "freepik": "Illustrations designed by Freepik"
   },
   "screen_language": {
-    "title": "Choose your Preferred Language"
+    "title_1": "Choose",
+    "title_2": "your Language",
+    "choose_lang": "Choose Language",
+    "search_lang": "Search for language"
   },
   "screen_phone": {
     "get_otp": "Get OTP",
-    "hint_text": "Type your mobile number",
+    "hint_text": "Phone Number",
     "valid_phone_error_message": "Please enter valid phone number",
-    "new_user": "Don’t have an account ? ",
-    "register_now": "Register now",
+    "new_user": "New to eSamudaay? ",
+    "register_now": "Create an Account",
     "login_here": "Login here",
     "already_customer": "Already have an account ? ",
     "sign_up": "Sign Up",
-    "login": "Login"
+    "login": "Login",
+    "login_phone": "Login with Phone Number"
   },
   "screen_otp": {
-    "get_otp": "Get OTP",
+    "get_otp": "GET OTP",
     "resend_otp": "Resend OTP",
     "hint_text": "Please enter the OTP sent to",
-    "resend_text": "Resend in",
+    "resend_text": "Didn't receive OTP? Resend in",
     "sec": "sec",
-    "verify": "Verify",
+    "verify": "VERIFY",
     "error": {
       "plz_verify_otp": "Please enter OTP"
     }

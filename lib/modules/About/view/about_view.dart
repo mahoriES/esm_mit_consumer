@@ -1,5 +1,7 @@
+import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AboutView extends StatefulWidget {
   @override
@@ -36,7 +38,7 @@ class _AboutViewState extends State<AboutView> {
                   height: 200,
                   width: 200,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 Text(
@@ -50,11 +52,48 @@ class _AboutViewState extends State<AboutView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showCreditDialog(context);
+                  },
+                  child: Center(
+                    child: Text(
+                      'credit.credits',
+                      style: CustomTheme.of(context)
+                          .textStyles
+                          .sectionHeading1Regular
+                          .copyWith(
+                              decoration: TextDecoration.underline,
+                              color:
+                                  CustomTheme.of(context).colors.primaryColor),
+                    ).tr(),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void showCreditDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('credit.credits').tr(),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('credit.freepik').tr(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

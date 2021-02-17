@@ -1,172 +1,136 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/utilities/firebase_analytics.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:eSamudaay/modules/language/view/core_widgets/language_options_dropdown.dart';
+import 'package:eSamudaay/reusable_widgets/ios_back_button.dart';
+import 'package:eSamudaay/routes/routes.dart';
+import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LanguageScreen extends StatefulWidget {
-  final bool fromAccount = false;
   @override
   _LanguageScreenState createState() => _LanguageScreenState();
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
+  bool fromAccount = false;
+
+  @override
+  void didChangeDependencies() {
+    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
+    fromAccount = arguments != null
+        ? arguments[StringConstants.fromAccountKey] ?? false
+        : false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
-
-    if (arguments != null) print("from_account ${arguments['fromAccount']}");
-
-    return Scaffold(
-      body: StoreConnector<AppState, _ViewModel>(
-          onInit: (store) {},
+    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    return WillPopScope(
+      onWillPop: () {
+        return Future.value(fromAccount);
+      },
+      child: Scaffold(
+        body: StoreConnector<AppState, _ViewModel>(
           model: _ViewModel(),
           builder: (context, snapshot) {
             return Scaffold(
-              body: Column(children: [
-                // Rectangle 1560
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width * 0.5,
-                  decoration: BoxDecoration(color: AppColors.icColors),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 48.0),
-                      child: Text('screen_language.title',
-                              style: const TextStyle(
-                                  color: const Color(0xffffffff),
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "Avenir-Medium",
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 24.0),
-                              textAlign: TextAlign.left)
-                          .tr(),
+              body: SafeArea(
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      ImagePathConstants.languageSelectionBackdrop,
+                      height: 496.toHeight,
+                      width: SizeConfig.screenWidth,
+                      fit: BoxFit.contain,
                     ),
-                  ),
+                    Positioned(
+                      right: 38.toWidth,
+                      top: 53.toHeight,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "screen_language.title_1",
+                            textAlign: TextAlign.end,
+                            style: CustomTheme.of(context)
+                                .textStyles
+                                .topTileTitle
+                                .copyWith(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor,
+                                    fontSize: 30),
+                          ).tr(),
+                          Text(
+                            "screen_language.title_2",
+                            textAlign: TextAlign.end,
+                            style: CustomTheme.of(context)
+                                .textStyles
+                                .topTileTitle
+                                .copyWith(
+                                    color: CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor,
+                                    fontSize: 30),
+                          ).tr(),
+                        ],
+                      ),
+                    ),
+                    if (fromAccount)
+                      Positioned(
+                        left: 25.toWidth,
+                        top: 35.toHeight,
+                        child: CupertinoStyledBackButton(
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: AnimatedPadding(
+                        duration: const Duration(milliseconds: 100),
+                        padding: EdgeInsets.only(
+                          top: 476.toHeight - 48.toHeight - bottomInsets,
+                        ),
+                        child: LanguageOptionsDropDown(
+                          fromAccountAction: () {
+                            snapshot.navigateToPhoneNumberPage(fromAccount);
+                          },
+                          fromAccount: fromAccount,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                // Choose your Preferred Language
-
-                ListTile(
-                  title: Text("English",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Poppins",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    AppFirebaseAnalytics.instance
-                        .logLanguageChange(setLanguage: 'English');
-                    EasyLocalization.of(context).locale = Locale('en', 'US');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-
-                ListTile(
-                  title: Text("हिन्दी",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "Poppins",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    AppFirebaseAnalytics.instance
-                        .logLanguageChange(setLanguage: 'Hindi');
-                    EasyLocalization.of(context).locale = Locale.fromSubtags(
-                        languageCode: 'hi', countryCode: 'Deva-IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-
-                // English
-
-                // telugu
-                ListTile(
-                  title: Text("తెలుగు",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "Gotham",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    AppFirebaseAnalytics.instance
-                        .logLanguageChange(setLanguage: 'Telugu');
-                    EasyLocalization.of(context).locale = Locale('te', 'IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-                // ಕನ್ನಡ
-                ListTile(
-                  title: Text("ಕನ್ನಡ",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "Gotham",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    AppFirebaseAnalytics.instance
-                        .logLanguageChange(setLanguage: 'Kannada');
-                    EasyLocalization.of(context).locale = Locale('ka', 'IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-                //தமிழ்
-                ListTile(
-                  title: Text("தமிழ்",
-                      style: const TextStyle(
-                          color: const Color(0xff2e2e2e),
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "Gotham",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 20.0),
-                      textAlign: TextAlign.left),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    AppFirebaseAnalytics.instance
-                        .logLanguageChange(setLanguage: 'Tamil');
-                    EasyLocalization.of(context).locale = Locale('ta', 'IN');
-                    snapshot.navigateToPhoneNumberPage(
-                        (arguments != null) ? arguments['fromAccount'] : false);
-                  },
-                ),
-              ]),
+              ),
             );
-          }),
+          },
+        ),
+      ),
     );
   }
 }
 
 class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
+
   Function(bool fromAccount) navigateToPhoneNumberPage;
+
   _ViewModel.build({
     this.navigateToPhoneNumberPage,
   }) : super(equals: []);
 
   @override
   BaseModel fromStore() {
-    // TODO: implement fromStore
     return _ViewModel.build(
       navigateToPhoneNumberPage: (value) {
         value
             ? dispatch(NavigateAction.pop())
-            : dispatch(NavigateAction.pushNamed('/loginView'));
+            : dispatch(NavigateAction.pushNamed(RouteNames.LANDING_PAGE));
       },
     );
   }

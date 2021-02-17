@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
@@ -35,7 +36,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   List<Product> productsList;
-  List<String> customerNoteImages;
+  List<Photo> customerNoteImages;
 
   _ViewModel.build({
     this.productsList,

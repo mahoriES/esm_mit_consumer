@@ -12,13 +12,12 @@ import 'package:eSamudaay/modules/head_categories/views/main_categories_view.dar
 import 'package:eSamudaay/modules/home/views/my_home.dart';
 import 'package:eSamudaay/modules/home/views/video_player_screen.dart';
 import 'package:eSamudaay/modules/language/view/language_view.dart';
+import 'package:eSamudaay/modules/login/views/landing_view.dart';
 import 'package:eSamudaay/modules/login/views/login_View.dart';
-import 'package:eSamudaay/modules/onBoardingScreens/widgets/on_boarding_screen.dart';
 import 'package:eSamudaay/modules/orders/views/feedback_view/feedback_view.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/order_details.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
 import 'package:eSamudaay/modules/otp/view/otp_view.dart';
-import 'package:eSamudaay/modules/register/view/register_view.dart';
 import 'package:eSamudaay/modules/search/views/Search_View.dart';
 import 'package:eSamudaay/modules/store_details/views/product_catalog_view/product_catalog.dart';
 import 'package:eSamudaay/modules/store_details/views/product_details_view/product_details_view.dart';
@@ -30,12 +29,12 @@ import 'package:flutter/material.dart';
 class SetupRoutes {
   static Map<String, WidgetBuilder> get routes {
     return {
-      "/loginView": (BuildContext context) => new LoginView(),
+      RouteNames.LOGIN_VIEW: (BuildContext context) => new LoginView(),
       "/language": (BuildContext context) => new LanguageScreen(),
       "/otpScreen": (BuildContext context) => new OtpScreen(),
       "/mobileNumber": (BuildContext context) => new LoginView(),
-      "/registration": (BuildContext context) => new Registration(),
       RouteNames.HOME_PAGE: (BuildContext context) => new MyHomeView(),
+      RouteNames.LANDING_PAGE: (BuildContext context) => LoginLandingView(),
       RouteNames.CART_VIEW: (BuildContext context) => CartView(),
       "/AccountsView": (BuildContext context) => AccountsView(),
       "/StoreDetailsView": (BuildContext context) => StoreDetailsView(),
@@ -47,7 +46,6 @@ class SetupRoutes {
       // "/Support": (BuildContext context) => Support(),
       "/profile": (BuildContext context) => ProfileView(),
       "/about": (BuildContext context) => AboutView(),
-      "/onBoarding": (BuildContext context) => OnboardingWidget(),
       RouteNames.PRODUCT_SEARCH: (BuildContext context) =>
           MerchantProductsSearchView(),
       RouteNames.PRODUCT_DETAILS: (BuildContext context) =>
@@ -89,4 +87,6 @@ class RouteNames {
   static const IMAGE_ZOOM_VIEW = "/imageZoomView";
   static const ORDER_DETAILS = "/order_details";
   static const ORDER_FEEDBACK_VIEW = "/feedback_view";
+  static const LANDING_PAGE = "/login_signup_landing";
+  static const LOGIN_VIEW = "/loginView";
 }
