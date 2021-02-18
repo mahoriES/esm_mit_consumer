@@ -1,5 +1,3 @@
-enum ENVIRONMENT { DEVELOPMENT, PRODUCTION }
-
 class StringConstants {
   // Shared Pref Key constants.
   static const tokenKey = 'token';
