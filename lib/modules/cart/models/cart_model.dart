@@ -1,5 +1,6 @@
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -251,6 +252,11 @@ class PlaceOrderResponse {
   double get orderTotalPriceInRupees => (this.orderTotal ?? 0) / 100;
   double get itemTotalPriceInRupees => (this.itemTotal ?? 0) / 100;
   double get otherChargesInRupees => (this.otherCharges ?? 0) / 100;
+
+  bool get isReadyToPickupByDA {
+    return this.orderStatus == OrderState.READY_FOR_PICKUP &&
+        this.deliveryType == DeliveryType.DeliveryToHome;
+  }
 
   /// returns a string in form of "x Items , Y Lists" referring to number of products and lists in that order.
   String get totalCountString {

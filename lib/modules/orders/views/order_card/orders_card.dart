@@ -47,7 +47,12 @@ class OrdersCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ActionButton(
-                    text: tr(stateData.actionButtonText, args: [" "]),
+                    text: tr(
+                      orderResponse.isReadyToPickupByDA
+                          ? "screen_order_status.processing"
+                          : stateData.actionButtonText,
+                      args: [" "],
+                    ),
                     onTap: snapshot.goToOrderDetails,
                     icon: stateData.icon,
                     isFilled: stateData.isActionButtonFilled,
