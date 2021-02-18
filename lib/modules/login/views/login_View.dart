@@ -8,7 +8,7 @@ import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
 import 'package:eSamudaay/modules/login/model/get_otp_request.dart';
 import 'package:eSamudaay/utilities/global.dart' as globals;
-import 'package:eSamudaay/utilities/stringConstants.dart';
+import 'package:eSamudaay/utilities/environment_config.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:regexed_validator/regexed_validator.dart';
@@ -163,7 +163,7 @@ class _LoginViewState extends State<LoginView> {
                                         snapshot.getOtpAction(
                                           GenerateOTPRequest(
                                               phone: _phoneNumber.phoneNumber,
-                                              third_party_id: StringConstants.thirdPartyId,
+                                              third_party_id: EnvironmentConfig.ThirdPartyID,
                                               isSignUp: snapshot.isSignUp),
                                         );
                                       }

@@ -1,16 +1,13 @@
-//Login
-
-import 'package:eSamudaay/utilities/stringConstants.dart';
+import 'package:eSamudaay/utilities/environment_config.dart';
 import 'package:flutter/material.dart';
 
 class ApiURL {
   static const eSamudayDevelopmentURL = "https://api.test.esamudaay.com/";
   static const liveURL = "https://api.esamudaay.com/";
 
-  static final baseURL =
-      StringConstants.environmentVariable == ENVIRONMENT.DEVELOPMENT
-          ? eSamudayDevelopmentURL
-          : liveURL;
+  static final baseURL = EnvironmentConfig.isProductionEnvironment
+      ? liveURL
+      : eSamudayDevelopmentURL;
 
   static const generateOTPUrl = "api/v1/auth/token/";
   static const generateOtpRegisterUrl = "api/v1/auth/user/";

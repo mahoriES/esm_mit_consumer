@@ -12,6 +12,7 @@ import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
+import 'package:eSamudaay/utilities/environment_config.dart';
 import 'package:eSamudaay/utilities/global.dart' as globals;
 import 'package:eSamudaay/utilities/stringConstants.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
@@ -43,7 +44,7 @@ class ValidateOtpAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     //6282742294//8113970370
     var request = state.authState.validateOTPRequest;
-    request.thirdPartyId = StringConstants.thirdPartyId;
+    request.thirdPartyId = EnvironmentConfig.ThirdPartyID;
     var response = await APIManager.shared.request(
         url: ApiURL.generateOTPUrl,
         params: request.toJson(),

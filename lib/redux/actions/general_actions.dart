@@ -2,7 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
-import 'package:eSamudaay/utilities/stringConstants.dart';
+import 'package:eSamudaay/utilities/environment_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:esamudaay_app_update/esamudaay_app_update.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ class CheckAppUpdateAction extends ReduxAction<AppState> {
         laterButtonText: tr('app_update.later'),
         updateButtonText: tr('app_update.update'),
         customThemeData: themesPackage.EsamudaayTheme.of(context),
-        packageName: StringConstants.packageName,
+        packageName: EnvironmentConfig.packageName,
         logoImage: Image.asset(
           ImagePathConstants.appLogo,
           height: 42,

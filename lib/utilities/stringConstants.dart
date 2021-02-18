@@ -1,16 +1,6 @@
 enum ENVIRONMENT { DEVELOPMENT, PRODUCTION }
 
 class StringConstants {
-  /// This value is assigned by server in order to access the esamudaay APIs.
-  /// Replace the value for thirdPartyId here.
-  static const thirdPartyId = "5d730376-72ed-478c-8d5e-1a3a6aee9815";
-  //
-
-  /// Switch environment value here to define the development/production phase.
-  /// for developement purpose, use ENVIRONMENT.DEVELOPMENT
-  /// for production, use ENVIRONMENT.PRODUCTION
-  static const ENVIRONMENT environmentVariable = ENVIRONMENT.DEVELOPMENT;
-
   // Shared Pref Key constants.
   static const tokenKey = 'token';
   static const skipKey = "skip";
@@ -26,8 +16,6 @@ class StringConstants {
 
   // link sharing constants
   static const sharingLinkPrefix = 'https://esamudaay.page.link';
-  static const packageName = 'com.esamudaay.customer';
-  static const appStoreId = '1532727652';
   static final linkPreviewTitle = (String storeName) =>
       'Hello! You can now order online from $storeName using this link.';
   static const linkPreviewMessage =
