@@ -239,11 +239,14 @@ class RazorpayCheckoutOptions extends Equatable {
 
   factory RazorpayCheckoutOptions.fromJson(Map<String, dynamic> json) {
     final String key = json['key'];
-    final int amount = json['amount'] ?? razorpayDefaultAmountInInt;
-    final String name = json['name'] ?? razorpayDefaultName;
+    final int amount =
+        json['amount'] ?? StringConstants.razorpayDefaultAmountInInt;
+    final String name = json['name'] ?? StringConstants.razorpayDefaultName;
     final String orderId = json['order_id'];
-    final int timeout = json['timeout'] ?? razorpayDefaultTimeout;
-    final String currency = json['currency'] ?? razorpayDefaultCurrency;
+    final int timeout =
+        json['timeout'] ?? StringConstants.razorpayDefaultTimeout;
+    final String currency =
+        json['currency'] ?? StringConstants.razorpayDefaultCurrency;
     final String description = json['description'] ?? '';
     final String phone = (json['prefill'] ?? const {})['contact'] ?? '';
     final String email = (json['prefill'] ?? const {})['email'] ?? '';

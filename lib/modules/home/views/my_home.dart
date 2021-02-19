@@ -10,7 +10,7 @@ import 'package:eSamudaay/modules/home/views/home_page_main_view.dart';
 import 'package:eSamudaay/modules/orders/views/orders_View.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/utilities/stringConstants.dart';
+import 'package:eSamudaay/utilities/environment_config.dart';
 import 'package:esamudaay_app_update/app_update_banner.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -74,7 +74,7 @@ class _MyHomeViewState extends State<MyHomeView> with TickerProviderStateMixin {
                         updateButtonText: tr('app_update.update').toUpperCase(),
                         customThemeData:
                             themesPackage.EsamudaayTheme.of(context),
-                        packageName: StringConstants.packageName,
+                        packageName: EnvironmentConfig.packageName,
                       )
                     : SizedBox.shrink(),
                 BottomNavigationBar(
