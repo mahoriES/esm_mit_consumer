@@ -25,7 +25,8 @@ class _OrderCardMessage extends StatelessWidget {
             )
           : orderStatus == OrderState.MERCHANT_ACCEPTED ||
                   orderStatus == OrderState.REQUESTING_TO_DA ||
-                  orderStatus == OrderState.ASSIGNED_TO_DA
+                  orderStatus == OrderState.ASSIGNED_TO_DA ||
+                  orderResponse.isReadyToPickupByDA
               ? Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(

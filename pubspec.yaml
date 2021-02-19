@@ -193,6 +193,7 @@ flutter:
     - assets/images/language_selection_backdrop.png
     - assets/images/login_signup_backdrop.png
     - assets/images/landing_page_banner.png
+    - assets/images/pay_icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
