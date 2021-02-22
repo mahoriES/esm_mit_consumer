@@ -1,13 +1,13 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/orders/views/widgets/order_action_button.dart';
+
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/order_action_button.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/order_card_header.dart';
-import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/generic_methods.dart';
@@ -26,11 +26,6 @@ class OrdersCard extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(orderResponse),
       builder: (context, snapshot) {
-        final OrderStateData stateData = OrderStateData.getStateData(
-          orderDetails: orderResponse,
-          context: context,
-        );
-
         return Card(
           elevation: 4,
           margin: const EdgeInsets.all(12),
@@ -61,52 +56,11 @@ class OrdersCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (stateData.secondaryAction !=
-                          SecondaryAction.NONE) ...[
-                        Flexible(
-                          child: stateData.secondaryAction ==
-                                  SecondaryAction.CANCEL
-                              ? CancelOrderButton(
-                                  onCancel: snapshot.onCancel,
-                                  orderCreationTimeDiffrenceInSeconds:
-                                      orderResponse
-                                          .orderCreationTimeDiffrenceInSeconds,
-                                )
-                              : stateData.secondaryAction ==
-                                      SecondaryAction.REORDER
-                                  ? ReorderButton(snapshot.onReorder)
-                                  : stateData.secondaryAction ==
-                                          SecondaryAction.PAY
-                                      ? PayButton(
-                                          onPay: () => showModalBottomSheet(
-                                            context: context,
-                                            isDismissible: false,
-                                            enableDrag: false,
-                                            builder: (context) =>
-                                                PaymentOptionsWidget(
-                                              showBackOption: true,
-                                              orderDetails: orderResponse,
-                                              onPaymentSuccess: () {},
-                                            ),
-                                          ),
-                                          orderResponse: orderResponse,
-                                        )
-                                      : SizedBox.shrink(),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                      Flexible(
-                        child: OrderDetailsButton(
-                          snapshot.goToOrderDetails,
-                          // If no Secondary Action is available , then order details button should be aligned in center.
-                          isCenterAligned:
-                              stateData.secondaryAction == SecondaryAction.NONE,
-                        ),
-                      ),
-                    ],
+                  child: OrderCardSecondaryButtonsRow(
+                    orderResponse: orderResponse,
+                    onCancel: snapshot.onCancel,
+                    onReorder: snapshot.onReorder,
+                    goToOrderDetails: snapshot.goToOrderDetails,
                   ),
                 ),
               ],
