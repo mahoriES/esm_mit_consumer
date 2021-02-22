@@ -22,7 +22,7 @@ class OrderState {
 // e.g. for cancelled/completed orders, it should be REORDER
 // for pending orders, it should be CANCEL
 // for processing orders, it should be PAY
-enum SecondaryAction { CANCEL, REORDER, PAY, SUPPORT }
+enum SecondaryAction { CANCEL, REORDER, PAY, NONE }
 
 enum PaymentOptions { Razorpay, COD }
 
@@ -42,6 +42,8 @@ class PaymentStatus {
 class OrderConstants {
   static const CancellationAllowedForSeconds = 20;
 }
+
+enum OrderTapActions { GO_TO_ORDER_DETAILS, PAY, PAY_AND_CONFIRM }
 
 class OrderStateData {
   final IconData icon;
@@ -63,6 +65,7 @@ class OrderStateData {
   // define animationBreakPoint as index where animation stops.
   final int animationBreakPoint;
   final bool showPaymentOption;
+  final OrderTapActions orderTapAction;
 
   OrderStateData({
     @required this.icon,
@@ -80,6 +83,7 @@ class OrderStateData {
     this.isOrderCancelled = false,
     this.animationBreakPoint,
     this.showPaymentOption = true,
+    @required this.orderTapAction,
   });
 
   static OrderStateData getStateData({
@@ -98,6 +102,7 @@ class OrderStateData {
           context,
           orderDetails.paymentInfo.canPayBeforeAccept,
           canCancelOrder,
+          orderDetails.paymentInfo.isPaymentDone,
         );
 
       case OrderState.MERCHANT_ACCEPTED:
@@ -115,7 +120,7 @@ class OrderStateData {
         return _orderCancelledState(context);
 
       case OrderState.READY_FOR_PICKUP:
-        return _readyForPickupState(context);
+        return _readyForPickupState(context, orderDetails.deliveryType);
 
       case OrderState.PICKED_UP_BY_DA:
         return _outForDeliveryState(context);
@@ -133,14 +138,13 @@ class OrderStateData {
     BuildContext context,
   ) {
     return OrderStateData(
-      actionButtonColor:
-          CustomTheme.of(context).colors.warningColor.withOpacity(0.2),
-      actionButtonTextColor: CustomTheme.of(context).colors.warningColor,
-      icon: Icons.watch_later_outlined,
-      actionButtonText: "screen_order_status.payment_pending",
+      actionButtonColor: CustomTheme.of(context).colors.positiveColor,
+      actionButtonTextColor: CustomTheme.of(context).colors.backgroundColor,
+      icon: Icons.check_circle_outline,
+      actionButtonText: "Pay  {amount}",
       isActionButtonFilled: true,
       secondaryAction:
-          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.SUPPORT,
+          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.NONE,
       stateProgressTagsList: [
         "screen_order_status.payment_pending",
         "screen_order_status.pending",
@@ -150,6 +154,8 @@ class OrderStateData {
       stateProgressBreakPoint: 0,
       stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
       stateProgressTagColor: CustomTheme.of(context).colors.textColor,
+      showPaymentOption: false,
+      orderTapAction: OrderTapActions.PAY,
     );
   }
 
@@ -157,6 +163,7 @@ class OrderStateData {
     BuildContext context,
     bool canPayBeforeAccept,
     bool canCancelOrder,
+    bool isPaymentDone,
   ) {
     return OrderStateData(
       actionButtonColor:
@@ -165,8 +172,11 @@ class OrderStateData {
       icon: Icons.watch_later_outlined,
       actionButtonText: "screen_order_status.pending",
       isActionButtonFilled: true,
-      secondaryAction:
-          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.SUPPORT,
+      secondaryAction: canCancelOrder
+          ? SecondaryAction.CANCEL
+          : canPayBeforeAccept || isPaymentDone
+              ? SecondaryAction.PAY
+              : SecondaryAction.NONE,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
@@ -177,6 +187,7 @@ class OrderStateData {
       stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
       stateProgressTagColor: CustomTheme.of(context).colors.textColor,
       showPaymentOption: canPayBeforeAccept,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 
@@ -187,7 +198,7 @@ class OrderStateData {
       icon: Icons.check_circle_outline,
       actionButtonText: "screen_order_status.confirm_order",
       isActionButtonFilled: true,
-      secondaryAction: SecondaryAction.SUPPORT,
+      secondaryAction: SecondaryAction.NONE,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
@@ -198,6 +209,8 @@ class OrderStateData {
       stateProgressBreakPointColor:
           CustomTheme.of(context).colors.backgroundColor,
       stateProgressTagColor: CustomTheme.of(context).colors.textColor,
+      showPaymentOption: false,
+      orderTapAction: OrderTapActions.PAY_AND_CONFIRM,
     );
   }
 
@@ -221,6 +234,7 @@ class OrderStateData {
       animationBreakPoint: 2,
       stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
       stateProgressTagColor: CustomTheme.of(context).colors.warningColor,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 
@@ -242,6 +256,7 @@ class OrderStateData {
           CustomTheme.of(context).colors.secondaryColor,
       stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       isOrderCancelled: true,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 
@@ -264,16 +279,20 @@ class OrderStateData {
           CustomTheme.of(context).colors.secondaryColor,
       stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       isOrderCancelled: true,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 
-  static OrderStateData _readyForPickupState(BuildContext context) {
+  static OrderStateData _readyForPickupState(
+      BuildContext context, String deliveryType) {
     return OrderStateData(
       actionButtonColor:
           CustomTheme.of(context).colors.warningColor.withOpacity(0.2),
       actionButtonTextColor: CustomTheme.of(context).colors.warningColor,
       icon: Icons.store_sharp,
-      actionButtonText: "screen_order_status.pickup",
+      actionButtonText: deliveryType == DeliveryType.DeliveryToHome
+          ? "screen_order_status.processing"
+          : "screen_order_status.pickup",
       isActionButtonFilled: false,
       secondaryAction: SecondaryAction.PAY,
       stateProgressTagsList: [
@@ -286,6 +305,7 @@ class OrderStateData {
       stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
       stateProgressTagColor: CustomTheme.of(context).colors.warningColor,
       isOrderConfirmed: true,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 
@@ -309,6 +329,7 @@ class OrderStateData {
           CustomTheme.of(context).colors.backgroundColor,
       stateProgressTagColor: CustomTheme.of(context).colors.positiveColor,
       isOrderConfirmed: true,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 
@@ -333,6 +354,7 @@ class OrderStateData {
       stateProgressTagColor: CustomTheme.of(context).colors.textColor,
       isOrderCompleted: true,
       isOrderConfirmed: true,
+      orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
     );
   }
 }

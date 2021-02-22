@@ -183,7 +183,7 @@ class PaymentInfo {
     dt = json['dt'];
     amount = json['amount'];
     paymentMadeVia = json['via'];
-    payBeforeOrder = json['pay_before_order'] ?? true;
+    payBeforeOrder = true; //json['pay_before_order'] ?? true;
     canPayBeforeAccept = false; //json['can_pay_before_accept'];
   }
 

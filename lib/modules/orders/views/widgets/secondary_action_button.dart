@@ -10,16 +10,10 @@ import 'package:flutter/material.dart';
 
 class CancelOrderButton extends StatefulWidget {
   final Function(String) onCancel;
-  final VoidCallback onSupport;
-  final VoidCallback onPay;
-  final bool canShowPaymentOption;
-  final PlaceOrderResponse orderResponse;
+  final int orderCreationTimeDiffrenceInSeconds;
   const CancelOrderButton({
     @required this.onCancel,
-    @required this.onSupport,
-    @required this.onPay,
-    @required this.canShowPaymentOption,
-    @required this.orderResponse,
+    @required this.orderCreationTimeDiffrenceInSeconds,
     Key key,
   }) : super(key: key);
 
@@ -35,12 +29,11 @@ class _CancelOrderButtonState extends State<CancelOrderButton>
 
   @override
   void initState() {
-    showCancelButton =
-        widget.orderResponse.orderCreationTimeDiffrenceInSeconds <
-            OrderConstants.CancellationAllowedForSeconds;
+    showCancelButton = widget.orderCreationTimeDiffrenceInSeconds <
+        OrderConstants.CancellationAllowedForSeconds;
 
     if (showCancelButton) {
-      final int diff = widget.orderResponse.orderCreationTimeDiffrenceInSeconds;
+      final int diff = widget.orderCreationTimeDiffrenceInSeconds;
 
       debugPrint("orderCreationTimeDiffrenceInSeconds => $diff");
 
@@ -79,15 +72,7 @@ class _CancelOrderButtonState extends State<CancelOrderButton>
   @override
   Widget build(BuildContext context) {
     if (!showCancelButton) {
-      if (widget.orderResponse.paymentInfo.canPayBeforeAccept &&
-          widget.canShowPaymentOption) {
-        return PayButton(
-          onPay: null,
-          orderResponse: null,
-        );
-      } else {
-        return SupportButton(() {});
-      }
+      return SizedBox.shrink();
     }
 
     return InkWell(
@@ -247,7 +232,12 @@ class PayButton extends StatelessWidget {
 
 class OrderDetailsButton extends StatelessWidget {
   final VoidCallback goToOrderDetails;
-  const OrderDetailsButton(this.goToOrderDetails, {Key key}) : super(key: key);
+  final bool isCenterAligned;
+  const OrderDetailsButton(
+    this.goToOrderDetails, {
+    this.isCenterAligned = false,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -256,17 +246,17 @@ class OrderDetailsButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: isCenterAligned
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.end,
           children: [
             Flexible(
               child: Text(
                 tr("screen_order.order_details"),
                 style: CustomTheme.of(context)
                     .textStyles
-                    .sectionHeading2
-                    .copyWith(
-                        color: CustomTheme.of(context).colors.primaryColor),
+                    .sectionHeading2Primary
+                    .copyWith(fontWeight: FontWeight.normal),
               ),
             ),
             const SizedBox(width: 8),
@@ -274,49 +264,17 @@ class OrderDetailsButton extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: CustomTheme.of(context).colors.primaryColor,
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: CustomTheme.of(context).colors.primaryColor,
+                  ),
                 ),
                 child: Icon(
                   Icons.chevron_right_outlined,
                   size: 16,
-                  color: CustomTheme.of(context).colors.backgroundColor,
+                  color: CustomTheme.of(context).colors.primaryColor,
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SupportButton extends StatelessWidget {
-  final VoidCallback onSupport;
-  const SupportButton(this.onSupport, {Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onSupport,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.call,
-              size: 30,
-              color: CustomTheme.of(context).colors.secondaryColor,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              "support",
-              style:
-                  CustomTheme.of(context).textStyles.sectionHeading2.copyWith(
-                        color: CustomTheme.of(context).colors.secondaryColor,
-                      ),
             ),
           ],
         ),

@@ -101,14 +101,13 @@ class OrderSummaryCard extends StatelessWidget {
                       child: stateData.secondaryAction == SecondaryAction.CANCEL
                           ? CancelOrderButton(
                               onCancel: snapshot.onCancel,
-                              onSupport: () {},
-                              onPay: null,
-                              orderResponse: snapshot.orderDetails,
-                              canShowPaymentOption: false,
+                              orderCreationTimeDiffrenceInSeconds: snapshot
+                                  .orderDetails
+                                  .orderCreationTimeDiffrenceInSeconds,
                             )
                           : stateData.secondaryAction == SecondaryAction.REORDER
                               ? ReorderButton(snapshot.onReorder)
-                              : SupportButton(() {}),
+                              : SizedBox.shrink(),
                     ),
                   ),
                   const SizedBox(height: 15),

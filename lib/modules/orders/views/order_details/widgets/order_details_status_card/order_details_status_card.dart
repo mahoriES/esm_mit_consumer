@@ -102,17 +102,16 @@ class OrderDetailsStatusCard extends StatelessWidget {
                           horizontal: 30, vertical: 20),
                       child: PaymentStatusTile(
                         orderResponse: snapshot.orderDetails,
-                        onPay: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isDismissible: false,
-                            enableDrag: false,
-                            builder: (context) => PaymentOptionsWidget(
-                              showBackOption: true,
-                              isCodAvailable: false,
-                            ),
-                          );
-                        },
+                        onPay: () => showModalBottomSheet(
+                          context: context,
+                          isDismissible: false,
+                          enableDrag: false,
+                          builder: (context) => PaymentOptionsWidget(
+                            showBackOption: true,
+                            orderDetails: snapshot.orderDetails,
+                            onPaymentSuccess: () {},
+                          ),
+                        ),
                       ),
                     ),
                   },
@@ -164,12 +163,10 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   PlaceOrderResponse orderDetails;
-  // Future<void> Function() payForOrder;
   Function(int) goToFeedbackView;
 
   _ViewModel.build({
     this.orderDetails,
-    // this.payForOrder,
     this.goToFeedbackView,
   });
 
@@ -177,15 +174,6 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       orderDetails: state.ordersState.selectedOrderDetails,
-      // payForOrder: () async => await dispatchFuture(
-      //   PaymentAction(
-      //     orderId: state.ordersState.selectedOrderDetails.orderId,
-      //     onSuccess: () => dispatch(
-      //       GetOrderDetailsAPIAction(
-      //           state.ordersState.selectedOrderDetails.orderId),
-      //     ),
-      //   ),
-      // ),
       goToFeedbackView: (ratingValue) => dispatch(
         NavigateAction.pushNamed(
           RouteNames.ORDER_FEEDBACK_VIEW,

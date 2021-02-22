@@ -1,29 +1,33 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
-import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:esamudaay_themes/esamudaay_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
 
 class PaymentOptionsWidget extends StatelessWidget {
   final bool showBackOption;
-  final bool isCodAvailable;
+  final PlaceOrderResponse orderDetails;
   final VoidCallback onPaymentSuccess;
   const PaymentOptionsWidget({
     this.showBackOption = true,
-    this.isCodAvailable = true,
-    this.onPaymentSuccess,
+    @required this.orderDetails,
+    @required this.onPaymentSuccess,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
-      model: _ViewModel(isCodAvailable),
+      model: _ViewModel(),
+      onInit: (store) async {
+        await store.dispatchFuture(ResetSelectedOrder(orderDetails));
+      },
       builder: (context, snapshot) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
@@ -82,19 +86,31 @@ class PaymentOptionsWidget extends StatelessWidget {
                             _paymentOptionData.image,
                             width: 35,
                             fit: BoxFit.fitWidth,
+                            color: _paymentOptionData.isEnabled
+                                ? null
+                                : EsamudaayTheme.of(context)
+                                    .colors
+                                    .disabledAreaColor,
                           ),
                           const SizedBox(width: 18),
                           Text.rich(
                             TextSpan(
                               text: _paymentOptionData.optionName,
-                              style:
-                                  CustomTheme.of(context).textStyles.cardTitle,
+                              style: _paymentOptionData.isEnabled
+                                  ? CustomTheme.of(context).textStyles.cardTitle
+                                  : CustomTheme.of(context)
+                                      .textStyles
+                                      .cardTitleFaded,
                               children: [
                                 TextSpan(
                                   text: "\n" + _paymentOptionData.details,
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .body2
+                                  style: (_paymentOptionData.isEnabled
+                                          ? CustomTheme.of(context)
+                                              .textStyles
+                                              .body2
+                                          : CustomTheme.of(context)
+                                              .textStyles
+                                              .body2Faded)
                                       .copyWith(height: 1.5),
                                 ),
                               ],
@@ -108,13 +124,16 @@ class PaymentOptionsWidget extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               ActionButton(
-                text: "Pay " + snapshot.totalAmount.withRupeePrefix,
-                icon: Icons.check_circle_outline,
-                isFilled: true,
-                buttonColor: CustomTheme.of(context).colors.positiveColor,
-                textColor: CustomTheme.of(context).colors.backgroundColor,
-                onTap: () => snapshot.payForOrder(onPaymentSuccess),
-              ),
+                  text: "Pay " + snapshot.totalAmount.withRupeePrefix,
+                  icon: Icons.check_circle_outline,
+                  isFilled: true,
+                  buttonColor: CustomTheme.of(context).colors.positiveColor,
+                  textColor: CustomTheme.of(context).colors.backgroundColor,
+                  onTap: () {
+                    snapshot
+                        .payForOrder(onPaymentSuccess)
+                        .timeout(const Duration(seconds: 10));
+                  }),
             ],
           ),
         );
@@ -124,13 +143,13 @@ class PaymentOptionsWidget extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  final bool isCodAvailable;
-  _ViewModel(this.isCodAvailable);
+  _ViewModel();
 
+  bool isCodAvailable;
   PaymentOptions selectedPaymentOption;
   double totalAmount;
   Function(PaymentOptions) changeSelectedPaymentOption;
-  Function(VoidCallback) payForOrder;
+  Future<void> Function(VoidCallback) payForOrder;
 
   _ViewModel.build({
     this.isCodAvailable,
@@ -143,28 +162,23 @@ class _ViewModel extends BaseModel<AppState> {
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      isCodAvailable: this.isCodAvailable,
+      isCodAvailable:
+          !state.ordersState.selectedOrder.paymentInfo.payBeforeOrder,
       selectedPaymentOption: state.ordersState.selectedPaymentOption,
-      totalAmount:
-          state.ordersState.selectedOrderDetails.orderTotalPriceInRupees ?? 0,
+      totalAmount: state.ordersState.selectedOrder.orderTotalPriceInRupees ?? 0,
       changeSelectedPaymentOption: (paymentOption) => dispatch(
         ChangeSelctedPaymentOption(paymentOption),
       ),
-      payForOrder: (onPaymentSucces) {
+      payForOrder: (onPaymentSucces) async {
+        dispatch(NavigateAction.pop());
         if (state.ordersState.selectedPaymentOption == PaymentOptions.COD) {
           // when COD option is selected.
         } else {
-          NavigateAction.pop();
-          dispatch(
+          await dispatchFuture(
             PaymentAction(
-              orderId: state.ordersState.selectedOrderDetails.orderId,
-              onSuccess: () async {
-                await dispatchFuture(
-                  GetOrderDetailsAPIAction(
-                      state.ordersState.selectedOrderDetails.orderId),
-                );
-                if (store.state.ordersState.selectedOrderDetails.paymentInfo
-                    .isPaymentDone) {
+              orderId: state.ordersState.selectedOrder.orderId,
+              onSuccess: (isPaymentDone) {
+                if (isPaymentDone) {
                   debugPrint("payment is done");
                   onPaymentSucces();
                 }

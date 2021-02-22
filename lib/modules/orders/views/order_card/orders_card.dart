@@ -1,5 +1,5 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/order_action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
@@ -7,12 +7,12 @@ import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.d
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/order_card_header.dart';
+import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/generic_methods.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
 part 'widgets/order_card_message.dart';
 
 class OrdersCard extends StatelessWidget {
@@ -50,21 +50,12 @@ class OrdersCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: ActionButton(
-                    text: tr(
-                      orderResponse.isReadyToPickupByDA
-                          ? "screen_order_status.processing"
-                          : stateData.actionButtonText,
-                      args: [" "],
-                    ),
-                    onTap: snapshot.goToOrderDetails,
-                    icon: stateData.icon,
-                    isFilled: stateData.isActionButtonFilled,
-                    textColor: stateData.actionButtonTextColor,
-                    buttonColor: stateData.actionButtonColor,
-                    showBorder: false,
-                    textStyle:
-                        CustomTheme.of(context).textStyles.sectionHeading3,
+                  child: OrderActionButton(
+                    goToOrderDetails: snapshot.goToOrderDetails,
+                    confirmOrder: () =>
+                        snapshot.confirmOrder(orderResponse.orderId),
+                    orderResponse: orderResponse,
+                    isOrderDetailsView: false,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -73,36 +64,47 @@ class OrdersCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      if (stateData.secondaryAction !=
+                          SecondaryAction.NONE) ...[
+                        Flexible(
+                          child: stateData.secondaryAction ==
+                                  SecondaryAction.CANCEL
+                              ? CancelOrderButton(
+                                  onCancel: snapshot.onCancel,
+                                  orderCreationTimeDiffrenceInSeconds:
+                                      orderResponse
+                                          .orderCreationTimeDiffrenceInSeconds,
+                                )
+                              : stateData.secondaryAction ==
+                                      SecondaryAction.REORDER
+                                  ? ReorderButton(snapshot.onReorder)
+                                  : stateData.secondaryAction ==
+                                          SecondaryAction.PAY
+                                      ? PayButton(
+                                          onPay: () => showModalBottomSheet(
+                                            context: context,
+                                            isDismissible: false,
+                                            enableDrag: false,
+                                            builder: (context) =>
+                                                PaymentOptionsWidget(
+                                              showBackOption: true,
+                                              orderDetails: orderResponse,
+                                              onPaymentSuccess: () {},
+                                            ),
+                                          ),
+                                          orderResponse: orderResponse,
+                                        )
+                                      : SizedBox.shrink(),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
                       Flexible(
-                        child: stateData.secondaryAction ==
-                                SecondaryAction.CANCEL
-                            ? CancelOrderButton(
-                                onCancel: snapshot.onCancel,
-                                onSupport: () {},
-                                onPay: () => snapshot
-                                    .payForOrder()
-                                    .timeout(const Duration(seconds: 10)),
-                                orderResponse: orderResponse,
-                                canShowPaymentOption: true,
-                              )
-                            : stateData.secondaryAction ==
-                                    SecondaryAction.REORDER
-                                ? ReorderButton(snapshot.onReorder)
-                                : stateData.secondaryAction ==
-                                            SecondaryAction.SUPPORT &&
-                                        (!stateData.showPaymentOption)
-                                    ? SupportButton(() {})
-                                    : PayButton(
-                                        onPay: () => snapshot
-                                            .payForOrder()
-                                            .timeout(
-                                                const Duration(seconds: 10)),
-                                        orderResponse: orderResponse,
-                                      ),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: OrderDetailsButton(snapshot.goToOrderDetails),
+                        child: OrderDetailsButton(
+                          snapshot.goToOrderDetails,
+                          // If no Secondary Action is available , then order details button should be aligned in center.
+                          isCenterAligned:
+                              stateData.secondaryAction == SecondaryAction.NONE,
+                        ),
                       ),
                     ],
                   ),
@@ -127,7 +129,7 @@ class _ViewModel extends BaseModel<AppState> {
   Function(int) goToFeedbackView;
   Function(String) onCancel;
   VoidCallback onReorder;
-  Future<void> Function() payForOrder;
+  Function(String) confirmOrder;
 
   _ViewModel.build({
     this.goToOrderDetails,
@@ -137,7 +139,7 @@ class _ViewModel extends BaseModel<AppState> {
     this.orderResponse,
     this.onCancel,
     this.onReorder,
-    this.payForOrder,
+    this.confirmOrder,
   }) : super(equals: [ratingValue, orderStatus]);
 
   @override
@@ -169,12 +171,7 @@ class _ViewModel extends BaseModel<AppState> {
           shouldFetchOrderDetails: true,
         ),
       ),
-      payForOrder: () async => await dispatchFuture(
-        PaymentAction(
-          orderId: this.orderResponse.orderId,
-          onSuccess: () => dispatch(GetOrderListAPIAction()),
-        ),
-      ),
+      confirmOrder: (orderId) => dispatch(AcceptOrderAPIAction(orderId)),
     );
   }
 }

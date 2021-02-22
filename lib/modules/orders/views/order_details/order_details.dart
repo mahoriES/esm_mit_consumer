@@ -35,7 +35,8 @@ class OrderDetailsView extends StatelessWidget {
             enableDrag: false,
             builder: (context) => PaymentOptionsWidget(
               showBackOption: true,
-              isCodAvailable: false,
+              orderDetails: store.state.ordersState.selectedOrderDetails,
+              onPaymentSuccess: () {},
             ),
           );
         }

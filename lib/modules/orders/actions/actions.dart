@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/payments/razorpay/utility.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
@@ -486,7 +487,7 @@ class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
 
 class PaymentAction extends ReduxAction<AppState> {
   final String orderId;
-  final VoidCallback onSuccess;
+  final Function(bool isPaymentDone) onSuccess;
   PaymentAction({
     @required this.orderId,
     @required this.onSuccess,
@@ -499,18 +500,22 @@ class PaymentAction extends ReduxAction<AppState> {
 
     RazorpayUtility().checkout(
       state.orderPaymentCheckoutOptions,
-      onSuccess: onSuccess,
+      onSuccess: () async {
+        await dispatchFuture(GetOrderListAPIAction());
+        await dispatchFuture(GetOrderDetailsAPIAction(orderId));
+        onSuccess(
+          state.ordersState.selectedOrderDetails.paymentInfo.isPaymentDone,
+        );
+      },
       onFailure: () {},
     );
 
     return state.copyWith(orderPaymentCheckoutOptions: null);
   }
 
-  void before() =>
-      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
+  void before() => LoadingDialog.show();
 
-  void after() =>
-      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.success));
+  void after() => LoadingDialog.hide();
 }
 
 class ToggleLoadingOrderListState extends ReduxAction<AppState> {
