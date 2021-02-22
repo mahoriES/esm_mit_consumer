@@ -42,8 +42,6 @@ class OrderDetailsView extends StatelessWidget {
         }
       },
       builder: (context, snapshot) {
-        debugPrint(
-            "orders details => ${snapshot.selectedOrder.orderCreationTimeDiffrenceInSeconds}");
         return Scaffold(
           appBar: CustomAppBar(
             title:

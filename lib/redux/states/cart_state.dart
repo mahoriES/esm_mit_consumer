@@ -37,7 +37,7 @@ class CartState {
       isImageUploading: false,
       selectedDeliveryType: null,
       customerNoteMessage: new TextEditingController(),
-      shouldPayBeforOrder: true,
+      shouldPayBeforOrder: false,
     );
   }
 

@@ -256,8 +256,6 @@ class GetMerchantPaymentDetails extends ReduxAction<AppState> {
 
   @override
   Future<AppState> reduce() async {
-    if (merchant?.businessId == null) return null;
-
     final response = await APIManager.shared.request(
       url: ApiURL.getBusinessesUrl + merchant?.businessId,
       params: null,

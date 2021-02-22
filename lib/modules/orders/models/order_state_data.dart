@@ -196,8 +196,9 @@ class OrderStateData {
       actionButtonColor: CustomTheme.of(context).colors.positiveColor,
       actionButtonTextColor: CustomTheme.of(context).colors.backgroundColor,
       icon: Icons.check_circle_outline,
-      actionButtonText:
-          payBeforeOrder ? "screen_order_status.confirm_order" : "Confirm",
+      actionButtonText: payBeforeOrder
+          ? "screen_order_status.pay_and_confirm_order"
+          : "screen_order_status.confirm_order",
       isActionButtonFilled: true,
       secondaryAction:
           payBeforeOrder ? SecondaryAction.NONE : SecondaryAction.PAY,
