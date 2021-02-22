@@ -111,7 +111,8 @@ class OrderStateData {
         return _processingOrderState(context);
 
       case OrderState.MERCHANT_UPDATED:
-        return _confirmAndPayState(context);
+        return _confirmAndPayState(
+            context, orderDetails.paymentInfo.payBeforeOrder);
 
       case OrderState.MERCHANT_CANCELLED:
         return _orderDeclinedState(context);
@@ -145,13 +146,7 @@ class OrderStateData {
       isActionButtonFilled: true,
       secondaryAction:
           canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.NONE,
-      stateProgressTagsList: [
-        // "",
-        "screen_order_status.payment_pending",
-        // "screen_order_status.pending",
-        // "screen_order_status.confirm",
-        // "screen_order_status.completed",
-      ],
+      stateProgressTagsList: [""],
       stateProgressBreakPoint: 0,
       stateProgressBreakPointColor:
           CustomTheme.of(context).colors.secondaryColor,
@@ -193,14 +188,19 @@ class OrderStateData {
     );
   }
 
-  static OrderStateData _confirmAndPayState(BuildContext context) {
+  static OrderStateData _confirmAndPayState(
+    BuildContext context,
+    bool payBeforeOrder,
+  ) {
     return OrderStateData(
       actionButtonColor: CustomTheme.of(context).colors.positiveColor,
       actionButtonTextColor: CustomTheme.of(context).colors.backgroundColor,
       icon: Icons.check_circle_outline,
-      actionButtonText: "screen_order_status.confirm_order",
+      actionButtonText:
+          payBeforeOrder ? "screen_order_status.confirm_order" : "Confirm",
       isActionButtonFilled: true,
-      secondaryAction: SecondaryAction.NONE,
+      secondaryAction:
+          payBeforeOrder ? SecondaryAction.NONE : SecondaryAction.PAY,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",

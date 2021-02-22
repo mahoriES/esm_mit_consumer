@@ -135,7 +135,7 @@ class _OrderCardMessage extends StatelessWidget {
                                           padding: const EdgeInsets.only(
                                               top: 20, bottom: 14),
                                           child: Text(
-                                            "Pay and complete your last order!",
+                                            "Pay and complete your order!",
                                             style: CustomTheme.of(context)
                                                 .textStyles
                                                 .cardTitleFaded,
