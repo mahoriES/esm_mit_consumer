@@ -1,8 +1,10 @@
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 // String constants for all possible state of any order.
 class OrderState {
+  static const CUSTOMER_PENDING = 'CUSTOMER_PENDING';
   static const CREATED = 'CREATED';
   static const MERCHANT_ACCEPTED = 'MERCHANT_ACCEPTED';
   static const MERCHANT_UPDATED = 'MERCHANT_UPDATED';
@@ -20,7 +22,9 @@ class OrderState {
 // e.g. for cancelled/completed orders, it should be REORDER
 // for pending orders, it should be CANCEL
 // for processing orders, it should be PAY
-enum SecondaryAction { CANCEL, REORDER, PAY }
+enum SecondaryAction { CANCEL, REORDER, PAY, SUPPORT }
+
+enum PaymentOptions { Razorpay, COD }
 
 // String constants for all possible payment state of any order.
 class PaymentStatus {
@@ -33,6 +37,10 @@ class PaymentStatus {
   static const INITIATED = 'INITIATED';
   static const APPROVED = 'APPROVED';
   static const REJECTED = 'REJECTED';
+}
+
+class OrderConstants {
+  static const CancellationAllowedForSeconds = 20;
 }
 
 class OrderStateData {
@@ -54,6 +62,7 @@ class OrderStateData {
   // in case when animation should stop before the actual breakPoint.
   // define animationBreakPoint as index where animation stops.
   final int animationBreakPoint;
+  final bool showPaymentOption;
 
   OrderStateData({
     @required this.icon,
@@ -70,12 +79,26 @@ class OrderStateData {
     this.isOrderConfirmed = false,
     this.isOrderCancelled = false,
     this.animationBreakPoint,
+    this.showPaymentOption = true,
   });
 
-  static OrderStateData getStateData(String state, BuildContext context) {
-    switch (state) {
+  static OrderStateData getStateData({
+    @required PlaceOrderResponse orderDetails,
+    @required BuildContext context,
+  }) {
+    final bool canCancelOrder =
+        orderDetails.orderCreationTimeDiffrenceInSeconds <
+            OrderConstants.CancellationAllowedForSeconds;
+
+    switch (orderDetails.orderStatus) {
+      case OrderState.CUSTOMER_PENDING:
+        return _pendigPaymentState(canCancelOrder, context);
       case OrderState.CREATED:
-        return _pendigConfirmationState(context);
+        return _pendigConfirmationState(
+          context,
+          orderDetails.paymentInfo.canPayBeforeAccept,
+          canCancelOrder,
+        );
 
       case OrderState.MERCHANT_ACCEPTED:
       case OrderState.REQUESTING_TO_DA:
@@ -105,7 +128,36 @@ class OrderStateData {
     }
   }
 
-  static OrderStateData _pendigConfirmationState(BuildContext context) {
+  static OrderStateData _pendigPaymentState(
+    bool canCancelOrder,
+    BuildContext context,
+  ) {
+    return OrderStateData(
+      actionButtonColor:
+          CustomTheme.of(context).colors.warningColor.withOpacity(0.2),
+      actionButtonTextColor: CustomTheme.of(context).colors.warningColor,
+      icon: Icons.watch_later_outlined,
+      actionButtonText: "screen_order_status.payment_pending",
+      isActionButtonFilled: true,
+      secondaryAction:
+          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.SUPPORT,
+      stateProgressTagsList: [
+        "screen_order_status.payment_pending",
+        "screen_order_status.pending",
+        "screen_order_status.confirm",
+        "screen_order_status.completed",
+      ],
+      stateProgressBreakPoint: 0,
+      stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
+      stateProgressTagColor: CustomTheme.of(context).colors.textColor,
+    );
+  }
+
+  static OrderStateData _pendigConfirmationState(
+    BuildContext context,
+    bool canPayBeforeAccept,
+    bool canCancelOrder,
+  ) {
     return OrderStateData(
       actionButtonColor:
           CustomTheme.of(context).colors.warningColor.withOpacity(0.2),
@@ -113,7 +165,8 @@ class OrderStateData {
       icon: Icons.watch_later_outlined,
       actionButtonText: "screen_order_status.pending",
       isActionButtonFilled: true,
-      secondaryAction: SecondaryAction.CANCEL,
+      secondaryAction:
+          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.SUPPORT,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
@@ -123,6 +176,7 @@ class OrderStateData {
       stateProgressBreakPoint: 1,
       stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
       stateProgressTagColor: CustomTheme.of(context).colors.textColor,
+      showPaymentOption: canPayBeforeAccept,
     );
   }
 
@@ -133,7 +187,7 @@ class OrderStateData {
       icon: Icons.check_circle_outline,
       actionButtonText: "screen_order_status.confirm_order",
       isActionButtonFilled: true,
-      secondaryAction: SecondaryAction.CANCEL,
+      secondaryAction: SecondaryAction.SUPPORT,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",

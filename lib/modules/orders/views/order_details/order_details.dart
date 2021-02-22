@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/bottom_widget.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_summary_card/order_summary_card.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/order_details_status_card.dart';
@@ -9,6 +10,7 @@ import 'package:eSamudaay/presentations/loading_indicator.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/custom_app_bar.dart';
 import 'package:eSamudaay/reusable_widgets/error_view.dart';
+import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +22,27 @@ class OrderDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
-      onInit: (store) {
-        store.dispatch(GetOrderDetailsAPIAction(
+      onInit: (store) async {
+        await store.dispatchFuture(GetOrderDetailsAPIAction(
           store.state.ordersState.selectedOrder?.orderId,
         ));
+
+        if (store.state.ordersState.selectedOrder?.orderStatus ==
+            OrderState.CUSTOMER_PENDING) {
+          showModalBottomSheet(
+            context: context,
+            isDismissible: false,
+            enableDrag: false,
+            builder: (context) => PaymentOptionsWidget(
+              showBackOption: true,
+              isCodAvailable: false,
+            ),
+          );
+        }
       },
       builder: (context, snapshot) {
+        debugPrint(
+            "orders details => ${snapshot.selectedOrder.orderCreationTimeDiffrenceInSeconds}");
         return Scaffold(
           appBar: CustomAppBar(
             title:

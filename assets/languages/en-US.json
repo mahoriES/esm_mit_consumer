@@ -216,6 +216,7 @@
     "feedback_dialog_message": "Your feedback helps us improve our processes to serve you better"
   },
   "screen_order_status": {
+    "payment_pending": "Payment Pending",
     "request_sent": "Request{}sent",
     "pending": "Pending{}Confirmation",
     "confirm": "Confirm{}and Pay",

@@ -184,7 +184,6 @@ class PlaceOrderAction extends ReduxAction<AppState> {
       if (response.status == ResponseStatus.success200) {
         final PlaceOrderResponse responseModel =
             PlaceOrderResponse.fromJson(response.data);
-        Fluttertoast.showToast(msg: tr("cart.order_placed"));
         await CartDataSource.resetCart();
         dispatch(GetCartFromLocal());
         dispatch(UpdateSelectedTabAction(1));

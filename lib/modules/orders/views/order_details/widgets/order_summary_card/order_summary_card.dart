@@ -26,9 +26,11 @@ class OrderSummaryCard extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) {
         final OrderStateData stateData = OrderStateData.getStateData(
-          snapshot.orderDetails.orderStatus,
-          context,
+          orderDetails: snapshot.orderDetails,
+          context: context,
         );
+
+        debugPrint("order summary => ${stateData.secondaryAction}");
 
         return Container(
           padding: const EdgeInsets.all(12),
@@ -97,10 +99,16 @@ class OrderSummaryCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: stateData.secondaryAction == SecondaryAction.CANCEL
-                          ? CancelOrderButton(snapshot.onCancel)
+                          ? CancelOrderButton(
+                              onCancel: snapshot.onCancel,
+                              onSupport: () {},
+                              onPay: null,
+                              orderResponse: snapshot.orderDetails,
+                              canShowPaymentOption: false,
+                            )
                           : stateData.secondaryAction == SecondaryAction.REORDER
                               ? ReorderButton(snapshot.onReorder)
-                              : SizedBox.shrink(),
+                              : SupportButton(() {}),
                     ),
                   ),
                   const SizedBox(height: 15),

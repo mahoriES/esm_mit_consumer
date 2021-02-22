@@ -3,8 +3,8 @@ import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
-import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/generic_methods.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,8 +20,8 @@ class OrderDetailsBottomWidget extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) {
         final OrderStateData stateData = OrderStateData.getStateData(
-          snapshot.orderDetails.orderStatus,
-          context,
+          orderDetails: snapshot.orderDetails,
+          context: context,
         );
 
         return Card(
@@ -205,18 +205,8 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                 onTap: () {
                   if (snapshot.orderDetails.orderStatus ==
                       OrderState.MERCHANT_UPDATED) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => CustomConfirmationDialog(
-                        title: tr("screen_order.accept_order_message"),
-                        positiveAction: () {
-                          Navigator.pop(context);
-                          snapshot.confirmOrder(snapshot.orderDetails.orderId);
-                        },
-                        positiveButtonText: tr("screen_order.Confirm"),
-                        negativeButtonText: tr("common.back"),
-                      ),
-                    );
+                    snapshot.confirmOrder(
+                        snapshot.orderDetails.orderId, context);
                   }
                 },
                 icon: stateData.icon,
@@ -238,7 +228,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   PlaceOrderResponse orderDetails;
-  Function(String) confirmOrder;
+  Function(String, BuildContext) confirmOrder;
 
   _ViewModel.build({
     this.orderDetails,
@@ -249,7 +239,24 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       orderDetails: state.ordersState.selectedOrderDetails,
-      confirmOrder: (orderId) => dispatch(AcceptOrderAPIAction(orderId)),
+      confirmOrder: (orderId, context) async {
+        if (state.ordersState.selectedOrderDetails.paymentInfo.payBeforeOrder &&
+            !state.ordersState.selectedOrderDetails.paymentInfo.isPaymentDone) {
+          await showModalBottomSheet(
+            context: context,
+            isDismissible: false,
+            enableDrag: false,
+            builder: (context) => PaymentOptionsWidget(
+              showBackOption: true,
+              isCodAvailable: false,
+              onPaymentSuccess: () {
+                dispatch(AcceptOrderAPIAction(orderId));
+              },
+            ),
+          );
+        }
+        dispatch(AcceptOrderAPIAction(orderId));
+      },
     );
   }
 

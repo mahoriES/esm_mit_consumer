@@ -560,3 +560,17 @@ class ResetShowFeedbackDialog extends ReduxAction<AppState> {
     );
   }
 }
+
+class ChangeSelctedPaymentOption extends ReduxAction<AppState> {
+  PaymentOptions paymentOption;
+  ChangeSelctedPaymentOption(this.paymentOption);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        selectedPaymentOption: paymentOption,
+      ),
+    );
+  }
+}

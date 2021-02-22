@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
-import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/order_progress_indicator.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
@@ -9,6 +8,7 @@ import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_detai
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/business_image_with_logo.dart';
 import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
+import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +22,8 @@ class OrderDetailsStatusCard extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) {
         final OrderStateData stateData = OrderStateData.getStateData(
-          snapshot.orderDetails.orderStatus,
-          context,
+          orderDetails: snapshot.orderDetails,
+          context: context,
         );
 
         return Container(
@@ -88,14 +88,11 @@ class OrderDetailsStatusCard extends StatelessWidget {
                   const SizedBox(height: 30),
 
                   // show progress indicator
-                  OrderProgressIndicator(
-                    OrderStateData.getStateData(
-                        snapshot.orderDetails.orderStatus, context),
-                  ),
+                  OrderProgressIndicator(stateData),
                   const SizedBox(height: 28),
 
                   // if order is confirmed , show payment info.
-                  if (stateData.isOrderConfirmed) ...{
+                  if (stateData.showPaymentOption) ...{
                     Divider(
                       color: CustomTheme.of(context).colors.dividerColor,
                       thickness: 1,
@@ -105,7 +102,17 @@ class OrderDetailsStatusCard extends StatelessWidget {
                           horizontal: 30, vertical: 20),
                       child: PaymentStatusTile(
                         orderResponse: snapshot.orderDetails,
-                        onPay: snapshot.payForOrder,
+                        onPay: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isDismissible: false,
+                            enableDrag: false,
+                            builder: (context) => PaymentOptionsWidget(
+                              showBackOption: true,
+                              isCodAvailable: false,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   },
@@ -157,12 +164,12 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   PlaceOrderResponse orderDetails;
-  Future<void> Function() payForOrder;
+  // Future<void> Function() payForOrder;
   Function(int) goToFeedbackView;
 
   _ViewModel.build({
     this.orderDetails,
-    this.payForOrder,
+    // this.payForOrder,
     this.goToFeedbackView,
   });
 
@@ -170,15 +177,15 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       orderDetails: state.ordersState.selectedOrderDetails,
-      payForOrder: () async => await dispatchFuture(
-        PaymentAction(
-          orderId: state.ordersState.selectedOrderDetails.orderId,
-          onSuccess: () => dispatch(
-            GetOrderDetailsAPIAction(
-                state.ordersState.selectedOrderDetails.orderId),
-          ),
-        ),
-      ),
+      // payForOrder: () async => await dispatchFuture(
+      //   PaymentAction(
+      //     orderId: state.ordersState.selectedOrderDetails.orderId,
+      //     onSuccess: () => dispatch(
+      //       GetOrderDetailsAPIAction(
+      //           state.ordersState.selectedOrderDetails.orderId),
+      //     ),
+      //   ),
+      // ),
       goToFeedbackView: (ratingValue) => dispatch(
         NavigateAction.pushNamed(
           RouteNames.ORDER_FEEDBACK_VIEW,

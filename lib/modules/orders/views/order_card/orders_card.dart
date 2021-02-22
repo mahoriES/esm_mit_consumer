@@ -21,11 +21,15 @@ class OrdersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        "orders acrd => ${orderResponse.orderCreationTimeDiffrenceInSeconds}");
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(orderResponse),
       builder: (context, snapshot) {
-        final OrderStateData stateData =
-            OrderStateData.getStateData(orderResponse.orderStatus, context);
+        final OrderStateData stateData = OrderStateData.getStateData(
+          orderDetails: orderResponse,
+          context: context,
+        );
 
         return Card(
           elevation: 4,
@@ -72,16 +76,29 @@ class OrdersCard extends StatelessWidget {
                       Flexible(
                         child: stateData.secondaryAction ==
                                 SecondaryAction.CANCEL
-                            ? CancelOrderButton(snapshot.onCancel)
+                            ? CancelOrderButton(
+                                onCancel: snapshot.onCancel,
+                                onSupport: () {},
+                                onPay: () => snapshot
+                                    .payForOrder()
+                                    .timeout(const Duration(seconds: 10)),
+                                orderResponse: orderResponse,
+                                canShowPaymentOption: true,
+                              )
                             : stateData.secondaryAction ==
                                     SecondaryAction.REORDER
                                 ? ReorderButton(snapshot.onReorder)
-                                : PayButton(
-                                    onPay: () => snapshot
-                                        .payForOrder()
-                                        .timeout(const Duration(seconds: 10)),
-                                    orderResponse: orderResponse,
-                                  ),
+                                : stateData.secondaryAction ==
+                                            SecondaryAction.SUPPORT &&
+                                        (!stateData.showPaymentOption)
+                                    ? SupportButton(() {})
+                                    : PayButton(
+                                        onPay: () => snapshot
+                                            .payForOrder()
+                                            .timeout(
+                                                const Duration(seconds: 10)),
+                                        orderResponse: orderResponse,
+                                      ),
                       ),
                       const SizedBox(width: 8),
                       Flexible(

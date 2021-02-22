@@ -171,6 +171,8 @@ class PaymentInfo {
   /// than the order total billed amount
   ///
   int amount;
+  bool payBeforeOrder;
+  bool canPayBeforeAccept;
 
   PaymentInfo(
       {this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
@@ -181,6 +183,8 @@ class PaymentInfo {
     dt = json['dt'];
     amount = json['amount'];
     paymentMadeVia = json['via'];
+    payBeforeOrder = json['pay_before_order'] ?? true;
+    canPayBeforeAccept = false; //json['can_pay_before_accept'];
   }
 
   double get amountInRupees => (this.amount ?? 0) / 100;
@@ -219,6 +223,8 @@ class PaymentInfo {
     data['dt'] = this.dt;
     data['via'] = paymentMadeVia;
     data['amount'] = amount;
+    data['pay_before_order'] = this.payBeforeOrder;
+    data['can_pay_before_accept'] = this.canPayBeforeAccept;
     return data;
   }
 }

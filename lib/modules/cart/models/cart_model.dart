@@ -231,6 +231,12 @@ class PlaceOrderResponse {
         DateTime.parse(this.created).toLocal(),
       );
 
+  int get orderCreationTimeDiffrenceInSeconds {
+    return DateTime.now()
+        .difference(DateTime.parse(this.created).toLocal())
+        .inSeconds;
+  }
+
   String get createdDate => DateFormat('d MMM yyyy').format(
         DateTime.parse(this.created).toLocal(),
       );

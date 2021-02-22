@@ -22,6 +22,8 @@ class ImagePathConstants {
   static const signupLoginBackdrop = _prefix + "login_signup_backdrop.png";
   static const landingPageBanner = _prefix + "landing_page_banner.png";
   static const paymentGreenIcon = _prefix + "pay_icon.png";
+  static const cashIcon = _prefix + "icon_cash.png";
+  static const razorpayLogo = _prefix + "RazorPay_logo.png";
 }
 
 class LottiePathConstants {
