@@ -13,6 +13,7 @@ class CartState {
   final CartCharges charges;
   final bool isCartLoading;
   final bool isImageUploading;
+  final bool shouldPayBeforOrder;
 
   CartState({
     @required this.localCartItems,
@@ -23,6 +24,7 @@ class CartState {
     @required this.charges,
     @required this.isCartLoading,
     @required this.isImageUploading,
+    @required this.shouldPayBeforOrder,
   });
 
   factory CartState.initial() {
@@ -35,6 +37,7 @@ class CartState {
       isImageUploading: false,
       selectedDeliveryType: null,
       customerNoteMessage: new TextEditingController(),
+      shouldPayBeforOrder: true,
     );
   }
 
@@ -59,6 +62,7 @@ class CartState {
     bool isCartLoading,
     String selectedDeliveryType,
     bool isImageUploading,
+    bool shouldPayBeforOrder,
   }) {
     return new CartState(
       customerNoteImages: customerNoteImages ?? this.customerNoteImages,
@@ -70,6 +74,7 @@ class CartState {
       customerNoteMessage: this.customerNoteMessage,
       selectedDeliveryType: selectedDeliveryType ?? this.selectedDeliveryType,
       isImageUploading: isImageUploading ?? this.isImageUploading,
+      shouldPayBeforOrder: shouldPayBeforOrder ?? this.shouldPayBeforOrder,
     );
   }
 }

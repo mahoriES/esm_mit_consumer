@@ -52,21 +52,24 @@ class Business {
   bool hasDelivery;
   List<OrderItems> previouslyOrderedItems;
   List<CategoriesNew> augmentedCategories;
+  BusinessPaymentInfo businessPaymentInfo;
 
-  Business(
-      {this.businessId,
-      this.businessName,
-      this.isOpen,
-      this.isBookmarked,
-      this.itemsCount,
-      this.address,
-      this.description,
-      this.notice,
-      this.augmentedCategories,
-      this.images,
-      this.phones,
-      this.previouslyOrderedItems,
-      this.hasDelivery});
+  Business({
+    this.businessId,
+    this.businessName,
+    this.isOpen,
+    this.isBookmarked,
+    this.itemsCount,
+    this.address,
+    this.description,
+    this.notice,
+    this.augmentedCategories,
+    this.images,
+    this.phones,
+    this.previouslyOrderedItems,
+    this.hasDelivery,
+    this.businessPaymentInfo,
+  });
 
   Business.fromJson(Map<String, dynamic> json) {
     itemsCount = json['items_count'];
@@ -84,8 +87,7 @@ class Business {
         images.add(new Photo.fromJson(v));
       });
     }
-    if (json['notice'] != null)
-      notice = json['notice'].toString();
+    if (json['notice'] != null) notice = json['notice'].toString();
     phones = json['phones'] != null ? json['phones'].cast<String>() : [];
     hasDelivery = json['has_delivery'];
     if (json['ag_orderitems'] != null && json['ag_orderitems'] is List) {
@@ -96,9 +98,12 @@ class Business {
     }
     if (json['ag_cat'] != null && json['ag_cat'] is List) {
       augmentedCategories = List<CategoriesNew>();
-      json['ag_cat'].forEach((v){
+      json['ag_cat'].forEach((v) {
         augmentedCategories.add(CategoriesNew.fromJson(v));
       });
+    }
+    if (json["payment_info"] != null) {
+      businessPaymentInfo = BusinessPaymentInfo.fromJson(json["payment_info"]);
     }
   }
 
@@ -113,32 +118,31 @@ class Business {
     if (this.address != null) {
       data['address'] = this.address.toJson();
     }
-    if (this.notice != null)
-      data['notice'] = this.notice;
+    if (this.notice != null) data['notice'] = this.notice;
     if (this.images != null) {
       data['images'] = this.images.map((v) => v.toJson()).toList();
     }
     data['phones'] = this.phones;
     data['has_delivery'] = this.hasDelivery;
+    data["payment_info"] = this.businessPaymentInfo?.toJson();
     return data;
   }
 
-  Business.clone(Business business) : this(
-      businessId: business.businessId,
-      isBookmarked: business.isBookmarked,
-      businessName: business.businessName,
-      itemsCount: business.itemsCount,
-      isOpen: business.isOpen,
-      address: business.address,
-      description: business.description,
-      images: business.images,
-      notice: business.notice,
-      hasDelivery: business.hasDelivery,
-      phones: business.phones,
-      augmentedCategories: business.augmentedCategories,
-      previouslyOrderedItems: business.previouslyOrderedItems
-  );
-
+  Business.clone(Business business)
+      : this(
+            businessId: business.businessId,
+            isBookmarked: business.isBookmarked,
+            businessName: business.businessName,
+            itemsCount: business.itemsCount,
+            isOpen: business.isOpen,
+            address: business.address,
+            description: business.description,
+            images: business.images,
+            notice: business.notice,
+            hasDelivery: business.hasDelivery,
+            phones: business.phones,
+            augmentedCategories: business.augmentedCategories,
+            previouslyOrderedItems: business.previouslyOrderedItems);
 }
 
 class AddressNew {
@@ -404,6 +408,36 @@ class Images {
     data['photo_id'] = this.photoId;
     data['photo_url'] = this.photoUrl;
     data['content_type'] = this.contentType;
+    return data;
+  }
+}
+
+class BusinessPaymentInfo {
+  String upi;
+  bool upiActive;
+  bool payBeforeOrder;
+  bool canPayBeforeAccept;
+
+  BusinessPaymentInfo({
+    this.upi,
+    this.upiActive,
+    this.payBeforeOrder,
+    this.canPayBeforeAccept,
+  });
+
+  BusinessPaymentInfo.fromJson(Map<String, dynamic> json) {
+    upi = json['upi'];
+    upiActive = json['upi_active'];
+    payBeforeOrder = json['pay_before_order'] ?? false;
+    canPayBeforeAccept = json['can_pay_before_accept'] ?? false;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['upi'] = this.upi;
+    data['upi_active'] = this.upiActive;
+    data['pay_before_order'] = this.payBeforeOrder;
+    data['can_pay_before_accept'] = this.canPayBeforeAccept;
     return data;
   }
 }

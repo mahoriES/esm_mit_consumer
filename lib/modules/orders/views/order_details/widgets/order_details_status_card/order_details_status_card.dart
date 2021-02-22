@@ -85,11 +85,24 @@ class OrderDetailsStatusCard extends StatelessWidget {
                       const SizedBox(width: 29),
                     ],
                   ),
-                  const SizedBox(height: 30),
 
                   // show progress indicator
-                  OrderProgressIndicator(stateData),
-                  const SizedBox(height: 28),
+                  if (snapshot.orderDetails.orderStatus !=
+                      OrderState.CUSTOMER_PENDING) ...{
+                    const SizedBox(height: 30),
+                    OrderProgressIndicator(stateData),
+                    const SizedBox(height: 28),
+                  } else ...{
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 28),
+                      child: Text(
+                        "Payment Pending for your Order!",
+                        style: CustomTheme.of(context)
+                            .textStyles
+                            .cardTitleSecondary,
+                      ),
+                    ),
+                  },
 
                   // if order is confirmed , show payment info.
                   if (stateData.showPaymentOption) ...{

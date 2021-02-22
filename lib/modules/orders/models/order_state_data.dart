@@ -146,14 +146,16 @@ class OrderStateData {
       secondaryAction:
           canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.NONE,
       stateProgressTagsList: [
+        // "",
         "screen_order_status.payment_pending",
-        "screen_order_status.pending",
-        "screen_order_status.confirm",
-        "screen_order_status.completed",
+        // "screen_order_status.pending",
+        // "screen_order_status.confirm",
+        // "screen_order_status.completed",
       ],
       stateProgressBreakPoint: 0,
-      stateProgressBreakPointColor: CustomTheme.of(context).colors.warningColor,
-      stateProgressTagColor: CustomTheme.of(context).colors.textColor,
+      stateProgressBreakPointColor:
+          CustomTheme.of(context).colors.secondaryColor,
+      stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       showPaymentOption: false,
       orderTapAction: OrderTapActions.PAY,
     );

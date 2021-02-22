@@ -183,8 +183,8 @@ class PaymentInfo {
     dt = json['dt'];
     amount = json['amount'];
     paymentMadeVia = json['via'];
-    payBeforeOrder = true; //json['pay_before_order'] ?? true;
-    canPayBeforeAccept = false; //json['can_pay_before_accept'];
+    payBeforeOrder = json['pay_before_order'] ?? false;
+    canPayBeforeAccept = json['can_pay_before_accept'] ?? false;
   }
 
   double get amountInRupees => (this.amount ?? 0) / 100;

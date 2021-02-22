@@ -23,6 +23,7 @@ class ImagePathConstants {
   static const landingPageBanner = _prefix + "landing_page_banner.png";
   static const paymentGreenIcon = _prefix + "pay_icon.png";
   static const cashIcon = _prefix + "icon_cash.png";
+  static const cashGreyIcon = _prefix + "cash_grey_icon.png";
   static const razorpayLogo = _prefix + "RazorPay_logo.png";
 }
 

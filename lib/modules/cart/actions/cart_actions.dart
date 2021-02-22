@@ -38,6 +38,7 @@ class GetCartFromLocal extends ReduxAction<AppState> {
       } else {
         // fetch order charges if the cart data is not null.
         dispatch(GetOrderTaxAction(merchant));
+        dispatch(GetMerchantPaymentDetails(merchant));
       }
 
       return state.copyWith(
@@ -108,6 +109,7 @@ class AddToCartLocalAction extends ReduxAction<AppState> {
             await CartDataSource.getListOfProducts();
         // fetch order charges for selected merchant.
         dispatch(GetOrderTaxAction(selectedMerchant));
+        dispatch(GetMerchantPaymentDetails(selectedMerchant));
 
         return state.copyWith(
           cartState: state.cartState.copyWith(
@@ -232,6 +234,44 @@ class GetOrderTaxAction extends ReduxAction<AppState> {
       final CartCharges cartCharges = CartCharges.fromJson(response.data);
       return state.copyWith(
         cartState: state.cartState.copyWith(charges: cartCharges),
+      );
+    } else {
+      Fluttertoast.showToast(
+          msg: response.data['message'] ?? tr("common.some_error_occured"));
+      return null;
+    }
+  }
+
+  @override
+  void before() => dispatch(ToggleCartLoadingState(true));
+
+  @override
+  void after() => dispatch(ToggleCartLoadingState(false));
+}
+
+class GetMerchantPaymentDetails extends ReduxAction<AppState> {
+  Business merchant;
+
+  GetMerchantPaymentDetails(this.merchant);
+
+  @override
+  Future<AppState> reduce() async {
+    if (merchant?.businessId == null) return null;
+
+    final response = await APIManager.shared.request(
+      url: ApiURL.getBusinessesUrl + merchant?.businessId,
+      params: null,
+      requestType: RequestType.get,
+    );
+
+    if (response.status == ResponseStatus.success200) {
+      final Business businessDetails = Business.fromJson(response.data);
+
+      return state.copyWith(
+        cartState: state.cartState.copyWith(
+          shouldPayBeforOrder:
+              businessDetails.businessPaymentInfo?.payBeforeOrder ?? false,
+        ),
       );
     } else {
       Fluttertoast.showToast(

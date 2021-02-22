@@ -6,7 +6,6 @@ import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
-import 'package:esamudaay_themes/esamudaay_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
 
@@ -86,11 +85,6 @@ class PaymentOptionsWidget extends StatelessWidget {
                             _paymentOptionData.image,
                             width: 35,
                             fit: BoxFit.fitWidth,
-                            color: _paymentOptionData.isEnabled
-                                ? null
-                                : EsamudaayTheme.of(context)
-                                    .colors
-                                    .disabledAreaColor,
                           ),
                           const SizedBox(width: 18),
                           Text.rich(
@@ -202,7 +196,9 @@ class _ViewModel extends BaseModel<AppState> {
       new _PaymentOptionsData(
         optionName: "Cash On Delivery / Pickup",
         details: "Pay cash on receiving the order",
-        image: ImagePathConstants.cashIcon,
+        image: isCodAvailable
+            ? ImagePathConstants.cashIcon
+            : ImagePathConstants.cashGreyIcon,
         value: PaymentOptions.COD,
         isEnabled: isCodAvailable,
       ),
