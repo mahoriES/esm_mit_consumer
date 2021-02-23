@@ -98,19 +98,12 @@ class OrderStateData {
       case OrderState.CUSTOMER_PENDING:
         return _pendigPaymentState(canCancelOrder, context);
       case OrderState.CREATED:
-        // If payment is already done then merchant won't be able to update the order.
-        // In that case we shouldn't show message "pending confirmation"
-        // Instead it should be 'Processing order".
-        if (orderDetails.paymentInfo.isPaymentDone) {
-          return _processingOrderState(context);
-        } else {
-          return _pendigConfirmationState(
-            context,
-            orderDetails.paymentInfo.canPayBeforeAccept,
-            canCancelOrder,
-            orderDetails.paymentInfo.isPaymentDone,
-          );
-        }
+        return _pendigConfirmationState(
+          context,
+          orderDetails.paymentInfo.canPayBeforeAccept,
+          canCancelOrder,
+          orderDetails.paymentInfo.isPaymentDone,
+        );
         break;
 
       case OrderState.MERCHANT_ACCEPTED:
