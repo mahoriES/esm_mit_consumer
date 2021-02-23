@@ -107,7 +107,10 @@ class OrderSummaryCard extends StatelessWidget {
                             )
                           : stateData.secondaryAction == SecondaryAction.REORDER
                               ? ReorderButton(snapshot.onReorder)
-                              : SizedBox.shrink(),
+                              : stateData.secondaryAction ==
+                                      SecondaryAction.REJECT
+                                  ? RejectOrderButton(snapshot.onCancel)
+                                  : SizedBox.shrink(),
                     ),
                   ),
                   const SizedBox(height: 15),

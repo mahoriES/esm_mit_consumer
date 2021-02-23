@@ -287,3 +287,36 @@ class OrderDetailsButton extends StatelessWidget {
     );
   }
 }
+
+class RejectOrderButton extends StatelessWidget {
+  final Function(String) onReject;
+  const RejectOrderButton(this.onReject, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => CancelOrderPrompt(onReject),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.clear,
+              color: CustomTheme.of(context).colors.secondaryColor,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              tr("Reject Order"),
+              style: CustomTheme.of(context).textStyles.sectionHeading2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

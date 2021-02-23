@@ -43,23 +43,25 @@ class _OrderCardSecondaryButtonsRowState
                         .orderResponse.orderCreationTimeDiffrenceInSeconds,
                     onAnimationComplete: () => setState(() {}),
                   )
-                : stateData.secondaryAction == SecondaryAction.REORDER
-                    ? ReorderButton(widget.onReorder)
-                    : stateData.secondaryAction == SecondaryAction.PAY
-                        ? PayButton(
-                            onPay: () => showModalBottomSheet(
-                              context: context,
-                              isDismissible: false,
-                              enableDrag: false,
-                              builder: (context) => PaymentOptionsWidget(
-                                showBackOption: true,
-                                orderDetails: widget.orderResponse,
-                                onPaymentSuccess: () {},
-                              ),
-                            ),
-                            orderResponse: widget.orderResponse,
-                          )
-                        : SizedBox.shrink(),
+                : stateData.secondaryAction == SecondaryAction.REJECT
+                    ? RejectOrderButton(widget.onCancel)
+                    : stateData.secondaryAction == SecondaryAction.REORDER
+                        ? ReorderButton(widget.onReorder)
+                        : stateData.secondaryAction == SecondaryAction.PAY
+                            ? PayButton(
+                                onPay: () => showModalBottomSheet(
+                                  context: context,
+                                  isDismissible: false,
+                                  enableDrag: false,
+                                  builder: (context) => PaymentOptionsWidget(
+                                    showBackOption: true,
+                                    orderDetails: widget.orderResponse,
+                                    onPaymentSuccess: () {},
+                                  ),
+                                ),
+                                orderResponse: widget.orderResponse,
+                              )
+                            : SizedBox.shrink(),
           ),
           const SizedBox(width: 8),
         ],

@@ -22,7 +22,7 @@ class OrderState {
 // e.g. for cancelled/completed orders, it should be REORDER
 // for pending orders, it should be CANCEL
 // for processing orders, it should be PAY
-enum SecondaryAction { CANCEL, REORDER, PAY, NONE }
+enum SecondaryAction { CANCEL, REORDER, PAY, REJECT, NONE }
 
 enum PaymentOptions { Razorpay, COD }
 
@@ -98,12 +98,20 @@ class OrderStateData {
       case OrderState.CUSTOMER_PENDING:
         return _pendigPaymentState(canCancelOrder, context);
       case OrderState.CREATED:
-        return _pendigConfirmationState(
-          context,
-          orderDetails.paymentInfo.canPayBeforeAccept,
-          canCancelOrder,
-          orderDetails.paymentInfo.isPaymentDone,
-        );
+        // If payment is already done then merchant won't be able to update the order.
+        // In that case we shouldn't show message "pending confirmation"
+        // Instead it should be 'Processing order".
+        if (orderDetails.paymentInfo.isPaymentDone) {
+          return _processingOrderState(context);
+        } else {
+          return _pendigConfirmationState(
+            context,
+            orderDetails.paymentInfo.canPayBeforeAccept,
+            canCancelOrder,
+            orderDetails.paymentInfo.isPaymentDone,
+          );
+        }
+        break;
 
       case OrderState.MERCHANT_ACCEPTED:
       case OrderState.REQUESTING_TO_DA:
@@ -112,7 +120,9 @@ class OrderStateData {
 
       case OrderState.MERCHANT_UPDATED:
         return _confirmAndPayState(
-            context, orderDetails.paymentInfo.payBeforeOrder);
+          context,
+          orderDetails.paymentInfo.payBeforeOrder,
+        );
 
       case OrderState.MERCHANT_CANCELLED:
         return _orderDeclinedState(context);
@@ -200,8 +210,7 @@ class OrderStateData {
           ? "screen_order_status.pay_and_confirm_order"
           : "screen_order_status.confirm_order",
       isActionButtonFilled: true,
-      secondaryAction:
-          payBeforeOrder ? SecondaryAction.NONE : SecondaryAction.PAY,
+      secondaryAction: SecondaryAction.REJECT,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
@@ -260,6 +269,7 @@ class OrderStateData {
       stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       isOrderCancelled: true,
       orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
+      showPaymentOption: false,
     );
   }
 
@@ -283,6 +293,7 @@ class OrderStateData {
       stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       isOrderCancelled: true,
       orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
+      showPaymentOption: false,
     );
   }
 
