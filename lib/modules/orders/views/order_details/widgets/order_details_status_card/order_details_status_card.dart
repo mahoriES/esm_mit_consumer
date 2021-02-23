@@ -1,20 +1,26 @@
+import 'dart:math';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/support_popup.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/order_progress_indicator.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/payment_tile.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/business_image_with_logo.dart';
-import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
+import 'package:eSamudaay/reusable_widgets/custom_positioned_dialog.dart';
 import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailsStatusCard extends StatelessWidget {
-  const OrderDetailsStatusCard({Key key}) : super(key: key);
+  OrderDetailsStatusCard({Key key}) : super(key: key);
+
+  final GlobalKey supportPopupKey = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -58,28 +64,23 @@ class OrderDetailsStatusCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
+                      Container(
+                        key: supportPopupKey,
+                        child: InkWell(
+                          onTap: () => CustomPositionedDialog.show(
+                            key: supportPopupKey,
+                            content: SupportPopup(),
                             context: context,
-                            elevation: 3.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(9),
-                                topRight: Radius.circular(9),
-                              ),
+                            margin: Size(
+                              min(320, SizeConfig.screenWidth - 90),
+                              30,
                             ),
-                            builder: (context) => ContactOptionsWidget(
-                              name: snapshot.orderDetails?.businessName ?? "",
-                              phoneNumber: snapshot
-                                      .orderDetails?.businessContactNumber ??
-                                  "",
-                            ),
-                          );
-                        },
-                        child: Icon(
-                          Icons.call_outlined,
-                          color: CustomTheme.of(context).colors.primaryColor,
+                          ),
+                          child: Image.asset(
+                            ImagePathConstants.supportIcon,
+                            fit: BoxFit.contain,
+                            width: 30,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 29),

@@ -197,6 +197,8 @@ flutter:
     - assets/images/icon_cash.png
     - assets/images/RazorPay_logo.png
     - assets/images/cash_grey_icon.png
+    - assets/images/support_icon.png
+    - assets/images/call_icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
