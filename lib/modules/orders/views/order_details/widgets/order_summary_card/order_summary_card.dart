@@ -98,19 +98,12 @@ class OrderSummaryCard extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: stateData.secondaryAction == SecondaryAction.CANCEL
-                          ? CancelOrderButton(
-                              onCancel: snapshot.onCancel,
-                              orderCreationTimeDiffrenceInSeconds: snapshot
-                                  .orderDetails
-                                  .orderCreationTimeDiffrenceInSeconds,
-                            )
-                          : stateData.secondaryAction == SecondaryAction.REORDER
-                              ? ReorderButton(snapshot.onReorder)
-                              : stateData.secondaryAction ==
-                                      SecondaryAction.REJECT
-                                  ? RejectOrderButton(snapshot.onCancel)
-                                  : SizedBox.shrink(),
+                      child: stateData.secondaryAction ==
+                              SecondaryAction.REORDER
+                          ? ReorderButton(snapshot.onReorder)
+                          : stateData.secondaryAction == SecondaryAction.REJECT
+                              ? RejectOrderButton(snapshot.onCancel)
+                              : SizedBox.shrink(),
                     ),
                   ),
                   const SizedBox(height: 15),

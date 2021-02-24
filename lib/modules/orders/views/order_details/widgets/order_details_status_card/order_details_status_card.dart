@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
+import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/cancel_button_tile.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/support_popup.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/order_progress_indicator.dart';
@@ -163,6 +165,14 @@ class OrderDetailsStatusCard extends StatelessWidget {
                       showBorder: false,
                     ),
                   },
+
+                  if (stateData.secondaryAction == SecondaryAction.CANCEL) ...{
+                    OrderDetailsCancelButtonTile(
+                      onCancel: snapshot.onCancel,
+                      orderCreationTimeDiffrenceInSeconds: snapshot
+                          .orderDetails.orderCreationTimeDiffrenceInSeconds,
+                    ),
+                  },
                 ],
               ),
             ),
@@ -178,16 +188,26 @@ class _ViewModel extends BaseModel<AppState> {
 
   PlaceOrderResponse orderDetails;
   Function(int) goToFeedbackView;
+  Function(String) onCancel;
 
   _ViewModel.build({
     this.orderDetails,
     this.goToFeedbackView,
+    this.onCancel,
   });
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
       orderDetails: state.ordersState.selectedOrderDetails,
+      onCancel: (String cancellationNote) {
+        dispatch(
+          CancelOrderAPIAction(
+            orderId: state.ordersState.selectedOrderDetails.orderId,
+            cancellationNote: cancellationNote,
+          ),
+        );
+      },
       goToFeedbackView: (ratingValue) => dispatch(
         NavigateAction.pushNamed(
           RouteNames.ORDER_FEEDBACK_VIEW,

@@ -98,12 +98,18 @@ class OrderStateData {
       case OrderState.CUSTOMER_PENDING:
         return _pendigPaymentState(canCancelOrder, context);
       case OrderState.CREATED:
-        return _pendigConfirmationState(
-          context,
-          orderDetails.paymentInfo.canPayBeforeAccept,
-          canCancelOrder,
-          orderDetails.paymentInfo.isPaymentDone,
-        );
+        // If payment is already done, then pending merchant confirmation state should not be visible to customer.
+        // instead it should show processing order state.
+        if (orderDetails.paymentInfo.isPaymentDone) {
+          return _processingOrderState(context);
+        } else {
+          return _pendigConfirmationState(
+            context,
+            orderDetails.paymentInfo.canPayBeforeAccept,
+            canCancelOrder,
+            orderDetails.paymentInfo.isPaymentDone,
+          );
+        }
         break;
 
       case OrderState.MERCHANT_ACCEPTED:
@@ -180,7 +186,7 @@ class OrderStateData {
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
-        "screen_order_status.confirm",
+        "screen_order_status.processing",
         "screen_order_status.completed",
       ],
       stateProgressBreakPoint: 1,
@@ -206,8 +212,8 @@ class OrderStateData {
       secondaryAction: SecondaryAction.REJECT,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
-        "screen_order_status.pending",
-        "screen_order_status.confirm",
+        "screen_order_status.merchant_updated",
+        "screen_order_status.confirm_order",
         "screen_order_status.completed",
       ],
       stateProgressBreakPoint: 2,
@@ -232,7 +238,7 @@ class OrderStateData {
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
-        "screen_order_status.confirm",
+        "screen_order_status.order_confirmed",
         "screen_order_status.processing",
       ],
       stateProgressBreakPoint: 3,
@@ -305,7 +311,7 @@ class OrderStateData {
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
-        "screen_order_status.confirm",
+        "screen_order_status.order_confirmed",
         "screen_order_status.pickup",
       ],
       stateProgressBreakPoint: 3,
@@ -328,7 +334,7 @@ class OrderStateData {
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
-        "screen_order_status.confirm",
+        "screen_order_status.order_confirmed",
         "screen_order_status.delivery",
       ],
       stateProgressBreakPoint: 3,
@@ -352,7 +358,7 @@ class OrderStateData {
       stateProgressTagsList: [
         "screen_order_status.request_sent",
         "screen_order_status.pending",
-        "screen_order_status.confirm",
+        "screen_order_status.order_confirmed",
         "screen_order_status.completed",
       ],
       stateProgressBreakPoint: 3,

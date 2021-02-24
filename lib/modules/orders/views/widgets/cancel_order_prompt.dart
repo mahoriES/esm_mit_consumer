@@ -44,6 +44,8 @@ class _CancelOrderPromptState extends State<CancelOrderPrompt> {
           child: TextFormField(
             maxLines: null,
             minLines: 1,
+            autofocus: true,
+            textInputAction: TextInputAction.done,
             controller: _controller,
             validator: Validators.nullStringValidator,
             decoration: InputDecoration(

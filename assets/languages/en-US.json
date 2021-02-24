@@ -217,17 +217,19 @@
   },
   "screen_order_status": {
     "payment_pending": "Payment Pending",
-    "request_sent": "Request{}sent",
+    "request_sent": "Order{}Placed",
     "pending": "Pending{}Confirmation",
     "confirm": "Confirm{}and Pay",
-    "confirm_order": "Confirm Order",
+    "confirm_order": "Confirm{}Order",
     "pay_and_confirm_order": "Pay and Confirm",
     "pickup": "Pickup{}at store",
     "delivery": "Out for{}Delivery",
     "processing": "Processing{}Order",
     "cancelled": "Order{}Cancelled",
     "declined": "Order{}Declined",
-    "completed": "Order{}Fulfilled"
+    "completed": "Order{}Fulfilled",
+    "merchant_updated": "Merchant{}Updated",
+    "order_confirmed": "Order{}Confirmed"
   },
   "screen_support": {
     "title": "Support",

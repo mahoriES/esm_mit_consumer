@@ -187,12 +187,13 @@ class PlaceOrderAction extends ReduxAction<AppState> {
         final PlaceOrderResponse responseModel =
             PlaceOrderResponse.fromJson(response.data);
         await CartDataSource.resetCart();
-        dispatch(GetCartFromLocal());
-        dispatch(UpdateSelectedTabAction(1));
-        dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
+        await dispatchFuture(GetCartFromLocal());
+        await dispatchFuture(UpdateSelectedTabAction(1));
+        await dispatchFuture(
+            NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
 
         // Navigate user to order details view after placing the order.
-        dispatch(ResetSelectedOrder(responseModel));
+        await dispatchFuture(ResetSelectedOrder(responseModel));
         dispatch(NavigateAction.pushNamed(RouteNames.ORDER_DETAILS));
 
         return state.copyWith(
