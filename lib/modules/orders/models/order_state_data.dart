@@ -10,6 +10,7 @@ class OrderState {
   static const MERCHANT_UPDATED = 'MERCHANT_UPDATED';
   static const MERCHANT_CANCELLED = 'MERCHANT_CANCELLED';
   static const CUSTOMER_CANCELLED = 'CUSTOMER_CANCELLED';
+  static const PROVIDER_CANCELLED = 'PROVIDER_CANCELLED';
   static const READY_FOR_PICKUP = 'READY_FOR_PICKUP';
   static const REQUESTING_TO_DA = 'REQUESTING_TO_DA';
   static const ASSIGNED_TO_DA = 'ASSIGNED_TO_DA';
@@ -101,7 +102,7 @@ class OrderStateData {
         // If payment is already done, then pending merchant confirmation state should not be visible to customer.
         // instead it should show processing order state.
         if (orderDetails.paymentInfo.isPaymentDone) {
-          return _processingOrderState(context);
+          return _processingOrderState(context, canCancelOrder);
         } else {
           return _pendigConfirmationState(
             context,
@@ -115,7 +116,7 @@ class OrderStateData {
       case OrderState.MERCHANT_ACCEPTED:
       case OrderState.REQUESTING_TO_DA:
       case OrderState.ASSIGNED_TO_DA:
-        return _processingOrderState(context);
+        return _processingOrderState(context, false);
 
       case OrderState.MERCHANT_UPDATED:
         return _confirmAndPayState(
@@ -124,10 +125,17 @@ class OrderStateData {
         );
 
       case OrderState.MERCHANT_CANCELLED:
-        return _orderDeclinedState(context);
+      case OrderState.PROVIDER_CANCELLED:
+        return _orderDeclinedState(
+          context,
+          orderDetails.paymentInfo.status == PaymentStatus.REFUNDED,
+        );
 
       case OrderState.CUSTOMER_CANCELLED:
-        return _orderCancelledState(context);
+        return _orderCancelledState(
+          context,
+          orderDetails.paymentInfo.status == PaymentStatus.REFUNDED,
+        );
 
       case OrderState.READY_FOR_PICKUP:
         return _readyForPickupState(context, orderDetails.deliveryType);
@@ -153,8 +161,7 @@ class OrderStateData {
       icon: Icons.check_circle_outline,
       actionButtonText: "Pay  {amount}",
       isActionButtonFilled: true,
-      secondaryAction:
-          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.NONE,
+      secondaryAction: SecondaryAction.NONE,
       stateProgressTagsList: [""],
       stateProgressBreakPoint: 0,
       stateProgressBreakPointColor:
@@ -225,7 +232,8 @@ class OrderStateData {
     );
   }
 
-  static OrderStateData _processingOrderState(BuildContext context) {
+  static OrderStateData _processingOrderState(
+      BuildContext context, bool canCancelOrder) {
     return OrderStateData(
       actionButtonColor:
           CustomTheme.of(context).colors.warningColor.withOpacity(0.2),
@@ -233,7 +241,8 @@ class OrderStateData {
       icon: Icons.watch_later_outlined,
       actionButtonText: "screen_order_status.processing",
       isActionButtonFilled: false,
-      secondaryAction: SecondaryAction.PAY,
+      secondaryAction:
+          canCancelOrder ? SecondaryAction.CANCEL : SecondaryAction.PAY,
       isOrderConfirmed: true,
       stateProgressTagsList: [
         "screen_order_status.request_sent",
@@ -249,7 +258,10 @@ class OrderStateData {
     );
   }
 
-  static OrderStateData _orderDeclinedState(BuildContext context) {
+  static OrderStateData _orderDeclinedState(
+    BuildContext context,
+    bool showPaymentInfo,
+  ) {
     return OrderStateData(
       actionButtonColor:
           CustomTheme.of(context).colors.secondaryColor.withOpacity(0.2),
@@ -268,11 +280,14 @@ class OrderStateData {
       stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       isOrderCancelled: true,
       orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
-      showPaymentOption: false,
+      showPaymentOption: showPaymentInfo,
     );
   }
 
-  static OrderStateData _orderCancelledState(BuildContext context) {
+  static OrderStateData _orderCancelledState(
+    BuildContext context,
+    bool showPaymentInfo,
+  ) {
     return OrderStateData(
       actionButtonColor:
           CustomTheme.of(context).colors.secondaryColor.withOpacity(0.2),
@@ -292,7 +307,7 @@ class OrderStateData {
       stateProgressTagColor: CustomTheme.of(context).colors.secondaryColor,
       isOrderCancelled: true,
       orderTapAction: OrderTapActions.GO_TO_ORDER_DETAILS,
-      showPaymentOption: false,
+      showPaymentOption: showPaymentInfo,
     );
   }
 

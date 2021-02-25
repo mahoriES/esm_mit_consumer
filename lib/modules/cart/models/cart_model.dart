@@ -233,7 +233,7 @@ class PlaceOrderResponse {
 
   int get orderCreationTimeDiffrenceInSeconds {
     return DateTime.now()
-        .difference(DateTime.parse(this.created).toLocal())
+        .difference(DateTime.parse(this.modified).toLocal())
         .inSeconds;
   }
 
