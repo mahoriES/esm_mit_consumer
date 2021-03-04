@@ -1,7 +1,7 @@
 class CartChargesType {
   static const String DELIVERY = "DELIVERY";
   static const String PACKING = "PACKING";
-  static const String SERVICE = "SERVICE";
+  static const String SERVICE = "TAX";
   static const String EXTRA = "EXTRA";
 }
 

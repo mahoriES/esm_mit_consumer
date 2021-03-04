@@ -192,7 +192,7 @@ class PaymentInfo {
   bool get isPaymentDone =>
       this.status == PaymentStatus.APPROVED ||
       this.status == PaymentStatus.SUCCESS ||
-      this.status == PaymentStatus.REFUNDED;
+      this.status == PaymentStatus.REFUND_SUCCESS;
 
   bool get isPaymentFailed =>
       this.status == PaymentStatus.FAIL ||
@@ -207,7 +207,7 @@ class PaymentInfo {
             this.status == PaymentStatus.APPROVED ||
             this.status == PaymentStatus.INITIATED
         ? "payment_statuses.paid_amout"
-        : this.status == PaymentStatus.REFUNDED
+        : this.status == PaymentStatus.REFUND_SUCCESS
             ? "payment_statuses.refunded_amout"
             : this.status == PaymentStatus.FAIL
                 ? "payment_statuses.Failed_amout"

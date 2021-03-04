@@ -32,7 +32,8 @@ class PaymentStatus {
   static const PENDING = 'PENDING';
   static const SUCCESS = 'SUCCESS';
   static const FAIL = 'FAIL';
-  static const REFUNDED = 'REFUNDED';
+  static const REFUND_SUCCESS = 'REFUND_SUCCESS';
+  static const REFUND_FAILED = 'REFUND_FAILED';
 
   //  Old Statuses:
   static const INITIATED = 'INITIATED';
@@ -106,7 +107,8 @@ class OrderStateData {
         } else {
           return _pendigConfirmationState(
             context,
-            orderDetails.paymentInfo.canPayBeforeAccept,
+            orderDetails.paymentInfo.canPayBeforeAccept &&
+                orderDetails.customerNoteImages.isEmpty,
             canCancelOrder,
             orderDetails.paymentInfo.isPaymentDone,
           );
@@ -128,13 +130,13 @@ class OrderStateData {
       case OrderState.PROVIDER_CANCELLED:
         return _orderDeclinedState(
           context,
-          orderDetails.paymentInfo.status == PaymentStatus.REFUNDED,
+          orderDetails.paymentInfo.status == PaymentStatus.REFUND_SUCCESS,
         );
 
       case OrderState.CUSTOMER_CANCELLED:
         return _orderCancelledState(
           context,
-          orderDetails.paymentInfo.status == PaymentStatus.REFUNDED,
+          orderDetails.paymentInfo.status == PaymentStatus.REFUND_SUCCESS,
         );
 
       case OrderState.READY_FOR_PICKUP:

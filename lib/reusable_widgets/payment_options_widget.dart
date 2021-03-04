@@ -194,8 +194,8 @@ class _ViewModel extends BaseModel<AppState> {
         isEnabled: true,
       ),
       new _PaymentOptionsData(
-        optionName: "Cash On Delivery / Pickup",
-        details: "Pay cash on receiving the order",
+        optionName: "Pay On Delivery / Pickup",
+        details: "Pay on receiving the order",
         image: isCodAvailable
             ? ImagePathConstants.cashIcon
             : ImagePathConstants.cashGreyIcon,
