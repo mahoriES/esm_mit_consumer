@@ -1,8 +1,10 @@
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+// This widget is shown under status card only if cancel option is available to user.
 class OrderDetailsCancelButtonTile extends StatefulWidget {
   final Function(String) onCancel;
   final int orderCreationTimeDiffrenceInSeconds;
@@ -45,7 +47,12 @@ class _OrderDetailsCancelButtonTileState
             children: [
               Flexible(
                 child: Text(
-                  "You can only cancel within ${OrderConstants.CancellationAllowedForSeconds}sec of placing the order",
+                  tr(
+                    "screen_order.cancellation_message",
+                    args: [
+                      OrderConstants.CancellationAllowedForSeconds.toString()
+                    ],
+                  ),
                   style: CustomTheme.of(context).textStyles.body2Faded,
                 ),
               ),

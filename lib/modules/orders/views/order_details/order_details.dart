@@ -27,6 +27,7 @@ class OrderDetailsView extends StatelessWidget {
           store.state.ordersState.selectedOrder?.orderId,
         ));
 
+        // if payment is pending to complete order placement, pop payment tile when user navigates to order details .
         if (store.state.ordersState.selectedOrder?.orderStatus ==
             OrderState.CUSTOMER_PENDING) {
           showModalBottomSheet(

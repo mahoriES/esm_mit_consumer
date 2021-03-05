@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,7 +24,7 @@ class SupportPopup extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Need help with this order?",
+                  tr("support.need_help"),
                   style: CustomTheme.of(context).textStyles.cardTitle,
                 ),
                 SizedBox(height: 10),
@@ -37,7 +38,7 @@ class SupportPopup extends StatelessWidget {
                       ),
                       SizedBox(width: 15),
                       Text(
-                        "Call Circle Promoter\nRajesh Rao +91 7709514625",
+                        tr("support.call_cp") + "\nRajesh Rao +91 7709514625",
                         style: CustomTheme.of(context).textStyles.body2Faded,
                       ),
                     ],

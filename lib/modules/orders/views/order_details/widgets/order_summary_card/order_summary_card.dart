@@ -30,8 +30,6 @@ class OrderSummaryCard extends StatelessWidget {
           context: context,
         );
 
-        debugPrint("order summary => ${stateData.secondaryAction}");
-
         return Container(
           padding: const EdgeInsets.all(12),
           child: Card(

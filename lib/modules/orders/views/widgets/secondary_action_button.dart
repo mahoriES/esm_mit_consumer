@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 
 class CancelOrderButton extends StatefulWidget {
   final Function(String) onCancel;
+  // when cancel button animation is completed, an empty widget is returned in place of cancel button.
+  // but at the same time 'order_details' button needs to be centered in parent widget.
+  // we use this callback to reset the state in order card.
   final VoidCallback onAnimationComplete;
   final int orderCreationTimeDiffrenceInSeconds;
   const CancelOrderButton({
@@ -35,19 +38,19 @@ class _CancelOrderButtonState extends State<CancelOrderButton>
         OrderConstants.CancellationAllowedForSeconds;
 
     if (showCancelButton) {
-      final int diff = widget.orderCreationTimeDiffrenceInSeconds;
-
-      debugPrint("orderCreationTimeDiffrenceInSeconds => $diff");
+      final int timeDiffrence = widget.orderCreationTimeDiffrenceInSeconds;
 
       _animationController = new AnimationController(
         duration: Duration(
-          seconds: OrderConstants.CancellationAllowedForSeconds - diff,
+          seconds: OrderConstants.CancellationAllowedForSeconds - timeDiffrence,
         ),
         vsync: this,
       );
 
       animation = Tween<double>(
-        begin: (diff / OrderConstants.CancellationAllowedForSeconds).toDouble(),
+        // animation should start from nth point if n seconds have already passed after placing the order.
+        begin: (timeDiffrence / OrderConstants.CancellationAllowedForSeconds)
+            .toDouble(),
         end: 1,
       ).animate(_animationController)
         ..addListener(() {
@@ -288,6 +291,8 @@ class OrderDetailsButton extends StatelessWidget {
   }
 }
 
+// In case of list items , when merchant updates the order,
+// customer should have an option to cancel order in case they don't like merchant updates.
 class RejectOrderButton extends StatelessWidget {
   final Function(String) onReject;
   const RejectOrderButton(this.onReject, {Key key}) : super(key: key);
@@ -311,7 +316,7 @@ class RejectOrderButton extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              tr("Reject Order"),
+              tr("screen_order.Cancel"),
               style: CustomTheme.of(context).textStyles.sectionHeading2,
             ),
           ],

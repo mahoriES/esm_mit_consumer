@@ -148,8 +148,8 @@ class _ViewModel extends BaseModel<AppState> {
     return customerNoteImagesCount > 0
         ? tr("cart.send_request")
         : shouldPayBeforOrder
-            ? "Pay And Order"
-            : "Place Order";
+            ? tr("cart.pay_and_order")
+            : tr("cart.place_order");
   }
 
   int get productsCount => productsList.length;

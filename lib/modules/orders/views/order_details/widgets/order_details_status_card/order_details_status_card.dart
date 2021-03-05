@@ -89,7 +89,7 @@ class OrderDetailsStatusCard extends StatelessWidget {
                     ],
                   ),
 
-                  // show progress indicator
+                  // show progress indicator if order is created
                   if (snapshot.orderDetails.orderStatus !=
                       OrderState.CUSTOMER_PENDING) ...{
                     const SizedBox(height: 30),

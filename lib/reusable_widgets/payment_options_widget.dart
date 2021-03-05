@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:eSamudaay/utilities/extensions.dart';
 
@@ -46,14 +47,16 @@ class PaymentOptionsWidget extends StatelessWidget {
                     const SizedBox(width: 18),
                   ],
                   Text(
-                    "Bill Total: " + snapshot.totalAmount.withRupeePrefix,
+                    tr("payment_options.bill_total") +
+                        ": " +
+                        snapshot.totalAmount.withRupeePrefix,
                     style: CustomTheme.of(context).textStyles.topTileTitle,
                   ),
                 ],
               ),
               const SizedBox(height: 28),
               Text(
-                "Select Payment Method",
+                tr("payment_options.select_payment_method"),
                 style: CustomTheme.of(context).textStyles.sectionHeading2,
               ),
               const Divider(height: 16, thickness: 1),
@@ -118,16 +121,19 @@ class PaymentOptionsWidget extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               ActionButton(
-                  text: "Pay " + snapshot.totalAmount.withRupeePrefix,
-                  icon: Icons.check_circle_outline,
-                  isFilled: true,
-                  buttonColor: CustomTheme.of(context).colors.positiveColor,
-                  textColor: CustomTheme.of(context).colors.backgroundColor,
-                  onTap: () {
-                    snapshot
-                        .payForOrder(onPaymentSuccess)
-                        .timeout(const Duration(seconds: 10));
-                  }),
+                text: tr("payment_options.pay") +
+                    " " +
+                    snapshot.totalAmount.withRupeePrefix,
+                icon: Icons.check_circle_outline,
+                isFilled: true,
+                buttonColor: CustomTheme.of(context).colors.positiveColor,
+                textColor: CustomTheme.of(context).colors.backgroundColor,
+                onTap: () {
+                  snapshot
+                      .payForOrder(onPaymentSuccess)
+                      .timeout(const Duration(seconds: 10));
+                },
+              ),
             ],
           ),
         );
@@ -173,7 +179,6 @@ class _ViewModel extends BaseModel<AppState> {
               orderId: state.ordersState.selectedOrder.orderId,
               onSuccess: (isPaymentDone) {
                 if (isPaymentDone) {
-                  debugPrint("payment is done");
                   onPaymentSucces();
                 }
               },
@@ -187,15 +192,15 @@ class _ViewModel extends BaseModel<AppState> {
   List<_PaymentOptionsData> get paymentOptionsList {
     return [
       new _PaymentOptionsData(
-        optionName: "Razor Pay",
-        details: "Online Payment options",
+        optionName: tr("payment_options.razor_pay"),
+        details: tr("payment_options.online_payment_options"),
         image: ImagePathConstants.razorpayLogo,
         value: PaymentOptions.Razorpay,
         isEnabled: true,
       ),
       new _PaymentOptionsData(
-        optionName: "Pay On Delivery / Pickup",
-        details: "Pay on receiving the order",
+        optionName: tr("payment_options.pay_on_delivery"),
+        details: tr("payment_options.pay_on_delivery_message"),
         image: isCodAvailable
             ? ImagePathConstants.cashIcon
             : ImagePathConstants.cashGreyIcon,
