@@ -4,7 +4,7 @@ class EnvironmentConfig {
   /// otherwise staging server is selected by default.
   static const bool isProductionEnvironment = bool.fromEnvironment(
     'isProductionEnvironment',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const String ThirdPartyID = String.fromEnvironment(

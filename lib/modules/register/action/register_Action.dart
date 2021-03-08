@@ -105,7 +105,7 @@ class SilentlyAddCustomerRoleToProfileAction extends ReduxAction<AppState> {
       await dispatchFuture(CheckTokenAction());
       await store.dispatchFuture(GetUserFromLocalStorageAction());
       AppFirebaseAnalytics.instance.logAppLogin(user: user.toString());
-      dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+      dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
       return state.copyWith(authState: state.authState.copyWith(user: user));
     } else {
       Fluttertoast.showToast(msg: addCustomerProfilerResponse.data['message']);
