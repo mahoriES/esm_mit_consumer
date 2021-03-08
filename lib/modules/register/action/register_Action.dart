@@ -9,6 +9,7 @@ import 'package:eSamudaay/modules/otp/action/otp_action.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/firebase_analytics.dart';
@@ -43,7 +44,7 @@ class GetUserDetailAction extends ReduxAction<AppState> {
         dispatch(CheckTokenAction());
         store.dispatch(GetUserFromLocalStorageAction());
         AppFirebaseAnalytics.instance.logAppLogin(user: user.toString());
-        dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+        dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
         return state.copyWith(authState: state.authState.copyWith(user: user));
       }
     } else {
@@ -67,15 +68,18 @@ class SilentlyAddCustomerRoleToProfileAction extends ReduxAction<AppState> {
   @override
   FutureOr<AppState> reduce() async {
     final userProfilesResponse = UserProfilesResponse.fromJson(profilesData);
-    final a = userProfilesResponse?.customerProfile?.data?.profileName ?? '';
-    final b = userProfilesResponse?.merchantProfile?.data?.profileName ?? '';
-    final c = userProfilesResponse?.agentProfile?.data?.profileName ?? '';
-    final String userName = a.isNotEmpty
-        ? a
-        : b.isNotEmpty
-            ? b
-            : c.isNotEmpty
-                ? c
+    final customerProfileName =
+        userProfilesResponse?.customerProfile?.data?.profileName ?? '';
+    final merchantProfileName =
+        userProfilesResponse?.merchantProfile?.data?.profileName ?? '';
+    final agentProfileName =
+        userProfilesResponse?.agentProfile?.data?.profileName ?? '';
+    final String userName = customerProfileName.isNotEmpty
+        ? customerProfileName
+        : merchantProfileName.isNotEmpty
+            ? merchantProfileName
+            : agentProfileName.isNotEmpty
+                ? agentProfileName
                 : '';
     debugPrint('Add customer role profile data $profilesData');
     debugPrint('Username $userName');
