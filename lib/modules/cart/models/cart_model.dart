@@ -111,6 +111,7 @@ class PlaceOrderResponse {
   PaymentInfo paymentInfo;
   String cancellationNote;
   int itemsCount;
+  List<CpInfo> cpInfo;
 
   PlaceOrderResponse({
     this.deliveryCharges,
@@ -141,6 +142,7 @@ class PlaceOrderResponse {
     this.businessId,
     this.cancellationNote,
     this.itemsCount,
+    this.cpInfo,
   });
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
@@ -225,6 +227,12 @@ class PlaceOrderResponse {
         json['rating'] != null ? new Rating.fromJson(json['rating']) : null;
     cancellationNote = json["cancellation_note"] ?? "";
     itemsCount = json['items_count'];
+    if (json['cp_info'] != null) {
+      cpInfo = new List<CpInfo>();
+      json['cp_info'].forEach((v) {
+        cpInfo.add(new CpInfo.fromJson(v));
+      });
+    }
   }
 
   String get createdTime => DateFormat('hh:mm a').format(
@@ -330,6 +338,9 @@ class PlaceOrderResponse {
       data['payment_info'] = this.paymentInfo.toJson();
     }
     data["cancellation_note"] = this.cancellationNote;
+    if (this.cpInfo != null) {
+      data['cp_info'] = this.cpInfo.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
@@ -700,6 +711,28 @@ class Cart {
     }
     data['service'] = this.service;
     data['total'] = this.total;
+    return data;
+  }
+}
+
+class CpInfo {
+  String phone;
+  String profileName;
+  bool isSuspended;
+
+  CpInfo({this.phone, this.profileName, this.isSuspended});
+
+  CpInfo.fromJson(Map<String, dynamic> json) {
+    phone = json['phone'];
+    profileName = json['profile_name'];
+    isSuspended = json['is_suspended'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['phone'] = this.phone;
+    data['profile_name'] = this.profileName;
+    data['is_suspended'] = this.isSuspended;
     return data;
   }
 }

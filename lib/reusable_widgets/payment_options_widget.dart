@@ -70,18 +70,13 @@ class PaymentOptionsWidget extends StatelessWidget {
                     _PaymentOptionsData _paymentOptionData =
                         snapshot.paymentOptionsList[index];
 
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Radio<PaymentOptions>(
-                        value: _paymentOptionData.value,
-                        groupValue: snapshot.selectedPaymentOption,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        activeColor:
-                            CustomTheme.of(context).colors.primaryColor,
-                        onChanged: _paymentOptionData.isEnabled
-                            ? snapshot.changeSelectedPaymentOption
-                            : null,
-                      ),
+                    return RadioListTile(
+                      value: _paymentOptionData.value,
+                      groupValue: snapshot.selectedPaymentOption,
+                      activeColor: CustomTheme.of(context).colors.primaryColor,
+                      onChanged: _paymentOptionData.isEnabled
+                          ? snapshot.changeSelectedPaymentOption
+                          : null,
                       title: Row(
                         children: [
                           Image.asset(

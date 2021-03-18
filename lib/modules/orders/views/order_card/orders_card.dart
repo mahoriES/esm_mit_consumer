@@ -22,7 +22,7 @@ class OrdersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
-      model: _ViewModel(orderResponse),
+      model: _ViewModel(),
       builder: (context, snapshot) {
         return Card(
           key: new UniqueKey(),
@@ -40,12 +40,14 @@ class OrdersCard extends StatelessWidget {
                 ),
                 _OrderCardMessage(
                   orderResponse,
-                  rateOrder: snapshot.goToFeedbackView,
+                  rateOrder: (rating) =>
+                      snapshot.goToFeedbackView(rating, orderResponse),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: OrderActionButton(
-                    goToOrderDetails: snapshot.goToOrderDetails,
+                    goToOrderDetails: () =>
+                        snapshot.goToOrderDetails(orderResponse),
                     confirmOrder: () =>
                         snapshot.confirmOrder(orderResponse.orderId),
                     orderResponse: orderResponse,
@@ -57,9 +59,10 @@ class OrdersCard extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   child: OrderCardSecondaryButtonsRow(
                     orderResponse: orderResponse,
-                    onCancel: snapshot.onCancel,
-                    onReorder: snapshot.onReorder,
-                    goToOrderDetails: snapshot.goToOrderDetails,
+                    onCancel: (note) => snapshot.onCancel(note, orderResponse),
+                    onReorder: () => snapshot.onReorder(orderResponse),
+                    goToOrderDetails: () =>
+                        snapshot.goToOrderDetails(orderResponse),
                   ),
                 ),
               ],
@@ -72,55 +75,45 @@ class OrdersCard extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  final PlaceOrderResponse orderResponse;
+  _ViewModel();
 
-  _ViewModel(this.orderResponse);
-
-  VoidCallback goToOrderDetails;
-  int ratingValue;
-  String orderStatus;
-  Function(int) goToFeedbackView;
-  Function(String) onCancel;
-  VoidCallback onReorder;
+  Function(PlaceOrderResponse) goToOrderDetails;
+  Function(int, PlaceOrderResponse) goToFeedbackView;
+  Function(String, PlaceOrderResponse) onCancel;
+  Function(PlaceOrderResponse) onReorder;
   Function(String) confirmOrder;
 
   _ViewModel.build({
     this.goToOrderDetails,
-    this.ratingValue,
-    this.orderStatus,
     this.goToFeedbackView,
-    this.orderResponse,
     this.onCancel,
     this.onReorder,
     this.confirmOrder,
-  }) : super(equals: [ratingValue, orderStatus]);
+  });
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      orderResponse: this.orderResponse,
-      ratingValue: this.orderResponse.rating.ratingValue,
-      orderStatus: this.orderResponse.orderStatus,
-      goToOrderDetails: () async {
-        await dispatchFuture(ResetSelectedOrder(this.orderResponse));
+      goToOrderDetails: (orderResponse) async {
+        await dispatchFuture(ResetSelectedOrder(orderResponse));
         dispatch(NavigateAction.pushNamed(RouteNames.ORDER_DETAILS));
       },
-      goToFeedbackView: (ratingValue) async {
-        await dispatchFuture(ResetSelectedOrder(this.orderResponse));
+      goToFeedbackView: (ratingValue, orderResponse) async {
+        await dispatchFuture(ResetSelectedOrder(orderResponse));
         dispatch(NavigateAction.pushNamed(
           RouteNames.ORDER_FEEDBACK_VIEW,
           arguments: ratingValue,
         ));
       },
-      onCancel: (String cancellationNote) => dispatch(
+      onCancel: (String cancellationNote, orderResponse) => dispatch(
         CancelOrderAPIAction(
-          orderId: this.orderResponse.orderId,
+          orderId: orderResponse.orderId,
           cancellationNote: cancellationNote,
         ),
       ),
-      onReorder: () => dispatch(
+      onReorder: (orderResponse) => dispatch(
         ReorderAction(
-          orderResponse: this.orderResponse,
+          orderResponse: orderResponse,
           shouldFetchOrderDetails: true,
         ),
       ),

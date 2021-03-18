@@ -378,7 +378,7 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
 }
 
 /// reset selected order as required
-// selectedOrder is udsed to fetch order_details onInit in orderDeatis view.
+// selectedOrder is used to fetch order_details onInit in orderDeatis view.
 class ResetSelectedOrder extends ReduxAction<AppState> {
   final PlaceOrderResponse order;
   ResetSelectedOrder(this.order);
@@ -388,6 +388,8 @@ class ResetSelectedOrder extends ReduxAction<AppState> {
       ordersState: state.ordersState.copyWith(
         selectedOrder: order,
         selectedOrderDetails: null,
+        isSelectedOrderDetailsNull: true,
+        selectedPaymentOption: PaymentOptions.Razorpay,
       ),
     );
   }

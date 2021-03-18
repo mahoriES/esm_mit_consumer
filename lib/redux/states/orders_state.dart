@@ -50,6 +50,7 @@ class OrdersState {
     LoadingStatusApp isLoadingNextPage,
     PlaceOrderResponse selectedOrder,
     PlaceOrderResponse selectedOrderDetails,
+    bool isSelectedOrderDetailsNull = false,
     AddReviewRequest reviewRequest,
     bool showFeedbackSubmitDialog,
     PaymentOptions selectedPaymentOption,
@@ -61,7 +62,8 @@ class OrdersState {
       isLoadingOrdersList: isLoadingOrdersList ?? this.isLoadingOrdersList,
       isLoadingNextPage: isLoadingNextPage ?? this.isLoadingNextPage,
       selectedOrder: selectedOrder ?? this.selectedOrder,
-      selectedOrderDetails: selectedOrderDetails ?? this.selectedOrderDetails,
+      selectedOrderDetails: selectedOrderDetails ??
+          (isSelectedOrderDetailsNull ? null : this.selectedOrderDetails),
       reviewRequest: reviewRequest ?? this.reviewRequest,
       showFeedbackSubmitDialog:
           showFeedbackSubmitDialog ?? this.showFeedbackSubmitDialog,
