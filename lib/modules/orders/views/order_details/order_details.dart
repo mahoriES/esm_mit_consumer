@@ -14,9 +14,13 @@ import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class OrderDetailsView extends StatelessWidget {
-  const OrderDetailsView({Key key}) : super(key: key);
+  OrderDetailsView({Key key}) : super(key: key);
+
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +72,24 @@ class OrderDetailsView extends StatelessWidget {
               ? LoadingIndicator()
               : snapshot.hasError
                   ? Center(child: GenericErrorView(snapshot.getOrderDetails))
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          OrderDetailsStatusCard(),
-                          OrderSummaryCard(),
-                          const SizedBox(height: 200),
-                        ],
+                  : SmartRefresher(
+                      enablePullDown: true,
+                      header: WaterDropHeader(
+                        complete: LoadingIndicator(),
+                        waterDropColor:
+                            CustomTheme.of(context).colors.primaryColor,
+                        refresh: LoadingIndicator(),
+                      ),
+                      controller: refreshController,
+                      onRefresh: () => snapshot.onRefresh(refreshController),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            OrderDetailsStatusCard(),
+                            OrderSummaryCard(),
+                            const SizedBox(height: 200),
+                          ],
+                        ),
                       ),
                     ),
         );
@@ -115,5 +130,10 @@ class _ViewModel extends BaseModel<AppState> {
             state.ordersState.selectedOrderDetails?.orderId),
       ),
     );
+  }
+
+  void onRefresh(RefreshController refreshController) async {
+    getOrderDetails();
+    refreshController.refreshCompleted();
   }
 }
