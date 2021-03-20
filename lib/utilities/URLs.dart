@@ -79,4 +79,7 @@ class ApiURL {
   static final productSharingLinkUrl = (
           {String productId, String businessId}) =>
       'https://esamudaay.com?businessId=$businessId&productId=$productId';
+
+  static final initiatePaymentUrl =
+      (String orderId) => "api/v1/orders/$orderId/payment";
 }

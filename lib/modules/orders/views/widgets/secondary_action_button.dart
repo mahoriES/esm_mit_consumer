@@ -202,9 +202,11 @@ class PayButton extends StatelessWidget {
             child: FittedBox(
               child: Text.rich(
                 TextSpan(
-                  text:
-                      tr("payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}") +
-                          "\n",
+                  text: (orderResponse.paymentInfo.isPayLaterSelected
+                          ? tr("payment_statuses.pay_later", args: [""])
+                          : tr(
+                              "payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}")) +
+                      "\n",
                   style: CustomTheme.of(context).textStyles.body2Faded,
                   children: [
                     TextSpan(

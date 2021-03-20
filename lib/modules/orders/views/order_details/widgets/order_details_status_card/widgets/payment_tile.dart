@@ -76,7 +76,8 @@ class PaymentStatusTile extends StatelessWidget {
                   ],
                 )
               : orderResponse.paymentInfo.isPaymentFailed ||
-                      orderResponse.paymentInfo.isPaymentPending
+                      orderResponse.paymentInfo.isPaymentPending ||
+                      orderResponse.paymentInfo.isPayLaterSelected
                   ? InkWell(
                       onTap: onPay,
                       child: Container(

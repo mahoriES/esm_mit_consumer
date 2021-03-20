@@ -581,3 +581,46 @@ class ChangeSelctedPaymentOption extends ReduxAction<AppState> {
     );
   }
 }
+
+class MarkOrderPaymentAsPayLater extends ReduxAction<AppState> {
+  String orderId;
+  MarkOrderPaymentAsPayLater(this.orderId);
+
+  LoadingStatusApp finalState = LoadingStatusApp.success;
+
+  @override
+  Future<AppState> reduce() async {
+    try {
+      final response = await APIManager.shared.request(
+        url: ApiURL.initiatePaymentUrl(orderId),
+        params: null,
+        requestType: RequestType.post,
+      );
+
+      if (response.status == ResponseStatus.success200) {
+        final PlaceOrderResponse responseModel =
+            PlaceOrderResponse.fromJson(response.data);
+
+        await dispatchFuture(GetOrderListAPIAction());
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(
+            selectedOrderDetails: responseModel,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
+    }
+    return null;
+  }
+
+  void before() => ToggleLoadingOrderDetailsState(LoadingStatusApp.loading);
+
+  void after() => ToggleLoadingOrderDetailsState(finalState);
+}

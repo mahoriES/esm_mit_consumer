@@ -282,7 +282,8 @@
     "pending_amout": "Pending {}",
     "rejected_amout": "Rejected {}",
     "Failed_amout": "Failed {}",
-    "refunded_amout": "Refunded {}"
+    "refunded_amout": "Refunded {}",
+    "pay_later": "Pay {} later"
   },
   "payment_info": {
     "checkout_error": "Something went wrong. Contact support if problem persists.",

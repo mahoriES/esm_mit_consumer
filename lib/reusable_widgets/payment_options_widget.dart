@@ -167,7 +167,12 @@ class _ViewModel extends BaseModel<AppState> {
       payForOrder: (onPaymentSucces) async {
         dispatch(NavigateAction.pop());
         if (state.ordersState.selectedPaymentOption == PaymentOptions.COD) {
-          // when COD option is selected.
+          if (!state.ordersState.selectedOrder.paymentInfo.isPayLaterSelected) {
+            await dispatchFuture(
+              MarkOrderPaymentAsPayLater(
+                  state.ordersState.selectedOrder.orderId),
+            );
+          }
         } else {
           await dispatchFuture(
             PaymentAction(
