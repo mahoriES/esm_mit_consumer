@@ -387,8 +387,6 @@ class ResetSelectedOrder extends ReduxAction<AppState> {
     return state.copyWith(
       ordersState: state.ordersState.copyWith(
         selectedOrder: order,
-        selectedOrderDetails: null,
-        isSelectedOrderDetailsNull: true,
         selectedPaymentOption: PaymentOptions.Razorpay,
       ),
     );
@@ -509,6 +507,7 @@ class PaymentAction extends ReduxAction<AppState> {
           state.ordersState.selectedOrderDetails.paymentInfo.isPaymentDone,
         );
       },
+      // TODO : handle razorpay failure case.
       onFailure: () {},
     );
 

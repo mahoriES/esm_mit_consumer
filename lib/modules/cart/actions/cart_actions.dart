@@ -189,11 +189,11 @@ class PlaceOrderAction extends ReduxAction<AppState> {
         await CartDataSource.resetCart();
         await dispatchFuture(GetCartFromLocal());
         await dispatchFuture(UpdateSelectedTabAction(1));
-        await dispatchFuture(
-            NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
+        await dispatchFuture(ResetSelectedOrder(responseModel));
 
         // Navigate user to order details view after placing the order.
-        await dispatchFuture(ResetSelectedOrder(responseModel));
+        await dispatchFuture(
+            NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
         dispatch(NavigateAction.pushNamed(RouteNames.ORDER_DETAILS));
 
         return state.copyWith(
@@ -257,6 +257,11 @@ class GetMerchantPaymentDetails extends ReduxAction<AppState> {
 
   @override
   Future<AppState> reduce() async {
+    if (merchant?.businessId == null) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      return null;
+    }
+
     final response = await APIManager.shared.request(
       url: ApiURL.getBusinessesUrl + merchant?.businessId,
       params: null,

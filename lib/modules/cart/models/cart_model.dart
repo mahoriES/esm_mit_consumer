@@ -228,9 +228,9 @@ class PlaceOrderResponse {
     cancellationNote = json["cancellation_note"] ?? "";
     itemsCount = json['items_count'];
     if (json['cp_info'] != null) {
-      cpInfo = new List<CpInfo>();
+      cpInfo = List<CpInfo>();
       json['cp_info'].forEach((v) {
-        cpInfo.add(new CpInfo.fromJson(v));
+        cpInfo.add(CpInfo.fromJson(v));
       });
     }
   }

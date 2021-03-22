@@ -67,7 +67,7 @@ class PaymentOptionsWidget extends StatelessWidget {
                   shrinkWrap: true,
                   separatorBuilder: (_, __) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
-                    _PaymentOptionsData _paymentOptionData =
+                    final _PaymentOptionsData _paymentOptionData =
                         snapshot.paymentOptionsList[index];
 
                     return RadioListTile(

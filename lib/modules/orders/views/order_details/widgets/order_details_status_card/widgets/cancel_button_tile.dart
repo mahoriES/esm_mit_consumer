@@ -42,7 +42,7 @@ class _OrderDetailsCancelButtonTileState
           thickness: 1,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 35),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 35),
           child: Row(
             children: [
               Flexible(

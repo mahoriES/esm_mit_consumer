@@ -33,7 +33,7 @@ class SupportPopup extends StatelessWidget {
                       tr("support.need_help"),
                       style: CustomTheme.of(context).textStyles.cardTitle,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     InkWell(
                       onTap: () =>
                           launch('tel:${snapshot.supportPersonContact}'),

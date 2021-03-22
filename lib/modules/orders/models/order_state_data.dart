@@ -10,6 +10,7 @@ class OrderState {
   static const MERCHANT_UPDATED = 'MERCHANT_UPDATED';
   static const MERCHANT_CANCELLED = 'MERCHANT_CANCELLED';
   static const CUSTOMER_CANCELLED = 'CUSTOMER_CANCELLED';
+  // In case CP cancels the order on request of customer or merchant.
   static const PROVIDER_CANCELLED = 'PROVIDER_CANCELLED';
   static const READY_FOR_PICKUP = 'READY_FOR_PICKUP';
   static const REQUESTING_TO_DA = 'REQUESTING_TO_DA';
@@ -98,7 +99,7 @@ class OrderStateData {
 
     switch (orderDetails.orderStatus) {
       case OrderState.CUSTOMER_PENDING:
-        return _pendigPaymentState(context);
+        return _pendingPaymentState(context);
       case OrderState.CREATED:
         // If payment is already done, then pending merchant confirmation state should not be visible to customer.
         // instead it should show processing order state.
@@ -388,7 +389,7 @@ class OrderStateData {
     );
   }
 
-  static OrderStateData _pendigPaymentState(BuildContext context) {
+  static OrderStateData _pendingPaymentState(BuildContext context) {
     return OrderStateData(
       actionButtonColor: CustomTheme.of(context).colors.positiveColor,
       actionButtonTextColor: CustomTheme.of(context).colors.backgroundColor,

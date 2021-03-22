@@ -33,7 +33,7 @@ class OrderActionButton extends StatelessWidget {
         stateData.actionButtonText,
         args: [" "],
         namedArgs: {
-          "amount": orderResponse.itemTotalPriceInRupees.withRupeePrefix
+          "amount": orderResponse.orderTotalPriceInRupees.withRupeePrefix
         },
       ),
       onTap: () {
