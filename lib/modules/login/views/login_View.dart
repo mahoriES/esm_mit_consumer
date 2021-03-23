@@ -61,7 +61,8 @@ class _LoginViewState extends State<LoginView> {
                       left: 25,
                       top: 35,
                       child: CupertinoStyledBackButton(
-                          onPressed: () => Navigator.pop(context),),
+                        onPressed: () => Navigator.pop(context),
+                      ),
                     ),
                     Positioned(
                       top: 200.toHeight,
@@ -91,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
                                   });
                                 },
                                 decoration: InputDecoration(
-                                  hintText: tr('common.enter_name'),
+                                  hintText: tr('common.enter_name') + " *",
                                   hintStyle: CustomTheme.of(context)
                                       .textStyles
                                       .sectionHeading2
@@ -107,12 +108,22 @@ class _LoginViewState extends State<LoginView> {
                             ],
                             Container(
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: CustomTheme.of(context)
-                                        .colors
-                                        .disabledAreaColor
-                                        .withOpacity(0.3)),
-                                borderRadius: BorderRadius.circular(4),
+                                border: snapshot.isSignUp
+                                    ? Border(
+                                        bottom: BorderSide(
+                                          color: CustomTheme.of(context)
+                                              .colors
+                                              .disabledAreaColor,
+                                        ),
+                                      )
+                                    : Border.all(
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .disabledAreaColor
+                                            .withOpacity(0.3)),
+                                borderRadius: snapshot.isSignUp
+                                    ? null
+                                    : BorderRadius.circular(4),
                               ),
                               child: InternationalPhoneNumberInput(
                                 textFieldController: phoneController,
@@ -125,9 +136,21 @@ class _LoginViewState extends State<LoginView> {
                                     ? PhoneNumber(isoCode: _phoneNumber.isoCode)
                                     : PhoneNumber(isoCode: 'IN'),
                                 onInputChanged: validatePhoneNumber,
+                                selectorTextStyle: CustomTheme.of(context)
+                                    .textStyles
+                                    .sectionHeading2,
                                 inputDecoration: InputDecoration(
                                     border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 14),
                                     hintText: tr('screen_phone.hint_text'),
+                                    hintStyle: CustomTheme.of(context)
+                                        .textStyles
+                                        .sectionHeading2
+                                        .copyWith(
+                                            color: CustomTheme.of(context)
+                                                .colors
+                                                .disabledAreaColor),
                                     labelStyle: CustomTheme.of(context)
                                         .textStyles
                                         .cardTitle),
@@ -163,7 +186,8 @@ class _LoginViewState extends State<LoginView> {
                                         snapshot.getOtpAction(
                                           GenerateOTPRequest(
                                               phone: _phoneNumber.phoneNumber,
-                                              third_party_id: EnvironmentConfig.ThirdPartyID,
+                                              third_party_id: EnvironmentConfig
+                                                  .ThirdPartyID,
                                               isSignUp: snapshot.isSignUp),
                                         );
                                       }
