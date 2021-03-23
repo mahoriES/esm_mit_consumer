@@ -158,7 +158,8 @@ class _ViewModel extends BaseModel<AppState> {
   BaseModel fromStore() {
     return _ViewModel.build(
       isCodAvailable:
-          !state.ordersState.selectedOrder.paymentInfo.payBeforeOrder,
+          !state.ordersState.selectedOrder.paymentInfo.payBeforeOrder &&
+              !state.ordersState.selectedOrder.paymentInfo.isPayLaterSelected,
       selectedPaymentOption: state.ordersState.selectedPaymentOption,
       totalAmount: state.ordersState.selectedOrder.orderTotalPriceInRupees ?? 0,
       changeSelectedPaymentOption: (paymentOption) => dispatch(

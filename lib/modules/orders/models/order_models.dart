@@ -207,19 +207,17 @@ class PaymentInfo {
       this.status == PaymentStatus.INITIATED && this.paymentMadeVia == "COD";
 
   String get dStatusWithAmount {
-    return isPayLaterSelected
-        ? "payment_statuses.pay_later"
-        : this.status == PaymentStatus.SUCCESS ||
-                this.status == PaymentStatus.APPROVED ||
-                this.status == PaymentStatus.INITIATED
-            ? "payment_statuses.paid_amout"
-            : this.status == PaymentStatus.REFUND_SUCCESS
-                ? "payment_statuses.refunded_amout"
-                : this.status == PaymentStatus.FAIL
-                    ? "payment_statuses.Failed_amout"
-                    : this.status == PaymentStatus.REJECTED
-                        ? "payment_statuses.rejected_amout"
-                        : "payment_statuses.pending_amout";
+    return this.status == PaymentStatus.SUCCESS ||
+            this.status == PaymentStatus.APPROVED ||
+            this.status == PaymentStatus.INITIATED
+        ? "payment_statuses.paid_amout"
+        : this.status == PaymentStatus.REFUND_SUCCESS
+            ? "payment_statuses.refunded_amout"
+            : this.status == PaymentStatus.FAIL
+                ? "payment_statuses.Failed_amout"
+                : this.status == PaymentStatus.REJECTED
+                    ? "payment_statuses.rejected_amout"
+                    : "payment_statuses.pending_amout";
   }
 
   Map<String, dynamic> toJson() {

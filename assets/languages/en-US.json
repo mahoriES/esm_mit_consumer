@@ -283,7 +283,10 @@
     "rejected_amout": "Rejected {}",
     "Failed_amout": "Failed {}",
     "refunded_amout": "Refunded {}",
-    "pay_later": "Pay {} later"
+    "pay_on_delivery": "Pay On Delivery",
+    "pay_on_pickup": "Pay On Pickup",
+    "on_delivery_amount": "On Delivery {}",
+    "on_pickup_amount": "On Pickup {}"
   },
   "payment_info": {
     "checkout_error": "Something went wrong. Contact support if problem persists.",

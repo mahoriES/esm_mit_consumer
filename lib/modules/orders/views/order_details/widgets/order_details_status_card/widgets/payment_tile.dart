@@ -27,7 +27,14 @@ class PaymentStatusTile extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: tr(
-                      orderResponse.paymentInfo.dStatusWithAmount,
+                      // If paylater is selected already then check the delivery type
+                      // and show relevant message to user.
+                      orderResponse.paymentInfo.isPayLaterSelected
+                          ? orderResponse.deliveryType ==
+                                  DeliveryType.DeliveryToHome
+                              ? "payment_statuses.on_delivery_amount"
+                              : "payment_statuses.on_pickup_amount"
+                          : orderResponse.paymentInfo.dStatusWithAmount,
                       args: [
                         orderResponse.orderTotalPriceInRupees.withRupeePrefix
                       ],

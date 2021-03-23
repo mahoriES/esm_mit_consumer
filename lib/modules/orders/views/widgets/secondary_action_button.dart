@@ -203,7 +203,12 @@ class PayButton extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   text: (orderResponse.paymentInfo.isPayLaterSelected
-                          ? tr("payment_statuses.pay_later", args: [""])
+                          ? tr(
+                              orderResponse.deliveryType ==
+                                      DeliveryType.DeliveryToHome
+                                  ? "payment_statuses.pay_on_delivery"
+                                  : "payment_statuses.pay_on_pickup",
+                            )
                           : tr(
                               "payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}")) +
                       "\n",
