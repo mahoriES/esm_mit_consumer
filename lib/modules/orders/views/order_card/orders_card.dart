@@ -25,7 +25,7 @@ class OrdersCard extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) {
         return Card(
-          key: new UniqueKey(),
+          key: new ObjectKey(orderResponse.orderId),
           elevation: 4,
           margin: const EdgeInsets.all(12),
           child: Container(
