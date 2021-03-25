@@ -3,6 +3,7 @@ import 'package:eSamudaay/reusable_widgets/ios_back_button.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/validators/validators.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/login/actions/login_actions.dart';
@@ -27,6 +28,11 @@ class _LoginViewState extends State<LoginView> {
   bool _isPhoneNumberValid = false;
   PhoneNumber _phoneNumber;
   String _userNameForSignup;
+  // the error styling for validation in intl_phone_number_input field does not meet the UI requirements.
+  // so using this variable to create custom input validation for phone number field.
+  bool showPhoneNumberError = false;
+  // this formkey wraps the username field and provide default input validation.
+  GlobalKey<FormState> formKey = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -84,22 +90,44 @@ class _LoginViewState extends State<LoginView> {
                               height: 5,
                             ),
                             if (snapshot.isSignUp) ...[
-                              TextField(
-                                controller: nameController,
-                                onChanged: (String value) {
-                                  setState(() {
-                                    _userNameForSignup = value;
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  hintText: tr('common.enter_name') + " *",
-                                  hintStyle: CustomTheme.of(context)
-                                      .textStyles
-                                      .sectionHeading2
-                                      .copyWith(
+                              Form(
+                                key: formKey,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                child: TextFormField(
+                                  controller: nameController,
+                                  validator: Validators.userNameValidator,
+                                  onChanged: (String value) {
+                                    setState(() {
+                                      _userNameForSignup = value;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: tr('common.enter_name'),
+                                    hintStyle: CustomTheme.of(context)
+                                        .textStyles
+                                        .sectionHeading2
+                                        .copyWith(
+                                            color: CustomTheme.of(context)
+                                                .colors
+                                                .disabledAreaColor),
+                                    // override the error styling here to match it with custom error text shown for phone number validation error.
+                                    errorStyle: CustomTheme.of(context)
+                                        .textStyles
+                                        .body2
+                                        .copyWith(
                                           color: CustomTheme.of(context)
                                               .colors
-                                              .disabledAreaColor),
+                                              .secondaryColor,
+                                        ),
+                                    errorBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .secondaryColor,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -111,9 +139,14 @@ class _LoginViewState extends State<LoginView> {
                                 border: snapshot.isSignUp
                                     ? Border(
                                         bottom: BorderSide(
-                                          color: CustomTheme.of(context)
-                                              .colors
-                                              .disabledAreaColor,
+                                          // if phone number input is not valid, the border should be in red color.
+                                          color: showPhoneNumberError
+                                              ? CustomTheme.of(context)
+                                                  .colors
+                                                  .secondaryColor
+                                              : CustomTheme.of(context)
+                                                  .colors
+                                                  .disabledAreaColor,
                                         ),
                                       )
                                     : Border.all(
@@ -157,6 +190,25 @@ class _LoginViewState extends State<LoginView> {
                                 spaceBetweenSelectorAndTextField: 0.0,
                               ),
                             ),
+                            // show error text if phone number is not valid.
+                            if (showPhoneNumberError) ...[
+                              const SizedBox(height: 8),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  tr("screen_phone.valid_phone_error_message"),
+                                  style: CustomTheme.of(context)
+                                      .textStyles
+                                      .body2
+                                      .copyWith(
+                                        color: CustomTheme.of(context)
+                                            .colors
+                                            .secondaryColor,
+                                      ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
                             const SizedBox(
                               height: 12,
                             ),
@@ -164,8 +216,18 @@ class _LoginViewState extends State<LoginView> {
                               width: 157.4.toWidth,
                               height: 42.toHeight,
                               child: RaisedButton(
-                                color:
-                                    CustomTheme.of(context).colors.primaryColor,
+                                // we need to show the cta button in disabled color in case any of the field inputs are invalid.
+                                color: _isPhoneNumberValid &&
+                                        (snapshot.isSignUp
+                                            ? _userNameForSignup?.isNotEmpty ??
+                                                false
+                                            : true)
+                                    ? CustomTheme.of(context)
+                                        .colors
+                                        .primaryColor
+                                    : CustomTheme.of(context)
+                                        .colors
+                                        .disabledAreaColor,
                                 elevation: 0.0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4),
@@ -191,7 +253,16 @@ class _LoginViewState extends State<LoginView> {
                                               isSignUp: snapshot.isSignUp),
                                         );
                                       }
-                                    : null,
+                                    // in case any field's input valus is invalid, we trigger validity check to display relevant error.
+                                    : () {
+                                        formKey.currentState.validate();
+                                        validatePhoneNumber(_phoneNumber);
+                                        if (!_isPhoneNumberValid) {
+                                          setState(() {
+                                            showPhoneNumberError = true;
+                                          });
+                                        }
+                                      },
                                 child: Center(
                                   child: Text(
                                     'screen_otp.get_otp',
@@ -221,15 +292,22 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void validatePhoneNumber(PhoneNumber number) {
-    debugPrint(number.parseNumber());
+    debugPrint(number?.parseNumber());
     _phoneNumber = number;
     setState(
       () {
-        if (validator.phone(_phoneNumber.phoneNumber) &&
-            _phoneNumber.parseNumber().length > 9)
-          this._isPhoneNumberValid = true;
-        else
+        if (_phoneNumber != null) {
+          if (validator.phone(_phoneNumber.phoneNumber) &&
+              _phoneNumber.parseNumber().length > 9) {
+            this._isPhoneNumberValid = true;
+            this.showPhoneNumberError = false;
+          } else {
+            this._isPhoneNumberValid = false;
+          }
+        } else {
           this._isPhoneNumberValid = false;
+          this.showPhoneNumberError = true;
+        }
       },
     );
   }
