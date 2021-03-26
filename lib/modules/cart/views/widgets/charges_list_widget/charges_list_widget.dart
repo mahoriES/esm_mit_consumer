@@ -1,4 +1,5 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
@@ -30,7 +31,7 @@ class CartChargesListWidget extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 14),
             child: ChargesListTile(
               chargeName: tr("cart.delivery_partner_fee"),
-              price: snapshot.deliveryCharge,
+              price: snapshot.isStorePickup ? 0 : snapshot.deliveryCharge,
               style: CustomTheme.of(context)
                   .textStyles
                   .body1FadedWithDottedUnderline,
@@ -83,17 +84,20 @@ class _ViewModel extends BaseModel<AppState> {
 
   List<Product> productsList;
   CartCharges charges;
+  String deliveryType;
 
   _ViewModel.build({
     this.productsList,
     this.charges,
-  }) : super(equals: [productsList, charges]);
+    this.deliveryType,
+  }) : super(equals: [productsList, charges, deliveryType]);
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
       productsList: state.cartState.localCartItems ?? [],
       charges: state.cartState.charges,
+      deliveryType: state.cartState.selectedDeliveryType,
     );
   }
 
@@ -114,4 +118,6 @@ class _ViewModel extends BaseModel<AppState> {
   double get merchantCharge => packingCharge + serviceCharge + extraCharge;
 
   double get grandTotal => getCartTotal + deliveryCharge + merchantCharge;
+
+  bool get isStorePickup => deliveryType == DeliveryType.StorePickup;
 }
