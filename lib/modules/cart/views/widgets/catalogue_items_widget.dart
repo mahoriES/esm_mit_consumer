@@ -64,7 +64,7 @@ class CartCatalogueItemsWidget extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          _currentProduct.selectedSkuPrice.withRupeePrefix,
+                          _currentProduct.itemPriceForQuantity.withRupeePrefix,
                         ),
                       ),
                     ),
@@ -94,7 +94,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel.build({
     this.cartMerchant,
     this.productsList,
-  });
+  }) : super(equals: productsList);
 
   @override
   BaseModel fromStore() {
