@@ -94,12 +94,14 @@ class Charge {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['business_id'] = this.businessId;
     data['charge_name'] = this.chargeName;
-    data['charge_value'] = this.chargeValue;
+    data['charge_value'] = this.chargeValue ?? 0;
     data['charge_type'] = this.chargeType;
     data['max_value'] = this.maxValue;
     data['charge_state'] = this.chargeState;
     return data;
   }
+
+  bool get isPercentageType => this.chargeName == "PERCENTAGE";
 
   double get amount {
     try {
