@@ -33,6 +33,7 @@ class CartCatalogueItemsWidget extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Row(
+                  key: ValueKey(_currentProduct.selectedSkuId),
                   children: [
                     Expanded(
                       flex: 2,
@@ -94,7 +95,7 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel.build({
     this.cartMerchant,
     this.productsList,
-  }) : super(equals: productsList);
+  }) : super(equals: [productsList]);
 
   @override
   BaseModel fromStore() {
