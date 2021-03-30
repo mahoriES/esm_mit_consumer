@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
@@ -112,6 +113,7 @@ class PlaceOrderResponse {
   String cancellationNote;
   int itemsCount;
   List<CpInfo> cpInfo;
+  String customerCancelBefore;
 
   PlaceOrderResponse({
     this.deliveryCharges,
@@ -143,6 +145,7 @@ class PlaceOrderResponse {
     this.cancellationNote,
     this.itemsCount,
     this.cpInfo,
+    this.customerCancelBefore,
   });
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
@@ -233,16 +236,28 @@ class PlaceOrderResponse {
         cpInfo.add(CpInfo.fromJson(v));
       });
     }
+    customerCancelBefore = json["customer_cancel_before"];
   }
 
   String get createdTime => DateFormat('hh:mm a').format(
         DateTime.parse(this.created).toLocal(),
       );
 
-  int get orderCreationTimeDiffrenceInSeconds {
-    return DateTime.now()
-        .difference(DateTime.parse(this.modified).toLocal())
-        .inSeconds;
+  int get secondsLeftToCancel {
+    if (this.customerCancelBefore == null) return 0;
+    DateTime cancelBefore = DateTime.parse(this.customerCancelBefore).toLocal();
+    return max(cancelBefore.difference(DateTime.now()).inSeconds, 0);
+  }
+
+  int get cancellationAllowedForSeconds {
+    if (this.customerCancelBefore == null) return 0;
+    DateTime cancelBefore = DateTime.parse(this.customerCancelBefore).toLocal();
+    return max(
+      cancelBefore
+          .difference(DateTime.parse(this.modified).toLocal())
+          .inSeconds,
+      0,
+    );
   }
 
   String get createdDate => DateFormat('d MMM yyyy').format(
@@ -341,6 +356,7 @@ class PlaceOrderResponse {
     if (this.cpInfo != null) {
       data['cp_info'] = this.cpInfo.map((v) => v.toJson()).toList();
     }
+    data['customer_cancel_before'] = this.customerCancelBefore;
     return data;
   }
 }

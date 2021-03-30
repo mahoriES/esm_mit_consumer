@@ -39,8 +39,7 @@ class _OrderCardSecondaryButtonsRowState
             child: stateData.secondaryAction == SecondaryAction.CANCEL
                 ? CancelOrderButton(
                     onCancel: widget.onCancel,
-                    orderCreationTimeDiffrenceInSeconds: widget
-                        .orderResponse.orderCreationTimeDiffrenceInSeconds,
+                    orderResponse: widget.orderResponse,
                     onAnimationComplete: () => setState(() {}),
                   )
                 : stateData.secondaryAction == SecondaryAction.REJECT

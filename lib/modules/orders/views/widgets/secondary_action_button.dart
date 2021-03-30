@@ -1,5 +1,4 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
-import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/cancel_order_prompt.dart';
 import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
@@ -14,11 +13,11 @@ class CancelOrderButton extends StatefulWidget {
   // but at the same time 'order_details' button needs to be centered in parent widget.
   // we use this callback to reset the state in order card.
   final VoidCallback onAnimationComplete;
-  final int orderCreationTimeDiffrenceInSeconds;
+  final PlaceOrderResponse orderResponse;
   const CancelOrderButton({
     @required this.onCancel,
     this.onAnimationComplete,
-    @required this.orderCreationTimeDiffrenceInSeconds,
+    @required this.orderResponse,
     Key key,
   }) : super(key: key);
 
@@ -34,24 +33,26 @@ class _CancelOrderButtonState extends State<CancelOrderButton>
 
   @override
   void initState() {
-    showCancelButton = widget.orderCreationTimeDiffrenceInSeconds <
-        OrderConstants.CancellationAllowedForSeconds;
+    showCancelButton = widget.orderResponse.secondsLeftToCancel > 0;
 
     if (showCancelButton) {
-      final int timeDiffrence = widget.orderCreationTimeDiffrenceInSeconds;
+      final int timeDiffrence =
+          widget.orderResponse.cancellationAllowedForSeconds -
+              widget.orderResponse.secondsLeftToCancel;
 
       _animationController = new AnimationController(
         duration: Duration(
-          seconds: OrderConstants.CancellationAllowedForSeconds - timeDiffrence,
+          seconds: widget.orderResponse.secondsLeftToCancel,
         ),
         vsync: this,
       );
 
       animation = Tween<double>(
         // animation should start from nth point if n seconds have already passed after placing the order.
-        begin: (timeDiffrence / OrderConstants.CancellationAllowedForSeconds)
-            .toDouble(),
-        end: 1,
+        begin:
+            (timeDiffrence / widget.orderResponse.cancellationAllowedForSeconds)
+                .toDouble(),
+        end: 1.0,
       ).animate(_animationController)
         ..addListener(() {
           if (_animationController.isCompleted) {

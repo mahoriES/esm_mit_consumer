@@ -169,8 +169,7 @@ class OrderDetailsStatusCard extends StatelessWidget {
                   if (stateData.secondaryAction == SecondaryAction.CANCEL) ...{
                     OrderDetailsCancelButtonTile(
                       onCancel: snapshot.onCancel,
-                      orderCreationTimeDiffrenceInSeconds: snapshot
-                          .orderDetails.orderCreationTimeDiffrenceInSeconds,
+                      orderResponse: snapshot.orderDetails,
                     ),
                   },
                 ],

@@ -42,10 +42,6 @@ class PaymentStatus {
   static const REJECTED = 'REJECTED';
 }
 
-class OrderConstants {
-  static const CancellationAllowedForSeconds = 20;
-}
-
 enum OrderTapActions { GO_TO_ORDER_DETAILS, PAY, PAY_AND_CONFIRM }
 
 class OrderStateData {
@@ -93,9 +89,7 @@ class OrderStateData {
     @required PlaceOrderResponse orderDetails,
     @required BuildContext context,
   }) {
-    final bool canCancelOrder =
-        orderDetails.orderCreationTimeDiffrenceInSeconds <
-            OrderConstants.CancellationAllowedForSeconds;
+    final bool canCancelOrder = orderDetails.secondsLeftToCancel > 0;
 
     switch (orderDetails.orderStatus) {
       case OrderState.CUSTOMER_PENDING:
