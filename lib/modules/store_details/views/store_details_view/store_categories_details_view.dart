@@ -32,6 +32,7 @@ import 'package:eSamudaay/store.dart';
 import 'package:eSamudaay/utilities/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
@@ -405,6 +406,11 @@ class _StoreDetailsViewState extends State<StoreDetailsView>
   }
 
   void contactMerchantAction(_ViewModel snapshot) {
+    if (snapshot.selectedMerchant.contactNumber == null ||
+        snapshot.selectedMerchant.contactNumber.isEmpty) {
+      Fluttertoast.showToast(msg: tr("common.contact_details_error"));
+      return;
+    }
     showContactMerchantDialog(context, onCallAction: () {
       String phone = snapshot.selectedMerchant.contactNumber;
       if (phone == null) return;

@@ -8,7 +8,9 @@ import 'package:eSamudaay/reusable_widgets/business_details_popup.dart';
 import 'package:eSamudaay/reusable_widgets/business_title_tile.dart';
 import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BusinessHeaderView extends StatelessWidget {
   final bool showDescription;
@@ -22,6 +24,10 @@ class BusinessHeaderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void contactMerchantAction(String businessName, String contactNumber) {
+      if (contactNumber == null || contactNumber.isEmpty) {
+        Fluttertoast.showToast(msg: tr("common.contact_details_error"));
+        return;
+      }
       showModalBottomSheet(
         context: context,
         elevation: 3.0,
