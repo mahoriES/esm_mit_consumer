@@ -117,7 +117,8 @@ class _ViewModel extends BaseModel<AppState> {
 
   double get merchantCharge => packingCharge + serviceCharge + extraCharge;
 
-  double get grandTotal => getCartTotal + deliveryCharge + merchantCharge;
+  double get grandTotal =>
+      getCartTotal + (isStorePickup ? 0 : deliveryCharge) + merchantCharge;
 
   bool get isStorePickup => deliveryType == DeliveryType.StorePickup;
 }
