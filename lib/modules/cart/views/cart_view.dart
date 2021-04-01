@@ -43,64 +43,71 @@ class CartView extends StatelessWidget {
                     subTitle: snapshot.appBarSubtitle,
                     isStoreClosed: snapshot.isStoreClosed,
                   ),
-                  bottomSheet: CartBottomWidget(),
-                  body: SingleChildScrollView(
-                    child: Container(
-                      margin: const EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          if (snapshot.productsCount > 0) ...[
-                            Card(
-                              elevation: 4,
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 12),
-                                child: Column(
-                                  children: [
-                                    CartCatalogueItemsWidget(),
-                                    CartChargesListWidget(),
-                                  ],
+                  bottomSheet: snapshot.isCartLoading
+                      ? SizedBox.shrink()
+                      : CartBottomWidget(),
+                  body: snapshot.isCartLoading
+                      ? SizedBox.shrink()
+                      : SingleChildScrollView(
+                          child: Container(
+                            margin: const EdgeInsets.all(12),
+                            child: Column(
+                              children: [
+                                if (snapshot.productsCount > 0) ...[
+                                  Card(
+                                    elevation: 4,
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 12),
+                                      child: Column(
+                                        children: [
+                                          CartCatalogueItemsWidget(),
+                                          CartChargesListWidget(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                                CartCustomerNoteImagesWidget(),
+                                const SizedBox(height: 20),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 13),
+                                  child: TextField(
+                                    controller: snapshot.noteController,
+                                    decoration: InputDecoration(
+                                      focusColor: CustomTheme.of(context)
+                                          .colors
+                                          .primaryColor,
+                                      hintText: tr(
+                                        "cart.add_a_note",
+                                        args: [snapshot.storeName],
+                                      ),
+                                      hintStyle: CustomTheme.of(context)
+                                          .textStyles
+                                          .cardTitleFaded,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
-                          CartCustomerNoteImagesWidget(),
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 13),
-                            child: TextField(
-                              controller: snapshot.noteController,
-                              decoration: InputDecoration(
-                                focusColor:
-                                    CustomTheme.of(context).colors.primaryColor,
-                                hintText: tr(
-                                  "cart.add_a_note",
-                                  args: [snapshot.storeName],
+                                const SizedBox(height: 30),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 60),
+                                  child: Text(
+                                    tr("cart.cart_message"),
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .cardTitleSecondary
+                                        .copyWith(height: 1.5),
+                                  ),
                                 ),
-                                hintStyle: CustomTheme.of(context)
-                                    .textStyles
-                                    .cardTitleFaded,
-                              ),
-                              textAlign: TextAlign.center,
+                                const SizedBox(height: 300),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 30),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 60),
-                            child: Text(
-                              tr("cart.cart_message"),
-                              style: CustomTheme.of(context)
-                                  .textStyles
-                                  .cardTitleSecondary
-                                  .copyWith(height: 1.5),
-                            ),
-                          ),
-                          const SizedBox(height: 300),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
                 ),
         ),
       ),
@@ -127,7 +134,12 @@ class _ViewModel extends BaseModel<AppState> {
     this.isStoreClosed,
     this.noteController,
     this.isImageUploading,
-  }) : super(equals: [cartMerchant, isCartLoading, isImageUploading, isStoreClosed]);
+  }) : super(equals: [
+          cartMerchant,
+          isCartLoading,
+          isImageUploading,
+          isStoreClosed
+        ]);
 
   @override
   BaseModel fromStore() {
@@ -136,7 +148,8 @@ class _ViewModel extends BaseModel<AppState> {
       cartMerchant: state.cartState.cartMerchant,
       productsList: state.cartState.localCartItems ?? [],
       customerNoteImages: state.cartState.customerNoteImages ?? [],
-      isCartLoading: state.cartState.isCartLoading ?? false,
+      isCartLoading: (state.cartState.isCartLoading ?? false) ||
+          (state.cartState.isProcessingOrderRequest ?? false),
       noteController: state.cartState.customerNoteMessage,
       isImageUploading: state.cartState.isImageUploading,
     );

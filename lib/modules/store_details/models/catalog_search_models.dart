@@ -150,6 +150,10 @@ class Product {
     }
   }
 
+  double get itemPriceForQuantity {
+    return this.selectedSkuPrice * this.count;
+  }
+
   String get selectedSkuWeight =>
       this.skus[selectedSkuIndex ?? 0]?.variationOptions?.weight ?? "";
 

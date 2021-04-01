@@ -10,6 +10,7 @@ import 'package:eSamudaay/reusable_widgets/product_count_widget/product_count_wi
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/link_sharing_service.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -160,6 +161,12 @@ class ProductDetailsView extends StatelessWidget {
                     // ProductDetailsSimilarItemsWidget(),
                   ],
                 ),
+              ),
+              SizedBox(
+                height: (snapshot.localCartListing.isEmpty)
+                    ? AppSizes.separatorPadding
+                    : AppSizes.cartTotalBottomViewHeight +
+                        AppSizes.separatorPadding,
               ),
             ],
           ),

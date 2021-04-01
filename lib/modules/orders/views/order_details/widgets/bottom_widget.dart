@@ -60,39 +60,41 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: snapshot.showNavigationToStore,
-                              child: Icon(
+                        child: InkWell(
+                          onTap: snapshot.showNavigationToStore,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
                                 Icons.pin_drop,
                                 color:
                                     CustomTheme.of(context).colors.primaryColor,
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Flexible(
-                              child: Text.rich(
-                                TextSpan(
-                                  text:
+                              const SizedBox(width: 12),
+                              Flexible(
+                                child: Text.rich(
+                                  TextSpan(
+                                    text:
                                       snapshot.orderDetails.businessName + "\n",
-                                  style: CustomTheme.of(context)
-                                      .textStyles
-                                      .sectionHeading2,
-                                  children: [
-                                    TextSpan(
-                                      text: snapshot.orderDetails.pickupAddress
-                                          ?.addressString,
-                                      style: CustomTheme.of(context)
-                                          .textStyles
-                                          .body1Faded,
-                                    ),
-                                  ],
+                                    style: CustomTheme.of(context)
+                                        .textStyles
+                                        .sectionHeading2,
+                                    children: [
+                                      TextSpan(
+                                        text: snapshot.orderDetails.pickupAddress
+                                          ?.addressString ?? "",
+                                        style: CustomTheme.of(context)
+                                            .textStyles
+                                            .body1Faded,
+                                      ),
+                                    ],
+                                  ),
+                                  maxLines: 6,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ] else ...[
