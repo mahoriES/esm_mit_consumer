@@ -101,7 +101,7 @@ class Charge {
     return data;
   }
 
-  bool get isPercentageType => this.chargeName == "PERCENTAGE";
+  bool get isPercentageType => this.chargeType == "PERCENTAGE";
 
   double get amount {
     try {
