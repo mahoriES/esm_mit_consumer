@@ -99,7 +99,7 @@
     "delivery_partner_fee": "Delivery Partner fee",
     "merchant_charges": "Merchant Charges",
     "packing_charges": "Packaging Charges",
-    "service_charges": "Service Charges",
+    "tax": "Taxes",
     "extra_charges": "Extra Charges",
     "grand_total": "Grand Total",
     "list_items": "List Items",

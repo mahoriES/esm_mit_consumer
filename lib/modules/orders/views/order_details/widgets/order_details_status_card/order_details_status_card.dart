@@ -17,6 +17,7 @@ import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/image_path_constants.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailsStatusCard extends StatelessWidget {
@@ -99,7 +100,7 @@ class OrderDetailsStatusCard extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 28),
                       child: Text(
-                        "Payment Pending for your Order!",
+                        tr("screen_order.pending_payment_message"),
                         style: CustomTheme.of(context)
                             .textStyles
                             .cardTitleSecondary,

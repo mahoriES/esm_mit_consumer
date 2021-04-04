@@ -90,7 +90,7 @@
     "delivery_partner_fee": "वितरण शुल्क",
     "merchant_charges": "मर्चेंट शुल्क",
     "packing_charges": "पैकेजिंग शुल्क",
-    "service_charges": "सेवा शुल्क",
+    "tax": "सेवा शुल्क",
     "extra_charges": "अतिरिक्त शुल्क",
     "grand_total": "कुल योग",
     "list_items": "सामान सूची",

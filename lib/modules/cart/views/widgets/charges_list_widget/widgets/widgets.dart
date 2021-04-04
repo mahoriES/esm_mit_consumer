@@ -107,7 +107,7 @@ class MerchantChargesInfoCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             ChargesListTile(
-              chargeName: tr("cart.service_charges"),
+              chargeName: tr("cart.tax"),
               price: serviceCharge,
               style: CustomTheme.of(context).textStyles.body2Faded,
             ),
