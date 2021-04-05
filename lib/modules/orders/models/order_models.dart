@@ -171,6 +171,8 @@ class PaymentInfo {
   /// than the order total billed amount
   ///
   int amount;
+  bool payBeforeOrder;
+  bool canPayBeforeAccept;
 
   PaymentInfo(
       {this.upi, this.status, this.dt, this.paymentMadeVia, this.amount});
@@ -181,6 +183,8 @@ class PaymentInfo {
     dt = json['dt'];
     amount = json['amount'];
     paymentMadeVia = json['via'];
+    payBeforeOrder = json['pay_before_order'] ?? false;
+    canPayBeforeAccept = json['can_pay_before_accept'] ?? false;
   }
 
   double get amountInRupees => (this.amount ?? 0) / 100;
@@ -188,7 +192,7 @@ class PaymentInfo {
   bool get isPaymentDone =>
       this.status == PaymentStatus.APPROVED ||
       this.status == PaymentStatus.SUCCESS ||
-      this.status == PaymentStatus.REFUNDED;
+      this.status == PaymentStatus.REFUND_SUCCESS;
 
   bool get isPaymentFailed =>
       this.status == PaymentStatus.FAIL ||
@@ -196,14 +200,18 @@ class PaymentInfo {
 
   bool get isPaymentPending => this.status == PaymentStatus.PENDING;
 
-  bool get isPaymentInitiated => this.status == PaymentStatus.INITIATED;
+  bool get isPaymentInitiated =>
+      this.status == PaymentStatus.INITIATED && this.paymentMadeVia != "COD";
+
+  bool get isPayLaterSelected =>
+      this.status == PaymentStatus.INITIATED && this.paymentMadeVia == "COD";
 
   String get dStatusWithAmount {
     return this.status == PaymentStatus.SUCCESS ||
             this.status == PaymentStatus.APPROVED ||
             this.status == PaymentStatus.INITIATED
         ? "payment_statuses.paid_amout"
-        : this.status == PaymentStatus.REFUNDED
+        : this.status == PaymentStatus.REFUND_SUCCESS
             ? "payment_statuses.refunded_amout"
             : this.status == PaymentStatus.FAIL
                 ? "payment_statuses.Failed_amout"
@@ -219,6 +227,8 @@ class PaymentInfo {
     data['dt'] = this.dt;
     data['via'] = paymentMadeVia;
     data['amount'] = amount;
+    data['pay_before_order'] = this.payBeforeOrder;
+    data['can_pay_before_accept'] = this.canPayBeforeAccept;
     return data;
   }
 }

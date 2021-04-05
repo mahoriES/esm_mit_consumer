@@ -7,16 +7,87 @@ import 'package:eSamudaay/utilities/extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class CancelOrderButton extends StatelessWidget {
+class CancelOrderButton extends StatefulWidget {
   final Function(String) onCancel;
-  const CancelOrderButton(this.onCancel, {Key key}) : super(key: key);
+  // when cancel button animation is completed, an empty widget is returned in place of cancel button.
+  // but at the same time 'order_details' button needs to be centered in parent widget.
+  // we use this callback to reset the state in order card.
+  final VoidCallback onAnimationComplete;
+  final PlaceOrderResponse orderResponse;
+  const CancelOrderButton({
+    @required this.onCancel,
+    this.onAnimationComplete,
+    @required this.orderResponse,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _CancelOrderButtonState createState() => _CancelOrderButtonState();
+}
+
+class _CancelOrderButtonState extends State<CancelOrderButton>
+    with SingleTickerProviderStateMixin {
+  bool showCancelButton;
+  AnimationController _animationController;
+  Animation<double> animation;
+
+  @override
+  void initState() {
+    showCancelButton = widget.orderResponse.secondsLeftToCancel > 0;
+
+    if (showCancelButton) {
+      final int timeDiffrence =
+          widget.orderResponse.cancellationAllowedForSeconds -
+              widget.orderResponse.secondsLeftToCancel;
+
+      _animationController = new AnimationController(
+        duration: Duration(
+          seconds: widget.orderResponse.secondsLeftToCancel,
+        ),
+        vsync: this,
+      );
+
+      animation = Tween<double>(
+        // animation should start from nth point if n seconds have already passed after placing the order.
+        begin:
+            (timeDiffrence / widget.orderResponse.cancellationAllowedForSeconds)
+                .toDouble(),
+        end: 1.0,
+      ).animate(_animationController)
+        ..addListener(() {
+          if (_animationController.isCompleted) {
+            _animationController.dispose();
+            showCancelButton = false;
+            if (widget.onAnimationComplete != null) {
+              widget.onAnimationComplete();
+            }
+          }
+          setState(() {
+            // the state that has changed here is the animation object’s value
+          });
+        });
+
+      _animationController.forward();
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!showCancelButton) {
+      return SizedBox.shrink();
+    }
+
     return InkWell(
       onTap: () => showDialog(
         context: context,
-        builder: (context) => CancelOrderPrompt(onCancel),
+        builder: (context) => CancelOrderPrompt(widget.onCancel),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -24,17 +95,23 @@ class CancelOrderButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.clear,
-              color: CustomTheme.of(context).colors.secondaryColor,
+            SizedBox(
+              height: 25,
+              width: 25,
+              child: CircularProgressIndicator(
+                value: animation.value,
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation(
+                  CustomTheme.of(context).colors.warningColor,
+                ),
+                backgroundColor:
+                    CustomTheme.of(context).colors.placeHolderColor,
+              ),
             ),
             const SizedBox(width: 8),
             Text(
               tr("screen_order.Cancel"),
-              style:
-                  CustomTheme.of(context).textStyles.sectionHeading2.copyWith(
-                        color: CustomTheme.of(context).colors.secondaryColor,
-                      ),
+              style: CustomTheme.of(context).textStyles.sectionHeading2,
             ),
           ],
         ),
@@ -126,9 +203,16 @@ class PayButton extends StatelessWidget {
             child: FittedBox(
               child: Text.rich(
                 TextSpan(
-                  text:
-                      tr("payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}") +
-                          "\n",
+                  text: (orderResponse.paymentInfo.isPayLaterSelected
+                          ? tr(
+                              orderResponse.deliveryType ==
+                                      DeliveryType.DeliveryToHome
+                                  ? "payment_statuses.pay_on_delivery"
+                                  : "payment_statuses.pay_on_pickup",
+                            )
+                          : tr(
+                              "payment_statuses.${orderResponse.paymentInfo.status.toLowerCase()}")) +
+                      "\n",
                   style: CustomTheme.of(context).textStyles.body2Faded,
                   children: [
                     TextSpan(
@@ -164,7 +248,12 @@ class PayButton extends StatelessWidget {
 
 class OrderDetailsButton extends StatelessWidget {
   final VoidCallback goToOrderDetails;
-  const OrderDetailsButton(this.goToOrderDetails, {Key key}) : super(key: key);
+  final bool isCenterAligned;
+  const OrderDetailsButton(
+    this.goToOrderDetails, {
+    this.isCenterAligned = false,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -173,17 +262,17 @@ class OrderDetailsButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: isCenterAligned
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.end,
           children: [
             Flexible(
               child: Text(
                 tr("screen_order.order_details"),
                 style: CustomTheme.of(context)
                     .textStyles
-                    .sectionHeading2
-                    .copyWith(
-                        color: CustomTheme.of(context).colors.primaryColor),
+                    .sectionHeading2Primary
+                    .copyWith(fontWeight: FontWeight.normal),
               ),
             ),
             const SizedBox(width: 8),
@@ -191,15 +280,52 @@ class OrderDetailsButton extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: CustomTheme.of(context).colors.primaryColor,
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: CustomTheme.of(context).colors.primaryColor,
+                  ),
                 ),
                 child: Icon(
                   Icons.chevron_right_outlined,
                   size: 16,
-                  color: CustomTheme.of(context).colors.backgroundColor,
+                  color: CustomTheme.of(context).colors.primaryColor,
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// In case of list items , when merchant updates the order,
+// customer should have an option to cancel order in case they don't like merchant updates.
+class RejectOrderButton extends StatelessWidget {
+  final Function(String) onReject;
+  const RejectOrderButton(this.onReject, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => CancelOrderPrompt(onReject),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.clear,
+              color: CustomTheme.of(context).colors.secondaryColor,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              tr("screen_order.Cancel"),
+              style: CustomTheme.of(context).textStyles.sectionHeading2,
             ),
           ],
         ),

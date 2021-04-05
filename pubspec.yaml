@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.0.21+61
+version: 1.0.29+108
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -194,6 +194,11 @@ flutter:
     - assets/images/login_signup_backdrop.png
     - assets/images/landing_page_banner.png
     - assets/images/pay_icon.png
+    - assets/images/icon_cash.png
+    - assets/images/RazorPay_logo.png
+    - assets/images/cash_grey_icon.png
+    - assets/images/support_icon.png
+    - assets/images/call_icon.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

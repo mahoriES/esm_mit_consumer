@@ -1,9 +1,8 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
-import 'package:eSamudaay/presentations/custom_confirmation_dialog.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/order_action_button.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/generic_methods.dart';
@@ -19,11 +18,6 @@ class OrderDetailsBottomWidget extends StatelessWidget {
     return StoreConnector<AppState, _ViewModel>(
       model: _ViewModel(),
       builder: (context, snapshot) {
-        final OrderStateData stateData = OrderStateData.getStateData(
-          snapshot.orderDetails.orderStatus,
-          context,
-        );
-
         return Card(
           elevation: 4,
           margin: EdgeInsets.zero,
@@ -202,31 +196,12 @@ class OrderDetailsBottomWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              ActionButton(
-                text: tr(stateData.actionButtonText, args: [" "]),
-                onTap: () {
-                  if (snapshot.orderDetails.orderStatus ==
-                      OrderState.MERCHANT_UPDATED) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => CustomConfirmationDialog(
-                        title: tr("screen_order.accept_order_message"),
-                        positiveAction: () {
-                          Navigator.pop(context);
-                          snapshot.confirmOrder(snapshot.orderDetails.orderId);
-                        },
-                        positiveButtonText: tr("screen_order.Confirm"),
-                        negativeButtonText: tr("common.back"),
-                      ),
-                    );
-                  }
-                },
-                icon: stateData.icon,
-                isFilled: true,
-                textColor: stateData.actionButtonTextColor,
-                buttonColor: stateData.actionButtonColor,
-                showBorder: false,
-                textStyle: CustomTheme.of(context).textStyles.sectionHeading3,
+              OrderActionButton(
+                orderResponse: snapshot.orderDetails,
+                isOrderDetailsView: true,
+                goToOrderDetails: null,
+                confirmOrder: () =>
+                    snapshot.confirmOrder(snapshot.orderDetails.orderId),
               ),
             ],
           ),

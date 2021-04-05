@@ -130,7 +130,19 @@ class _OrderCardMessage extends StatelessWidget {
                                         ],
                                       ),
                                     )
-                                  : SizedBox.shrink(),
+                                  : orderStatus == OrderState.CUSTOMER_PENDING
+                                      ? Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 20, bottom: 14),
+                                          child: Text(
+                                            tr("screen_order.pending_payment_message"),
+                                            style: CustomTheme.of(context)
+                                                .textStyles
+                                                .cardTitleFaded,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
     );
   }
 }

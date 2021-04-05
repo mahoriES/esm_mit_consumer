@@ -1,9 +1,10 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
+
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/views/order_card/widgets/order_card_secondary_actions_row.dart';
+import 'package:eSamudaay/modules/orders/views/widgets/order_action_button.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
-import 'package:eSamudaay/modules/orders/views/widgets/secondary_action_button.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/order_card_header.dart';
@@ -12,7 +13,6 @@ import 'package:eSamudaay/themes/custom_theme.dart';
 import 'package:eSamudaay/utilities/generic_methods.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
 part 'widgets/order_card_message.dart';
 
 class OrdersCard extends StatelessWidget {
@@ -22,12 +22,10 @@ class OrdersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ViewModel>(
-      model: _ViewModel(orderResponse),
+      model: _ViewModel(),
       builder: (context, snapshot) {
-        final OrderStateData stateData =
-            OrderStateData.getStateData(orderResponse.orderStatus, context);
-
         return Card(
+          key: new ObjectKey(orderResponse.orderId),
           elevation: 4,
           margin: const EdgeInsets.all(12),
           child: Container(
@@ -42,52 +40,29 @@ class OrdersCard extends StatelessWidget {
                 ),
                 _OrderCardMessage(
                   orderResponse,
-                  rateOrder: snapshot.goToFeedbackView,
+                  rateOrder: (rating) =>
+                      snapshot.goToFeedbackView(rating, orderResponse),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: ActionButton(
-                    text: tr(
-                      orderResponse.isReadyToPickupByDA
-                          ? "screen_order_status.processing"
-                          : stateData.actionButtonText,
-                      args: [" "],
-                    ),
-                    onTap: snapshot.goToOrderDetails,
-                    icon: stateData.icon,
-                    isFilled: stateData.isActionButtonFilled,
-                    textColor: stateData.actionButtonTextColor,
-                    buttonColor: stateData.actionButtonColor,
-                    showBorder: false,
-                    textStyle:
-                        CustomTheme.of(context).textStyles.sectionHeading3,
+                  child: OrderActionButton(
+                    goToOrderDetails: () =>
+                        snapshot.goToOrderDetails(orderResponse),
+                    confirmOrder: () =>
+                        snapshot.confirmOrder(orderResponse.orderId),
+                    orderResponse: orderResponse,
+                    isOrderDetailsView: false,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: stateData.secondaryAction ==
-                                SecondaryAction.CANCEL
-                            ? CancelOrderButton(snapshot.onCancel)
-                            : stateData.secondaryAction ==
-                                    SecondaryAction.REORDER
-                                ? ReorderButton(snapshot.onReorder)
-                                : PayButton(
-                                    onPay: () => snapshot
-                                        .payForOrder()
-                                        .timeout(const Duration(seconds: 10)),
-                                    orderResponse: orderResponse,
-                                  ),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: OrderDetailsButton(snapshot.goToOrderDetails),
-                      ),
-                    ],
+                  child: OrderCardSecondaryButtonsRow(
+                    orderResponse: orderResponse,
+                    onCancel: (note) => snapshot.onCancel(note, orderResponse),
+                    onReorder: () => snapshot.onReorder(orderResponse),
+                    goToOrderDetails: () =>
+                        snapshot.goToOrderDetails(orderResponse),
                   ),
                 ),
               ],
@@ -100,64 +75,49 @@ class OrdersCard extends StatelessWidget {
 }
 
 class _ViewModel extends BaseModel<AppState> {
-  final PlaceOrderResponse orderResponse;
+  _ViewModel();
 
-  _ViewModel(this.orderResponse);
-
-  VoidCallback goToOrderDetails;
-  int ratingValue;
-  String orderStatus;
-  Function(int) goToFeedbackView;
-  Function(String) onCancel;
-  VoidCallback onReorder;
-  Future<void> Function() payForOrder;
+  Function(PlaceOrderResponse) goToOrderDetails;
+  Function(int, PlaceOrderResponse) goToFeedbackView;
+  Function(String, PlaceOrderResponse) onCancel;
+  Function(PlaceOrderResponse) onReorder;
+  Function(String) confirmOrder;
 
   _ViewModel.build({
     this.goToOrderDetails,
-    this.ratingValue,
-    this.orderStatus,
     this.goToFeedbackView,
-    this.orderResponse,
     this.onCancel,
     this.onReorder,
-    this.payForOrder,
-  }) : super(equals: [ratingValue, orderStatus]);
+    this.confirmOrder,
+  });
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
-      orderResponse: this.orderResponse,
-      ratingValue: this.orderResponse.rating.ratingValue,
-      orderStatus: this.orderResponse.orderStatus,
-      goToOrderDetails: () async {
-        await dispatchFuture(ResetSelectedOrder(this.orderResponse));
+      goToOrderDetails: (orderResponse) async {
+        await dispatchFuture(ResetSelectedOrder(orderResponse));
         dispatch(NavigateAction.pushNamed(RouteNames.ORDER_DETAILS));
       },
-      goToFeedbackView: (ratingValue) async {
-        await dispatchFuture(ResetSelectedOrder(this.orderResponse));
+      goToFeedbackView: (ratingValue, orderResponse) async {
+        await dispatchFuture(ResetSelectedOrder(orderResponse));
         dispatch(NavigateAction.pushNamed(
           RouteNames.ORDER_FEEDBACK_VIEW,
           arguments: ratingValue,
         ));
       },
-      onCancel: (String cancellationNote) => dispatch(
+      onCancel: (String cancellationNote, orderResponse) => dispatch(
         CancelOrderAPIAction(
-          orderId: this.orderResponse.orderId,
+          orderId: orderResponse.orderId,
           cancellationNote: cancellationNote,
         ),
       ),
-      onReorder: () => dispatch(
+      onReorder: (orderResponse) => dispatch(
         ReorderAction(
-          orderResponse: this.orderResponse,
+          orderResponse: orderResponse,
           shouldFetchOrderDetails: true,
         ),
       ),
-      payForOrder: () async => await dispatchFuture(
-        PaymentAction(
-          orderId: this.orderResponse.orderId,
-          onSuccess: () => dispatch(GetOrderListAPIAction()),
-        ),
-      ),
+      confirmOrder: (orderId) => dispatch(AcceptOrderAPIAction(orderId)),
     );
   }
 }

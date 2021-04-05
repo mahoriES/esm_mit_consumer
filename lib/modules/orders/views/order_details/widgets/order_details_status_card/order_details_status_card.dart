@@ -1,20 +1,28 @@
+import 'dart:math';
 import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/modules/address/view/widgets/action_button.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/actions/actions.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/cancel_button_tile.dart';
+import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/support_popup.dart';
 import 'package:eSamudaay/modules/orders/views/widgets/rating_indicator.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/order_progress_indicator.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/modules/orders/views/order_details/widgets/order_details_status_card/widgets/payment_tile.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/business_image_with_logo.dart';
-import 'package:eSamudaay/reusable_widgets/contact_options_widget.dart';
+import 'package:eSamudaay/reusable_widgets/custom_positioned_dialog.dart';
+import 'package:eSamudaay/reusable_widgets/payment_options_widget.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/themes/custom_theme.dart';
+import 'package:eSamudaay/utilities/image_path_constants.dart';
+import 'package:eSamudaay/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailsStatusCard extends StatelessWidget {
-  const OrderDetailsStatusCard({Key key}) : super(key: key);
+  OrderDetailsStatusCard({Key key}) : super(key: key);
+
+  final GlobalKey supportPopupKey = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +30,8 @@ class OrderDetailsStatusCard extends StatelessWidget {
       model: _ViewModel(),
       builder: (context, snapshot) {
         final OrderStateData stateData = OrderStateData.getStateData(
-          snapshot.orderDetails.orderStatus,
-          context,
+          orderDetails: snapshot.orderDetails,
+          context: context,
         );
 
         return Container(
@@ -58,44 +66,49 @@ class OrderDetailsStatusCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
+                      Container(
+                        key: supportPopupKey,
+                        child: InkWell(
+                          onTap: () => CustomPositionedDialog.show(
+                            key: supportPopupKey,
+                            content: SupportPopup(),
                             context: context,
-                            elevation: 3.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(9),
-                                topRight: Radius.circular(9),
-                              ),
+                            margin: Size(
+                              min(320, SizeConfig.screenWidth - 90),
+                              30,
                             ),
-                            builder: (context) => ContactOptionsWidget(
-                              name: snapshot.orderDetails?.businessName ?? "",
-                              phoneNumber: snapshot
-                                      .orderDetails?.businessContactNumber ??
-                                  "",
-                            ),
-                          );
-                        },
-                        child: Icon(
-                          Icons.call_outlined,
-                          color: CustomTheme.of(context).colors.primaryColor,
+                          ),
+                          child: Image.asset(
+                            ImagePathConstants.supportIcon,
+                            fit: BoxFit.contain,
+                            width: 30,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 29),
                     ],
                   ),
-                  const SizedBox(height: 30),
 
-                  // show progress indicator
-                  OrderProgressIndicator(
-                    OrderStateData.getStateData(
-                        snapshot.orderDetails.orderStatus, context),
-                  ),
-                  const SizedBox(height: 28),
+                  // show progress indicator if order is created
+                  if (snapshot.orderDetails.orderStatus !=
+                      OrderState.CUSTOMER_PENDING) ...{
+                    const SizedBox(height: 30),
+                    OrderProgressIndicator(stateData),
+                    const SizedBox(height: 28),
+                  } else ...{
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 28),
+                      child: Text(
+                        "Payment Pending for your Order!",
+                        style: CustomTheme.of(context)
+                            .textStyles
+                            .cardTitleSecondary,
+                      ),
+                    ),
+                  },
 
                   // if order is confirmed , show payment info.
-                  if (stateData.isOrderConfirmed) ...{
+                  if (stateData.showPaymentOption) ...{
                     Divider(
                       color: CustomTheme.of(context).colors.dividerColor,
                       thickness: 1,
@@ -105,7 +118,16 @@ class OrderDetailsStatusCard extends StatelessWidget {
                           horizontal: 30, vertical: 20),
                       child: PaymentStatusTile(
                         orderResponse: snapshot.orderDetails,
-                        onPay: snapshot.payForOrder,
+                        onPay: () => showModalBottomSheet(
+                          context: context,
+                          isDismissible: false,
+                          enableDrag: false,
+                          builder: (context) => PaymentOptionsWidget(
+                            showBackOption: true,
+                            orderDetails: snapshot.orderDetails,
+                            onPaymentSuccess: () {},
+                          ),
+                        ),
                       ),
                     ),
                   },
@@ -143,6 +165,13 @@ class OrderDetailsStatusCard extends StatelessWidget {
                       showBorder: false,
                     ),
                   },
+
+                  if (stateData.secondaryAction == SecondaryAction.CANCEL) ...{
+                    OrderDetailsCancelButtonTile(
+                      onCancel: snapshot.onCancel,
+                      orderResponse: snapshot.orderDetails,
+                    ),
+                  },
                 ],
               ),
             ),
@@ -157,28 +186,27 @@ class _ViewModel extends BaseModel<AppState> {
   _ViewModel();
 
   PlaceOrderResponse orderDetails;
-  Future<void> Function() payForOrder;
   Function(int) goToFeedbackView;
+  Function(String) onCancel;
 
   _ViewModel.build({
     this.orderDetails,
-    this.payForOrder,
     this.goToFeedbackView,
+    this.onCancel,
   });
 
   @override
   BaseModel fromStore() {
     return _ViewModel.build(
       orderDetails: state.ordersState.selectedOrderDetails,
-      payForOrder: () async => await dispatchFuture(
-        PaymentAction(
-          orderId: state.ordersState.selectedOrderDetails.orderId,
-          onSuccess: () => dispatch(
-            GetOrderDetailsAPIAction(
-                state.ordersState.selectedOrderDetails.orderId),
+      onCancel: (String cancellationNote) {
+        dispatch(
+          CancelOrderAPIAction(
+            orderId: state.ordersState.selectedOrderDetails.orderId,
+            cancellationNote: cancellationNote,
           ),
-        ),
-      ),
+        );
+      },
       goToFeedbackView: (ratingValue) => dispatch(
         NavigateAction.pushNamed(
           RouteNames.ORDER_FEEDBACK_VIEW,

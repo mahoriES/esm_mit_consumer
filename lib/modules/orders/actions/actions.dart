@@ -6,6 +6,7 @@ import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:eSamudaay/payments/razorpay/utility.dart';
+import 'package:eSamudaay/presentations/loading_dialog.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
@@ -377,7 +378,7 @@ class AcceptOrderAPIAction extends ReduxAction<AppState> {
 }
 
 /// reset selected order as required
-// selectedOrder is udsed to fetch order_details onInit in orderDeatis view.
+// selectedOrder is used to fetch order_details onInit in orderDeatis view.
 class ResetSelectedOrder extends ReduxAction<AppState> {
   final PlaceOrderResponse order;
   ResetSelectedOrder(this.order);
@@ -386,7 +387,7 @@ class ResetSelectedOrder extends ReduxAction<AppState> {
     return state.copyWith(
       ordersState: state.ordersState.copyWith(
         selectedOrder: order,
-        selectedOrderDetails: null,
+        selectedPaymentOption: PaymentOptions.Razorpay,
       ),
     );
   }
@@ -486,7 +487,7 @@ class GetRazorpayCheckoutOptionsAction extends ReduxAction<AppState> {
 
 class PaymentAction extends ReduxAction<AppState> {
   final String orderId;
-  final VoidCallback onSuccess;
+  final Function(bool isPaymentDone) onSuccess;
   PaymentAction({
     @required this.orderId,
     @required this.onSuccess,
@@ -499,18 +500,23 @@ class PaymentAction extends ReduxAction<AppState> {
 
     RazorpayUtility().checkout(
       state.orderPaymentCheckoutOptions,
-      onSuccess: onSuccess,
+      onSuccess: () async {
+        await dispatchFuture(GetOrderListAPIAction());
+        await dispatchFuture(GetOrderDetailsAPIAction(orderId));
+        onSuccess(
+          state.ordersState.selectedOrderDetails.paymentInfo.isPaymentDone,
+        );
+      },
+      // TODO : handle razorpay failure case.
       onFailure: () {},
     );
 
     return state.copyWith(orderPaymentCheckoutOptions: null);
   }
 
-  void before() =>
-      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.loading));
+  void before() => LoadingDialog.show();
 
-  void after() =>
-      dispatch(ToggleLoadingOrderListState(LoadingStatusApp.success));
+  void after() => LoadingDialog.hide();
 }
 
 class ToggleLoadingOrderListState extends ReduxAction<AppState> {
@@ -559,4 +565,61 @@ class ResetShowFeedbackDialog extends ReduxAction<AppState> {
       ordersState: state.ordersState.copyWith(showFeedbackSubmitDialog: false),
     );
   }
+}
+
+class ChangeSelctedPaymentOption extends ReduxAction<AppState> {
+  PaymentOptions paymentOption;
+  ChangeSelctedPaymentOption(this.paymentOption);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      ordersState: state.ordersState.copyWith(
+        selectedPaymentOption: paymentOption,
+      ),
+    );
+  }
+}
+
+class MarkOrderPaymentAsPayLater extends ReduxAction<AppState> {
+  String orderId;
+  MarkOrderPaymentAsPayLater(this.orderId);
+
+  LoadingStatusApp finalState = LoadingStatusApp.success;
+
+  @override
+  Future<AppState> reduce() async {
+    try {
+      final response = await APIManager.shared.request(
+        url: ApiURL.initiatePaymentUrl(orderId),
+        params: null,
+        requestType: RequestType.post,
+      );
+
+      if (response.status == ResponseStatus.success200) {
+        final PlaceOrderResponse responseModel =
+            PlaceOrderResponse.fromJson(response.data);
+
+        await dispatchFuture(GetOrderListAPIAction());
+
+        return state.copyWith(
+          ordersState: state.ordersState.copyWith(
+            selectedOrderDetails: responseModel,
+          ),
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: response.data['message'] ?? tr("common.some_error_occured"));
+        finalState = LoadingStatusApp.error;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: tr("common.some_error_occured"));
+      finalState = LoadingStatusApp.error;
+    }
+    return null;
+  }
+
+  void before() => ToggleLoadingOrderDetailsState(LoadingStatusApp.loading);
+
+  void after() => ToggleLoadingOrderDetailsState(finalState);
 }

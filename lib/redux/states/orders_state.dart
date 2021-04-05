@@ -1,6 +1,7 @@
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
+import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class OrdersState {
   final PlaceOrderResponse selectedOrderDetails;
   final AddReviewRequest reviewRequest;
   final bool showFeedbackSubmitDialog;
+  final PaymentOptions selectedPaymentOption;
 
   OrdersState({
     @required this.ordersList,
@@ -23,6 +25,7 @@ class OrdersState {
     @required this.selectedOrderDetails,
     @required this.reviewRequest,
     @required this.showFeedbackSubmitDialog,
+    @required this.selectedPaymentOption,
   });
 
   factory OrdersState.initial() {
@@ -35,6 +38,7 @@ class OrdersState {
       selectedOrderDetails: null,
       reviewRequest: new AddReviewRequest(),
       showFeedbackSubmitDialog: false,
+      selectedPaymentOption: PaymentOptions.Razorpay,
     );
   }
 
@@ -46,8 +50,10 @@ class OrdersState {
     LoadingStatusApp isLoadingNextPage,
     PlaceOrderResponse selectedOrder,
     PlaceOrderResponse selectedOrderDetails,
+    bool isSelectedOrderDetailsNull = false,
     AddReviewRequest reviewRequest,
     bool showFeedbackSubmitDialog,
+    PaymentOptions selectedPaymentOption,
   }) {
     return OrdersState(
       ordersList: ordersList ?? this.ordersList,
@@ -56,10 +62,13 @@ class OrdersState {
       isLoadingOrdersList: isLoadingOrdersList ?? this.isLoadingOrdersList,
       isLoadingNextPage: isLoadingNextPage ?? this.isLoadingNextPage,
       selectedOrder: selectedOrder ?? this.selectedOrder,
-      selectedOrderDetails: selectedOrderDetails ?? this.selectedOrderDetails,
+      selectedOrderDetails: selectedOrderDetails ??
+          (isSelectedOrderDetailsNull ? null : this.selectedOrderDetails),
       reviewRequest: reviewRequest ?? this.reviewRequest,
       showFeedbackSubmitDialog:
           showFeedbackSubmitDialog ?? this.showFeedbackSubmitDialog,
+      selectedPaymentOption:
+          selectedPaymentOption ?? this.selectedPaymentOption,
     );
   }
 

@@ -129,6 +129,8 @@
     "delete_image_alert_title": "Delete List Image?",
     "delete_image_alert_message": "Are you sure you want to delete the uploaded list image?",
     "send_request": "Send request",
+    "pay_and_order": "Pay And Order",
+    "place_order": "Place Order",
     "no_address_error": "Please add delivery address",
     "order_placed": "Order Placed",
     "upload_shopping_list": "Upload Shopping List"
@@ -205,7 +207,9 @@
     "home": "Home",
     "what_went_wrong": "What went wrong?",
     "payment_method": "Payment Method",
-    "retry": "Retry"
+    "retry": "Retry",
+    "cancellation_message": "You can only cancel within {}sec of placing the order",
+    "pending_payment_message": "Pay and complete your order!"
   },
   "screen_order_feedback": {
     "rate_your_order": "Rate Your Order",
@@ -217,16 +221,20 @@
     "feedback_dialog_message": "Your feedback helps us improve our processes to serve you better"
   },
   "screen_order_status": {
-    "request_sent": "Request{}sent",
+    "payment_pending": "Payment Pending",
+    "request_sent": "Order{}Placed",
     "pending": "Pending{}Confirmation",
     "confirm": "Confirm{}and Pay",
-    "confirm_order": "Confirm Order",
+    "confirm_order": "Confirm{}Order",
+    "pay_and_confirm_order": "Pay and Confirm",
     "pickup": "Pickup{}at store",
     "delivery": "Out for{}Delivery",
     "processing": "Processing{}Order",
     "cancelled": "Order{}Cancelled",
     "declined": "Order{}Declined",
-    "completed": "Order{}Fulfilled"
+    "completed": "Order{}Fulfilled",
+    "merchant_updated": "Merchant{}Updated",
+    "order_confirmed": "Order{}Confirmed"
   },
   "screen_support": {
     "title": "Support",
@@ -275,7 +283,11 @@
     "pending_amout": "Pending {}",
     "rejected_amout": "Rejected {}",
     "Failed_amout": "Failed {}",
-    "refunded_amout": "Refunded {}"
+    "refunded_amout": "Refunded {}",
+    "pay_on_delivery": "Pay On Delivery",
+    "pay_on_pickup": "Pay On Pickup",
+    "on_delivery_amount": "On Delivery {}",
+    "on_pickup_amount": "On Pickup {}"
   },
   "payment_info": {
     "checkout_error": "Something went wrong. Contact support if problem persists.",
@@ -285,6 +297,15 @@
     "payment_cancelled": "Payment Cancelled",
     "invalid_options": "Invalid Options",
     "tls_error": "Your device does not support secure payments"
+  },
+  "payment_options": {
+    "bill_total": "Bill Total",
+    "select_payment_method": "Select Payment Method",
+    "pay": "Pay",
+    "razor_pay": "Razor Pay",
+    "online_payment_options": "Online Payment options",
+    "pay_on_delivery": "Pay On Delivery / Pickup",
+    "pay_on_delivery_message": "Pay on receiving the order"
   },
   "product_details": {
     "options_available": "Options available",
@@ -358,5 +379,9 @@
     "popup_msg": "Update the app now to experience new features we have designed for you!",
     "update": "Update",
     "later": "Later"
+  },
+  "support": {
+    "need_help": "Need help with this order?",
+    "call_cp": "Call Circle Promoter"
   }
 }

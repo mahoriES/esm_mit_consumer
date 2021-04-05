@@ -70,7 +70,7 @@ class CartDetailsBottomSheet extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 isOnCartScreen
-                                    ? tr("cart.send_request")
+                                    ? snapshot.cartActionButton
                                     : tr("cart.view_cart"),
                                 style: CustomTheme.of(context)
                                     .textStyles
@@ -99,12 +99,14 @@ class _ViewModel extends BaseModel<AppState> {
   List<Photo> customerNoteImages;
   VoidCallback sendRequest;
   VoidCallback navigateToCart;
+  bool shouldPayBeforOrder;
 
   _ViewModel.build({
     this.productsList,
     this.customerNoteImages,
     this.sendRequest,
     this.navigateToCart,
+    this.shouldPayBeforOrder,
   }) : super(equals: [productsList, customerNoteImages]);
 
   @override
@@ -112,6 +114,7 @@ class _ViewModel extends BaseModel<AppState> {
     return _ViewModel.build(
       productsList: state.cartState.localCartItems ?? [],
       customerNoteImages: state.cartState.customerNoteImages ?? [],
+      shouldPayBeforOrder: state.cartState.shouldPayBeforOrder,
       navigateToCart: () {
         dispatch(NavigateAction.pushNamed(RouteNames.CART_VIEW));
       },
@@ -139,6 +142,14 @@ class _ViewModel extends BaseModel<AppState> {
         }
       },
     );
+  }
+
+  String get cartActionButton {
+    return customerNoteImagesCount > 0
+        ? tr("cart.send_request")
+        : shouldPayBeforOrder
+            ? tr("cart.pay_and_order")
+            : tr("cart.place_order");
   }
 
   int get productsCount => productsList.length;

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:eSamudaay/modules/cart/models/charge_details_response.dart';
 import 'package:eSamudaay/modules/orders/models/order_models.dart';
 import 'package:eSamudaay/modules/orders/models/order_state_data.dart';
@@ -111,6 +112,8 @@ class PlaceOrderResponse {
   PaymentInfo paymentInfo;
   String cancellationNote;
   int itemsCount;
+  List<CpInfo> cpInfo;
+  String customerCancelBefore;
 
   PlaceOrderResponse({
     this.deliveryCharges,
@@ -141,6 +144,8 @@ class PlaceOrderResponse {
     this.businessId,
     this.cancellationNote,
     this.itemsCount,
+    this.cpInfo,
+    this.customerCancelBefore,
   });
 
   PlaceOrderResponse.fromJson(Map<String, dynamic> json) {
@@ -225,11 +230,35 @@ class PlaceOrderResponse {
         json['rating'] != null ? new Rating.fromJson(json['rating']) : null;
     cancellationNote = json["cancellation_note"] ?? "";
     itemsCount = json['items_count'];
+    if (json['cp_info'] != null) {
+      cpInfo = List<CpInfo>();
+      json['cp_info'].forEach((v) {
+        cpInfo.add(CpInfo.fromJson(v));
+      });
+    }
+    customerCancelBefore = json["customer_cancel_before"];
   }
 
   String get createdTime => DateFormat('hh:mm a').format(
         DateTime.parse(this.created).toLocal(),
       );
+
+  int get secondsLeftToCancel {
+    if (this.customerCancelBefore == null) return 0;
+    DateTime cancelBefore = DateTime.parse(this.customerCancelBefore).toLocal();
+    return max(cancelBefore.difference(DateTime.now()).inSeconds, 0);
+  }
+
+  int get cancellationAllowedForSeconds {
+    if (this.customerCancelBefore == null) return 0;
+    DateTime cancelBefore = DateTime.parse(this.customerCancelBefore).toLocal();
+    return max(
+      cancelBefore
+          .difference(DateTime.parse(this.modified).toLocal())
+          .inSeconds,
+      0,
+    );
+  }
 
   String get createdDate => DateFormat('d MMM yyyy').format(
         DateTime.parse(this.created).toLocal(),
@@ -324,6 +353,10 @@ class PlaceOrderResponse {
       data['payment_info'] = this.paymentInfo.toJson();
     }
     data["cancellation_note"] = this.cancellationNote;
+    if (this.cpInfo != null) {
+      data['cp_info'] = this.cpInfo.map((v) => v.toJson()).toList();
+    }
+    data['customer_cancel_before'] = this.customerCancelBefore;
     return data;
   }
 }
@@ -694,6 +727,28 @@ class Cart {
     }
     data['service'] = this.service;
     data['total'] = this.total;
+    return data;
+  }
+}
+
+class CpInfo {
+  String phone;
+  String profileName;
+  bool isSuspended;
+
+  CpInfo({this.phone, this.profileName, this.isSuspended});
+
+  CpInfo.fromJson(Map<String, dynamic> json) {
+    phone = json['phone'];
+    profileName = json['profile_name'];
+    isSuspended = json['is_suspended'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['phone'] = this.phone;
+    data['profile_name'] = this.profileName;
+    data['is_suspended'] = this.isSuspended;
     return data;
   }
 }
