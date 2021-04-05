@@ -113,7 +113,7 @@ class _ViewModel extends BaseModel<AppState> {
   double get deliveryCharge {
     if (charges?.deliveryCharge == null) return 0;
     if (charges.deliveryCharge.isPercentageType) {
-      return (getCartTotal * (charges.deliveryCharge.chargeValue)) / 100;
+      return (getCartTotal * (charges.deliveryCharge.chargeValue ?? 0)) / 100;
     }
     return charges?.deliveryCharge?.amount?.toDouble() ?? 0;
   }
@@ -121,7 +121,7 @@ class _ViewModel extends BaseModel<AppState> {
   double get packingCharge {
     if (charges?.packingCharge == null) return 0;
     if (charges.packingCharge.isPercentageType) {
-      return (getCartTotal * (charges.packingCharge.chargeValue)) / 100;
+      return (getCartTotal * (charges.packingCharge.chargeValue ?? 0)) / 100;
     }
     return charges?.packingCharge?.amount?.toDouble() ?? 0;
   }
@@ -129,7 +129,7 @@ class _ViewModel extends BaseModel<AppState> {
   double get serviceCharge {
     if (charges?.serviceCharge == null) return 0;
     if (charges.serviceCharge.isPercentageType) {
-      return (getCartTotal * (charges.serviceCharge.chargeValue)) / 100;
+      return (getCartTotal * (charges.serviceCharge.chargeValue ?? 0)) / 100;
     }
     return charges?.serviceCharge?.amount?.toDouble() ?? 0;
   }
@@ -137,7 +137,7 @@ class _ViewModel extends BaseModel<AppState> {
   double get extraCharge {
     if (charges?.extraCharge == null) return 0;
     if (charges.extraCharge.isPercentageType) {
-      return (getCartTotal * (charges.extraCharge.chargeValue)) / 100;
+      return (getCartTotal * (charges.extraCharge.chargeValue ?? 0)) / 100;
     }
     return charges?.extraCharge?.amount?.toDouble() ?? 0;
   }
