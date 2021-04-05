@@ -9,7 +9,8 @@
     "continue": "Continue",
     "cancel": "Cancel",
     "back": "Back",
-    "enter_name": "Enter Name"
+    "enter_name": "Enter Name",
+    "contact_details_error": "Contact details not available"
   },
   "credit": {
     "credits": "Credits",

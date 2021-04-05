@@ -9,10 +9,12 @@ import 'package:eSamudaay/modules/otp/action/otp_action.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/redux/actions/general_actions.dart';
 import 'package:eSamudaay/redux/states/app_state.dart';
+import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/URLs.dart';
 import 'package:eSamudaay/utilities/api_manager.dart';
 import 'package:eSamudaay/utilities/firebase_analytics.dart';
 import 'package:eSamudaay/utilities/user_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class GetUserDetailAction extends ReduxAction<AppState> {
@@ -28,7 +30,8 @@ class GetUserDetailAction extends ReduxAction<AppState> {
       GetProfileResponse authResponse =
           GetProfileResponse.fromJson(response.data);
       if (authResponse.cUSTOMER == null) {
-        //dispatch(NavigateAction.pushNamed('/registration'));
+        await dispatchFuture(
+            SilentlyAddCustomerRoleToProfileAction(response.data));
       } else {
         await UserManager.saveToken(token: authResponse.cUSTOMER.token);
 
@@ -41,7 +44,7 @@ class GetUserDetailAction extends ReduxAction<AppState> {
         dispatch(CheckTokenAction());
         store.dispatch(GetUserFromLocalStorageAction());
         AppFirebaseAnalytics.instance.logAppLogin(user: user.toString());
-        dispatch(NavigateAction.pushNamedAndRemoveAll("/myHomeView"));
+        dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
         return state.copyWith(authState: state.authState.copyWith(user: user));
       }
     } else {
@@ -51,10 +54,64 @@ class GetUserDetailAction extends ReduxAction<AppState> {
     return null;
   }
 
-//  void before() =>
-//      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
-//
-//  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+  void before() =>
+      dispatch(ChangeLoadingStatusAction(LoadingStatusApp.loading));
+
+  void after() => dispatch(ChangeLoadingStatusAction(LoadingStatusApp.success));
+}
+
+class SilentlyAddCustomerRoleToProfileAction extends ReduxAction<AppState> {
+  final profilesData;
+
+  SilentlyAddCustomerRoleToProfileAction(this.profilesData);
+
+  @override
+  FutureOr<AppState> reduce() async {
+    final userProfilesResponse = UserProfilesResponse.fromJson(profilesData);
+    final customerProfileName =
+        userProfilesResponse?.customerProfile?.data?.profileName ?? '';
+    final merchantProfileName =
+        userProfilesResponse?.merchantProfile?.data?.profileName ?? '';
+    final agentProfileName =
+        userProfilesResponse?.agentProfile?.data?.profileName ?? '';
+    final String userName = customerProfileName.isNotEmpty
+        ? customerProfileName
+        : merchantProfileName.isNotEmpty
+            ? merchantProfileName
+            : agentProfileName.isNotEmpty
+                ? agentProfileName
+                : '';
+    debugPrint('Add customer role profile data $profilesData');
+    debugPrint('Username $userName');
+    final addCustomerProfilerResponse = await APIManager.shared.request(
+      url: ApiURL.updateCustomerDetails,
+      requestType: RequestType.post,
+      params: {
+        'role': "CUSTOMER",
+        'profile_name': userName,
+      },
+    );
+    if (addCustomerProfilerResponse.status == ResponseStatus.success200) {
+      final authResponse =
+          UpdatedProfile.fromJson(addCustomerProfilerResponse.data);
+      await UserManager.saveToken(token: authResponse.token);
+
+      final Data user = authResponse.data;
+
+      await UserManager.saveUser(user).then((onValue) {
+        store.dispatch(GetUserFromLocalStorageAction());
+      });
+
+      await dispatchFuture(CheckTokenAction());
+      await store.dispatchFuture(GetUserFromLocalStorageAction());
+      AppFirebaseAnalytics.instance.logAppLogin(user: user.toString());
+      dispatch(NavigateAction.pushNamedAndRemoveAll(RouteNames.HOME_PAGE));
+      return state.copyWith(authState: state.authState.copyWith(user: user));
+    } else {
+      Fluttertoast.showToast(msg: addCustomerProfilerResponse.data['message']);
+    }
+    return null;
+  }
 }
 
 class AddUserDetailAction extends ReduxAction<AppState> {
