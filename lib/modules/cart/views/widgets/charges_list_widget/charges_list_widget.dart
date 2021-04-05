@@ -110,10 +110,37 @@ class _ViewModel extends BaseModel<AppState> {
         0;
   }
 
-  double get deliveryCharge => charges?.deliveryCharge?.amount?.toDouble() ?? 0;
-  double get packingCharge => charges?.packingCharge?.amount?.toDouble() ?? 0;
-  double get serviceCharge => charges?.serviceCharge?.amount?.toDouble() ?? 0;
-  double get extraCharge => charges?.extraCharge?.amount?.toDouble() ?? 0;
+  double get deliveryCharge {
+    if (charges?.deliveryCharge == null) return 0;
+    if (charges.deliveryCharge.isPercentageType) {
+      return (getCartTotal * (charges.deliveryCharge.chargeValue ?? 0)) / 100;
+    }
+    return charges?.deliveryCharge?.amount?.toDouble() ?? 0;
+  }
+
+  double get packingCharge {
+    if (charges?.packingCharge == null) return 0;
+    if (charges.packingCharge.isPercentageType) {
+      return (getCartTotal * (charges.packingCharge.chargeValue ?? 0)) / 100;
+    }
+    return charges?.packingCharge?.amount?.toDouble() ?? 0;
+  }
+
+  double get serviceCharge {
+    if (charges?.serviceCharge == null) return 0;
+    if (charges.serviceCharge.isPercentageType) {
+      return (getCartTotal * (charges.serviceCharge.chargeValue ?? 0)) / 100;
+    }
+    return charges?.serviceCharge?.amount?.toDouble() ?? 0;
+  }
+
+  double get extraCharge {
+    if (charges?.extraCharge == null) return 0;
+    if (charges.extraCharge.isPercentageType) {
+      return (getCartTotal * (charges.extraCharge.chargeValue ?? 0)) / 100;
+    }
+    return charges?.extraCharge?.amount?.toDouble() ?? 0;
+  }
 
   double get merchantCharge => packingCharge + serviceCharge + extraCharge;
 

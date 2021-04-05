@@ -90,7 +90,7 @@
     "delivery_partner_fee": "டெலிவரி கூட்டாளர் கட்டணம்",
     "merchant_charges": "வணிகர் கட்டணங்கள்",
     "packing_charges": "பேக்கேஜிங் கட்டணங்கள்",
-    "service_charges": "சேவை கட்டணம்",
+    "tax": "Taxes",
     "extra_charges": "கூடுதல் கட்டணங்கள்",
     "grand_total": "மொத்தம்",
     "list_items": "பட்டியல் உருப்படிகள்",
