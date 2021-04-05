@@ -13,4 +13,10 @@ class Validators {
       return tr('screen_register.name.empty_error');
     return null;
   }
+
+  static String userNameValidator(String input) {
+    if (input == null || input.length < 1)
+      return tr('screen_register.name.empty_error');
+    return null;
+  }
 }

@@ -211,9 +211,9 @@ class PlaceOrderAction extends ReduxAction<AppState> {
     return null;
   }
 
-  void before() => dispatch(ToggleCartLoadingState(true));
+  void before() => dispatch(ToggleOrderProcessingState(true));
 
-  void after() => dispatch(ToggleCartLoadingState(false));
+  void after() => dispatch(ToggleOrderProcessingState(false));
 }
 
 class GetOrderTaxAction extends ReduxAction<AppState> {
@@ -335,6 +335,21 @@ class ToggleCartLoadingState extends ReduxAction<AppState> {
     return state.copyWith(
       cartState: state.cartState.copyWith(
         isCartLoading: isLoading,
+      ),
+    );
+  }
+}
+
+class ToggleOrderProcessingState extends ReduxAction<AppState> {
+  bool isLoading;
+
+  ToggleOrderProcessingState(this.isLoading);
+
+  @override
+  AppState reduce() {
+    return state.copyWith(
+      cartState: state.cartState.copyWith(
+        isProcessingOrderRequest: isLoading,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:eSamudaay/modules/cart/models/cart_model.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
 import 'package:eSamudaay/modules/register/model/register_request_model.dart';
+import 'package:eSamudaay/utilities/extensions.dart';
 
 class GetBusinessesResponse {
   int count;
@@ -105,6 +106,12 @@ class Business {
     if (json["payment_info"] != null) {
       businessPaymentInfo = BusinessPaymentInfo.fromJson(json["payment_info"]);
     }
+  }
+
+  String get contactNumber {
+    if (this.phones == null) return "";
+    if (this.phones.isEmpty) return "";
+    return this.phones.first?.formatPhoneNumber ?? "";
   }
 
   Map<String, dynamic> toJson() {

@@ -44,6 +44,7 @@ class ValidateOtpAction extends ReduxAction<AppState> {
   FutureOr<AppState> reduce() async {
     //6282742294//8113970370
     var request = state.authState.validateOTPRequest;
+    debugPrint('Validate OTP request $request');
     request.thirdPartyId = EnvironmentConfig.ThirdPartyID;
     var response = await APIManager.shared.request(
         url: ApiURL.generateOTPUrl,

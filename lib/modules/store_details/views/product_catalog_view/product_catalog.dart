@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:eSamudaay/models/loading_status.dart';
 import 'package:eSamudaay/modules/catalog_search/actions/product_search_actions.dart';
 import 'package:eSamudaay/modules/home/models/category_response.dart';
+import 'package:eSamudaay/modules/register/model/register_request_model.dart';
 import 'package:eSamudaay/modules/store_details/actions/store_actions.dart';
 import 'package:eSamudaay/modules/store_details/models/catalog_search_models.dart';
 import 'package:eSamudaay/modules/store_details/views/product_catalog_view/widgets/catalogue_menu.dart';
@@ -11,6 +12,7 @@ import 'package:eSamudaay/redux/states/app_state.dart';
 import 'package:eSamudaay/reusable_widgets/cart_details_bottom_sheet.dart';
 import 'package:eSamudaay/routes/routes.dart';
 import 'package:eSamudaay/utilities/size_config.dart';
+import 'package:eSamudaay/utilities/widget_sizes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +132,12 @@ class _ProductCatalogViewState extends State<ProductCatalogView>
                     CupertinoActivityIndicator(),
                   ]
                 ],
+                SizedBox(
+                  height: (snapshot.localCartListing.isEmpty)
+                      ? AppSizes.separatorPadding
+                      : AppSizes.cartTotalBottomViewHeight +
+                          AppSizes.separatorPadding,
+                ),
               ],
             ),
             bottomSheet: CartDetailsBottomSheet(),

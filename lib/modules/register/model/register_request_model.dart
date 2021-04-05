@@ -22,6 +22,23 @@ class CustomerDetailsRequest {
   }
 }
 
+class UserProfilesResponse {
+
+  RegisterResponse customerProfile;
+  RegisterResponse merchantProfile;
+  RegisterResponse agentProfile;
+
+  UserProfilesResponse.fromJson(Map<String, dynamic> json) {
+    if (json['CUSTOMER'] != null)
+      customerProfile = RegisterResponse.fromJson(json['CUSTOMER']);
+    if (json['MERCHANT'] != null)
+      customerProfile = RegisterResponse.fromJson(json['MERCHANT']);
+    if (json['AGENT'] != null)
+      customerProfile = RegisterResponse.fromJson(json['AGENT']);
+  }
+
+}
+
 class RegisterResponse {
   Data data;
   String token;
