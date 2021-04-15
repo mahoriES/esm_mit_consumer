@@ -17,4 +17,4 @@ After this, run any Flutter command (such as `flutter doctor`), and Flutter will
 
 The teams need to fork the base repo and submit code changes on the forked repository.
 
-The fork names shall be of the form - **esm_mit_your-team-name**
+The fork names shall be of the form - **esm_mit_<team-name>**
